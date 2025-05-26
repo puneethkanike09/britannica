@@ -191,7 +191,7 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
                                 disabled={isSubmitting}
                             >
                                 <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
-                                <span>Add School</span>
+                                <span className="hidden md:inline">Add School</span>
                             </button>
                         </div>
                     </form>

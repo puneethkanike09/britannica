@@ -284,7 +284,7 @@ const SchoolManagement: React.FC = () => {
                         className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                     >
                         <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
-                        <span>Add School</span>
+                        <span className="hidden md:inline">Add School</span>
                     </button>
                 </div>
 
@@ -324,21 +324,21 @@ const SchoolManagement: React.FC = () => {
                                                     className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span>View</span>
+                                                    <span className="hidden md:inline">View</span>
                                                 </button>
                                                 <button
                                                     onClick={() => openEditSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                    <span>Edit</span>
+                                                    <span className="hidden md:inline">Edit</span>
                                                 </button>
                                                 <button
                                                     onClick={() => openDeleteSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                    <span>Delete</span>
+                                                    <span className="hidden md:inline">Delete</span>
                                                 </button>
                                             </div>
                                         </td>

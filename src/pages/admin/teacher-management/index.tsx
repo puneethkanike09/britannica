@@ -182,7 +182,7 @@ const TeacherManagement: React.FC = () => {
                         className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                     >
                         <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
-                        Add Teacher
+                        <span className="hidden md:inline">Add Teacher</span>
                     </button>
                 </div>
 
@@ -228,18 +228,21 @@ const TeacherManagement: React.FC = () => {
                                                     className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span>View</span>
+                                                    <span className="hidden md:inline">View</span>
                                                 </button>
                                                 <button
                                                     onClick={() => openEditTeacherModal(teacher)}
                                                     className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                    <span>Edit</span>
+                                                    <span className="hidden md:inline">Edit</span>
                                                 </button>
-                                                <button onClick={() => openDeleteTeacherModal(teacher)} className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center">
+                                                <button
+                                                    onClick={() => openDeleteTeacherModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                    <span>Delete</span>
+                                                    <span className="hidden md:inline">Delete</span>
                                                 </button>
                                             </div>
                                         </td>

@@ -150,7 +150,7 @@ export default function Report() {
                         className={`bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     >
                         <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
-                        <span>Download</span>
+                        <span className="hidden md:inline">Download</span>
                     </button>
                 </div>
 
