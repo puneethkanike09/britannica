@@ -4,13 +4,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useState } from 'react';
 import CalendarIcon from '../components/common/CalendarIcon';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-// Import the download icon
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
+import toast from 'react-hot-toast';
 
 export default function Report() {
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isDownloading, setIsDownloading] = useState(false);
     const itemsPerPage = 6;
 
     const activityLogs = [
@@ -114,12 +115,40 @@ export default function Report() {
         return pageNumbers;
     };
 
+    const handleDownload = () => {
+        setIsDownloading(true);
+        toast.promise(
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    // Simulate a successful download API call
+                    resolve('Report downloaded successfully!');
+                }, 2000); // Simulate 2-second API call
+            }),
+            {
+                loading: 'Downloading report...',
+                success: () => {
+                    setIsDownloading(false);
+                    return 'Report downloaded successfully!';
+                },
+                error: (err) => {
+                    setIsDownloading(false);
+                    return `Error: ${err.message}`;
+                }
+            }
+        );
+    };
+
     return (
         <AdminLayout>
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-secondary">Report</h1>
-                    <button className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2">
+
+                    <button
+                        onClick={handleDownload}
+                        disabled={isDownloading}
+                        className={`bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
                         <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
                         <span>Download</span>
                     </button>
