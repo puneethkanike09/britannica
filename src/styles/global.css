@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+body{
+  font-family: 'Poppins', sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box
+}
+
+
+@theme {
+  --color-textColor: #0C406C;
+  --color-primary: #00A2E3;
+  --color-secondary: #141E8C;
+  --color-orange:#E38217;
+}
+
+
+.phone-input-container .PhoneInputInput {
+  @apply w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400;
+}
