@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginImage from '../assets/loginImage.png';
 import { X } from "lucide-react";
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -12,10 +13,34 @@ const Login = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleAdminLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Admin login with:', email, password);
-        navigate('/admin');
+        setIsSubmitting(true);
+        toast.promise(
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (email && password) {
+                        resolve('Login successful!');
+                        navigate('/admin');
+                    } else {
+                        reject(new Error('Please enter email and password'));
+                    }
+                }, 2000); // Simulate 2-second API call
+            }),
+            {
+                loading: 'Logging in...',
+                success: () => {
+                    setIsSubmitting(false);
+                    return 'Login successful!';
+                },
+                error: (err) => {
+                    setIsSubmitting(false);
+                    return `Error: ${err.message}`;
+                }
+            }
+        );
     };
 
     const handleTeacherLogin = (e: React.FormEvent) => {
@@ -104,7 +129,8 @@ const Login = () => {
                             <button
                                 type="button"
                                 onClick={handleAdminLogin}
-                                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto"
+                                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isSubmitting}
                             >
                                 Admin Login
                             </button>
