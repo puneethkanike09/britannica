@@ -15,14 +15,12 @@ const Login = () => {
     const handleAdminLogin = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Admin login with:', email, password);
-        // Navigate to admin dashboard
         navigate('/admin');
     };
 
     const handleTeacherLogin = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Teacher login with:', email, password);
-        // You can add teacher dashboard navigation here later
     };
 
     const handleForgotPasswordSubmit = () => {
@@ -41,12 +39,12 @@ const Login = () => {
     return (
         <div className="grid min-h-screen w-full font-sans grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
             {/* Left side - Login Form */}
-            <div className="flex flex-col justify-center items-center px-4 sm:px-4 md:px-6 lg:px-8 bg-white">
+            <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
                 <div className="max-w-lg w-full">
-                    <h1 className="text-textColor text-4xl sm:text-4xl font-bold mb-1 text-center sm:text-left">
+                    <h1 className="text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
                         Access to Britannica
                     </h1>
-                    <h2 className="text-textColor text-4xl sm:text-4xl font-bold mb-13 text-center sm:text-left"> {/* Changed mb-6 to mb-8 */}
+                    <h2 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
                         Education Sites
                     </h2>
 
@@ -64,8 +62,7 @@ const Login = () => {
                                 placeholder="Enter Your Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className=" p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400 "
-
+                                className="p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
                             />
                         </div>
 
@@ -82,7 +79,7 @@ const Login = () => {
                                 placeholder="Enter Your Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className=" p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400 "
+                                className="p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
                             />
                             <button
                                 type="button"
@@ -103,18 +100,18 @@ const Login = () => {
                             </button>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center sm:justify-start">
+                        <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center sm:justify-start w-full">
                             <button
                                 type="button"
                                 onClick={handleAdminLogin}
-                                className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto"
                             >
                                 Admin Login
                             </button>
                             <button
                                 type="button"
                                 onClick={handleTeacherLogin}
-                                className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto"
                             >
                                 Teacher Login
                             </button>
@@ -136,7 +133,6 @@ const Login = () => {
                     onClick={handleBackdropClick}
                 >
                     <div className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
-                        {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
                             <h2 className="text-3xl font-bold text-textColor">Forgot Password</h2>
                             <button onClick={() => setShowForgotPasswordModal(false)} className="text-textColor hover:text-textColor/90 cursor-pointer">
@@ -144,7 +140,6 @@ const Login = () => {
                             </button>
                         </div>
 
-                        {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             <form className="space-y-6">
                                 <div>
