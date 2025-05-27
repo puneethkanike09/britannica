@@ -14,9 +14,32 @@ const Login = () => {
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState({
+        email: '',
+        password: ''
+    });
+
+    const validateForm = () => {
+        const newErrors = { email: '', password: '' };
+        let isValid = true;
+        if (!email.trim()) {
+            newErrors.email = 'Email is required';
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'Please enter a valid email address';
+            isValid = false;
+        }
+        if (!password.trim()) {
+            newErrors.password = 'Password is required';
+            isValid = false;
+        }
+        setErrors(newErrors);
+        return isValid;
+    };
 
     const handleAdminLogin = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!validateForm()) return;
         setIsSubmitting(true);
         toast.promise(
             new Promise((resolve, reject) => {
@@ -45,7 +68,31 @@ const Login = () => {
 
     const handleTeacherLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Teacher login with:', email, password);
+        if (!validateForm()) return;
+        setIsSubmitting(true);
+        toast.promise(
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (email && password) {
+                        resolve('Login successful!');
+                        navigate('/teacher');
+                    } else {
+                        reject(new Error('Please enter email and password'));
+                    }
+                }, 2000);
+            }),
+            {
+                loading: 'Logging in...',
+                success: () => {
+                    setIsSubmitting(false);
+                    return 'Login successful!';
+                },
+                error: (err) => {
+                    setIsSubmitting(false);
+                    return `Error: ${err.message}`;
+                }
+            }
+        );
     };
 
     const handleForgotPasswordSubmit = () => {
@@ -79,16 +126,20 @@ const Login = () => {
                                 htmlFor="email"
                                 className="block text-textColor text-base mb-2"
                             >
-                                Email
+                                Email<span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="email"
                                 id="email"
                                 placeholder="Enter Your Email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                                }}
+                                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
                             />
+                            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                         </div>
 
                         <div className="mb-3 relative">
@@ -96,15 +147,18 @@ const Login = () => {
                                 htmlFor="password"
                                 className="block text-textColor text-base mb-2"
                             >
-                                Password
+                                Password<span className="text-red-500">*</span>
                             </label>
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 id="password"
                                 placeholder="Enter Your Password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="p-4 py-3 w-full border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                                }}
+                                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
                             />
                             <button
                                 type="button"
@@ -113,6 +167,7 @@ const Login = () => {
                             >
                                 {showPassword ? 'Hide' : 'Show'}
                             </button>
+                            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                         </div>
 
                         <div className="text-right mb-5">

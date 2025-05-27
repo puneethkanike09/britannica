@@ -5,6 +5,7 @@ import AdminDashboard from "./pages/admin/home-page";
 import SchoolManagement from "./pages/admin/school-management";
 import TeacherManagement from "./pages/admin/teacher-management";
 import Report from "./pages/admin/report";
+import TeacherDashboard from "./pages/teacher/home-page";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/admin/school-management" element={<SchoolManagement />} />
         <Route path="/admin/teacher-management" element={<TeacherManagement />} />
         <Route path="/admin/report" element={<Report />} />
+        <Route path="/teacher" element={<TeacherDashboard />} />
       </Routes>
     </BrowserRouter>
   );
