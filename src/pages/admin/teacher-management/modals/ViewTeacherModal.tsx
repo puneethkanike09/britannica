@@ -14,7 +14,7 @@ interface Teacher {
     lastName: string;
     email: string;
     phone: string;
-    address?: string;
+    loginId: string;
     schoolId?: number; // Optional schoolId to link to a school
 }
 
@@ -73,9 +73,9 @@ export default function ViewTeacherModal({ onClose, teacher }: ViewTeacherModalP
                         </div>
                         <div className="border-t border-gray-300 grid grid-cols-1 md:grid-cols-3">
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">Address</div>
+                                <div className="text-textColor mb-2">Login ID</div>
                                 <div className="text-primary font-medium break-words">
-                                    {teacher.address || "Not provided"}
+                                    {teacher.loginId}
                                 </div>
                             </div>
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">

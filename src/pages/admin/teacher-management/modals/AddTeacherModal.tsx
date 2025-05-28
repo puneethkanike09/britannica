@@ -23,13 +23,14 @@ export default function AddTeacherModal({ onClose }: AddTeacherModalProps) {
         lastName: '',
         email: '',
         phoneNumber: '',
-        address: '',
+        loginId: '',
         school: ''
     });
     const [errors, setErrors] = useState({
         firstName: '',
         email: '',
         phoneNumber: '',
+        loginId: '',
         school: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,6 +62,7 @@ export default function AddTeacherModal({ onClose }: AddTeacherModalProps) {
             firstName: '',
             email: '',
             phoneNumber: '',
+            loginId: '',
             school: ''
         };
         let isValid = true;
@@ -80,6 +82,11 @@ export default function AddTeacherModal({ onClose }: AddTeacherModalProps) {
 
         if (!formData.phoneNumber.trim()) {
             newErrors.phoneNumber = 'Phone number is required';
+            isValid = false;
+        }
+
+        if (!formData.loginId.trim()) {
+            newErrors.loginId = 'Login ID is required';
             isValid = false;
         }
 
@@ -204,15 +211,18 @@ export default function AddTeacherModal({ onClose }: AddTeacherModalProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-textColor mb-2">Address</label>
+                                <label className="block text-textColor mb-2">
+                                    Login ID<span className="text-red-500">*</span>
+                                </label>
                                 <input
                                     type="text"
-                                    name="address"
-                                    value={formData.address}
+                                    name="loginId"
+                                    value={formData.loginId}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.loginId ? 'border-red-500' : 'border-gray-300'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
+                                {errors.loginId && <p className="text-red-500 text-sm mt-1">{errors.loginId}</p>}
                             </div>
                             <div>
                                 <label className="block text-textColor mb-2">

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import TeacherLayout from '../TeacherLayout';
 import BackgroundImage from '../../../assets/dashboard/Teacher/home-page/kids.png';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
 import LogoIcon from '../../../assets/dashboard/teacher/home-page/logo.png';
 import ViewIcon from '../../../assets/dashboard/Teacher/home-page/view.svg';
 import DownloadIcon from '../../../assets/dashboard/Teacher/home-page/download.svg';
+import ArrowIcon from '../../../assets/dashboard/Teacher/home-page/arrow.svg';
 import { Link } from 'react-router-dom';
 
 interface SelectProps {
@@ -14,6 +15,8 @@ interface SelectProps {
     placeholder: string;
     options: { value: string; label: string }[];
     className?: string;
+    isOpen: boolean;
+    onToggle: () => void;
 }
 
 interface DocumentCardProps {
@@ -26,8 +29,8 @@ interface DocumentCardProps {
 const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDownload }) => {
     return (
         <div className="w-full max-w-xs rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
-            <div className="relative pb-4 px-6 pt-6"> {/* Added relative to parent div */}
-                <div className="absolute top-[-2px] right-4"> {/* Position the badge absolutely */}
+            <div className="relative pb-4 px-6 pt-6">
+                <div className="absolute top-[-2px] right-4">
                     <span className="bg-red-500 text-white text-xs font-bold px-4 py-1 ">
                         {type}
                     </span>
@@ -64,6 +67,9 @@ const TeacherDashboard = () => {
     const [selectedType, setSelectedType] = useState('');
     const [showResults, setShowResults] = useState(false);
 
+    // Manage which dropdown is open
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
     const pdfProjects = [
         { id: 1, title: 'Emergency Kits', type: 'PDF' },
         { id: 2, title: 'School Gardening Initiative', type: 'PPT' },
@@ -94,14 +100,18 @@ const TeacherDashboard = () => {
         { value: 'research', label: 'Research' },
         { value: 'creative', label: 'Creative' },
         { value: 'presentation', label: 'Presentation' },
-        { value: 'creative', label: 'Creative' },
-        { value: 'presentation', label: 'Presentation' },
     ];
 
     const handleSubmit = () => {
-
-        setShowResults(true);
-
+        if (!selectedGrade || !selectedTheme || !selectedType) {
+            alert('Please select all filter options');
+            return;
+        }
+        // Close any open dropdowns when submitting
+        setOpenDropdown(null);
+        setTimeout(() => {
+            setShowResults(true);
+        }, 1000);
         console.log('Filters:', { selectedGrade, selectedTheme, selectedType });
     };
 
@@ -113,38 +123,52 @@ const TeacherDashboard = () => {
         console.log(`Viewing project: ${title}`);
     };
 
-    const Select: React.FC<SelectProps> = ({ value, onValueChange, placeholder, options, className = '' }) => {
-        const [isOpen, setIsOpen] = useState(false);
-        const selectRef = React.useRef<HTMLDivElement>(null);
+    const handleDropdownToggle = (dropdownId: string) => {
+        setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
+    };
 
-        React.useEffect(() => {
-            if (!isOpen) return;
-            const handleClickOutside = (event: MouseEvent) => {
-                if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-                    setIsOpen(false);
+    // Add click outside detection for dropdowns
+    React.useEffect(() => {
+        if (!openDropdown) return;
+        const handleBackdropClick = (e: MouseEvent) => {
+            // Only close if click is outside any select dropdown
+            const dropdowns = document.querySelectorAll('.custom-select-dropdown');
+            let clickedInside = false;
+            dropdowns.forEach((dropdown) => {
+                if (dropdown.contains(e.target as Node)) {
+                    clickedInside = true;
                 }
-            };
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
-        }, [isOpen]);
+            });
+            if (!clickedInside) {
+                setOpenDropdown(null);
+            }
+        };
+        document.addEventListener('mousedown', handleBackdropClick);
+        return () => {
+            document.removeEventListener('mousedown', handleBackdropClick);
+        };
+    }, [openDropdown]);
 
+    const Select: React.FC<SelectProps> = ({ value, onValueChange, placeholder, options, className = '', isOpen, onToggle }) => {
         return (
-            <div ref={selectRef} className="relative w-full sm:w-[250px]">
+            <div className="relative w-full sm:w-[250px] custom-select-dropdown">
                 <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className={`flex items-center justify-between px-4 py-3 text-left w-full bg-orange hover:bg-orange/80 text-white font-semibold text-xl rounded-md h-12 cursor-pointer ${className}`}
+                    onClick={onToggle}
+                    className={`flex items-center justify-between px-4 py-3 text-left w-full bg-orange hover:bg-orange/80 text-white font-medium rounded-md h-12 cursor-pointer ${className}`}
                     aria-label={`Select ${placeholder}`}
                     aria-expanded={isOpen}
                     role="combobox"
                 >
                     <span>{value ? options.find((opt) => opt.value === value)?.label : placeholder}</span>
-                    <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                    <img
+                        src={ArrowIcon}
+                        alt="Arrow Icon"
+                        className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    />
                 </button>
                 {isOpen && (
                     <div
-                        className="absolute w-full bg-white border border-gray-200 rounded-md  z-20 max-h-60 overflow-y-auto top-full mt-1 "
+                        className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-60 overflow-y-auto top-full mt-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                         role="listbox"
                     >
                         {options.map((option) => (
@@ -152,9 +176,9 @@ const TeacherDashboard = () => {
                                 key={option.value}
                                 onClick={() => {
                                     onValueChange(option.value);
-                                    setIsOpen(false);
+                                    setOpenDropdown(null); // Close dropdown after selection
                                 }}
-                                className={`w-full px-4 font-bold text-xl py-1 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''}`}
+                                className={`w-full px-4 font-bold text-lg py-2 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''}`}
                                 role="option"
                                 aria-selected={value === option.value}
                             >
@@ -191,7 +215,7 @@ const TeacherDashboard = () => {
                 </Link>
                 <button
                     onClick={openLogoutModal}
-                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2" // Already has cursor-pointer
+                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                 >
                     <LogOut size={18} />
                     <span className="hidden md:inline">Log out</span>
@@ -222,22 +246,28 @@ const TeacherDashboard = () => {
                             onValueChange={setSelectedGrade}
                             placeholder="Grade"
                             options={gradeOptions}
+                            isOpen={openDropdown === 'grade'}
+                            onToggle={() => handleDropdownToggle('grade')}
                         />
                         <Select
                             value={selectedTheme}
                             onValueChange={setSelectedTheme}
                             placeholder="Theme"
                             options={themeOptions}
+                            isOpen={openDropdown === 'theme'}
+                            onToggle={() => handleDropdownToggle('theme')}
                         />
                         <Select
                             value={selectedType}
                             onValueChange={setSelectedType}
                             placeholder="Type"
                             options={typeOptions}
+                            isOpen={openDropdown === 'type'}
+                            onToggle={() => handleDropdownToggle('type')}
                         />
                         <button
                             onClick={handleSubmit}
-                            className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-semibold text-xl w-full sm:w-auto cursor-pointer" // Added cursor-pointer
+                            className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium w-full sm:w-auto cursor-pointer"
                         >
                             Submit
                         </button>

@@ -11,6 +11,15 @@ import DeleteIcon from '../../../assets/dashboard/Admin/teacher-management/delet
 import DeleteTeacherModal from './modals/DeleteTeacherModal';
 import AddTeacherIcon from '../../../assets/dashboard/Admin/teacher-management/add-teacher.svg';
 
+interface Teacher {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    loginId: string;
+}
+
 // Mock data for teachers
 const teachers = [
     {
@@ -19,7 +28,7 @@ const teachers = [
         lastName: "Watson",
         email: "michelle.rivera@example.com",
         phone: "+92857324517",
-        address: "123 Main St, Anytown, USA",
+        loginId: "kristin.w",
     },
     {
         id: 2,
@@ -27,7 +36,7 @@ const teachers = [
         lastName: "McKinney",
         email: "debbie.baker@example.com",
         phone: "+19857324517",
-        address: "123 Main St, Anytown, USA",
+        loginId: "marvin.m",
     },
     {
         id: 3,
@@ -35,6 +44,7 @@ const teachers = [
         lastName: "Cooper",
         email: "kenzi.lawson@example.com",
         phone: "+19362632376",
+        loginId: "jane.c",
     },
     {
         id: 4,
@@ -42,7 +52,7 @@ const teachers = [
         lastName: "Fisher",
         email: "nathan.roberts@example.com",
         phone: "+18434436274",
-        address: "123 Main St, Anytown, USA",
+        loginId: "cody.f",
     },
     {
         id: 5,
@@ -50,7 +60,7 @@ const teachers = [
         lastName: "Cooper",
         email: "felicia.reid@example.com",
         phone: "+17823456901",
-        address: "123 Main St, Anytown, USA",
+        loginId: "bessie.c",
     },
     {
         id: 6,
@@ -58,6 +68,7 @@ const teachers = [
         lastName: "Alexander",
         email: "tim.jennings@example.com",
         phone: "+17823456901",
+        loginId: "leslie.a",
     },
     {
         id: 7,
@@ -65,7 +76,7 @@ const teachers = [
         lastName: "Hawkins",
         email: "alma.lawson@example.com",
         phone: "+18434436274",
-        address: "123 Main St, Anytown, USA",
+        loginId: "guy.h",
     },
     {
         id: 8,
@@ -73,17 +84,9 @@ const teachers = [
         lastName: "Webb",
         email: "debra.holt@example.com",
         phone: "+19362632376",
+        loginId: "theresa.w",
     },
 ];
-
-interface Teacher {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    address?: string;
-}
 
 const TeacherManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
