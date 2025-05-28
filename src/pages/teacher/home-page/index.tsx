@@ -3,7 +3,7 @@ import TeacherLayout from '../TeacherLayout';
 import BackgroundImage from '../../../assets/dashboard/Teacher/home-page/kids.png';
 import { LogOut } from 'lucide-react';
 import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
-import LogoIcon from '../../../assets/dashboard/teacher/home-page/logo.png';
+import LogoIcon from '../../../assets/dashboard/Teacher/home-page/logo.png';
 import ViewIcon from '../../../assets/dashboard/Teacher/home-page/view.svg';
 import DownloadIcon from '../../../assets/dashboard/Teacher/home-page/download.svg';
 import ArrowIcon from '../../../assets/dashboard/Teacher/home-page/arrow.svg';
