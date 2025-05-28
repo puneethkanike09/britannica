@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 
+
 // Import SVG files
 import HomeIcon from '../../../../../assets/dashboard/Admin/sidebar/home.svg';
 import SchoolIcon from '../../../../../assets/dashboard/Admin/sidebar/school-management.svg';
 import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.png';
 import TeacherIcon from '../../../../../assets/dashboard/Admin/sidebar/teacher-management.svg';
 import ReportIcon from '../../../../../assets/dashboard/Admin/sidebar/report.svg';
+import LogoutModal from '../topbar/modals/LogoutModal';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    showLogoutModal: boolean;
+    onCloseLogoutModal: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -63,15 +70,12 @@ const Sidebar: React.FC = () => {
                     aria-label="Open menu"
                 >
                     <div className="relative w-5 h-4">
-                        {/* Top bar */}
                         <span
                             className="absolute left-0 top-0 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out"
                         ></span>
-                        {/* Middle bar */}
                         <span
                             className="absolute left-0 top-2 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out opacity-100"
                         ></span>
-                        {/* Bottom bar */}
                         <span
                             className="absolute left-0 top-4 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out"
                         ></span>
@@ -94,7 +98,7 @@ const Sidebar: React.FC = () => {
                         </div>
                     </Link>
                     <button
-                        className="md:hidden text-white p-2 rounded-lg hover:bg-[#0090d0]  focus:outline-none"
+                        className="md:hidden text-white p-2 rounded-lg hover:bg-[#0090d0] focus:outline-none"
                         onClick={closeSidebar}
                         aria-label="Close menu"
                     >
@@ -104,8 +108,7 @@ const Sidebar: React.FC = () => {
                 <nav className="flex flex-col p-8 space-y-2 pt-10">
                     <Link
                         to="/admin"
-                        className={`flex items-center p-3 rounded-lg ${isActive("/admin") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"
-                            }`}
+                        className={`flex items-center p-3 rounded-lg ${isActive("/admin") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"}`}
                         onClick={closeSidebar}
                     >
                         <img src={HomeIcon} alt="Home" className="mr-3 h-5 w-5" />
@@ -113,8 +116,7 @@ const Sidebar: React.FC = () => {
                     </Link>
                     <Link
                         to="/admin/school-management"
-                        className={`flex items-center p-3 rounded-lg ${isActive("/admin/school-management") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"
-                            }`}
+                        className={`flex items-center p-3 rounded-lg ${isActive("/admin/school-management") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"}`}
                         onClick={closeSidebar}
                     >
                         <img src={SchoolIcon} alt="School Management" className="mr-3 h-5 w-5" />
@@ -122,8 +124,7 @@ const Sidebar: React.FC = () => {
                     </Link>
                     <Link
                         to="/admin/teacher-management"
-                        className={`flex items-center p-3  rounded-lg ${isActive("/admin/teacher-management") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"
-                            }`}
+                        className={`flex items-center p-3 rounded-lg ${isActive("/admin/teacher-management") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"}`}
                         onClick={closeSidebar}
                     >
                         <img src={TeacherIcon} alt="Teacher Management" className="mr-3 h-5 w-5" />
@@ -131,8 +132,7 @@ const Sidebar: React.FC = () => {
                     </Link>
                     <Link
                         to="/admin/report"
-                        className={`flex items-center p-3 rounded-lg ${isActive("/admin/report") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"
-                            }`}
+                        className={`flex items-center p-3 rounded-lg ${isActive("/admin/report") ? "bg-secondary text-white" : "hover:bg-[#0090d0]"}`}
                         onClick={closeSidebar}
                     >
                         <img src={ReportIcon} alt="Report" className="mr-3 h-5 w-5" />
@@ -146,6 +146,7 @@ const Sidebar: React.FC = () => {
                     onClick={closeSidebar}
                 />
             )}
+            {showLogoutModal && <LogoutModal onClose={onCloseLogoutModal} />}
         </>
     );
 };
