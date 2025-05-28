@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { X } from "lucide-react";
-
-// Use a specific version of pdfjs-dist known to be compatible with iOS/Safari
-import pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -20,18 +17,10 @@ interface PdfRendererProps {
 const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
     const [numPages, setNumPages] = useState<number | null>(null);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [error, setError] = useState<string | null>(null);
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-        console.log('PDF loaded successfully, pages:', numPages);
         setNumPages(numPages);
         setPageNumber(1);
-        setError(null);
-    };
-
-    const onDocumentLoadError = (err: Error) => {
-        console.error('PDF loading failed:', err.message);
-        setError('Failed to load PDF. Please try again.');
     };
 
     const handleNextPage = () => {
@@ -51,15 +40,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
             onClose();
         }
     };
-
-    // Cleanup on unmount to prevent memory leaks
-    useEffect(() => {
-        return () => {
-            setNumPages(null);
-            setPageNumber(1);
-            setError(null);
-        };
-    }, []);
 
     if (!file) {
         return (
@@ -97,12 +77,14 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
 
     return (
         <div
-            className="fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4 touch-none"
+            className="fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4"
             onClick={handleBackdropClick}
         >
-            <div className="bg-white rounded-lg w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh] will-change-transform">
+            <div className="bg-white rounded-lg w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-textColor">PDF Viewer</h2>
+                    <div>
+                        {/* just for align the cross icon right side */}
+                    </div>
                     <button
                         onClick={onClose}
                         className="text-textColor hover:text-textColor/90 cursor-pointer"
@@ -110,31 +92,26 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <X className="h-7 w-7" />
                     </button>
                 </div>
-                <div className="px-8 py-6 overflow-auto flex-grow -webkit-overflow-scrolling-touch">
-                    {error ? (
-                        <p className="text-gray-700 text-center">{error}</p>
-                    ) : (
-                        <div className="flex justify-center">
-                            <Document
-                                file={file}
-                                onLoadSuccess={onDocumentLoadSuccess}
-                                onLoadError={onDocumentLoadError}
-                                className="flex justify-center"
-                                loading={<p className="text-gray-700">Loading PDF...</p>}
-                            >
-                                <Page
-                                    pageNumber={pageNumber}
-                                    renderAnnotationLayer={true}
-                                    renderTextLayer={true}
-                                    className="shadow-md"
-                                    width={Math.min(800, window.innerWidth * 0.9)} // Slightly increased responsiveness
-                                    onRenderError={(err) => console.error('Page rendering failed:', err.message)}
-                                />
-                            </Document>
-                        </div>
-                    )}
+                <div className="px-8 py-6 overflow-auto flex-grow">
+                    <div className="flex justify-center">
+                        <Document
+                            file={file}
+                            onLoadSuccess={onDocumentLoadSuccess}
+                            className="flex justify-center"
+                            error={<p className="text-gray-700">Failed to load PDF.</p>}
+                            loading={<p className="text-gray-700">Loading PDF...</p>}
+                        >
+                            <Page
+                                pageNumber={pageNumber}
+                                renderAnnotationLayer={false}
+                                renderTextLayer={false}
+                                className="shadow-md"
+                                width={Math.min(800, window.innerWidth * 0.8)}
+                            />
+                        </Document>
+                    </div>
                 </div>
-                {numPages && !error && (
+                {numPages && (
                     <div className="bg-white px-8 py-6 flex justify-center items-center gap-4 border-t border-gray-100 flex-shrink-0">
                         <button
                             onClick={handlePrevPage}
