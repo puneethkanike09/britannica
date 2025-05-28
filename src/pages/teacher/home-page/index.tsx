@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+// src/pages/TeacherDashboard.tsx
+import { useEffect, useState } from 'react';
 import TeacherLayout from '../TeacherLayout';
 import BackgroundImage from '../../../assets/dashboard/Teacher/home-page/kids.png';
 import { LogOut } from 'lucide-react';
 import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
-import LogoIcon from '../../../assets/dashboard/Teacher/home-page/logo.png';
+import LogoIcon from '../../../assets/dashboard/teacher/home-page/logo.png';
 import ViewIcon from '../../../assets/dashboard/Teacher/home-page/view.svg';
 import DownloadIcon from '../../../assets/dashboard/Teacher/home-page/download.svg';
 import ArrowIcon from '../../../assets/dashboard/Teacher/home-page/arrow.svg';
 import { Link } from 'react-router-dom';
+import { pdfjs } from 'react-pdf';
+import PdfRenderer from '../components/common/PdfRenderer';
+
+// Import PDF files
+import EmergencyKitsPdf from '../../../assets/pdfs/Puneeth-internship.pdf';
+
+
+// Set pdfjs worker
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url
+).toString();
 
 interface SelectProps {
     value: string;
@@ -31,7 +44,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDown
         <div className="w-full max-w-xs rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
             <div className="relative pb-4 px-6 pt-6">
                 <div className="absolute top-[-2px] right-4">
-                    <span className="bg-red-500 text-white text-xs font-bold px-4 py-1 ">
+                    <span className="bg-red-500 text-white text-xs font-bold px-4 py-1">
                         {type}
                     </span>
                 </div>
@@ -66,15 +79,15 @@ const TeacherDashboard = () => {
     const [selectedTheme, setSelectedTheme] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [showResults, setShowResults] = useState(false);
-
-    // Manage which dropdown is open
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [showPdfViewer, setShowPdfViewer] = useState(false);
+    const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
 
     const pdfProjects = [
-        { id: 1, title: 'Emergency Kits', type: 'PDF' },
-        { id: 2, title: 'School Gardening Initiative', type: 'PPT' },
-        { id: 3, title: 'Mini Garbage Collector Robot', type: 'PDF' },
-        { id: 4, title: 'Emergency Kits 2', type: 'PDF' },
+        { id: 1, title: 'Emergency Kits', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 2, title: 'School Gardening Initiative', type: 'PPT', file: null },
+        { id: 3, title: 'Mini Garbage Collector Robot', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 4, title: 'Emergency Kits 2', type: 'PDF', file: EmergencyKitsPdf },
     ];
 
     const gradeOptions = [
@@ -103,35 +116,36 @@ const TeacherDashboard = () => {
     ];
 
     const handleSubmit = () => {
-        if (!selectedGrade || !selectedTheme || !selectedType) {
-            alert('Please select all filter options');
-            return;
-        }
-        // Close any open dropdowns when submitting
         setOpenDropdown(null);
-        setTimeout(() => {
-            setShowResults(true);
-        }, 1000);
+        setShowResults(true);
+
         console.log('Filters:', { selectedGrade, selectedTheme, selectedType });
     };
 
     const handleDownload = (title: string) => {
         console.log(`Downloading project: ${title}`);
+        // Implement download logic (e.g., create a link and trigger download)
+        const project = pdfProjects.find((p) => p.title === title);
+        if (project?.file) {
+            const link = document.createElement('a');
+            link.href = project.file;
+            link.download = `${title}.${project.type.toLowerCase()}`;
+            link.click();
+        }
     };
 
-    const handleView = (title: string) => {
-        console.log(`Viewing project: ${title}`);
+    const handleView = (file: string | null) => {
+        setCurrentPdfFile(file);
+        setShowPdfViewer(true);
     };
 
     const handleDropdownToggle = (dropdownId: string) => {
         setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
     };
 
-    // Add click outside detection for dropdowns
-    React.useEffect(() => {
+    useEffect(() => {
         if (!openDropdown) return;
         const handleBackdropClick = (e: MouseEvent) => {
-            // Only close if click is outside any select dropdown
             const dropdowns = document.querySelectorAll('.custom-select-dropdown');
             let clickedInside = false;
             dropdowns.forEach((dropdown) => {
@@ -149,7 +163,15 @@ const TeacherDashboard = () => {
         };
     }, [openDropdown]);
 
-    const Select: React.FC<SelectProps> = ({ value, onValueChange, placeholder, options, className = '', isOpen, onToggle }) => {
+    const Select: React.FC<SelectProps> = ({
+        value,
+        onValueChange,
+        placeholder,
+        options,
+        className = '',
+        isOpen,
+        onToggle,
+    }) => {
         return (
             <div className="relative w-full sm:w-[250px] custom-select-dropdown">
                 <button
@@ -176,9 +198,10 @@ const TeacherDashboard = () => {
                                 key={option.value}
                                 onClick={() => {
                                     onValueChange(option.value);
-                                    setOpenDropdown(null); // Close dropdown after selection
+                                    setOpenDropdown(null);
                                 }}
-                                className={`w-full px-4 font-bold text-lg py-2 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''}`}
+                                className={`w-full px-4 font-bold text-lg py-2 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''
+                                    }`}
                                 role="option"
                                 aria-selected={value === option.value}
                             >
@@ -204,13 +227,9 @@ const TeacherDashboard = () => {
     return (
         <TeacherLayout>
             <header className="fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16 sm:h-[81px] bg-[#EEFAFF] z-[20]">
-                <Link to="/" >
+                <Link to="/">
                     <div className="flex items-center gap-3">
-                        <img
-                            src={LogoIcon}
-                            alt="Britannica Education Logo"
-                            className="h-[40px] object-cover"
-                        />
+                        <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] object-cover" />
                     </div>
                 </Link>
                 <button
@@ -232,11 +251,9 @@ const TeacherDashboard = () => {
                     aria-hidden="true"
                 />
                 <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-24 sm:py-24 lg:py-32">
-
                     <h2 className="text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 text-center">
                         Welcome to the Teachers Dashboard!
                     </h2>
-
                     <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 sm:mb-12 text-center">
                         Project Based Learning
                     </h1>
@@ -279,13 +296,16 @@ const TeacherDashboard = () => {
                                     key={project.id}
                                     title={project.title}
                                     type={project.type}
-                                    onView={() => handleView(project.title)}
+                                    onView={() => handleView(project.file)}
                                     onDownload={() => handleDownload(project.title)}
                                 />
                             ))}
                         </div>
                     )}
                 </div>
+                {showPdfViewer && (
+                    <PdfRenderer file={currentPdfFile} onClose={() => setShowPdfViewer(false)} />
+                )}
             </div>
             {showLogoutModal && <LogoutModal onClose={closeLogoutModal} />}
         </TeacherLayout>
