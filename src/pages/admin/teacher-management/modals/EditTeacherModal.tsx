@@ -4,20 +4,7 @@ import 'react-phone-number-input/style.css';
 import { useState } from 'react';
 import toast from "react-hot-toast";
 
-interface Teacher {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    loginId: string;
-}
-
-interface EditTeacherModalProps {
-    onClose: () => void;
-    teacher: Teacher;
-}
-
+// Mock schools data (consistent with AddTeacherModal and ViewTeacherModal)
 const schools = [
     { id: 1, name: "Britanica School" },
     { id: 2, name: "St. Mary's School" },
@@ -25,21 +12,36 @@ const schools = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
+interface Teacher {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    loginId: string;
+    schoolId?: number;
+}
+
+interface EditTeacherModalProps {
+    onClose: () => void;
+    teacher: Teacher;
+}
+
 export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalProps) {
     const [formData, setFormData] = useState({
-        firstName: teacher.firstName,
-        lastName: teacher.lastName,
-        email: teacher.email,
-        phoneNumber: teacher.phone,
-        loginId: teacher.loginId,
-        school: ''
+        firstName: teacher.firstName || '',
+        lastName: teacher.lastName || '',
+        email: teacher.email || '',
+        phoneNumber: teacher.phone || '',
+        loginId: teacher.loginId || '',
+        school: teacher.schoolId ? String(teacher.schoolId) : '', // Convert schoolId to string for select
     });
     const [errors, setErrors] = useState({
         firstName: '',
         email: '',
         phoneNumber: '',
         loginId: '',
-        school: ''
+        school: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -71,7 +73,7 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
             email: '',
             phoneNumber: '',
             loginId: '',
-            school: ''
+            school: '',
         };
         let isValid = true;
 
@@ -107,17 +109,14 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
         return isValid;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = () => {
         if (validateForm()) {
             setIsSubmitting(true);
             toast.promise(
                 new Promise((resolve) => {
                     setTimeout(() => {
-                        // Simulate a successful API call
+                        // Simulate a successful API PUT call
                         resolve('Teacher updated successfully!');
-                        // For error simulation, you could use:
-                        // reject(new Error('Failed to update teacher'));
                     }, 2000); // Simulate 2-second API call
                 }),
                 {
@@ -130,7 +129,7 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
                     error: (err) => {
                         setIsSubmitting(false);
                         return `Error: ${err.message}`;
-                    }
+                    },
                 }
             );
         }
@@ -143,7 +142,7 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
         >
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Edit Teacher</h2>
                     <button
                         onClick={onClose}
@@ -156,7 +155,7 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
 
                 {/* Scrollable Form Content */}
                 <div className="flex-1 overflow-y-auto px-8 py-6">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-textColor mb-2">
@@ -257,11 +256,12 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
 
                         <div className="mt-12">
                             <button
-                                type="submit"
-                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/80 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                type="button"
+                                onClick={handleSubmit}
+                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/90 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} flex items-center gap-2`}
                                 disabled={isSubmitting}
                             >
-                                Save
+                                <span className="hidden md:inline">Update Teacher</span>
                             </button>
                         </div>
                     </form>

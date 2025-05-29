@@ -4,12 +4,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import AddTeacherModal from './modals/AddTeacherModal';
 import EditTeacherModal from './modals/EditTeacherModal';
 import ViewTeacherModal from './modals/ViewTeacherModal';
-
 import ViewIcon from '../../../assets/dashboard/Admin/teacher-management/view.svg';
 import EditIcon from '../../../assets/dashboard/Admin/teacher-management/edit.svg';
 import DeleteIcon from '../../../assets/dashboard/Admin/teacher-management/delete.svg';
 import DeleteTeacherModal from './modals/DeleteTeacherModal';
 import AddTeacherIcon from '../../../assets/dashboard/Admin/teacher-management/add-teacher.svg';
+
+// Mock schools data
+const schools = [
+    { id: 1, name: "Britanica School" },
+    { id: 2, name: "St. Mary's School" },
+    { id: 3, name: "Delhi Public School" },
+    { id: 4, name: "Kendriya Vidyalaya" },
+];
 
 interface Teacher {
     id: number;
@@ -18,10 +25,11 @@ interface Teacher {
     email: string;
     phone: string;
     loginId: string;
+    schoolId?: number; // Added schoolId to link to a school
 }
 
-// Mock data for teachers
-const teachers = [
+// Mock data for teachers with schoolId
+const teachers: Teacher[] = [
     {
         id: 1,
         firstName: "Kristin",
@@ -29,6 +37,7 @@ const teachers = [
         email: "michelle.rivera@example.com",
         phone: "+92857324517",
         loginId: "kristin.w",
+        schoolId: 1,
     },
     {
         id: 2,
@@ -37,6 +46,7 @@ const teachers = [
         email: "debbie.baker@example.com",
         phone: "+19857324517",
         loginId: "marvin.m",
+        schoolId: 2,
     },
     {
         id: 3,
@@ -45,6 +55,7 @@ const teachers = [
         email: "kenzi.lawson@example.com",
         phone: "+19362632376",
         loginId: "jane.c",
+        schoolId: 3,
     },
     {
         id: 4,
@@ -53,6 +64,7 @@ const teachers = [
         email: "nathan.roberts@example.com",
         phone: "+18434436274",
         loginId: "cody.f",
+        schoolId: 4,
     },
     {
         id: 5,
@@ -61,6 +73,7 @@ const teachers = [
         email: "felicia.reid@example.com",
         phone: "+17823456901",
         loginId: "bessie.c",
+        schoolId: 1,
     },
     {
         id: 6,
@@ -69,6 +82,7 @@ const teachers = [
         email: "tim.jennings@example.com",
         phone: "+17823456901",
         loginId: "leslie.a",
+        schoolId: 2,
     },
     {
         id: 7,
@@ -77,6 +91,7 @@ const teachers = [
         email: "alma.lawson@example.com",
         phone: "+18434436274",
         loginId: "guy.h",
+        schoolId: 3,
     },
     {
         id: 8,
@@ -85,6 +100,43 @@ const teachers = [
         email: "debra.holt@example.com",
         phone: "+19362632376",
         loginId: "theresa.w",
+        schoolId: 4,
+    },
+    {
+        id: 9,
+        firstName: "Theresa",
+        lastName: "Webb",
+        email: "debra.holt@example.com",
+        phone: "+19362632376",
+        loginId: "theresa.w2",
+        schoolId: 1,
+    },
+    {
+        id: 10,
+        firstName: "Theresa",
+        lastName: "Webb",
+        email: "debra.holt@example.com",
+        phone: "+19362632376",
+        loginId: "theresa.w3",
+        schoolId: 2,
+    },
+    {
+        id: 11,
+        firstName: "Theresa",
+        lastName: "Webb",
+        email: "debra.holt@example.com",
+        phone: "+19362632376",
+        loginId: "theresa.w4",
+        schoolId: 3,
+    },
+    {
+        id: 12,
+        firstName: "Theresa",
+        lastName: "Webb",
+        email: "debra.holt@example.com",
+        phone: "+19362632376",
+        loginId: "theresa.w5",
+        schoolId: 4,
     },
 ];
 
@@ -177,7 +229,7 @@ const TeacherManagement: React.FC = () => {
 
     return (
         <AdminLayout>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-secondary">Teacher List</h1>
                     <button
@@ -192,65 +244,73 @@ const TeacherManagement: React.FC = () => {
                 <div className="flex flex-col">
                     <div className="overflow-x-auto w-full rounded-lg">
                         <table className="w-full table-fixed min-w-[800px]">
-                            <colgroup>
-                                <col className="w-48" />
-                                <col className="w-64" />
-                                <col className="w-40" />
-                                <col className="w-72" />
-                            </colgroup>
+                            <colgroup><col className="w-48" /><col className="w-48" /><col className="w-64" /><col className="w-48" /><col className="w-80" /></colgroup>
                             <thead>
                                 <tr className="bg-indigo-900 text-white">
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Teacher Name</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Email Address</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Phone Number</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Actions</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Teacher Name</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">School Name</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Email Address</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Phone Number</th>
+                                    <th className="px-8 py-4 text-left font-semibold">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentItems.map((teacher, index) => (
-                                    <tr key={teacher.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-4 py-4 break-words">
-                                            <div className="font-medium text-gray-900">
-                                                {`${teacher.firstName} ${teacher.lastName}`}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 break-words">
-                                            <div className="text-gray-700">
-                                                {teacher.email}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4">
-                                            <div className="text-gray-700">
-                                                {teacher.phone}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4">
-                                            <div className="flex flex-nowrap gap-2">
-                                                <button
-                                                    onClick={() => openViewTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                >
-                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">View</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openEditTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                >
-                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">Edit</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openDeleteTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                >
-                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">Delete</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {currentItems.map((teacher, index) => {
+                                    // Find school name or display 'Not assigned'
+                                    const schoolName = teacher.schoolId
+                                        ? schools.find((school) => school.id === teacher.schoolId)?.name || "Not assigned"
+                                        : "Not assigned";
+
+                                    return (
+                                        <tr key={teacher.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                            <td className="px-8 py-4 break-words">
+                                                <div className="font-medium text-gray-900">
+                                                    {`${teacher.firstName} ${teacher.lastName}`}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4 break-words">
+                                                <div className="text-gray-700">
+                                                    {schoolName}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4 break-words">
+                                                <div className="text-gray-700">
+                                                    {teacher.email}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4">
+                                                <div className="text-gray-700">
+                                                    {teacher.phone}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4">
+                                                <div className="flex flex-nowrap gap-2">
+                                                    <button
+                                                        onClick={() => openViewTeacherModal(teacher)}
+                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    >
+                                                        <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                        <span className="hidden md:inline">View</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openEditTeacherModal(teacher)}
+                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    >
+                                                        <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                        <span className="hidden md:inline">Edit</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDeleteTeacherModal(teacher)}
+                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    >
+                                                        <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                        <span className="hidden md:inline">Delete</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

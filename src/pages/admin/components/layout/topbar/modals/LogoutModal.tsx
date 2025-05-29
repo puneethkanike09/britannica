@@ -50,7 +50,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
         >
             <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Logout</h2>
                     <button
                         onClick={onClose}

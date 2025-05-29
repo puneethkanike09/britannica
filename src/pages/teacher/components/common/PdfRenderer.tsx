@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -48,7 +48,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                 onClick={handleBackdropClick}
             >
                 <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
-                    <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                    <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
                         <h2 className="text-3xl font-bold text-textColor">Error</h2>
                         <button
                             onClick={onClose}
@@ -81,7 +81,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
             onClick={handleBackdropClick}
         >
             <div className="bg-white rounded-lg w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
                     <div>
                         {/* just for align the cross icon right side */}
                     </div>
@@ -105,7 +105,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                                 pageNumber={pageNumber}
                                 renderAnnotationLayer={false}
                                 renderTextLayer={false}
-                                className="shadow-md"
+
                                 width={Math.min(800, window.innerWidth * 0.8)}
                             />
                         </Document>
@@ -116,9 +116,10 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <button
                             onClick={handlePrevPage}
                             disabled={pageNumber <= 1}
-                            className={`px-6 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 ${pageNumber <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            className={`px-3 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 flex items-center justify-center ${pageNumber <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         >
-                            Previous
+                            <span className="sr-only">Previous</span>
+                            <ChevronLeft className="h-6 w-6" />
                         </button>
                         <p className="text-gray-700">
                             Page {pageNumber} of {numPages}
@@ -126,9 +127,10 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <button
                             onClick={handleNextPage}
                             disabled={pageNumber >= numPages}
-                            className={`px-6 py-2 rounded-lg bg-primary text-white hover:bg-primary/80 ${pageNumber >= numPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            className={`px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary/80 flex items-center justify-center ${pageNumber >= numPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         >
-                            Next
+                            <span className="sr-only">Next</span>
+                            <ChevronRight className="h-6 w-6" />
                         </button>
                     </div>
                 )}

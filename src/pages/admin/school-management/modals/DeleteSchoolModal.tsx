@@ -58,7 +58,7 @@ export default function DeleteSchoolModal({ onClose, school }: DeleteSchoolModal
         >
             <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Delete School</h2>
                     <button
                         onClick={onClose}
@@ -86,7 +86,7 @@ export default function DeleteSchoolModal({ onClose, school }: DeleteSchoolModal
                         </button>
                         <button
                             onClick={handleDelete}
-                            className={`px-6 py-2 rounded-lg bg-red-600 text-white hover:bg-red-600/80 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            className={`px-6 py-2 rounded-lg bg-red text-white hover:bg-red/80 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                             disabled={isDeleting}
                         >
                             Yes, Delete

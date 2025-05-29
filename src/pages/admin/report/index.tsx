@@ -140,7 +140,7 @@ export default function Report() {
 
     return (
         <AdminLayout>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-full  mx-auto rounded-lg sm:p-10 bg-white">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-secondary">Report</h1>
 
@@ -155,27 +155,27 @@ export default function Report() {
                 </div>
 
                 {/* Date Range Selectors */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                    <div className="relative">
+                <div className="flex flex-col lg:flex-row gap-4 mb-6">
+                    <div className="relative w-full sm:w-auto">
                         <DatePicker
                             selected={fromDate}
                             onChange={(date: Date | null) => setFromDate(date)}
                             placeholderText="From Date"
                             dateFormat="MM/dd/yyyy"
-                            className=" pl-12 pr-4 py-3  border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400  min-w-[180px]"
+                            className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
                         />
                         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                             <CalendarIcon />
                         </div>
                     </div>
 
-                    <div className="relative">
+                    <div className="relative w-full sm:w-auto">
                         <DatePicker
                             selected={toDate}
                             onChange={(date: Date | null) => setToDate(date)}
                             placeholderText="To Date"
                             dateFormat="MM/dd/yyyy"
-                            className=" pl-12 pr-4 py-3  border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400  min-w-[180px]"
+                            className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
                         />
                         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                             <CalendarIcon />
@@ -194,25 +194,25 @@ export default function Report() {
                             </colgroup>
                             <thead>
                                 <tr className="bg-indigo-900 text-white">
-                                    <th className="px-4 py-4 border-r-2 border-white text-left font-semibold">Date</th>
-                                    <th className="px-4 py-4 border-r-2 border-white text-left font-semibold">Time</th>
-                                    <th className="px-4 py-4 border-r-2 border-white text-left font-semibold">Activity</th>
-                                    <th className="px-4 py-4 border-r-2 border-white text-left font-semibold">Users</th>
+                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Date</th>
+                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Time</th>
+                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Activity</th>
+                                    <th className="px-8 py-4  text-left font-semibold">Users</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map((log, index) => (
                                     <tr key={log.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-gray-700">{log.date}</div>
                                         </td>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-gray-700">{log.time}</div>
                                         </td>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-gray-700">{log.activity}</div>
                                         </td>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-gray-700">{log.user}</div>
                                         </td>
                                     </tr>

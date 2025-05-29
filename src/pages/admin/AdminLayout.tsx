@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Sidebar from './components/layout/sidebar';
 import Topbar from './components/layout/topbar';
 
@@ -8,6 +8,15 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+        // Initialize from localStorage, default to false if not set
+        return localStorage.getItem('sidebarCollapsed') === 'true';
+    });
+
+    // Sync localStorage whenever isSidebarCollapsed changes
+    useEffect(() => {
+        localStorage.setItem('sidebarCollapsed', isSidebarCollapsed.toString());
+    }, [isSidebarCollapsed]);
 
     const openLogoutModal = () => {
         setShowLogoutModal(true);
@@ -17,12 +26,29 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         setShowLogoutModal(false);
     };
 
+    const toggleSidebarCollapse = () => {
+        setIsSidebarCollapsed((prev) => !prev);
+    };
+
     return (
         <div className="flex flex-col md:flex-row min-h-screen w-full overflow-hidden">
-            <Sidebar showLogoutModal={showLogoutModal} onCloseLogoutModal={closeLogoutModal} />
-            <div className="flex-1 flex flex-col min-w-0 w-full md:ml-[320px]">
-                <Topbar onOpenLogoutModal={openLogoutModal} />
-                <main className="p-6 flex-1 overflow-x-auto w-full mt-[81px]">{children}</main>
+            <Sidebar
+                showLogoutModal={showLogoutModal}
+                onCloseLogoutModal={closeLogoutModal}
+                isCollapsed={isSidebarCollapsed}
+                onToggleCollapse={toggleSidebarCollapse}
+            />
+            <div
+                className={`flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[320px]'
+                    }`}
+            >
+                <Topbar
+                    onOpenLogoutModal={openLogoutModal}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                />
+                <main className="p-6 flex-1 sm:bg-gray-100 overflow-x-auto w-full mt-[81px]">
+                    {children}
+                </main>
             </div>
         </div>
     );

@@ -1,22 +1,74 @@
+@font-face {
+  font-family: "Mulish";
+  src: url("../assets/fonts/mulish/Mulish-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mulish";
+  src: url("../assets/fonts/mulish/Mulish-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mulish";
+  src: url("../assets/fonts/mulish/Mulish-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mulish";
+  src: url("../assets/fonts/mulish/Mulish-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mulish";
+  src: url("../assets/fonts/mulish/Mulish-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Now import Tailwind */
 @import "tailwindcss";
 
-body{
-  font-family: 'Poppins', sans-serif;
+/* Override Tailwind's base styles */
+@layer base {
+  html {
+    font-family: "Mulish", sans-serif;
+  }
+}
+
+body {
+  font-family: "Mulish", sans-serif !important;
   padding: 0;
   margin: 0;
-  box-sizing: border-box
+  box-sizing: border-box;
 }
-
 
 @theme {
-  --color-textColor: #0C406C;
-  --color-primary: #00A2E3;
-  --color-secondary: #141E8C;
-  --color-orange:#E38217;
-  
+  --color-textColor: #0c406c;
+  --color-primary: #00a2e3;
+  --color-secondary: #141e8c;
+  --color-orange: #e38217;
+  --color-yellow: #ffd944;
+  --color-green: #69c137;
+  --color-red: #e3173f;
 }
-
 
 .phone-input-container .PhoneInputInput {
   @apply w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400;
 }
+
+/* * {
+  font-family: "Mulish", sans-serif !important;
+} */

@@ -276,7 +276,7 @@ const SchoolManagement: React.FC = () => {
 
     return (
         <AdminLayout>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-secondary">School List</h1>
                     <button
@@ -294,30 +294,30 @@ const SchoolManagement: React.FC = () => {
                             <colgroup>
                                 <col className="w-48" />
                                 <col className="w-64" />
-                                <col className="w-40" />
-                                <col className="w-72" />
+                                <col className="w-48" />
+                                <col className="w-80" />
                             </colgroup>
                             <thead>
                                 <tr className="bg-indigo-900 text-white">
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">School Name</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Email Address</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Phone Number</th>
-                                    <th className="px-4 py-4 text-left border-r-2 border-white font-semibold">Actions</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">School Name</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Email Address</th>
+                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Phone Number</th>
+                                    <th className="px-8 py-4 text-left font-semibold">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map((school, index) => (
                                     <tr key={school.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8  py-4 break-words">
                                             <div className="font-medium text-gray-900">{school.name}</div>
                                         </td>
-                                        <td className="px-4 py-4 break-words">
+                                        <td className="px-8  py-4 break-words">
                                             <div className="text-gray-700">{school.email}</div>
                                         </td>
-                                        <td className="px-4 py-4">
+                                        <td className="px-8  py-4">
                                             <div className="text-gray-700">{school.phone}</div>
                                         </td>
-                                        <td className="px-4 py-4">
+                                        <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
                                                     onClick={() => openViewSchoolModal(school)}

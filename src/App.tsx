@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import AdminDashboard from "./pages/admin/home-page";
@@ -16,9 +15,9 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            padding: '16px',
-            color: 'white',
-            backgroundColor: '#141E8C'
+            padding: "16px",
+            color: "white",
+            backgroundColor: "#141E8C",
           },
         }}
       />
@@ -26,7 +25,10 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/school-management" element={<SchoolManagement />} />
-        <Route path="/admin/teacher-management" element={<TeacherManagement />} />
+        <Route
+          path="/admin/teacher-management"
+          element={<TeacherManagement />}
+        />
         <Route path="/admin/report" element={<Report />} />
         <Route path="/teacher" element={<TeacherDashboard />} />
       </Routes>

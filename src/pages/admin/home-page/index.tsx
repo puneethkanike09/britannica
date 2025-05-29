@@ -9,7 +9,7 @@ import DownloadsIcon from '../../../assets/dashboard/Admin/home-page/downloads.s
 const AdminDashboard: React.FC = () => {
     return (
         <AdminLayout>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-8">
+            <div className="max-w-full rounded-lg sm:p-10 bg-white mx-auto ">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-secondary mb-2">
                     Welcome to the Britannica Education
                 </h1>
@@ -24,7 +24,7 @@ const AdminDashboard: React.FC = () => {
                             alt="Teachers"
                             className="absolute top-4 sm:top-6 right-4 sm:right-6 h-10 w-10 sm:h-12 sm:w-12 lg:h-12 lg:w-12"
                         />
-                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#8bc34a] mb-2">50</div>
+                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-green mb-2">50</div>
                         <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Teachers</div>
                     </div>
 
@@ -34,7 +34,7 @@ const AdminDashboard: React.FC = () => {
                             alt="Logins"
                             className="absolute top-4 sm:top-6 right-4 sm:right-6 h-11 w-11 sm:h-13 sm:w-13 lg:h-13 lg:w-13"
                         />
-                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#ffc107] mb-2">10</div>
+                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-yellow mb-2">10</div>
                         <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Logins</div>
                     </div>
 
@@ -44,7 +44,7 @@ const AdminDashboard: React.FC = () => {
                             alt="Downloads"
                             className="absolute top-4 sm:top-6 right-4 sm:right-6 h-10 w-10 sm:h-12 sm:w-12 lg:h-12 lg:w-12"
                         />
-                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#ff9800] mb-2">6</div>
+                        <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-orange mb-2">6</div>
                         <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Downloads</div>
                     </div>
                 </div>
