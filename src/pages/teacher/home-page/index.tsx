@@ -1,6 +1,5 @@
 // src/pages/TeacherDashboard.tsx
 import { useEffect, useState } from 'react';
-import TeacherLayout from '../TeacherLayout';
 import BackgroundImage from '../../../assets/dashboard/Teacher/home-page/kids.png';
 import { LogOut } from 'lucide-react';
 import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
@@ -283,7 +282,7 @@ const TeacherDashboard = () => {
     };
 
     return (
-        <TeacherLayout>
+        <>
             <header className="fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16 sm:h-[81px] bg-[#EEFAFF] z-[20]">
                 <Link to="/">
                     <div className="flex items-center gap-3">
@@ -373,7 +372,7 @@ const TeacherDashboard = () => {
                 )}
             </div>
             {showLogoutModal && <LogoutModal onClose={closeLogoutModal} />}
-        </TeacherLayout>
+        </>
     );
 };
 

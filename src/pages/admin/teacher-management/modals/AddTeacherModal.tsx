@@ -254,7 +254,7 @@ export default function AddTeacherModal({ onClose }: AddTeacherModalProps) {
                                 disabled={isSubmitting}
                             >
                                 <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
-                                <span className="hidden md:inline">Add Teacher</span>
+                                <span className="hidden md:inline font-bold">Add Teacher</span>
                             </button>
                         </div>
                     </form>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import AdminLayout from '../AdminLayout';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import AddTeacherModal from './modals/AddTeacherModal';
 import EditTeacherModal from './modals/EditTeacherModal';
@@ -228,139 +227,137 @@ const TeacherManagement: React.FC = () => {
     };
 
     return (
-        <AdminLayout>
-            <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-secondary">Teacher List</h1>
-                    <button
-                        onClick={openAddTeacherModal}
-                        className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
-                    >
-                        <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
-                        <span className="hidden md:inline">Add Teacher</span>
-                    </button>
+        <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-secondary">Teacher List</h1>
+                <button
+                    onClick={openAddTeacherModal}
+                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                >
+                    <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
+                    <span className="hidden md:inline font-bold">Add Teacher</span>
+                </button>
+            </div>
+
+            <div className="flex flex-col">
+                <div className="overflow-x-auto w-full rounded-lg">
+                    <table className="w-full table-fixed min-w-[800px]">
+                        <colgroup><col className="w-48" /><col className="w-48" /><col className="w-64" /><col className="w-48" /><col className="w-80" /></colgroup>
+                        <thead>
+                            <tr className="bg-indigo-900 text-white">
+                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Teacher Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">School Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Email Address</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Phone Number</th>
+                                <th className="px-8 py-4 text-left font-black">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentItems.map((teacher, index) => {
+                                // Find school name or display 'Not assigned'
+                                const schoolName = teacher.schoolId
+                                    ? schools.find((school) => school.id === teacher.schoolId)?.name || "Not assigned"
+                                    : "Not assigned";
+
+                                return (
+                                    <tr key={teacher.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                        <td className="px-8 py-4 break-words">
+                                            <div className="text-textColor">
+                                                {`${teacher.firstName} ${teacher.lastName}`}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4 break-words">
+                                            <div className="text-textColor">
+                                                {schoolName}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4 break-words">
+                                            <div className="text-textColor">
+                                                {teacher.email}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4">
+                                            <div className="text-textColor">
+                                                {teacher.phone}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4">
+                                            <div className="flex flex-nowrap gap-2">
+                                                <button
+                                                    onClick={() => openViewTeacherModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                >
+                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                    <span className="hidden md:inline">View</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditTeacherModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                >
+                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                    <span className="hidden md:inline">Edit</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteTeacherModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                >
+                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                    <span className="hidden md:inline">Delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
 
-                <div className="flex flex-col">
-                    <div className="overflow-x-auto w-full rounded-lg">
-                        <table className="w-full table-fixed min-w-[800px]">
-                            <colgroup><col className="w-48" /><col className="w-48" /><col className="w-64" /><col className="w-48" /><col className="w-80" /></colgroup>
-                            <thead>
-                                <tr className="bg-indigo-900 text-white">
-                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Teacher Name</th>
-                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">School Name</th>
-                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Email Address</th>
-                                    <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-semibold">Phone Number</th>
-                                    <th className="px-8 py-4 text-left font-semibold">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentItems.map((teacher, index) => {
-                                    // Find school name or display 'Not assigned'
-                                    const schoolName = teacher.schoolId
-                                        ? schools.find((school) => school.id === teacher.schoolId)?.name || "Not assigned"
-                                        : "Not assigned";
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center mt-6 w-full">
+                        <nav className="flex items-center space-x-1">
+                            <button
+                                onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </button>
 
-                                    return (
-                                        <tr key={teacher.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                            <td className="px-8 py-4 break-words">
-                                                <div className="font-medium text-gray-900">
-                                                    {`${teacher.firstName} ${teacher.lastName}`}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4 break-words">
-                                                <div className="text-gray-700">
-                                                    {schoolName}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4 break-words">
-                                                <div className="text-gray-700">
-                                                    {teacher.email}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4">
-                                                <div className="text-gray-700">
-                                                    {teacher.phone}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4">
-                                                <div className="flex flex-nowrap gap-2">
-                                                    <button
-                                                        onClick={() => openViewTeacherModal(teacher)}
-                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                    >
-                                                        <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                        <span className="hidden md:inline">View</span>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openEditTeacherModal(teacher)}
-                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                    >
-                                                        <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                        <span className="hidden md:inline">Edit</span>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openDeleteTeacherModal(teacher)}
-                                                        className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
-                                                    >
-                                                        <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                        <span className="hidden md:inline">Delete</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                            {getPageNumbers().map((number, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => typeof number === 'number' && paginate(number)}
+                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-secondary hover:bg-third' : 'text-gray-500'}`}
+                                    disabled={typeof number !== 'number'}
+                                >
+                                    {number}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </button>
+                        </nav>
                     </div>
-
-                    {totalPages > 1 && (
-                        <div className="flex justify-center items-center mt-6 w-full">
-                            <nav className="flex items-center space-x-1">
-                                <button
-                                    onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-[#f0f9ff]'}`}
-                                >
-                                    <ChevronLeft className="h-5 w-5" />
-                                </button>
-
-                                {getPageNumbers().map((number, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => typeof number === 'number' && paginate(number)}
-                                        className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-secondary hover:bg-[#f0f9ff]' : 'text-gray-500'}`}
-                                        disabled={typeof number !== 'number'}
-                                    >
-                                        {number}
-                                    </button>
-                                ))}
-
-                                <button
-                                    onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-[#f0f9ff]'}`}
-                                >
-                                    <ChevronRight className="h-5 w-5" />
-                                </button>
-                            </nav>
-                        </div>
-                    )}
-                </div>
-
-                {showAddModal && <AddTeacherModal onClose={closeAddTeacherModal} />}
-                {showEditModal && selectedTeacher && (
-                    <EditTeacherModal onClose={closeEditTeacherModal} teacher={selectedTeacher} />
-                )}
-                {showViewModal && selectedTeacher && (
-                    <ViewTeacherModal onClose={closeViewTeacherModal} teacher={selectedTeacher} />
-                )}
-                {showDeleteModal && selectedTeacher && (
-                    <DeleteTeacherModal onClose={closeDeleteTeacherModal} teacher={selectedTeacher} />
                 )}
             </div>
-        </AdminLayout>
+
+            {showAddModal && <AddTeacherModal onClose={closeAddTeacherModal} />}
+            {showEditModal && selectedTeacher && (
+                <EditTeacherModal onClose={closeEditTeacherModal} teacher={selectedTeacher} />
+            )}
+            {showViewModal && selectedTeacher && (
+                <ViewTeacherModal onClose={closeViewTeacherModal} teacher={selectedTeacher} />
+            )}
+            {showDeleteModal && selectedTeacher && (
+                <DeleteTeacherModal onClose={closeDeleteTeacherModal} teacher={selectedTeacher} />
+            )}
+        </div>
     );
 };
 

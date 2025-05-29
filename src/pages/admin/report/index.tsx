@@ -1,4 +1,3 @@
-import AdminLayout from '../AdminLayout';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState } from 'react';
@@ -139,123 +138,121 @@ export default function Report() {
     };
 
     return (
-        <AdminLayout>
-            <div className="max-w-full  mx-auto rounded-lg sm:p-10 bg-white">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-secondary">Report</h1>
+        <div className="max-w-full  mx-auto rounded-lg sm:p-10 bg-white">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-secondary">Report</h1>
 
-                    <button
-                        onClick={handleDownload}
-                        disabled={isDownloading}
-                        className={`bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                        <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
-                        <span className="hidden md:inline">Download</span>
-                    </button>
-                </div>
+                <button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className={`bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                    <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
+                    <span className="hidden md:inline font-bold">Download</span>
+                </button>
+            </div>
 
-                {/* Date Range Selectors */}
-                <div className="flex flex-col lg:flex-row gap-4 mb-6">
-                    <div className="relative w-full sm:w-auto">
-                        <DatePicker
-                            selected={fromDate}
-                            onChange={(date: Date | null) => setFromDate(date)}
-                            placeholderText="From Date"
-                            dateFormat="MM/dd/yyyy"
-                            className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
-                        />
-                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <CalendarIcon />
-                        </div>
-                    </div>
-
-                    <div className="relative w-full sm:w-auto">
-                        <DatePicker
-                            selected={toDate}
-                            onChange={(date: Date | null) => setToDate(date)}
-                            placeholderText="To Date"
-                            dateFormat="MM/dd/yyyy"
-                            className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
-                        />
-                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <CalendarIcon />
-                        </div>
+            {/* Date Range Selectors */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-6">
+                <div className="relative w-full sm:w-auto">
+                    <DatePicker
+                        selected={fromDate}
+                        onChange={(date: Date | null) => setFromDate(date)}
+                        placeholderText="From Date"
+                        dateFormat="MM/dd/yyyy"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                    />
+                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <CalendarIcon />
                     </div>
                 </div>
 
-                <div className="flex flex-col">
-                    <div className="overflow-x-auto w-full rounded-lg">
-                        <table className="w-full table-fixed min-w-[800px]">
-                            <colgroup>
-                                <col className="w-48" />
-                                <col className="w-48" />
-                                <col className="w-64" />
-                                <col className="w-48" />
-                            </colgroup>
-                            <thead>
-                                <tr className="bg-indigo-900 text-white">
-                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Date</th>
-                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Time</th>
-                                    <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-semibold">Activity</th>
-                                    <th className="px-8 py-4  text-left font-semibold">Users</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentItems.map((log, index) => (
-                                    <tr key={log.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-8 py-4 break-words">
-                                            <div className="text-gray-700">{log.date}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-words">
-                                            <div className="text-gray-700">{log.time}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-words">
-                                            <div className="text-gray-700">{log.activity}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-words">
-                                            <div className="text-gray-700">{log.user}</div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                <div className="relative w-full sm:w-auto">
+                    <DatePicker
+                        selected={toDate}
+                        onChange={(date: Date | null) => setToDate(date)}
+                        placeholderText="To Date"
+                        dateFormat="MM/dd/yyyy"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                    />
+                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <CalendarIcon />
                     </div>
-
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="flex justify-center items-center mt-6 w-full">
-                            <nav className="flex items-center space-x-1">
-                                <button
-                                    onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-[#f0f9ff]'}`}
-                                >
-                                    <ChevronLeft className="h-5 w-5" />
-                                </button>
-
-                                {getPageNumbers().map((number, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => typeof number === 'number' && paginate(number)}
-                                        className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-secondary hover:bg-[#f0f9ff]' : 'text-gray-500'}`}
-                                        disabled={typeof number !== 'number'}
-                                    >
-                                        {number}
-                                    </button>
-                                ))}
-
-                                <button
-                                    onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-[#f0f9ff]'}`}
-                                >
-                                    <ChevronRight className="h-5 w-5" />
-                                </button>
-                            </nav>
-                        </div>
-                    )}
                 </div>
             </div>
-        </AdminLayout>
+
+            <div className="flex flex-col">
+                <div className="overflow-x-auto w-full rounded-lg">
+                    <table className="w-full table-fixed min-w-[800px]">
+                        <colgroup>
+                            <col className="w-48" />
+                            <col className="w-48" />
+                            <col className="w-64" />
+                            <col className="w-48" />
+                        </colgroup>
+                        <thead>
+                            <tr className="bg-indigo-900 text-white">
+                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">Date</th>
+                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">Time</th>
+                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">Activity</th>
+                                <th className="px-8 py-4  text-left font-black">Users</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentItems.map((log, index) => (
+                                <tr key={log.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                    <td className="px-8 py-4 break-words">
+                                        <div className="text-textColor">{log.date}</div>
+                                    </td>
+                                    <td className="px-8 py-4 break-words">
+                                        <div className="text-textColor">{log.time}</div>
+                                    </td>
+                                    <td className="px-8 py-4 break-words">
+                                        <div className="text-textColor">{log.activity}</div>
+                                    </td>
+                                    <td className="px-8 py-4 break-words">
+                                        <div className="text-textColor">{log.user}</div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center mt-6 w-full">
+                        <nav className="flex items-center space-x-1">
+                            <button
+                                onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </button>
+
+                            {getPageNumbers().map((number, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => typeof number === 'number' && paginate(number)}
+                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-secondary hover:bg-third' : 'text-gray-500'}`}
+                                    disabled={typeof number !== 'number'}
+                                >
+                                    {number}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </button>
+                        </nav>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

@@ -1,15 +1,13 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-interface TeacherLayoutProps {
-    children: ReactNode;
-    showBackButton?: boolean;
-    onBack?: () => void;
-}
-
-const TeacherLayout: React.FC<TeacherLayoutProps> = ({ children }) => {
+const TeacherLayout: React.FC = () => {
     return (
         <div className="min-h-screen w-full bg-white">
-            <main className="">{children}</main>
+            <main className="">
+                {/* This renders the matched child route */}
+                <Outlet />
+            </main>
         </div>
     );
 };

@@ -77,7 +77,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                         </button>
                         <button
                             onClick={handleLogout}
-                            className={`px-6 py-2 rounded-lg bg-primary text-white hover:bg-primary/80 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            className={`px-6 py-2 rounded-lg bg-red text-white hover:bg-red/80 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                             disabled={isLoggingOut}
                         >
                             Yes, Logout

@@ -110,10 +110,6 @@ const Login = () => {
 
   return (
     <div className="grid min-h-screen w-full font-sans grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
-      {/* <h1 className="font-mulish font-black">This is black weight (900)</h1>
-      <p className="font-mulish font-medium">This is medium weight (500)</p>
-      <p className="font-mulish italic font-bold">This is italic text</p>
-      <span className="font-mulish font-bold italic">This is bold italic</span> */}
       {/* Left side - Login Form */}
       <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
         <div className="max-w-lg w-full">

@@ -1,12 +1,9 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar';
 import Topbar from './components/layout/topbar';
 
-interface AdminLayoutProps {
-    children: ReactNode;
-}
-
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+const AdminLayout: React.FC = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
         // Initialize from localStorage, default to false if not set
@@ -47,7 +44,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     isSidebarCollapsed={isSidebarCollapsed}
                 />
                 <main className="p-6 flex-1 sm:bg-gray-100 overflow-x-auto w-full mt-[81px]">
-                    {children}
+                    {/* This renders the matched child route */}
+                    <Outlet />
                 </main>
             </div>
         </div>

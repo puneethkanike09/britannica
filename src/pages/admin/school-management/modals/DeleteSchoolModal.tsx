@@ -72,7 +72,7 @@ export default function DeleteSchoolModal({ onClose, school }: DeleteSchoolModal
                 {/* Content */}
                 <div className="px-8 py-6">
                     <p className="text-gray-700 mb-6">
-                        Are you sure you want to delete school <span className="font-medium text-gray-900">{school.name}</span>?
+                        Are you sure you want to delete school <span className="font-bold text-gray-900">{school.name}</span>?
                         This action cannot be undone.
                     </p>
 

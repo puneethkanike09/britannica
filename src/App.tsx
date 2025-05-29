@@ -6,6 +6,8 @@ import TeacherManagement from "./pages/admin/teacher-management";
 import Report from "./pages/admin/report";
 import TeacherDashboard from "./pages/teacher/home-page";
 import { Toaster } from "react-hot-toast";
+import AdminLayout from "./pages/admin/AdminLayout";
+import TeacherLayout from "./pages/teacher/TeacherLayout";
 
 function App() {
   return (
@@ -22,15 +24,22 @@ function App() {
         }}
       />
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Login />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/school-management" element={<SchoolManagement />} />
-        <Route
-          path="/admin/teacher-management"
-          element={<TeacherManagement />}
-        />
-        <Route path="/admin/report" element={<Report />} />
-        <Route path="/teacher" element={<TeacherDashboard />} />
+
+        {/* Admin routes with persistent layout */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="school-management" element={<SchoolManagement />} />
+          <Route path="teacher-management" element={<TeacherManagement />} />
+          <Route path="report" element={<Report />} />
+        </Route>
+
+        {/* Teacher routes with persistent layout */}
+        <Route path="/teacher" element={<TeacherLayout />}>
+          <Route index element={<TeacherDashboard />} />
+
+        </Route>
       </Routes>
     </BrowserRouter>
   );
