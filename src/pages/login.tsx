@@ -12,11 +12,13 @@ const Login = () => {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     email: "",
     password: "",
+  });
+  const [forgotPasswordErrors, setForgotPasswordErrors] = useState({
+    email: "",
   });
 
   const validateForm = () => {
@@ -37,6 +39,20 @@ const Login = () => {
     return isValid;
   };
 
+  const validateForgotPasswordForm = () => {
+    const newErrors = { email: "" };
+    let isValid = true;
+    if (!forgotPasswordEmail.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotPasswordEmail)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+    setForgotPasswordErrors(newErrors);
+    return isValid;
+  };
+
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -50,7 +66,7 @@ const Login = () => {
           } else {
             reject(new Error("Please enter email and password"));
           }
-        }, 2000); // Simulate 2-second API call
+        }, 2000);
       }),
       {
         loading: "Logging in...",
@@ -96,12 +112,36 @@ const Login = () => {
   };
 
   const handleForgotPasswordSubmit = () => {
-    console.log("Password reset requested for:", forgotPasswordEmail);
-    setShowForgotPasswordModal(false);
-    setShowSuccessModal(true);
+    if (!validateForgotPasswordForm()) return;
+    setIsSubmitting(true);
+    toast.promise(
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (forgotPasswordEmail) {
+            resolve("Password reset email sent!");
+            setShowForgotPasswordModal(false);
+            setShowSuccessModal(true);
+          } else {
+            reject(new Error("Failed to send password reset email"));
+          }
+        }, 2000); // Simulate 2-second API call
+      }),
+      {
+        loading: "Sending reset link...",
+        success: () => {
+          setIsSubmitting(false);
+          return "Password reset link sent successfully!";
+        },
+        error: (err) => {
+          setIsSubmitting(false);
+          return `Error: ${err.message}`;
+        },
+      }
+    );
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isSubmitting) return;
     if (e.target === e.currentTarget) {
       setShowForgotPasswordModal(false);
       setShowSuccessModal(false);
@@ -139,7 +179,8 @@ const Login = () => {
                     setErrors((prev) => ({ ...prev, email: "" }));
                 }}
                 className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
+                  } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -164,7 +205,8 @@ const Login = () => {
                     setErrors((prev) => ({ ...prev, password: "" }));
                 }}
                 className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.password ? "border-red-500" : "border-gray-300"
-                  }`}
+                  } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                disabled={isSubmitting}
               />
               <button
                 type="button"
@@ -183,6 +225,7 @@ const Login = () => {
                 type="button"
                 onClick={() => setShowForgotPasswordModal(true)}
                 className="text-secondary hover:underline cursor-pointer"
+                disabled={isSubmitting}
               >
                 Forgot Password?
               </button>
@@ -200,7 +243,8 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleTeacherLogin}
-                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
               >
                 Teacher Login
               </button>
@@ -222,20 +266,22 @@ const Login = () => {
           onClick={handleBackdropClick}
         >
           <div className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
-            <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
+            <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
               <h2 className="text-3xl font-bold text-textColor">
                 Forgot Password
               </h2>
               <button
                 onClick={() => setShowForgotPasswordModal(false)}
-                className="text-textColor hover:text-textColor/90 cursor-pointer"
+                className={`text-textColor hover:text-textColor/90 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                  }`}
+                disabled={isSubmitting}
               >
                 <X className="h-7 w-7" />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-8 py-6">
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div>
                   <label className="block text-textColor mb-2">
                     Email address<span className="text-red-500">*</span>
@@ -243,17 +289,30 @@ const Login = () => {
                   <input
                     type="email"
                     value={forgotPasswordEmail}
-                    onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                    onChange={(e) => {
+                      setForgotPasswordEmail(e.target.value);
+                      if (forgotPasswordErrors.email)
+                        setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
+                    }}
+                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${forgotPasswordErrors.email ? "border-red-500" : "border-gray-300"
+                      } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                     placeholder="Enter your registered email"
+                    disabled={isSubmitting}
                   />
+                  {forgotPasswordErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {forgotPasswordErrors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="mt-8">
                   <button
                     type="button"
                     onClick={handleForgotPasswordSubmit}
-                    className="bg-primary text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                    className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/80 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                      }`}
+                    disabled={isSubmitting}
                   >
                     Submit
                   </button>
