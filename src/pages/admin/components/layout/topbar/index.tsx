@@ -16,7 +16,7 @@ const Topbar: React.FC<TopbarProps> = ({ onOpenLogoutModal, isSidebarCollapsed =
             <div className="hidden md:block"></div>
             <button
                 onClick={onOpenLogoutModal}
-                className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
             >
                 <LogOut className='font-black' size={18} />
                 <span className="hidden md:inline font-bold">Log out</span>

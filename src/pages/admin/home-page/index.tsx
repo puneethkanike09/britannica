@@ -23,7 +23,7 @@ const AdminDashboard: React.FC = () => {
                         className="absolute top-4 sm:top-6 right-4 sm:right-6 h-10 w-10 sm:h-12 sm:w-12 lg:h-12 lg:w-12"
                     />
                     <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-green mb-2">50</div>
-                    <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Teachers</div>
+                    <div className="text-textColor font-semibold text-base sm:text-lg">Total Teachers</div>
                 </div>
 
                 <div className="bg-third p-4 sm:p-10 rounded-lg relative min-h-[150px]">
@@ -33,7 +33,7 @@ const AdminDashboard: React.FC = () => {
                         className="absolute top-4 sm:top-6 right-4 sm:right-6 h-11 w-11 sm:h-13 sm:w-13 lg:h-13 lg:w-13"
                     />
                     <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-yellow mb-2">10</div>
-                    <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Logins</div>
+                    <div className="text-textColor font-semibold text-base sm:text-lg">Total Logins</div>
                 </div>
 
                 <div className="bg-third p-4 sm:p-10 rounded-lg relative min-h-[150px]">
@@ -43,7 +43,7 @@ const AdminDashboard: React.FC = () => {
                         className="absolute top-4 sm:top-6 right-4 sm:right-6 h-10 w-10 sm:h-12 sm:w-12 lg:h-12 lg:w-12"
                     />
                     <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-orange mb-2">6</div>
-                    <div className="text-secondary font-semibold text-base sm:text-lg">Total No. of Downloads</div>
+                    <div className="text-textColor font-semibold text-base sm:text-lg">Total Downloads</div>
                 </div>
             </div>
         </div>

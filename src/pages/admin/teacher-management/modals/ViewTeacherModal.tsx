@@ -1,27 +1,13 @@
 import { X } from "lucide-react";
+import { School, ViewTeacherModalProps } from "../../../../types/admin";
 
 // Mock schools data (same as in EditTeacherModal)
-const schools = [
+const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 1, name: "Britanica School" },
     { id: 2, name: "St. Mary's School" },
     { id: 3, name: "Delhi Public School" },
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
-
-interface Teacher {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    loginId: string;
-    schoolId?: number; // Optional schoolId to link to a school
-}
-
-interface ViewTeacherModalProps {
-    onClose: () => void;
-    teacher: Teacher;
-}
 
 export default function ViewTeacherModal({ onClose, teacher }: ViewTeacherModalProps) {
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -42,11 +28,11 @@ export default function ViewTeacherModal({ onClose, teacher }: ViewTeacherModalP
         >
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Teacher Details</h2>
                     <button
                         onClick={onClose}
-                        className="text-textColor hover:text-textColor/90 cursor-pointer"
+                        className="text-textColor hover:text-hover cursor-pointer"
                     >
                         <X className="h-7 w-7" />
                     </button>

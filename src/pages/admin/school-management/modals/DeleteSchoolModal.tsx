@@ -1,21 +1,10 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { SchoolActionModalProps } from "../../../../types/admin";
 
-interface School {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    address?: string;
-}
 
-interface DeleteSchoolModalProps {
-    onClose: () => void;
-    school: School;
-}
-
-export default function DeleteSchoolModal({ onClose, school }: DeleteSchoolModalProps) {
+export default function DeleteSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -58,11 +47,11 @@ export default function DeleteSchoolModal({ onClose, school }: DeleteSchoolModal
         >
             <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Delete School</h2>
                     <button
                         onClick={onClose}
-                        className={`text-textColor hover:text-textColor/90 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         disabled={isDeleting}
                     >
                         <X className="h-7 w-7" />

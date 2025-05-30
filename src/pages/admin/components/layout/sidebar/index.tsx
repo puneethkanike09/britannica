@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -62,16 +62,12 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
         onToggleCollapse();
     };
 
-    const isActive = (path: string) => {
-        return location.pathname === path;
-    };
-
     return (
         <>
             {/* Hamburger Menu Button */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-[20px] left-[12px] z-50 bg-transparent text-primary p-3 rounded-lg focus:outline-none transition-all duration-300 ease-in-out hover:bg-gray-200 active:scale-95"
+                    className="md:hidden fixed top-[20px] left-[12px] z-50 bg-transparent text-primary p-3 rounded-lg focus:outline-none transition-all duration-300 ease-in-out hover:bg-hover active:scale-95"
                     onClick={openSidebar}
                     aria-label="Open menu"
                 >
@@ -96,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
                 <div className={`${isCollapsed && !isMobile ? 'px-4 justify-center' : 'pl-8 pr-4 justify-between'} py-10 border-b border-stone-300/50 h-[81px] flex items-center transition-all duration-300`}>
                     {/* Logo - only show when not collapsed or on mobile */}
                     {(!isCollapsed || isMobile) && (
-                        <Link to="/" onClick={closeSidebar}>
+                        <NavLink to="/" onClick={closeSidebar}>
                             <div className="flex items-center">
                                 <img
                                     src={LogoIcon}
@@ -104,13 +100,13 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
                                     className="h-[40px] object-cover transition-all duration-300"
                                 />
                             </div>
-                        </Link>
+                        </NavLink>
                     )}
 
                     {/* Desktop Collapse Button */}
                     {!isMobile && (
                         <button
-                            className="text-white p-2 rounded-lg hover:bg-[#0090d0] focus:outline-none transition-colors duration-200"
+                            className="text-white p-2 rounded-lg hover:bg-hover focus:outline-none   duration-200"
                             onClick={toggleCollapse}
                             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                         >
@@ -125,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
                     {/* Mobile Close Button */}
                     {isMobile && (
                         <button
-                            className="md:hidden text-white p-2 rounded-lg hover:bg-[#0090d0] focus:outline-none"
+                            className="md:hidden text-white p-2 rounded-lg hover:bg-hover focus:outline-none"
                             onClick={closeSidebar}
                             aria-label="Close menu"
                         >
@@ -135,61 +131,74 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
                 </div>
 
                 <nav className={`flex flex-col ${isCollapsed && !isMobile ? 'p-4' : 'p-8'} space-y-2 pt-10 transition-all duration-300`}>
-                    <Link
+                    <NavLink
                         to="/admin"
-                        className={`flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg ${isActive("/admin") ? "bg-secondary font-bold text-white" : "hover:bg-[#0090d0]"} transition-all duration-200`}
+                        end // Ensure exact matching for the /admin route
+                        className={({ isActive }) =>
+                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                            }`
+                        }
                         onClick={closeSidebar}
                         title={isCollapsed && !isMobile ? "Home" : ""}
                     >
                         <img
                             src={HomeIcon}
                             alt="Home"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${isActive("/admin") ? 'scale-110' : ''}`}
+                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin" ? 'scale-110' : ''}`}
                         />
                         {(!isCollapsed || isMobile) && <span className="text-lg">Home</span>}
-                    </Link>
+                    </NavLink>
 
-                    <Link
+                    <NavLink
                         to="/admin/school-management"
-                        className={`flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg ${isActive("/admin/school-management") ? "bg-secondary font-bold text-white" : "hover:bg-[#0090d0]"} transition-all duration-200`}
+                        className={({ isActive }) =>
+                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                            }`
+                        }
                         onClick={closeSidebar}
                         title={isCollapsed && !isMobile ? "School Management" : ""}
                     >
                         <img
                             src={SchoolIcon}
                             alt="School Management"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${isActive("/admin/school-management") ? 'scale-110' : ''}`}
+                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/school-management" ? 'scale-110' : ''}`}
                         />
                         {(!isCollapsed || isMobile) && <span className="text-lg">School Management</span>}
-                    </Link>
+                    </NavLink>
 
-                    <Link
+                    <NavLink
                         to="/admin/teacher-management"
-                        className={`flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg ${isActive("/admin/teacher-management") ? "bg-secondary font-bold text-white" : "hover:bg-[#0090d0]"} transition-all duration-200`}
+                        className={({ isActive }) =>
+                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                            }`
+                        }
                         onClick={closeSidebar}
                         title={isCollapsed && !isMobile ? "Teacher Management" : ""}
                     >
                         <img
                             src={TeacherIcon}
                             alt="Teacher Management"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${isActive("/admin/teacher-management") ? 'scale-110' : ''}`}
+                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/teacher-management" ? 'scale-110' : ''}`}
                         />
                         {(!isCollapsed || isMobile) && <span className="text-lg">Teacher Management</span>}
-                    </Link>
+                    </NavLink>
 
-                    <Link
+                    <NavLink
                         to="/admin/report"
-                        className={`flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg ${isActive("/admin/report") ? "bg-secondary font-bold text-white" : "hover:bg-[#0090d0]"} transition-all duration-200`}
+                        className={({ isActive }) =>
+                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                            }`
+                        }
                         onClick={closeSidebar}
                         title={isCollapsed && !isMobile ? "Report" : ""}
                     >
                         <img
                             src={ReportIcon}
                             alt="Report"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${isActive("/admin/report") ? 'scale-110' : ''}`}
+                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/report" ? 'scale-110' : ''}`}
                         />
                         {(!isCollapsed || isMobile) && <span className="text-lg">Report</span>}
-                    </Link>
+                    </NavLink>
                 </nav>
             </div>
 

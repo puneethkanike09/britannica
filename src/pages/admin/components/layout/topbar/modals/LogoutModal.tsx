@@ -54,7 +54,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                     <h2 className="text-3xl font-bold text-textColor">Logout</h2>
                     <button
                         onClick={onClose}
-                        className={`text-textColor hover:text-textColor/90 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`text-textColor hover:text-hover ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         disabled={isLoggingOut}
                     >
                         <X className="h-7 w-7" />
@@ -63,7 +63,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
 
                 {/* Content */}
                 <div className="px-8 py-6">
-                    <p className="text-gray-700 mb-6">
+                    <p className="text-textColor mb-6">
                         Are you sure you want to logout?
                     </p>
 

@@ -44,7 +44,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDown
         <div className="w-full max-w-xs rounded-lg bg-white group">
             <div className="relative pb-4 px-6 pt-6">
                 <div className="absolute top-[-2px] right-4">
-                    <span className="bg-red-500 text-white text-xs font-bold px-4 py-1">
+                    <span className="bg-red text-white text-xs font-bold px-4 py-1">
                         {type}
                     </span>
                 </div>
@@ -56,14 +56,14 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDown
                 <div className="flex gap-3">
                     <button
                         onClick={onView}
-                        className="flex-1 bg-primary hover:bg-primary/80 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                        className="flex-1 bg-primary  hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
                     >
                         <img src={ViewIcon} alt="View Icon" className="h-4 w-4" />
                         View
                     </button>
                     <button
                         onClick={onDownload}
-                        className="flex-1 bg-primary hover:bg-primary/80 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                        className="flex-1 bg-primary  hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
                     >
                         <img src={DownloadIcon} alt="Download Icon" className="h-4 w-4" />
                         Download
@@ -231,7 +231,7 @@ const TeacherDashboard = () => {
             <div className="relative w-full sm:w-[250px] custom-select-dropdown">
                 <button
                     onClick={onToggle}
-                    className={`flex items-center justify-between px-4  text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg h-12 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${error ? 'border border-red-500' : ''} ${className}`}
+                    className={`flex items-center justify-between px-4  text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg h-12 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${error ? 'border border-red' : ''} ${className}`}
                     aria-label={`Select ${placeholder}`}
                     aria-expanded={isOpen}
                     role="combobox"
@@ -266,7 +266,7 @@ const TeacherDashboard = () => {
                         ))}
                     </div>
                 )}
-                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                {error && <p className="text-red text-sm mt-1">{error}</p>}
             </div>
         );
     };
@@ -291,10 +291,10 @@ const TeacherDashboard = () => {
                 </Link>
                 <button
                     onClick={openLogoutModal}
-                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    className="bg-primary  hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                 >
                     <LogOut size={18} />
-                    <span className="hidden md:inline">Log out</span>
+                    <span className="hidden md:inline font-bold">Log out</span>
                 </button>
             </header>
             <div className="min-h-screen relative overflow-hidden">
@@ -346,7 +346,7 @@ const TeacherDashboard = () => {
 
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary hover:bg-primary/80 text-white px-6 font-bold h-12 text-xl rounded-lg font-medium w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                className={`bg-primary  hover:bg-hover text-white px-6 font-bold h-12 text-xl rounded-lg font-medium w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
                                 Submit

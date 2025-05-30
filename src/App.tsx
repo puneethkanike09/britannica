@@ -8,6 +8,7 @@ import TeacherDashboard from "./pages/teacher/home-page";
 import { Toaster } from "react-hot-toast";
 import AdminLayout from "./pages/admin/AdminLayout";
 import TeacherLayout from "./pages/teacher/TeacherLayout";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -38,8 +39,10 @@ function App() {
         {/* Teacher routes with persistent layout */}
         <Route path="/teacher" element={<TeacherLayout />}>
           <Route index element={<TeacherDashboard />} />
-
         </Route>
+
+        {/* Catch-all route for 404 - Page Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

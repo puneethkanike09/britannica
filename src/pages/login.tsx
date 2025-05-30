@@ -166,7 +166,7 @@ const Login = () => {
                 htmlFor="email"
                 className="block text-textColor text-base mb-2"
               >
-                Email<span className="text-red-500">*</span>
+                Email<span className="text-red">*</span>
               </label>
               <input
                 type="email"
@@ -178,12 +178,12 @@ const Login = () => {
                   if (errors.email)
                     setErrors((prev) => ({ ...prev, email: "" }));
                 }}
-                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.email ? "border-red-500" : "border-gray-300"
+                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.email ? "border-red" : "border-placeholder"
                   } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isSubmitting}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="text-red text-sm mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -192,7 +192,7 @@ const Login = () => {
                 htmlFor="password"
                 className="block text-textColor text-base mb-2"
               >
-                Password<span className="text-red-500">*</span>
+                Password<span className="text-red">*</span>
               </label>
               <input
                 type={showPassword ? "text" : "password"}
@@ -204,7 +204,7 @@ const Login = () => {
                   if (errors.password)
                     setErrors((prev) => ({ ...prev, password: "" }));
                 }}
-                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.password ? "border-red-500" : "border-gray-300"
+                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.password ? "border-red" : "border-placeholder"
                   } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isSubmitting}
               />
@@ -216,7 +216,7 @@ const Login = () => {
                 {showPassword ? "Hide" : "Show"}
               </button>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                <p className="text-red text-sm mt-1">{errors.password}</p>
               )}
             </div>
 
@@ -235,7 +235,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleAdminLogin}
-                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary  hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 Admin Login
@@ -243,7 +243,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleTeacherLogin}
-                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary  hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 Teacher Login
@@ -272,7 +272,7 @@ const Login = () => {
               </h2>
               <button
                 onClick={() => setShowForgotPasswordModal(false)}
-                className={`text-textColor hover:text-textColor/90 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                   }`}
                 disabled={isSubmitting}
               >
@@ -284,7 +284,7 @@ const Login = () => {
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div>
                   <label className="block text-textColor mb-2">
-                    Email address<span className="text-red-500">*</span>
+                    Email address<span className="text-red">*</span>
                   </label>
                   <input
                     type="email"
@@ -294,13 +294,13 @@ const Login = () => {
                       if (forgotPasswordErrors.email)
                         setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${forgotPasswordErrors.email ? "border-red-500" : "border-gray-300"
+                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${forgotPasswordErrors.email ? "border-red" : "border-placeholder"
                       } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                     placeholder="Enter your registered email"
                     disabled={isSubmitting}
                   />
                   {forgotPasswordErrors.email && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red text-sm mt-1">
                       {forgotPasswordErrors.email}
                     </p>
                   )}
@@ -310,7 +310,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={handleForgotPasswordSubmit}
-                    className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/80 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                    className={`bg-primary text-white px-8 py-3 rounded-lg font-medium  hover:bg-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                       }`}
                     disabled={isSubmitting}
                   >
@@ -338,7 +338,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowSuccessModal(false)}
-                className="bg-primary text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
               >
                 Done
               </button>

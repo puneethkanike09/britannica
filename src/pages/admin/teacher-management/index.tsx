@@ -8,6 +8,7 @@ import EditIcon from '../../../assets/dashboard/Admin/teacher-management/edit.sv
 import DeleteIcon from '../../../assets/dashboard/Admin/teacher-management/delete.svg';
 import DeleteTeacherModal from './modals/DeleteTeacherModal';
 import AddTeacherIcon from '../../../assets/dashboard/Admin/teacher-management/add-teacher.svg';
+import { Teacher } from '../../../types/admin';
 
 // Mock schools data
 const schools = [
@@ -17,15 +18,7 @@ const schools = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-interface Teacher {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    loginId: string;
-    schoolId?: number; // Added schoolId to link to a school
-}
+
 
 // Mock data for teachers with schoolId
 const teachers: Teacher[] = [
@@ -232,7 +225,7 @@ const TeacherManagement: React.FC = () => {
                 <h1 className="text-3xl font-bold text-secondary">Teacher List</h1>
                 <button
                     onClick={openAddTeacherModal}
-                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    className="bg-primary  hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                 >
                     <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
                     <span className="hidden md:inline font-bold">Add Teacher</span>
@@ -242,7 +235,7 @@ const TeacherManagement: React.FC = () => {
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full table-fixed min-w-[800px]">
-                        <colgroup><col className="w-48" /><col className="w-48" /><col className="w-64" /><col className="w-48" /><col className="w-80" /></colgroup>
+                        <colgroup><col className="w-48" /><col className="w-48" /><col className="w-72" /><col className="w-48" /><col className="w-80" /></colgroup>
                         <thead>
                             <tr className="bg-indigo-900 text-white">
                                 <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Teacher Name</th>
@@ -285,24 +278,24 @@ const TeacherManagement: React.FC = () => {
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
                                                     onClick={() => openViewTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">View</span>
+                                                    <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
                                                     onClick={() => openEditTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">Edit</span>
+                                                    <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
                                                 <button
                                                     onClick={() => openDeleteTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                    <span className="hidden md:inline">Delete</span>
+                                                    <span className="hidden md:inline font-bold">Delete</span>
                                                 </button>
                                             </div>
                                         </td>

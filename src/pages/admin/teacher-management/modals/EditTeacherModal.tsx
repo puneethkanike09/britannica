@@ -3,45 +3,31 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState } from 'react';
 import toast from "react-hot-toast";
+import { EditTeacherModalProps, School, Teacher } from "../../../../types/admin";
 
-// Mock schools data (consistent with AddTeacherModal and ViewTeacherModal)
-const schools = [
+// Mock schools data (consistent with AddTeacherModal)
+const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 1, name: "Britanica School" },
     { id: 2, name: "St. Mary's School" },
     { id: 3, name: "Delhi Public School" },
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-interface Teacher {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    loginId: string;
-    schoolId?: number;
-}
-
-interface EditTeacherModalProps {
-    onClose: () => void;
-    teacher: Teacher;
-}
-
 export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalProps) {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<Omit<Teacher, 'id'>>({
         firstName: teacher.firstName || '',
         lastName: teacher.lastName || '',
         email: teacher.email || '',
-        phoneNumber: teacher.phone || '',
+        phone: teacher.phone || '',
         loginId: teacher.loginId || '',
-        school: teacher.schoolId ? String(teacher.schoolId) : '', // Convert schoolId to string for select
+        schoolId: teacher.schoolId,
     });
     const [errors, setErrors] = useState({
         firstName: '',
         email: '',
-        phoneNumber: '',
+        phone: '',
         loginId: '',
-        school: '',
+        schoolId: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,16 +40,19 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === 'schoolId' ? (value ? Number(value) : undefined) : value,
+        }));
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
     const handlePhoneNumberChange = (value: string | undefined) => {
-        setFormData(prev => ({ ...prev, phoneNumber: value || '' }));
-        if (errors.phoneNumber) {
-            setErrors(prev => ({ ...prev, phoneNumber: '' }));
+        setFormData(prev => ({ ...prev, phone: value || '' }));
+        if (errors.phone) {
+            setErrors(prev => ({ ...prev, phone: '' }));
         }
     };
 
@@ -71,9 +60,9 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
         const newErrors = {
             firstName: '',
             email: '',
-            phoneNumber: '',
+            phone: '',
             loginId: '',
-            school: '',
+            schoolId: '',
         };
         let isValid = true;
 
@@ -90,8 +79,8 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
             isValid = false;
         }
 
-        if (!formData.phoneNumber.trim()) {
-            newErrors.phoneNumber = 'Phone number is required';
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Phone number is required';
             isValid = false;
         }
 
@@ -100,8 +89,8 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
             isValid = false;
         }
 
-        if (!formData.school) {
-            newErrors.school = 'School is required';
+        if (formData.schoolId === undefined) {
+            newErrors.schoolId = 'School is required';
             isValid = false;
         }
 
@@ -115,9 +104,8 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
             toast.promise(
                 new Promise((resolve) => {
                     setTimeout(() => {
-                        // Simulate a successful API PUT call
                         resolve('Teacher updated successfully!');
-                    }, 2000); // Simulate 2-second API call
+                    }, 2000);
                 }),
                 {
                     loading: 'Updating teacher...',
@@ -142,11 +130,11 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
         >
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center  flex-shrink-0">
+                <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                     <h2 className="text-3xl font-bold text-textColor">Edit Teacher</h2>
                     <button
                         onClick={onClose}
-                        className={`text-textColor hover:text-textColor/90 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`text-textColor hover:text-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         disabled={isSubmitting}
                     >
                         <X className="h-7 w-7" />
@@ -157,22 +145,23 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
                 <div className="flex-1 overflow-y-auto px-8 py-6">
                     <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-textColor mb-2">
-                                    First Name<span className="text-red-500">*</span>
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
+                                    First Name<span className="text-red">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="firstName"
                                     value={formData.firstName}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.firstName ? 'border-red-500' : 'border-gray-300'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    placeholder="Enter First Name"
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.firstName ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
-                                {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
+                                {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
                             </div>
-                            <div>
-                                <label className="block text-textColor mb-2">
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
                                     Last Name
                                 </label>
                                 <input
@@ -180,67 +169,71 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
                                     name="lastName"
                                     value={formData.lastName}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    placeholder="Enter Last Name"
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-placeholder'}`}
                                     disabled={isSubmitting}
                                 />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-textColor mb-2">
-                                    Email address<span className="text-red-500">*</span>
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
+                                    Email Address<span className="text-red">*</span>
                                 </label>
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    placeholder="Enter Email Address"
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.email ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
-                                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                                {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
                             </div>
-                            <div>
-                                <label className="block text-textColor mb-2">
-                                    Phone Number<span className="text-red-500">*</span>
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
+                                    Phone Number<span className="text-red">*</span>
                                 </label>
                                 <PhoneInput
                                     international
                                     defaultCountry="IN"
-                                    value={formData.phoneNumber}
+                                    value={formData.phone}
                                     onChange={handlePhoneNumberChange}
-                                    className={`phone-input-container ${errors.phoneNumber ? 'border-red-500' : ''} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    placeholder="Enter Phone Number"
+                                    className={`phone-input-container ${errors.phone ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
-                                {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+                                {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-textColor mb-2">
-                                    Login ID<span className="text-red-500">*</span>
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
+                                    Login ID<span className="text-red">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="loginId"
                                     value={formData.loginId}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 ${errors.loginId ? 'border-red-500' : 'border-gray-300'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    placeholder="Enter Login ID"
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.loginId ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
-                                {errors.loginId && <p className="text-red-500 text-sm mt-1">{errors.loginId}</p>}
+                                {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
                             </div>
-                            <div>
-                                <label className="block text-textColor mb-2">
-                                    School<span className="text-red-500">*</span>
+                            <div className="mb-3 relative">
+                                <label className="block text-textColor text-base mb-2">
+                                    School<span className="text-red">*</span>
                                 </label>
                                 <select
-                                    name="school"
-                                    value={formData.school}
+                                    name="schoolId"
+                                    value={formData.schoolId ?? ''}
                                     onChange={handleInputChange}
-                                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-gray-400 appearance-none h-[49px] ${errors.school ? 'border-red-500' : 'border-gray-300'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder appearance-none ${errors.schoolId ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 >
                                     <option value="">Select School</option>
@@ -250,18 +243,18 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
                                         </option>
                                     ))}
                                 </select>
-                                {errors.school && <p className="text-red-500 text-sm mt-1">{errors.school}</p>}
+                                {errors.schoolId && <p className="text-red text-sm mt-1">{errors.schoolId}</p>}
                             </div>
                         </div>
 
                         <div className="mt-12">
                             <button
-                                type="button"
                                 onClick={handleSubmit}
-                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/90 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} flex items-center gap-2`}
+                                type="submit"
+                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
-                                <span className="hidden md:inline">Update Teacher</span>
+                                Save
                             </button>
                         </div>
                     </form>

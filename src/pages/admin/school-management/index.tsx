@@ -10,6 +10,7 @@ import ViewIcon from '../../../assets/dashboard/Admin/school-management/view.svg
 import EditIcon from '../../../assets/dashboard/Admin/school-management/edit.svg';
 import DeleteIcon from '../../../assets/dashboard/Admin/school-management/delete.svg';
 import AddSchoolIcon from '../../../assets/dashboard/Admin/school-management/add-school.svg';
+import { School } from '../../../types/admin';
 
 // Mock data for schools
 const schools = [
@@ -178,13 +179,7 @@ const schools = [
     },
 ];
 
-interface School {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    address?: string;
-}
+
 
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -280,7 +275,7 @@ const SchoolManagement: React.FC = () => {
                 <h1 className="text-3xl font-bold text-secondary">School List</h1>
                 <button
                     onClick={openAddSchoolModal}
-                    className="bg-primary hover:bg-primary/80 text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                 >
                     <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add School</span>
@@ -313,31 +308,31 @@ const SchoolManagement: React.FC = () => {
                                     <td className="px-8  py-4 break-words">
                                         <div className="text-textColor">{school.email}</div>
                                     </td>
-                                    <td className="px-8  py-4">
+                                    <td className="px-8  py-4 ">
                                         <div className="text-textColor">{school.phone}</div>
                                     </td>
                                     <td className="px-8 py-4">
                                         <div className="flex flex-nowrap gap-2">
                                             <button
                                                 onClick={() => openViewSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                             >
                                                 <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                <span className="hidden md:inline">View</span>
+                                                <span className="hidden md:inline font-bold">View</span>
                                             </button>
                                             <button
                                                 onClick={() => openEditSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                             >
                                                 <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                <span className="hidden md:inline">Edit</span>
+                                                <span className="hidden md:inline font-bold">Edit</span>
                                             </button>
                                             <button
                                                 onClick={() => openDeleteSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-primary/80 text-white px-3 py-2 rounded text-sm flex items-center gap-1 transition-colors min-w-[80px] justify-center"
+                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
                                             >
                                                 <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                <span className="hidden md:inline">Delete</span>
+                                                <span className="hidden md:inline font-bold">Delete</span>
                                             </button>
                                         </div>
                                     </td>

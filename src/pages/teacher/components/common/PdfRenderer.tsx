@@ -52,7 +52,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <h2 className="text-3xl font-bold text-textColor">Error</h2>
                         <button
                             onClick={onClose}
-                            className="text-textColor hover:text-textColor/90 cursor-pointer"
+                            className="text-textColor hover:text-hover cursor-pointer"
                         >
                             <X className="h-7 w-7" />
                         </button>
@@ -64,7 +64,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <div className="flex justify-end gap-4">
                             <button
                                 onClick={onClose}
-                                className="px-6 py-2 rounded-lg bg-primary text-white hover:bg-primary/80 cursor-pointer"
+                                className="px-6 py-2 rounded-lg bg-primary text-white  hover:bg-hover cursor-pointer"
                             >
                                 Close
                             </button>
@@ -87,7 +87,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-textColor hover:text-textColor/90 cursor-pointer"
+                        className="text-textColor hover:text-hover cursor-pointer"
                     >
                         <X className="h-7 w-7" />
                     </button>
@@ -127,7 +127,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({ file, onClose }) => {
                         <button
                             onClick={handleNextPage}
                             disabled={pageNumber >= numPages}
-                            className={`px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary/80 flex items-center justify-center ${pageNumber >= numPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            className={`px-3 py-2 rounded-lg bg-primary text-white  hover:bg-hover flex items-center justify-center ${pageNumber >= numPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                         >
                             <span className="sr-only">Next</span>
                             <ChevronRight className="h-6 w-6" />
