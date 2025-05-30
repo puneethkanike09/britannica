@@ -13,7 +13,7 @@ import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
 
 // Import PDF files
-import EmergencyKitsPdf from '../../../assets/pdfs/Puneeth-internship.pdf';
+import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -83,7 +83,7 @@ const TeacherDashboard = () => {
         theme: '',
         type: '',
     });
-    const [showResults, setShowResults] = useState(true);
+    const [showResults, setShowResults] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [showPdfViewer, setShowPdfViewer] = useState(false);
     const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
@@ -91,7 +91,7 @@ const TeacherDashboard = () => {
 
     const pdfProjects = [
         { id: 1, title: 'Emergency Kits', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 2, title: 'School Gardening Initiative', type: 'PPT', file: null },
+        { id: 2, title: 'School Gardening Initiative', type: 'PDF', file: EmergencyKitsPdf },
         { id: 3, title: 'Mini Garbage Collector Robot', type: 'PDF', file: EmergencyKitsPdf },
         { id: 4, title: 'Emergency Kits 2', type: 'PDF', file: EmergencyKitsPdf },
     ];

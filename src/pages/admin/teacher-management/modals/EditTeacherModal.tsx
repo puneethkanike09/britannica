@@ -155,7 +155,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     value={formData.firstName}
                                     onChange={handleInputChange}
                                     placeholder="Enter First Name"
-                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.firstName ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
                                 {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
@@ -170,7 +170,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     value={formData.lastName}
                                     onChange={handleInputChange}
                                     placeholder="Enter Last Name"
-                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-placeholder'}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
                                     disabled={isSubmitting}
                                 />
                             </div>
@@ -187,7 +187,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     placeholder="Enter Email Address"
-                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.email ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
                                 {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
@@ -202,7 +202,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     value={formData.phone}
                                     onChange={handlePhoneNumberChange}
                                     placeholder="Enter Phone Number"
-                                    className={`phone-input-container ${errors.phone ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
                                 {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
@@ -220,7 +220,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     value={formData.loginId}
                                     onChange={handleInputChange}
                                     placeholder="Enter Login ID"
-                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.loginId ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 />
                                 {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
@@ -233,7 +233,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
                                     name="schoolId"
                                     value={formData.schoolId ?? ''}
                                     onChange={handleInputChange}
-                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder appearance-none ${errors.schoolId ? 'border-red' : 'border-placeholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isSubmitting}
                                 >
                                     <option value="">Select School</option>

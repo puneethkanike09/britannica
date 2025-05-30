@@ -178,7 +178,7 @@ const Login = () => {
                   if (errors.email)
                     setErrors((prev) => ({ ...prev, email: "" }));
                 }}
-                className={`p-4 py-3 w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.email ? "border-red" : "border-placeholder"
+                className={`p-4 py-3 w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? "border-red" : "border-inputPlaceholder"
                   } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isSubmitting}
               />
@@ -204,7 +204,7 @@ const Login = () => {
                   if (errors.password)
                     setErrors((prev) => ({ ...prev, password: "" }));
                 }}
-                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${errors.password ? "border-red" : "border-placeholder"
+                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.password ? "border-red" : "border-inputPlaceholder"
                   } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isSubmitting}
               />
@@ -294,7 +294,7 @@ const Login = () => {
                       if (forgotPasswordErrors.email)
                         setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    className={`w-full p-3 border rounded-lg text-base bg-primary/5 placeholder:text-placeholder ${forgotPasswordErrors.email ? "border-red" : "border-placeholder"
+                    className={`w-full p-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${forgotPasswordErrors.email ? "border-red" : "border-inputPlaceholder"
                       } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                     placeholder="Enter your registered email"
                     disabled={isSubmitting}

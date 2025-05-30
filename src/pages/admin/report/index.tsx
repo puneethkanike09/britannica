@@ -176,7 +176,7 @@ export default function Report() {
                         onChange={(date: Date | null) => setFromDate(date)}
                         placeholderText="From Date"
                         dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-gray-400"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <CalendarIcon />
@@ -189,7 +189,7 @@ export default function Report() {
                         onChange={(date: Date | null) => setToDate(date)}
                         placeholderText="To Date"
                         dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-gray-400"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <CalendarIcon />

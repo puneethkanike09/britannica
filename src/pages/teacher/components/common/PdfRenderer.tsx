@@ -58,6 +58,34 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         }
     }, [file, initialPage]);
 
+    const handleNextPage = useCallback(() => {
+        if (numPages && pageNumber < numPages) {
+            const newPage = pageNumber + 1;
+            setPageNumber(newPage);
+            setPageInputValue(newPage.toString());
+        }
+    }, [numPages, pageNumber]);
+
+    const handlePrevPage = useCallback(() => {
+        if (pageNumber > 1) {
+            const newPage = pageNumber - 1;
+            setPageNumber(newPage);
+            setPageInputValue(newPage.toString());
+        }
+    }, [pageNumber]);
+
+    const handleZoomIn = useCallback(() => {
+        setScale(prev => Math.min(prev + 0.25, 3.0));
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        setScale(prev => Math.max(prev - 0.25, 0.5));
+    }, []);
+
+    const handleRotate = useCallback(() => {
+        setRotation(prev => (prev + 90) % 360);
+    }, []);
+
     // Keyboard navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -107,7 +135,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [numPages, onClose]);
+    }, [numPages, pageNumber, onClose, handleNextPage, handlePrevPage, handleZoomIn, handleZoomOut, handleRotate]);
 
     const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
@@ -126,20 +154,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         setIsLoading(false);
         setNumPages(null);
     }, []);
-
-    const handleNextPage = useCallback(() => {
-        if (numPages && pageNumber < numPages) {
-            const newPage = pageNumber + 1;
-            setPageNumber(newPage);
-            setPageInputValue(newPage.toString());
-        }
-    }, [numPages, pageNumber]);
-
-    const handlePrevPage = useCallback(() => {
-        const newPage = pageNumber > 1 ? pageNumber - 1 : pageNumber;
-        setPageNumber(newPage);
-        setPageInputValue(newPage.toString());
-    }, [pageNumber]);
 
     const handlePageInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
@@ -195,18 +209,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         }
     }, [touchStart, touchEnd, numPages, pageNumber, handleNextPage, handlePrevPage]);
 
-    const handleZoomIn = useCallback(() => {
-        setScale(prev => Math.min(prev + 0.25, 3.0));
-    }, []);
-
-    const handleZoomOut = useCallback(() => {
-        setScale(prev => Math.max(prev - 0.25, 0.5));
-    }, []);
-
-    const handleRotate = useCallback(() => {
-        setRotation(prev => (prev + 90) % 360);
-    }, []);
-
     const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             onClose();
@@ -246,7 +248,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         <div className="flex justify-end">
                             <button
                                 onClick={onClose}
-                                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                             >
                                 Close
                             </button>
@@ -254,7 +256,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                     </div>
 
                     {/* Mobile swipe hint - Only visible on mobile */}
-                    <div className="bg-primary/5 px-8 py-4 text-sm text-textColor border-t border-placeholder block md:hidden">
+                    <div className="bg-inputBg border-inputBorder px-8 py-4 text-sm text-textColor border-t block md:hidden">
                         <div className="text-center">
                             <span>← Swipe to navigate pages →</span>
                         </div>
@@ -274,17 +276,15 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         >
             <div className="bg-white rounded-lg w-full max-w-6xl overflow-hidden flex flex-col max-h-[95vh] shadow-2xl">
                 {/* Header */}
-                <div className="bg-white px-6 py-4 flex justify-between items-center border-b border-placeholder">
-                    <div>
-
-                    </div>
+                <div className="bg-white px-6 py-4 flex justify-between items-center border-b border-inputPlaceholder">
+                    <div></div>
                     <div className="flex items-center gap-2">
                         {/* Zoom Controls */}
                         <div className="flex items-center gap-1 mr-4">
                             <button
                                 onClick={handleZoomOut}
                                 disabled={scale <= 0.5}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                                 aria-label="Zoom out"
                                 title="Zoom out (-)"
                             >
@@ -296,7 +296,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             <button
                                 onClick={handleZoomIn}
                                 disabled={scale >= 3.0}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                                 aria-label="Zoom in"
                                 title="Zoom in (+)"
                             >
@@ -307,7 +307,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         {/* Rotate Button */}
                         <button
                             onClick={handleRotate}
-                            className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 mr-4"
+                            className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer mr-4"
                             aria-label="Rotate page"
                             title="Rotate page (R)"
                         >
@@ -317,7 +317,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
                             aria-label="Close PDF viewer"
                             title="Close (Esc)"
                         >
@@ -328,7 +328,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
 
                 {/* PDF Content - Fixed scrolling container */}
                 <div
-                    className="flex-grow bg-primary/5 overflow-auto"
+                    className="flex-grow bg-inputBg border-inputBorder overflow-auto"
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
@@ -364,10 +364,10 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 renderTextLayer={true}
                                 width={pageWidth * scale}
                                 rotate={rotation}
-                                className="shadow-lg border border-placeholder"
+                                className="shadow-lg border border-inputPlaceholder"
                                 loading={
                                     <div
-                                        className="flex items-center justify-center bg-white border border-placeholder shadow-lg"
+                                        className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg"
                                         style={{
                                             width: pageWidth * scale,
                                             height: pageWidth * scale * 1.4,
@@ -396,11 +396,11 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
 
                 {/* Navigation Footer */}
                 {numPages && (
-                    <div className="bg-white px-6 py-4 flex justify-center items-center gap-4 border-t border-placeholder">
+                    <div className="bg-white px-6 py-4 flex justify-center items-center gap-4 border-t border-inputPlaceholder">
                         <button
                             onClick={handlePrevPage}
                             disabled={pageNumber <= 1}
-                            className="px-3 py-2 rounded-md border border-placeholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                             aria-label="Previous page"
                             title="Previous page (←)"
                         >
@@ -417,7 +417,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 onChange={handlePageInputChange}
                                 onBlur={handlePageInputBlur}
                                 onKeyDown={handlePageInputKeyDown}
-                                className="w-16 px-2 py-1 text-center border border-placeholder rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-textColor"
+                                className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-textColor cursor-pointer"
                                 aria-label="Current page number"
                             />
                             <span className="text-textColor">of {numPages}</span>
@@ -426,7 +426,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         <button
                             onClick={handleNextPage}
                             disabled={pageNumber >= numPages}
-                            className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                             aria-label="Next page"
                             title="Next page (→)"
                         >
@@ -436,13 +436,12 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                 )}
 
                 {/* Keyboard shortcuts help - Hidden on mobile */}
-                <div className="bg-primary/5 px-6 py-2 text-xs text-textColor border-t border-placeholder hidden md:block">
+                <div className="bg-inputBg border-inputBorder px-6 py-2 text-xs text-textColor border-t hidden md:block">
                     <div className="flex flex-wrap gap-4 justify-center">
                         <span>← → Navigate pages</span>
                         <span>+ - Zoom</span>
                         <span>R Rotate</span>
                         <span>Esc Close</span>
-                        <span>Home/End First/Last page</span>
                     </div>
                 </div>
             </div>

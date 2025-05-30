@@ -57,8 +57,11 @@
   --color-yellow: #ffd944;
   --color-green: #69c137;
   --color-red: #e3173f;
-  --color-placeholder: #0C406C33;
+  --color-inputPlaceholder: #0C406C33;
   --color-hover:#0090d0;
+  --color-inputBorder: #CBD6E2;
+  --color-inputBg :#F5F8FA;
+  
 }
 
 body {
@@ -69,8 +72,8 @@ body {
 }
 
 ::-moz-selection { 
-  color: black;
-  background: yellow;
+  color: white;
+  background: #141e8c;
 }
 
 ::selection {
@@ -88,7 +91,7 @@ body {
 
 
 .phone-input-container .PhoneInputInput {
-  @apply w-full p-3 border border-gray-300 rounded-lg text-base bg-primary/5 placeholder:text-gray-400;
+  @apply w-full p-3 border  rounded-lg text-base bg-inputBg border-inputBorder placeholder:bg-inputPlaceholder;
 }
 
 
