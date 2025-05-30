@@ -48,7 +48,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDown
                         {type}
                     </span>
                 </div>
-                <h3 className="text-2xl font-black text-textColor leading-tight min-h-[6.5rem] flex items-center">
+                <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
                     {title}
                 </h3>
             </div>
@@ -83,7 +83,7 @@ const TeacherDashboard = () => {
         theme: '',
         type: '',
     });
-    const [showResults, setShowResults] = useState(false);
+    const [showResults, setShowResults] = useState(true);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [showPdfViewer, setShowPdfViewer] = useState(false);
     const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
@@ -346,7 +346,7 @@ const TeacherDashboard = () => {
 
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary  hover:bg-hover text-white px-6 font-bold h-12 text-xl rounded-lg font-medium w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                className={`bg-primary  hover:bg-hover text-white px-6 font-bold h-12 text-xl rounded-lg  w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
                                 Submit

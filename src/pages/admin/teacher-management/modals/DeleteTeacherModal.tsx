@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from 'react';
-import { DeleteTeacherModalProps } from "../../../../types/admin";
+import { TeacherActionModalProps } from "../../../../types/admin";
 
-export default function DeleteTeacherModal({ onClose, teacher }: DeleteTeacherModalProps) {
+export default function DeleteTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -47,7 +47,7 @@ export default function DeleteTeacherModal({ onClose, teacher }: DeleteTeacherMo
             <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-textColor">Delete Teacher</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Delete Teacher</h2>
                     <button
                         onClick={onClose}
                         className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}

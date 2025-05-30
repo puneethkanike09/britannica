@@ -3,7 +3,7 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState } from 'react';
 import toast from "react-hot-toast";
-import { EditTeacherModalProps, School, Teacher } from "../../../../types/admin";
+import { TeacherActionModalProps, School, Teacher } from "../../../../types/admin";
 
 // Mock schools data (consistent with AddTeacherModal)
 const schools: Pick<School, 'id' | 'name'>[] = [
@@ -13,7 +13,7 @@ const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalProps) {
+export default function EditTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
     const [formData, setFormData] = useState<Omit<Teacher, 'id'>>({
         firstName: teacher.firstName || '',
         lastName: teacher.lastName || '',
@@ -131,7 +131,7 @@ export default function EditTeacherModal({ onClose, teacher }: EditTeacherModalP
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-textColor">Edit Teacher</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Edit Teacher</h2>
                     <button
                         onClick={onClose}
                         className={`text-textColor hover:text-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}

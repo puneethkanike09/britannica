@@ -1,6 +1,5 @@
 // report page
 
-// Interface for activity log entries
 export interface ActivityLog {
     id: number;
     date: string;
@@ -10,7 +9,6 @@ export interface ActivityLog {
 }
 
 //school management page
-
 export interface School {
     id: number;
     name: string;
@@ -18,11 +16,9 @@ export interface School {
     phone: string;
     address?: string;
 }
-
 export interface AddSchoolModalProps {
     onClose: () => void;
 }
-
 export interface SchoolActionModalProps {
     onClose: () => void;
     school: School;
@@ -37,22 +33,14 @@ export interface Teacher {
     email: string;
     phone: string;
     loginId: string;
-    schoolId?: number; // Added schoolId to link to a school
+    schoolId?: number;
 }
 
 export interface AddTeacherModalProps {
     onClose: () => void;
 }
-export interface EditTeacherModalProps {
-    onClose: () => void;
-    teacher: Teacher;
-}
-export interface ViewTeacherModalProps {
-    onClose: () => void;
-    teacher: Teacher;
-}
 
-export interface DeleteTeacherModalProps {
+export interface TeacherActionModalProps {
     onClose: () => void;
     teacher: Teacher;
 }

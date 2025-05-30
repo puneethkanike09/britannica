@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/loginImage.png";
 import { X } from "lucide-react";
@@ -149,11 +149,11 @@ const Login = () => {
   };
 
   return (
-    <div className="grid min-h-screen w-full font-sans grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
+    <div className="grid min-h-screen w-full  grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
       {/* Left side - Login Form */}
       <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
         <div className="max-w-lg w-full">
-          <h1 className="font-mulish text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
+          <h1 className=" text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
             Access to Britannica
           </h1>
           <h2 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
@@ -224,7 +224,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowForgotPasswordModal(true)}
-                className="text-secondary hover:underline cursor-pointer"
+                className="text-textColor hover:underline cursor-pointer"
                 disabled={isSubmitting}
               >
                 Forgot Password?
@@ -267,7 +267,7 @@ const Login = () => {
         >
           <div className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
             <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-              <h2 className="text-3xl font-bold text-textColor">
+              <h2 className="text-3xl font-bold text-secondary">
                 Forgot Password
               </h2>
               <button

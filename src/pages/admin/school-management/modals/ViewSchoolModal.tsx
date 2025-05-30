@@ -18,7 +18,7 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-textColor">School Details</h2>
+                    <h2 className="text-3xl font-bold text-secondary">School Details</h2>
                     <button
                         onClick={onClose}
                         className="text-textColor hover:text-hover cursor-pointer"

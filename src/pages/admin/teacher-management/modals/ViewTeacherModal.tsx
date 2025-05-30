@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { School, ViewTeacherModalProps } from "../../../../types/admin";
+import { School, TeacherActionModalProps } from "../../../../types/admin";
 
 // Mock schools data (same as in EditTeacherModal)
 const schools: Pick<School, 'id' | 'name'>[] = [
@@ -9,7 +9,7 @@ const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-export default function ViewTeacherModal({ onClose, teacher }: ViewTeacherModalProps) {
+export default function ViewTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             onClose();
@@ -29,7 +29,7 @@ export default function ViewTeacherModal({ onClose, teacher }: ViewTeacherModalP
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-textColor">Teacher Details</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Teacher Details</h2>
                     <button
                         onClick={onClose}
                         className="text-textColor hover:text-hover cursor-pointer"
