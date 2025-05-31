@@ -128,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Overlay */}
             {isMobile && isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40 z-50 transition-opacity duration-300"
+                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300"
                     onClick={closeSidebar}
                 />
             )}

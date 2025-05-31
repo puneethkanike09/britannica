@@ -1,5 +1,8 @@
 import { X } from "lucide-react";
 import { School, EducatorActionModalProps } from "../../../../types/admin";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
 // Mock schools data (same as in EditEducatorModal)
 const schools: Pick<School, 'id' | 'name'>[] = [
@@ -10,11 +13,34 @@ const schools: Pick<School, 'id' | 'name'>[] = [
 ];
 
 export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
+    const [isVisible, setIsVisible] = useState(true);
+
+    const handleClose = () => {
+        setIsVisible(false);
+    };
+
+    const handleAnimationComplete = () => {
+        if (!isVisible) {
             onClose();
         }
     };
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            handleClose();
+        }
+    };
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                handleClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, []);
 
     // Find the school name if schoolId is provided
     const schoolName = educator.schoolId
@@ -22,57 +48,73 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
         : "Not assigned";
 
     return (
-        <div
-            className="fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4"
-            onClick={handleBackdropClick}
-        >
-            <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
-                {/* Sticky Header */}
-                <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-secondary">Educator Details</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-textColor hover:text-hover cursor-pointer"
+        <AnimatePresence onExitComplete={handleAnimationComplete}>
+            {isVisible && (
+                <motion.div
+                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
+                    onClick={handleBackdropClick}
+                    variants={backdropVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                >
+                    <motion.div
+                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        variants={modalVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <X className="h-7 w-7" />
-                    </button>
-                </div>
+                        {/* Sticky Header */}
+                        <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
+                            <h2 className="text-3xl font-bold text-secondary">Educator Details</h2>
+                            <button
+                                onClick={handleClose}
+                                className="text-textColor hover:text-hover cursor-pointer"
+                            >
+                                <X className="h-7 w-7" />
+                            </button>
+                        </div>
 
-                {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto px-8 py-6">
-                    <div className="border border-gray-300 rounded-lg overflow-hidden mb-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3">
-                            <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">Full Name</div>
-                                <div className="text-primary font-medium break-words">
-                                    {`${educator.firstName} ${educator.lastName}`}
+                        {/* Scrollable Content */}
+                        <div className="flex-1 overflow-y-auto px-8 py-6">
+                            <div className="border border-gray-300 rounded-lg overflow-hidden mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3">
+                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                        <div className="text-textColor mb-2">Full Name</div>
+                                        <div className="text-primary font-medium break-words">
+                                            {`${educator.firstName} ${educator.lastName}`}
+                                        </div>
+                                    </div>
+                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                        <div className="text-textColor mb-2">Email Address</div>
+                                        <div className="text-primary font-medium break-words">{educator.email}</div>
+                                    </div>
+                                    <div className="border-b border-gray-300 md:border-b-0 p-6">
+                                        <div className="text-textColor mb-2">Phone Number</div>
+                                        <div className="text-primary font-medium break-words">{educator.phone}</div>
+                                    </div>
+                                </div>
+                                <div className="border-t border-gray-300 grid grid-cols-1 md:grid-cols-3">
+                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                        <div className="text-textColor mb-2">Login ID</div>
+                                        <div className="text-primary font-medium break-words">
+                                            {educator.loginId}
+                                        </div>
+                                    </div>
+                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                        <div className="text-textColor mb-2">School</div>
+                                        <div className="text-primary font-medium break-words">{schoolName}</div>
+                                    </div>
+                                    <div className="hidden md:block"></div>
                                 </div>
                             </div>
-                            <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">Email Address</div>
-                                <div className="text-primary font-medium break-words">{educator.email}</div>
-                            </div>
-                            <div className="border-b border-gray-300 md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">Phone Number</div>
-                                <div className="text-primary font-medium break-words">{educator.phone}</div>
-                            </div>
                         </div>
-                        <div className="border-t border-gray-300 grid grid-cols-1 md:grid-cols-3">
-                            <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">Login ID</div>
-                                <div className="text-primary font-medium break-words">
-                                    {educator.loginId}
-                                </div>
-                            </div>
-                            <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
-                                <div className="text-textColor mb-2">School</div>
-                                <div className="text-primary font-medium break-words">{schoolName}</div>
-                            </div>
-                            <div className="hidden md:block"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

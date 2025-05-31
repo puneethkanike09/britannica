@@ -3,6 +3,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -31,6 +33,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [pageWidth, setPageWidth] = useState<number>(800);
+    const [isVisible, setIsVisible] = useState(true);
 
     // Calculate responsive page width
     useEffect(() => {
@@ -55,6 +58,33 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
             setIsLoading(true);
         }
     }, [file, initialPage]);
+
+    const handleClose = useCallback(() => {
+        setIsVisible(false);
+    }, []);
+
+    const handleAnimationComplete = useCallback(() => {
+        if (!isVisible) {
+            onClose();
+        }
+    }, [isVisible, onClose]);
+
+    const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            handleClose();
+        }
+    }, [handleClose]);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                handleClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [handleClose]);
 
     const handleNextPage = useCallback(() => {
         if (numPages && pageNumber < numPages) {
@@ -100,10 +130,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                     e.preventDefault();
                     handleNextPage();
                     break;
-                case 'Escape':
-                    e.preventDefault();
-                    onClose();
-                    break;
                 case '+':
                 case '=':
                     e.preventDefault();
@@ -133,7 +159,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [numPages, pageNumber, onClose, handleNextPage, handlePrevPage, handleZoomIn, handleZoomOut, handleRotate]);
+    }, [numPages, pageNumber, handleNextPage, handlePrevPage, handleZoomIn, handleZoomOut, handleRotate]);
 
     const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
@@ -162,7 +188,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         if (!isNaN(value) && numPages && value >= 1 && value <= numPages) {
             setPageNumber(value);
         }
-        // If invalid, just update the input value but don't navigate
     }, [numPages]);
 
     const handlePageInputBlur = useCallback(() => {
@@ -182,248 +207,268 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         }
     }, [pageNumber]);
 
-
-
-    const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    }, [onClose]);
-
     // Error state
     if (!file || error) {
         return (
-            <div
-                className={`fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4 ${className}`}
-                onClick={handleBackdropClick}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="error-title"
-            >
-                <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
-                    {/* Sticky Header */}
-                    <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                        <h2 id="error-title" className="text-3xl font-bold text-textColor">
-                            {error ? "PDF Load Error" : "File Error"}
-                        </h2>
-                        <button
-                            onClick={onClose}
-                            className="text-textColor hover:text-hover cursor-pointer focus:outline-none rounded"
-                            aria-label="Close dialog"
+            <AnimatePresence onExitComplete={handleAnimationComplete}>
+                {isVisible && (
+                    <motion.div
+                        className={`fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4 ${className}`}
+                        onClick={handleBackdropClick}
+                        variants={backdropVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="error-title"
+                    >
+                        <motion.div
+                            className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4"
+                            variants={modalVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <X className="h-7 w-7" />
-                        </button>
-                    </div>
+                            {/* Sticky Header */}
+                            <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
+                                <h2 id="error-title" className="text-3xl font-bold text-textColor">
+                                    {error ? "PDF Load Error" : "File Error"}
+                                </h2>
+                                <button
+                                    onClick={handleClose}
+                                    className="text-textColor hover:text-hover cursor-pointer focus:outline-none rounded"
+                                    aria-label="Close dialog"
+                                >
+                                    <X className="h-7 w-7" />
+                                </button>
+                            </div>
 
-                    {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto px-8 py-6">
-                        <p className="text-textColor text-base mb-6">
-                            {error || "This file type is not supported for viewing."}
-                        </p>
-                        <div className="flex justify-end">
-                            <button
-                                onClick={onClose}
-                                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none cursor-pointer"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
+                            {/* Scrollable Content */}
+                            <div className="flex-1 overflow-y-auto px-8 py-6">
+                                <p className="text-textColor text-base mb-6">
+                                    {error || "This file type is not supported for viewing."}
+                                </p>
+                                <div className="flex justify-end">
+                                    <button
+                                        onClick={handleClose}
+                                        className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none cursor-pointer"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
 
-                    {/* Mobile swipe hint - Only visible on mobile */}
-                    <div className="bg-inputBg border-inputBorder px-8 py-4 text-sm text-textColor border-t block md:hidden">
-                        <div className="text-center">
-                            <span>← Swipe to navigate pages →</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            {/* Mobile swipe hint - Only visible on mobile */}
+                            <div className="bg-inputBg border-inputBorder px-8 py-4 text-sm text-textColor border-t block md:hidden">
+                                <div className="text-center">
+                                    <span>← Swipe to navigate pages →</span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         );
     }
 
     return (
-        <div
-            className={`fixed inset-0 bg-black/40 bg-opacity-50 z-50 flex items-center justify-center px-4 ${className}`}
-            onClick={handleBackdropClick}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="pdf-title"
-        >
-            <div className="bg-white rounded-lg w-full max-w-6xl overflow-hidden flex flex-col max-h-[95vh] shadow-2xl">
-                {/* Header */}
-                <div className="bg-white px-6 py-4 flex justify-between items-center border-b border-inputPlaceholder">
-                    <div></div>
-                    <div className="flex items-center gap-2">
-                        {/* Zoom Controls */}
-                        <div className="flex items-center gap-1 mr-4">
-                            <button
-                                onClick={handleZoomOut}
-                                disabled={scale <= 0.5}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
-                                aria-label="Zoom out"
-                                title="Zoom out (-)"
-                            >
-                                <ZoomOut className="h-4 w-4" />
-                            </button>
-                            <span className="text-sm text-textColor min-w-[3rem] text-center">
-                                {Math.round(scale * 100)}%
-                            </span>
-                            <button
-                                onClick={handleZoomIn}
-                                disabled={scale >= 3.0}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
-                                aria-label="Zoom in"
-                                title="Zoom in (+)"
-                            >
-                                <ZoomIn className="h-4 w-4" />
-                            </button>
+        <AnimatePresence onExitComplete={handleAnimationComplete}>
+            {isVisible && (
+                <motion.div
+                    className={`fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center px-4 ${className}`}
+                    onClick={handleBackdropClick}
+                    variants={backdropVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="pdf-title"
+                >
+                    <motion.div
+                        className="bg-white rounded-lg w-full max-w-6xl overflow-hidden flex flex-col max-h-[95vh] shadow-2xl"
+                        variants={modalVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="bg-white px-6 py-4 flex justify-between items-center border-b border-inputPlaceholder">
+                            <div></div>
+                            <div className="flex items-center gap-2">
+                                {/* Zoom Controls */}
+                                <div className="flex items-center gap-1 mr-4">
+                                    <button
+                                        onClick={handleZoomOut}
+                                        disabled={scale <= 0.5}
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
+                                        aria-label="Zoom out"
+                                        title="Zoom out (-)"
+                                    >
+                                        <ZoomOut className="h-4 w-4" />
+                                    </button>
+                                    <span className="text-sm text-textColor min-w-[3rem] text-center">
+                                        {Math.round(scale * 100)}%
+                                    </span>
+                                    <button
+                                        onClick={handleZoomIn}
+                                        disabled={scale >= 3.0}
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
+                                        aria-label="Zoom in"
+                                        title="Zoom in (+)"
+                                    >
+                                        <ZoomIn className="h-4 w-4" />
+                                    </button>
+                                </div>
+
+                                {/* Rotate Button */}
+                                <button
+                                    onClick={handleRotate}
+                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none cursor-pointer mr-4"
+                                    aria-label="Rotate page"
+                                    title="Rotate page (R)"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+                                    </svg>
+                                </button>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={handleClose}
+                                    className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none cursor-pointer"
+                                    aria-label="Close PDF viewer"
+                                    title="Close (Esc)"
+                                >
+                                    <X className="h-6 w-6" />
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Rotate Button */}
-                        <button
-                            onClick={handleRotate}
-                            className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none cursor-pointer mr-4"
-                            aria-label="Rotate page"
-                            title="Rotate page (R)"
+                        {/* PDF Content - Fixed scrolling container */}
+                        <div
+                            className="flex-grow bg-inputBg border-inputBorder overflow-auto"
+                            style={{
+                                scrollBehavior: 'smooth'
+                            }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            {/* Container with proper padding and centering */}
+                            <div
+                                className="min-h-full flex items-center justify-center p-6"
+                                style={{
+                                    minWidth: scale > 1 ? `${pageWidth * scale + 48}px` : '100%'
+                                }}
+                            >
+                                {isLoading && (
+                                    <div className="flex items-center justify-center py-20">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                                        <span className="ml-3 text-textColor">Loading PDF...</span>
+                                    </div>
+                                )}
 
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+                                <Document
+                                    file={file}
+                                    onLoadSuccess={onDocumentLoadSuccess}
+                                    onLoadError={onDocumentLoadError}
+                                    className="flex justify-center"
+                                    loading=""
+                                    error=""
+                                >
+                                    <Page
+                                        pageNumber={pageNumber}
+                                        renderAnnotationLayer={true}
+                                        renderTextLayer={true}
+                                        width={pageWidth * scale}
+                                        rotate={rotation}
+                                        className="shadow-lg border border-inputPlaceholder"
+                                        loading={
+                                            <div
+                                                className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg"
+                                                style={{
+                                                    width: pageWidth * scale,
+                                                    height: pageWidth * scale * 1.4,
+                                                    minHeight: '400px'
+                                                }}
+                                            >
+                                                <div className="animate-pulse text-textColor">Loading page...</div>
+                                            </div>
+                                        }
+                                        error={
+                                            <div
+                                                className="flex items-center justify-center bg-white border border-red-200 shadow-lg text-red-600"
+                                                style={{
+                                                    width: pageWidth * scale,
+                                                    height: pageWidth * scale * 1.4,
+                                                    minHeight: '400px'
+                                                }}
+                                            >
+                                                Failed to load page
+                                            </div>
+                                        }
+                                    />
+                                </Document>
+                            </div>
+                        </div>
 
-                            </svg>
+                        {/* Navigation Footer */}
+                        {numPages && (
+                            <div className="bg-white px-6 py-4 flex justify-center items-center gap-4 border-t border-inputPlaceholder">
+                                <button
+                                    onClick={handlePrevPage}
+                                    disabled={pageNumber <= 1}
+                                    className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
+                                    aria-label="Previous page"
+                                    title="Previous page (←)"
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
 
+                                <div className="flex items-center gap-2">
+                                    <span className="text-textColor hidden md:block">Page</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={numPages}
+                                        value={pageInputValue}
+                                        onChange={handlePageInputChange}
+                                        onBlur={handlePageInputBlur}
+                                        onKeyDown={handlePageInputKeyDown}
+                                        className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none text-textColor cursor-pointer"
+                                        aria-label="Current page number"
+                                    />
+                                    <span className="text-textColor">of {numPages}</span>
+                                </div>
 
-                        </button>
-
-                        {/* Close Button */}
-                        <button
-                            onClick={onClose}
-                            className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none cursor-pointer"
-                            aria-label="Close PDF viewer"
-                            title="Close (Esc)"
-                        >
-                            <X className="h-6 w-6" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* PDF Content - Fixed scrolling container */}
-                <div
-                    className="flex-grow bg-inputBg border-inputBorder overflow-auto"
-                    style={{
-                        scrollBehavior: 'smooth'
-                    }}
-                >
-                    {/* Container with proper padding and centering */}
-                    <div
-                        className="min-h-full flex items-center justify-center p-6"
-                        style={{
-                            minWidth: scale > 1 ? `${pageWidth * scale + 48}px` : '100%'
-                        }}
-                    >
-                        {isLoading && (
-                            <div className="flex items-center justify-center py-20">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                                <span className="ml-3 text-textColor">Loading PDF...</span>
+                                <button
+                                    onClick={handleNextPage}
+                                    disabled={pageNumber >= numPages}
+                                    className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
+                                    aria-label="Next page"
+                                    title="Next page (→)"
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
                             </div>
                         )}
 
-                        <Document
-                            file={file}
-                            onLoadSuccess={onDocumentLoadSuccess}
-                            onLoadError={onDocumentLoadError}
-                            className="flex justify-center"
-                            loading=""
-                            error=""
-                        >
-                            <Page
-                                pageNumber={pageNumber}
-                                renderAnnotationLayer={true}
-                                renderTextLayer={true}
-                                width={pageWidth * scale}
-                                rotate={rotation}
-                                className="shadow-lg border border-inputPlaceholder"
-                                loading={
-                                    <div
-                                        className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg"
-                                        style={{
-                                            width: pageWidth * scale,
-                                            height: pageWidth * scale * 1.4,
-                                            minHeight: '400px'
-                                        }}
-                                    >
-                                        <div className="animate-pulse text-textColor">Loading page...</div>
-                                    </div>
-                                }
-                                error={
-                                    <div
-                                        className="flex items-center justify-center bg-white border border-red-200 shadow-lg text-red-600"
-                                        style={{
-                                            width: pageWidth * scale,
-                                            height: pageWidth * scale * 1.4,
-                                            minHeight: '400px'
-                                        }}
-                                    >
-                                        Failed to load page
-                                    </div>
-                                }
-                            />
-                        </Document>
-                    </div>
-                </div>
-
-                {/* Navigation Footer */}
-                {numPages && (
-                    <div className="bg-white px-6 py-4 flex justify-center items-center gap-4 border-t border-inputPlaceholder">
-                        <button
-                            onClick={handlePrevPage}
-                            disabled={pageNumber <= 1}
-                            className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
-                            aria-label="Previous page"
-                            title="Previous page (←)"
-                        >
-                            <ChevronLeft className="h-5 w-5" />
-                        </button>
-
-                        <div className="flex items-center gap-2">
-                            <span className="text-textColor hidden md:block">Page</span>
-                            <input
-                                type="number"
-                                min="1"
-                                max={numPages}
-                                value={pageInputValue}
-                                onChange={handlePageInputChange}
-                                onBlur={handlePageInputBlur}
-                                onKeyDown={handlePageInputKeyDown}
-                                className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none text-textColor cursor-pointer"
-                                aria-label="Current page number"
-                            />
-                            <span className="text-textColor">of {numPages}</span>
+                        {/* Keyboard shortcuts help - Hidden on mobile */}
+                        <div className="bg-inputBg border-inputBorder px-6 py-2 text-xs text-textColor border-t hidden md:block">
+                            <div className="flex flex-wrap gap-4 justify-center">
+                                <span>← → Navigate pages</span>
+                                <span>+ - Zoom</span>
+                                <span>R Rotate</span>
+                                <span>Esc Close</span>
+                            </div>
                         </div>
-
-                        <button
-                            onClick={handleNextPage}
-                            disabled={pageNumber >= numPages}
-                            className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
-                            aria-label="Next page"
-                            title="Next page (→)"
-                        >
-                            <ChevronRight className="h-5 w-5" />
-                        </button>
-                    </div>
-                )}
-
-                {/* Keyboard shortcuts help - Hidden on mobile */}
-                <div className="bg-inputBg border-inputBorder px-6 py-2 text-xs text-textColor border-t hidden md:block">
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        <span>← → Navigate pages</span>
-                        <span>+ - Zoom</span>
-                        <span>R Rotate</span>
-                        <span>Esc Close</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 };
 

@@ -262,7 +262,7 @@ const Login = () => {
       {/* Forgot Password Modal */}
       {showForgotPasswordModal && (
         <div
-          className="fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
           onClick={handleBackdropClick}
         >
           <div className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
@@ -326,7 +326,7 @@ const Login = () => {
       {/* Success Modal */}
       {showSuccessModal && (
         <div
-          className="fixed inset-0 bg-black/40 bg-opacity-50 z-90 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
           onClick={handleBackdropClick}
         >
           <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-8">
