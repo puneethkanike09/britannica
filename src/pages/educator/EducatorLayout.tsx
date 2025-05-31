@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-const TeacherLayout: React.FC = () => {
+const EducatorLayout: React.FC = () => {
     return (
         <div className="min-h-screen w-full bg-white">
             <main className="">
@@ -12,4 +12,4 @@ const TeacherLayout: React.FC = () => {
     );
 };
 
-export default TeacherLayout;
+export default EducatorLayout;

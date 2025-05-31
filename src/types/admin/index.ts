@@ -1,5 +1,30 @@
-// report page
+//Sidebar Item
+export interface NavItem {
+    to: string;
+    icon: string;
+    alt: string;
+    label: string;
+    end?: boolean;
+}
 
+//top bar
+export interface TopbarProps {
+    onOpenLogoutModal: () => void;
+    isSidebarCollapsed?: boolean;
+}
+
+//home page
+export interface DashboardCard {
+    id: string;
+    title: string;
+    value: number;
+    icon: string;
+    alt: string;
+    colorClass: string;
+    iconSize?: 'sm' | 'md' | 'lg';
+}
+
+// report page
 export interface ActivityLog {
     id: number;
     date: string;
@@ -8,7 +33,7 @@ export interface ActivityLog {
     user: string;
 }
 
-//school management page
+// school management page
 export interface School {
     id: number;
     name: string;
@@ -16,17 +41,18 @@ export interface School {
     phone: string;
     address?: string;
 }
+
 export interface AddSchoolModalProps {
     onClose: () => void;
 }
+
 export interface SchoolActionModalProps {
     onClose: () => void;
     school: School;
 }
 
-
-// teacher management page
-export interface Teacher {
+// educator management page
+export interface Educator {
     id: number;
     firstName: string;
     lastName: string;
@@ -36,14 +62,11 @@ export interface Teacher {
     schoolId?: number;
 }
 
-export interface AddTeacherModalProps {
+export interface AddEducatorModalProps {
     onClose: () => void;
 }
 
-export interface TeacherActionModalProps {
+export interface EducatorActionModalProps {
     onClose: () => void;
-    teacher: Teacher;
+    educator: Educator;
 }
-
-
-

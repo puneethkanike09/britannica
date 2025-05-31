@@ -270,7 +270,7 @@ const SchoolManagement: React.FC = () => {
 
     return (
 
-        <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
+        <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-secondary">School List</h1>
                 <button

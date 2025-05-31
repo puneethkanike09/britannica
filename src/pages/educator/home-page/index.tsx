@@ -1,12 +1,12 @@
-// src/pages/TeacherDashboard.tsx
+
 import { useEffect, useState } from 'react';
-import BackgroundImage from '../../../assets/dashboard/Teacher/home-page/kids.png';
+import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.png';
 import { LogOut } from 'lucide-react';
 import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
-import LogoIcon from '../../../assets/dashboard/Teacher/home-page/logo.png';
-import ViewIcon from '../../../assets/dashboard/Teacher/home-page/view.svg';
-import DownloadIcon from '../../../assets/dashboard/Teacher/home-page/download.svg';
-import ArrowIcon from '../../../assets/dashboard/Teacher/home-page/arrow.svg';
+import LogoIcon from '../../../assets/dashboard/Educator/home-page/logo.png';
+import ViewIcon from '../../../assets/dashboard/Educator/home-page/view.svg';
+import DownloadIcon from '../../../assets/dashboard/Educator/home-page/download.svg';
+import ArrowIcon from '../../../assets/dashboard/Educator/home-page/arrow.svg';
 import { Link } from 'react-router-dom';
 import { pdfjs } from 'react-pdf';
 import PdfRenderer from '../components/common/PdfRenderer';
@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 
 // Import PDF files
 import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
+import { DocumentCardProps, SelectProps } from '../../../types/teacher';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -21,31 +22,17 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-interface SelectProps {
-    value: string;
-    onValueChange: (value: string) => void;
-    placeholder: string;
-    options: { value: string; label: string }[];
-    className?: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    error?: string;
-}
 
-interface DocumentCardProps {
-    title: string;
-    type: string;
-    onView: () => void;
-    onDownload: () => void;
-}
 
-const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDownload }) => {
+
+
+const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }) => {
     return (
         <div className="w-full max-w-xs rounded-lg bg-white group">
             <div className="relative pb-4 px-6 pt-6">
                 <div className="absolute top-[-2px] right-4">
                     <span className="bg-red text-white text-xs font-bold px-4 py-1">
-                        {type}
+                        PDF
                     </span>
                 </div>
                 <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
@@ -74,7 +61,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, type, onView, onDown
     );
 };
 
-const TeacherDashboard = () => {
+const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
     const [selectedTheme, setSelectedTheme] = useState('');
     const [selectedType, setSelectedType] = useState('');
@@ -92,33 +79,42 @@ const TeacherDashboard = () => {
     const pdfProjects = [
         { id: 1, title: 'Emergency Kits', type: 'PDF', file: EmergencyKitsPdf },
         { id: 2, title: 'School Gardening Initiative', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 3, title: 'Mini Garbage Collector Robot', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 4, title: 'Emergency Kits 2', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 3, title: 'DIY Water Filter', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 4, title: 'Mini Garbage Collector Robot', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 5, title: 'Mental Health Awareness', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 6, title: 'Campaign: Promoting Mental Well-Being in Schools', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 7, title: 'Well-Being in Schools', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 8, title: 'Crafting Fragrance from Waste', type: 'PDF', file: EmergencyKitsPdf },
+        { id: 9, title: 'Culinary Creations', type: 'PDF', file: EmergencyKitsPdf }
     ];
 
+
     const gradeOptions = [
-        { value: 'k', label: 'Kindergarten' },
-        { value: '1', label: 'Grade 1' },
-        { value: '2', label: 'Grade 2' },
-        { value: '3', label: 'Grade 3' },
-        { value: '4', label: 'Grade 4' },
-        { value: '5', label: 'Grade 5' },
+        { value: '1', label: 'Grade 3' },
+        { value: '2', label: 'Grade 4' },
+        { value: '3', label: 'Grade 5' },
+        { value: '4', label: 'Grade 6' },
+        { value: '5', label: 'Grade 7' },
+        { value: '6', label: 'Grade 8' },
+        { value: '7', label: 'Grade 9' },
+        { value: '8', label: 'Grade 10' },
+        { value: '9', label: 'Grade 11' },
+        { value: '10', label: 'Grade 12' },
     ];
 
     const themeOptions = [
-        { value: 'science', label: 'Science' },
-        { value: 'math', label: 'Mathematics' },
-        { value: 'history', label: 'History' },
-        { value: 'art', label: 'Art' },
-        { value: 'literature', label: 'Literature' },
+        { value: 'environment', label: 'Environment' },
+        { value: 'entrepreneurship', label: 'Entrepreneurship' },
+        { value: 'ai_robotics', label: 'AI & Robotics' },
+        { value: 'cultural_development', label: 'Cultural Development' },
+        { value: 'social_emotional_learning', label: 'Social Emotional Learning' },
+        { value: 'vocational_education', label: 'Vocational Education' },
     ];
 
+
     const typeOptions = [
-        { value: 'individual', label: 'Individual' },
-        { value: 'group', label: 'Group' },
-        { value: 'research', label: 'Research' },
-        { value: 'creative', label: 'Creative' },
-        { value: 'presentation', label: 'Presentation' },
+        { value: 'educator_navigation', label: 'Educator Navigation' },
+        { value: 'students_explorer', label: 'Students Explorer' },
     ];
 
     const validateForm = () => {
@@ -231,7 +227,7 @@ const TeacherDashboard = () => {
             <div className="relative w-full sm:w-[250px] custom-select-dropdown">
                 <button
                     onClick={onToggle}
-                    className={`flex items-center justify-between px-4  text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg h-12 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${error ? 'border border-red' : ''} ${className}`}
+                    className={`flex items-center justify-between px-4 py-3  text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg  ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${error ? 'border border-red' : ''} ${className}`}
                     aria-label={`Select ${placeholder}`}
                     aria-expanded={isOpen}
                     role="combobox"
@@ -307,9 +303,9 @@ const TeacherDashboard = () => {
                     }}
                     aria-hidden="true"
                 />
-                <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-24 sm:py-24 lg:py-32">
+                <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-24 sm:pt-24 lg:pt-32  pb-8 sm:pb-8 lg:pb-8">
                     <h2 className="text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-center">
-                        Welcome to the Teachers Dashboard!
+                        Welcome to the Educators Dashboard!
                     </h2>
                     <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-8 sm:mb-12 text-center">
                         Project Based Learning
@@ -346,7 +342,7 @@ const TeacherDashboard = () => {
 
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary  hover:bg-hover text-white px-6 font-bold h-12 text-xl rounded-lg  w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                className={`bg-primary  hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg  w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
                                 Submit
@@ -359,7 +355,6 @@ const TeacherDashboard = () => {
                                 <DocumentCard
                                     key={project.id}
                                     title={project.title}
-                                    type={project.type}
                                     onView={() => handleView(project.file)}
                                     onDownload={() => handleDownload(project.title)}
                                 />
@@ -376,4 +371,4 @@ const TeacherDashboard = () => {
     );
 };
 
-export default TeacherDashboard;
+export default EducatorDashboard;

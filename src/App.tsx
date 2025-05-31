@@ -2,13 +2,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import AdminDashboard from "./pages/admin/home-page";
 import SchoolManagement from "./pages/admin/school-management";
-import TeacherManagement from "./pages/admin/teacher-management";
+import EducatorManagement from "./pages/admin/educator-management";
 import Report from "./pages/admin/report";
-import TeacherDashboard from "./pages/teacher/home-page";
+import EducatorDashboard from "./pages/educator/home-page";
 import { Toaster } from "react-hot-toast";
 import AdminLayout from "./pages/admin/AdminLayout";
-import TeacherLayout from "./pages/teacher/TeacherLayout";
 import NotFoundPage from "./pages/NotFoundPage";
+import EducatorLayout from "./pages/educator/EducatorLayout";
 
 function App() {
   return (
@@ -32,13 +32,13 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="school-management" element={<SchoolManagement />} />
-          <Route path="teacher-management" element={<TeacherManagement />} />
+          <Route path="educator-management" element={<EducatorManagement />} />
           <Route path="report" element={<Report />} />
         </Route>
 
-        {/* Teacher routes with persistent layout */}
-        <Route path="/teacher" element={<TeacherLayout />}>
-          <Route index element={<TeacherDashboard />} />
+        {/* Educator routes with persistent layout */}
+        <Route path="/educator" element={<EducatorLayout />}>
+          <Route index element={<EducatorDashboard />} />
         </Route>
 
         {/* Catch-all route for 404 - Page Not Found */}

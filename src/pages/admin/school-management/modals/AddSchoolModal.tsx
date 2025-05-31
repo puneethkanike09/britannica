@@ -3,7 +3,6 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState } from 'react';
 import toast from "react-hot-toast";
-import AddSchoolIcon from '../../../../assets/dashboard/Admin/school-management/add-school.svg';// Adjust the path based on your project structure
 import { AddSchoolModalProps, School } from "../../../../types/admin";
 
 
@@ -194,8 +193,7 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
                                 className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
-                                <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
-                                <span className="hidden md:inline font-bold">Add School</span>
+                                <span className=" font-bold">Add School</span>
                             </button>
                         </div>
                     </form>

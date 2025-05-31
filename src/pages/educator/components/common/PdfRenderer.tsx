@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -31,8 +31,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [pageWidth, setPageWidth] = useState<number>(800);
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
     // Calculate responsive page width
     useEffect(() => {
@@ -184,30 +182,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         }
     }, [pageNumber]);
 
-    // Touch handlers for mobile swipe navigation
-    const handleTouchStart = useCallback((e: React.TouchEvent) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    }, []);
 
-    const handleTouchMove = useCallback((e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-    }, []);
-
-    const handleTouchEnd = useCallback(() => {
-        if (!touchStart || !touchEnd) return;
-
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > 50;
-        const isRightSwipe = distance < -50;
-
-        if (isLeftSwipe && numPages && pageNumber < numPages) {
-            handleNextPage();
-        }
-        if (isRightSwipe && pageNumber > 1) {
-            handlePrevPage();
-        }
-    }, [touchStart, touchEnd, numPages, pageNumber, handleNextPage, handlePrevPage]);
 
     const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
@@ -233,7 +208,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         </h2>
                         <button
                             onClick={onClose}
-                            className="text-textColor hover:text-hover cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                            className="text-textColor hover:text-hover cursor-pointer focus:outline-none rounded"
                             aria-label="Close dialog"
                         >
                             <X className="h-7 w-7" />
@@ -248,7 +223,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         <div className="flex justify-end">
                             <button
                                 onClick={onClose}
-                                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                                className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none cursor-pointer"
                             >
                                 Close
                             </button>
@@ -284,7 +259,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             <button
                                 onClick={handleZoomOut}
                                 disabled={scale <= 0.5}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
                                 aria-label="Zoom out"
                                 title="Zoom out (-)"
                             >
@@ -296,7 +271,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             <button
                                 onClick={handleZoomIn}
                                 disabled={scale >= 3.0}
-                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                                className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
                                 aria-label="Zoom in"
                                 title="Zoom in (+)"
                             >
@@ -307,17 +282,23 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         {/* Rotate Button */}
                         <button
                             onClick={handleRotate}
-                            className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer mr-4"
+                            className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none cursor-pointer mr-4"
                             aria-label="Rotate page"
                             title="Rotate page (R)"
                         >
-                            <RotateCw className="h-4 w-4" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+
+                            </svg>
+
+
                         </button>
 
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+                            className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none cursor-pointer"
                             aria-label="Close PDF viewer"
                             title="Close (Esc)"
                         >
@@ -329,9 +310,6 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                 {/* PDF Content - Fixed scrolling container */}
                 <div
                     className="flex-grow bg-inputBg border-inputBorder overflow-auto"
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
                     style={{
                         scrollBehavior: 'smooth'
                     }}
@@ -400,7 +378,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         <button
                             onClick={handlePrevPage}
                             disabled={pageNumber <= 1}
-                            className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
                             aria-label="Previous page"
                             title="Previous page (←)"
                         >
@@ -408,7 +386,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         </button>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-textColor">Page</span>
+                            <span className="text-textColor hidden md:block">Page</span>
                             <input
                                 type="number"
                                 min="1"
@@ -417,7 +395,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 onChange={handlePageInputChange}
                                 onBlur={handlePageInputBlur}
                                 onKeyDown={handlePageInputKeyDown}
-                                className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-textColor cursor-pointer"
+                                className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none text-textColor cursor-pointer"
                                 aria-label="Current page number"
                             />
                             <span className="text-textColor">of {numPages}</span>
@@ -426,7 +404,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                         <button
                             onClick={handleNextPage}
                             disabled={pageNumber >= numPages}
-                            className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
                             aria-label="Next page"
                             title="Next page (→)"
                         >

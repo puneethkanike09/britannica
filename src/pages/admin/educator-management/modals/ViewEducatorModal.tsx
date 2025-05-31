@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
-import { School, TeacherActionModalProps } from "../../../../types/admin";
+import { School, EducatorActionModalProps } from "../../../../types/admin";
 
-// Mock schools data (same as in EditTeacherModal)
+// Mock schools data (same as in EditEducatorModal)
 const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 1, name: "Britanica School" },
     { id: 2, name: "St. Mary's School" },
@@ -9,7 +9,7 @@ const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-export default function ViewTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
+export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             onClose();
@@ -17,8 +17,8 @@ export default function ViewTeacherModal({ onClose, teacher }: TeacherActionModa
     };
 
     // Find the school name if schoolId is provided
-    const schoolName = teacher.schoolId
-        ? schools.find((school) => school.id === teacher.schoolId)?.name || "Not assigned"
+    const schoolName = educator.schoolId
+        ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
         : "Not assigned";
 
     return (
@@ -29,7 +29,7 @@ export default function ViewTeacherModal({ onClose, teacher }: TeacherActionModa
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-secondary">Teacher Details</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Educator Details</h2>
                     <button
                         onClick={onClose}
                         className="text-textColor hover:text-hover cursor-pointer"
@@ -45,23 +45,23 @@ export default function ViewTeacherModal({ onClose, teacher }: TeacherActionModa
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
                                 <div className="text-textColor mb-2">Full Name</div>
                                 <div className="text-primary font-medium break-words">
-                                    {`${teacher.firstName} ${teacher.lastName}`}
+                                    {`${educator.firstName} ${educator.lastName}`}
                                 </div>
                             </div>
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
                                 <div className="text-textColor mb-2">Email Address</div>
-                                <div className="text-primary font-medium break-words">{teacher.email}</div>
+                                <div className="text-primary font-medium break-words">{educator.email}</div>
                             </div>
                             <div className="border-b border-gray-300 md:border-b-0 p-6">
                                 <div className="text-textColor mb-2">Phone Number</div>
-                                <div className="text-primary font-medium break-words">{teacher.phone}</div>
+                                <div className="text-primary font-medium break-words">{educator.phone}</div>
                             </div>
                         </div>
                         <div className="border-t border-gray-300 grid grid-cols-1 md:grid-cols-3">
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
                                 <div className="text-textColor mb-2">Login ID</div>
                                 <div className="text-primary font-medium break-words">
-                                    {teacher.loginId}
+                                    {educator.loginId}
                                 </div>
                             </div>
                             <div className="border-r border-gray-300 border-b md:border-b-0 p-6">

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 
-// Import SVG files
-import HomeIcon from '../../../../../assets/dashboard/Admin/sidebar/home.svg';
-import SchoolIcon from '../../../../../assets/dashboard/Admin/sidebar/school-management.svg';
+// Import constants and components
+import { ADMIN_NAV_ITEMS } from '../../../../../config/constants/Admin/sidebar';
 import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.png';
-import TeacherIcon from '../../../../../assets/dashboard/Admin/sidebar/teacher-management.svg';
-import ReportIcon from '../../../../../assets/dashboard/Admin/sidebar/report.svg';
 import LogoutModal from '../topbar/modals/LogoutModal';
 
 interface SidebarProps {
@@ -18,11 +15,15 @@ interface SidebarProps {
     onToggleCollapse: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, isCollapsed, onToggleCollapse }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+    showLogoutModal,
+    onCloseLogoutModal,
+    isCollapsed,
+    onToggleCollapse
+}) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
     useEffect(() => {
         const checkIfMobile = () => {
@@ -31,97 +32,64 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
 
         checkIfMobile();
         window.addEventListener("resize", checkIfMobile);
-
-        return () => {
-            window.removeEventListener("resize", checkIfMobile);
-        };
+        return () => window.removeEventListener("resize", checkIfMobile);
     }, []);
 
-    useEffect(() => {
-        if (isOpen) {
-            setIsOverlayVisible(true);
-        } else {
-            const timer = setTimeout(() => {
-                setIsOverlayVisible(false);
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen]);
-
-    const openSidebar = () => {
-        setIsOpen(true);
-    };
-
     const closeSidebar = () => {
-        if (isMobile) {
-            setIsOpen(false);
-        }
+        if (isMobile) setIsOpen(false);
     };
 
-    const toggleCollapse = () => {
-        onToggleCollapse();
-    };
+    const navItems = ADMIN_NAV_ITEMS;
 
     return (
         <>
-            {/* Hamburger Menu Button */}
+            {/* Mobile Menu Button */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-[20px] left-[12px] z-50 bg-transparent text-primary p-3 rounded-lg focus:outline-none transition-all duration-300 ease-in-out hover:bg-hover active:scale-95"
-                    onClick={openSidebar}
+                    className="md:hidden fixed top-[10px] left-[12px] z-50 bg-transparent text-primary p-3  hover:text-secondary"
+                    onClick={() => setIsOpen(true)}
                     aria-label="Open menu"
                 >
-                    <div className="relative w-5 h-4">
-                        <span
-                            className="absolute left-0 top-0 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out"
-                        ></span>
-                        <span
-                            className="absolute left-0 top-2 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out opacity-100"
-                        ></span>
-                        <span
-                            className="absolute left-0 top-4 w-full h-0.5 bg-primary rounded transition-all duration-300 ease-in-out"
-                        ></span>
-                    </div>
+                    <Menu className="h-8 w-8" />
                 </button>
             )}
 
+            {/* Sidebar */}
             <div
-                className={`${isCollapsed && !isMobile ? 'w-[80px] min-w-[80px]' : 'w-[320px] min-w-[320px]'} flex-shrink-0 bg-primary text-white fixed inset-y-0 left-0 z-90 transition-all duration-300 ease-in-out will-change-transform ${isOpen || !isMobile ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
-                style={{ backfaceVisibility: 'hidden' }}
+                className={`${isCollapsed && !isMobile ? 'w-[90px] min-w-[90px]' : 'w-[320px] min-w-[320px]'
+                    } flex-shrink-0 bg-primary text-white fixed inset-y-0 left-0 z-90 transition-all duration-300 ease-in-out ${isOpen || !isMobile ? "translate-x-0" : "-translate-x-full"
+                    } md:translate-x-0`}
             >
-                <div className={`${isCollapsed && !isMobile ? 'px-4 justify-center' : 'pl-8 pr-4 justify-between'} py-10 border-b border-stone-300/50 h-[81px] flex items-center transition-all duration-300`}>
-                    {/* Logo - only show when not collapsed or on mobile */}
+                {/* Header */}
+                <div className={`${isCollapsed && !isMobile ? 'px-4 justify-center' : 'pl-6 pr-5 justify-between'
+                    } py-10 border-b border-stone-300/50 h-[81px] flex items-center transition-all duration-300`}>
+
+                    {/* Logo */}
                     {(!isCollapsed || isMobile) && (
                         <NavLink to="/" onClick={closeSidebar}>
-                            <div className="flex items-center">
-                                <img
-                                    src={LogoIcon}
-                                    alt="Britannica Education Logo"
-                                    className="h-[40px] object-cover transition-all duration-300"
-                                />
-                            </div>
+                            <img
+                                src={LogoIcon}
+                                alt="Britannica Education Logo"
+                                className="h-[40px] object-cover transition-all duration-300"
+                            />
                         </NavLink>
                     )}
 
                     {/* Desktop Collapse Button */}
                     {!isMobile && (
                         <button
-                            className="text-white p-2 rounded-lg hover:bg-hover focus:outline-none   duration-200"
-                            onClick={toggleCollapse}
+                            className="text-white hover:text-secondary cursor-pointer"
+                            onClick={onToggleCollapse}
                             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                         >
-                            {isCollapsed ? (
-                                <ChevronRight className="h-5 w-5" />
-                            ) : (
-                                <ChevronLeft className="h-5 w-5" />
-                            )}
+                            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
                         </button>
                     )}
 
                     {/* Mobile Close Button */}
                     {isMobile && (
                         <button
-                            className="md:hidden text-white p-2 rounded-lg hover:bg-hover focus:outline-none"
+                            className="text-white p-2 rounded-lg hover:bg-hover focus:outline-none"
                             onClick={closeSidebar}
                             aria-label="Close menu"
                         >
@@ -130,84 +98,42 @@ const Sidebar: React.FC<SidebarProps> = ({ showLogoutModal, onCloseLogoutModal, 
                     )}
                 </div>
 
-                <nav className={`flex flex-col ${isCollapsed && !isMobile ? 'p-4' : 'p-8'} space-y-2 pt-10 transition-all duration-300`}>
-                    <NavLink
-                        to="/admin"
-                        end // Ensure exact matching for the /admin route
-                        className={({ isActive }) =>
-                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
-                            }`
-                        }
-                        onClick={closeSidebar}
-                        title={isCollapsed && !isMobile ? "Home" : ""}
-                    >
-                        <img
-                            src={HomeIcon}
-                            alt="Home"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin" ? 'scale-110' : ''}`}
-                        />
-                        {(!isCollapsed || isMobile) && <span className="text-lg">Home</span>}
-                    </NavLink>
-
-                    <NavLink
-                        to="/admin/school-management"
-                        className={({ isActive }) =>
-                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
-                            }`
-                        }
-                        onClick={closeSidebar}
-                        title={isCollapsed && !isMobile ? "School Management" : ""}
-                    >
-                        <img
-                            src={SchoolIcon}
-                            alt="School Management"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/school-management" ? 'scale-110' : ''}`}
-                        />
-                        {(!isCollapsed || isMobile) && <span className="text-lg">School Management</span>}
-                    </NavLink>
-
-                    <NavLink
-                        to="/admin/teacher-management"
-                        className={({ isActive }) =>
-                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
-                            }`
-                        }
-                        onClick={closeSidebar}
-                        title={isCollapsed && !isMobile ? "Teacher Management" : ""}
-                    >
-                        <img
-                            src={TeacherIcon}
-                            alt="Teacher Management"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/teacher-management" ? 'scale-110' : ''}`}
-                        />
-                        {(!isCollapsed || isMobile) && <span className="text-lg">Teacher Management</span>}
-                    </NavLink>
-
-                    <NavLink
-                        to="/admin/report"
-                        className={({ isActive }) =>
-                            `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'} rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
-                            }`
-                        }
-                        onClick={closeSidebar}
-                        title={isCollapsed && !isMobile ? "Report" : ""}
-                    >
-                        <img
-                            src={ReportIcon}
-                            alt="Report"
-                            className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'} ${location.pathname === "/admin/report" ? 'scale-110' : ''}`}
-                        />
-                        {(!isCollapsed || isMobile) && <span className="text-lg">Report</span>}
-                    </NavLink>
+                {/* Navigation */}
+                <nav className="flex flex-col p-6 space-y-2 pt-12  overflow-y-auto h-[calc(100vh-81px)]">
+                    {navItems.map(({ to, icon, alt, label, end }) => (
+                        <NavLink
+                            key={to}
+                            to={to}
+                            end={end}
+                            className={({ isActive }) =>
+                                `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'
+                                } rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                                }`
+                            }
+                            onClick={closeSidebar}
+                            title={isCollapsed && !isMobile ? label : ""}
+                        >
+                            <img
+                                src={icon}
+                                alt={alt}
+                                className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'
+                                    } ${location.pathname === to ? 'scale-110' : ''}`}
+                            />
+                            {(!isCollapsed || isMobile) && <span className="text-lg">{label}</span>}
+                        </NavLink>
+                    ))}
                 </nav>
             </div>
 
-            {(isOverlayVisible && isMobile) && (
+            {/* Mobile Overlay */}
+            {isMobile && isOpen && (
                 <div
-                    className={`fixed inset-0 bg-black/40 bg-opacity-50 z-50 md:hidden transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+                    className="fixed inset-0 bg-black/40 z-50 transition-opacity duration-300"
                     onClick={closeSidebar}
                 />
             )}
+
+            {/* Logout Modal */}
             {showLogoutModal && <LogoutModal onClose={onCloseLogoutModal} />}
         </>
     );

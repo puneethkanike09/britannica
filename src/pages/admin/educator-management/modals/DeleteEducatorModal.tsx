@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from 'react';
-import { TeacherActionModalProps } from "../../../../types/admin";
+import { EducatorActionModalProps } from "../../../../types/admin";
 
-export default function DeleteTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
+export default function DeleteEducatorModal({ onClose, educator }: EducatorActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -19,19 +19,19 @@ export default function DeleteTeacherModal({ onClose, teacher }: TeacherActionMo
             new Promise((resolve) => {
                 setTimeout(() => {
                     // Simulate a successful API DELETE call
-                    resolve('Teacher deleted successfully!');
+                    resolve('Educator deleted successfully!');
                     // For error simulation, you could use:
-                    // reject(new Error('Failed to delete teacher'));
+                    // reject(new Error('Failed to delete educator'));
                 }, 2000); // Simulate 2-second API call
             }),
             {
-                loading: 'Deleting teacher...',
+                loading: 'Deleting educator...',
                 success: () => {
                     setIsDeleting(false);
                     onClose();
-                    return 'Teacher deleted successfully!';
+                    return 'Educator deleted successfully!';
                 },
-                error: (err) => {
+                error: (err: Error) => {
                     setIsDeleting(false);
                     return `Error: ${err.message}`;
                 }
@@ -47,7 +47,7 @@ export default function DeleteTeacherModal({ onClose, teacher }: TeacherActionMo
             <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-secondary">Delete Teacher</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Delete Educator</h2>
                     <button
                         onClick={onClose}
                         className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
@@ -60,7 +60,7 @@ export default function DeleteTeacherModal({ onClose, teacher }: TeacherActionMo
                 {/* Content */}
                 <div className="px-8 py-6">
                     <p className="text-gray-700 mb-6">
-                        Are you sure you want to delete teacher <span className="font-medium text-gray-900">{`${teacher.firstName} ${teacher.lastName}`}</span>?
+                        Are you sure you want to delete educator <span className="font-medium text-gray-900">{`${educator.firstName} ${educator.lastName}`}</span>?
                         This action cannot be undone.
                     </p>
 

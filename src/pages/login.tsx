@@ -82,7 +82,7 @@ const Login = () => {
     );
   };
 
-  const handleTeacherLogin = (e: React.FormEvent) => {
+  const handleEducatorLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
@@ -91,7 +91,7 @@ const Login = () => {
         setTimeout(() => {
           if (email && password) {
             resolve("Login successful!");
-            navigate("/teacher");
+            navigate("/educator");
           } else {
             reject(new Error("Please enter email and password"));
           }
@@ -242,11 +242,11 @@ const Login = () => {
               </button>
               <button
                 type="button"
-                onClick={handleTeacherLogin}
+                onClick={handleEducatorLogin}
                 className="bg-primary  hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
-                Teacher Login
+                Educator Login
               </button>
             </div>
           </form>

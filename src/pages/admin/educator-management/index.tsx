@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import AddTeacherModal from './modals/AddTeacherModal';
-import EditTeacherModal from './modals/EditTeacherModal';
-import ViewTeacherModal from './modals/ViewTeacherModal';
-import ViewIcon from '../../../assets/dashboard/Admin/teacher-management/view.svg';
-import EditIcon from '../../../assets/dashboard/Admin/teacher-management/edit.svg';
-import DeleteIcon from '../../../assets/dashboard/Admin/teacher-management/delete.svg';
-import DeleteTeacherModal from './modals/DeleteTeacherModal';
-import AddTeacherIcon from '../../../assets/dashboard/Admin/teacher-management/add-teacher.svg';
-import { Teacher } from '../../../types/admin';
+import AddEducatorModal from './modals/AddEducatorModal';
+import EditEducatorModal from './modals/EditEducatorModal';
+import ViewEducatorModal from './modals/ViewEducatorModal';
+import ViewIcon from '../../../assets/dashboard/Admin/educator-management/view.svg';
+import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.svg';
+import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
+import DeleteEducatorModal from './modals/DeleteEducatorModal';
+import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
+import { Educator } from '../../../types/admin';
 
 // Mock schools data
 const schools = [
@@ -18,10 +18,8 @@ const schools = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-
-
-// Mock data for teachers with schoolId
-const teachers: Teacher[] = [
+// Mock data for educators with schoolId
+const educators: Educator[] = [
     {
         id: 1,
         firstName: "Kristin",
@@ -132,41 +130,41 @@ const teachers: Teacher[] = [
     },
 ];
 
-const TeacherManagement: React.FC = () => {
+const EducatorManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
-    const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+    const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const itemsPerPage = 6;
 
     // Calculate total pages
-    const totalPages = Math.ceil(teachers.length / itemsPerPage);
+    const totalPages = Math.ceil(educators.length / itemsPerPage);
 
     // Get current items
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = teachers.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = educators.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Open Add Teacher Modal
-    const openAddTeacherModal = () => {
+    // Open Add Educator Modal
+    const openAddEducatorModal = () => {
         setShowAddModal(true);
     };
 
-    // Open Edit Teacher Modal
-    const openEditTeacherModal = (teacher: Teacher) => {
-        setSelectedTeacher(teacher);
+    // Open Edit Educator Modal
+    const openEditEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
         setShowEditModal(true);
     };
 
-    // Open View Teacher Modal
-    const openViewTeacherModal = (teacher: Teacher) => {
-        setSelectedTeacher(teacher);
+    // Open View Educator Modal
+    const openViewEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
         setShowViewModal(true);
     };
 
@@ -195,40 +193,40 @@ const TeacherManagement: React.FC = () => {
         return pageNumbers;
     };
 
-    const closeAddTeacherModal = () => {
+    const closeAddEducatorModal = () => {
         setShowAddModal(false);
     };
 
-    const closeEditTeacherModal = () => {
+    const closeEditEducatorModal = () => {
         setShowEditModal(false);
-        setSelectedTeacher(null);
+        setSelectedEducator(null);
     };
 
-    const closeViewTeacherModal = () => {
+    const closeViewEducatorModal = () => {
         setShowViewModal(false);
-        setSelectedTeacher(null);
+        setSelectedEducator(null);
     };
 
-    const openDeleteTeacherModal = (teacher: Teacher) => {
-        setSelectedTeacher(teacher);
+    const openDeleteEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
         setShowDeleteModal(true);
     };
 
-    const closeDeleteTeacherModal = () => {
+    const closeDeleteEducatorModal = () => {
         setShowDeleteModal(false);
-        setSelectedTeacher(null);
+        setSelectedEducator(null);
     };
 
     return (
-        <div className="max-w-full mx-auto rounded-lg sm:p-10 bg-white">
+        <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">Teacher List</h1>
+                <h1 className="text-3xl font-bold text-secondary">Educator List</h1>
                 <button
-                    onClick={openAddTeacherModal}
-                    className="bg-primary  hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    onClick={openAddEducatorModal}
+                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                 >
-                    <img src={AddTeacherIcon} alt="Add" className="w-5 h-5" />
-                    <span className="hidden md:inline font-bold">Add Teacher</span>
+                    <img src={AddEducatorIcon} alt="Add" className="w-5 h-5" />
+                    <span className="hidden md:inline font-bold">Add Educator</span>
                 </button>
             </div>
 
@@ -238,7 +236,7 @@ const TeacherManagement: React.FC = () => {
                         <colgroup><col className="w-48" /><col className="w-48" /><col className="w-72" /><col className="w-48" /><col className="w-80" /></colgroup>
                         <thead>
                             <tr className="bg-indigo-900 text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Teacher Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Educator Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">School Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Email Address</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Phone Number</th>
@@ -246,17 +244,17 @@ const TeacherManagement: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((teacher, index) => {
+                            {currentItems.map((educator, index) => {
                                 // Find school name or display 'Not assigned'
-                                const schoolName = teacher.schoolId
-                                    ? schools.find((school) => school.id === teacher.schoolId)?.name || "Not assigned"
+                                const schoolName = educator.schoolId
+                                    ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
                                     : "Not assigned";
 
                                 return (
-                                    <tr key={teacher.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                    <tr key={educator.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
                                         <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">
-                                                {`${teacher.firstName} ${teacher.lastName}`}
+                                                {`${educator.firstName} ${educator.lastName}`}
                                             </div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
@@ -266,33 +264,33 @@ const TeacherManagement: React.FC = () => {
                                         </td>
                                         <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">
-                                                {teacher.email}
+                                                {educator.email}
                                             </div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="text-textColor">
-                                                {teacher.phone}
+                                                {educator.phone}
                                             </div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
-                                                    onClick={() => openViewTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
+                                                    onClick={() => openViewEducatorModal(educator)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => openEditTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
+                                                    onClick={() => openEditEducatorModal(educator)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => openDeleteTeacherModal(teacher)}
-                                                    className="bg-primary cursor-pointer  hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
+                                                    onClick={() => openDeleteEducatorModal(educator)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
@@ -340,18 +338,18 @@ const TeacherManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddTeacherModal onClose={closeAddTeacherModal} />}
-            {showEditModal && selectedTeacher && (
-                <EditTeacherModal onClose={closeEditTeacherModal} teacher={selectedTeacher} />
+            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} />}
+            {showEditModal && selectedEducator && (
+                <EditEducatorModal onClose={closeEditEducatorModal} educator={selectedEducator} />
             )}
-            {showViewModal && selectedTeacher && (
-                <ViewTeacherModal onClose={closeViewTeacherModal} teacher={selectedTeacher} />
+            {showViewModal && selectedEducator && (
+                <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
             )}
-            {showDeleteModal && selectedTeacher && (
-                <DeleteTeacherModal onClose={closeDeleteTeacherModal} teacher={selectedTeacher} />
+            {showDeleteModal && selectedEducator && (
+                <DeleteEducatorModal onClose={closeDeleteEducatorModal} educator={selectedEducator} />
             )}
         </div>
     );
 };
 
-export default TeacherManagement;
+export default EducatorManagement;

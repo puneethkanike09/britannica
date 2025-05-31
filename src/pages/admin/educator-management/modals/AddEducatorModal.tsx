@@ -3,9 +3,9 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState } from 'react';
 import toast from "react-hot-toast";
-import { TeacherActionModalProps, School, Teacher } from "../../../../types/admin";
+import { AddEducatorModalProps, School, Educator } from "../../../../types/admin";
 
-// Mock schools data (consistent with AddTeacherModal)
+// Mock data for schools dropdown
 const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 1, name: "Britanica School" },
     { id: 2, name: "St. Mary's School" },
@@ -13,21 +13,21 @@ const schools: Pick<School, 'id' | 'name'>[] = [
     { id: 4, name: "Kendriya Vidyalaya" },
 ];
 
-export default function EditTeacherModal({ onClose, teacher }: TeacherActionModalProps) {
-    const [formData, setFormData] = useState<Omit<Teacher, 'id'>>({
-        firstName: teacher.firstName || '',
-        lastName: teacher.lastName || '',
-        email: teacher.email || '',
-        phone: teacher.phone || '',
-        loginId: teacher.loginId || '',
-        schoolId: teacher.schoolId,
+export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
+    const [formData, setFormData] = useState<Omit<Educator, 'id'>>({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        loginId: '',
+        schoolId: undefined,
     });
     const [errors, setErrors] = useState({
         firstName: '',
         email: '',
         phone: '',
         loginId: '',
-        schoolId: '',
+        schoolId: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -62,7 +62,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
             email: '',
             phone: '',
             loginId: '',
-            schoolId: '',
+            schoolId: ''
         };
         let isValid = true;
 
@@ -104,20 +104,20 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
             toast.promise(
                 new Promise((resolve) => {
                     setTimeout(() => {
-                        resolve('Teacher updated successfully!');
+                        resolve('Educator added successfully!');
                     }, 2000);
                 }),
                 {
-                    loading: 'Updating teacher...',
+                    loading: 'Adding educator...',
                     success: () => {
                         setIsSubmitting(false);
                         onClose();
-                        return 'Teacher updated successfully!';
+                        return 'Educator added successfully!';
                     },
                     error: (err) => {
                         setIsSubmitting(false);
                         return `Error: ${err.message}`;
-                    },
+                    }
                 }
             );
         }
@@ -131,7 +131,7 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
             <div className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
                 {/* Sticky Header */}
                 <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                    <h2 className="text-3xl font-bold text-secondary">Edit Teacher</h2>
+                    <h2 className="text-3xl font-bold text-secondary">Add Educator</h2>
                     <button
                         onClick={onClose}
                         className={`text-textColor hover:text-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
@@ -249,12 +249,12 @@ export default function EditTeacherModal({ onClose, teacher }: TeacherActionModa
 
                         <div className="mt-12">
                             <button
+                                type="button"
                                 onClick={handleSubmit}
-                                type="submit"
-                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
                             >
-                                Save
+                                <span className=" font-bold">Add Educator</span>
                             </button>
                         </div>
                     </form>

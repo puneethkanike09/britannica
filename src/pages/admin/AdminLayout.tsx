@@ -36,7 +36,7 @@ const AdminLayout: React.FC = () => {
                 onToggleCollapse={toggleSidebarCollapse}
             />
             <div
-                className={`flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[320px]'
+                className={`flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[90px]' : 'md:ml-[320px]'
                     }`}
             >
                 <Topbar
