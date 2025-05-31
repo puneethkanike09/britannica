@@ -1,65 +1,22 @@
-
 import { useEffect, useState } from 'react';
 import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.png';
-import { LogOut } from 'lucide-react';
-import LogoutModal from '../../admin/components/layout/topbar/modals/LogoutModal';
-import LogoIcon from '../../../assets/dashboard/Educator/home-page/logo.png';
-import ViewIcon from '../../../assets/dashboard/Educator/home-page/view.svg';
-import DownloadIcon from '../../../assets/dashboard/Educator/home-page/download.svg';
-import ArrowIcon from '../../../assets/dashboard/Educator/home-page/arrow.svg';
-import { Link } from 'react-router-dom';
 import { pdfjs } from 'react-pdf';
 import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
 
+
+
 // Import PDF files
 import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
-import { DocumentCardProps, SelectProps } from '../../../types/teacher';
+import Header from '../components/layout/topbar';
+import Select from '../components/common/Select';
+import DocumentCard from '../components/common/DocumentCard';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
     import.meta.url
 ).toString();
-
-
-
-
-
-const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }) => {
-    return (
-        <div className="w-full max-w-xs rounded-lg bg-white group">
-            <div className="relative pb-4 px-6 pt-6">
-                <div className="absolute top-[-2px] right-4">
-                    <span className="bg-red text-white text-xs font-bold px-4 py-1">
-                        PDF
-                    </span>
-                </div>
-                <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
-                    {title}
-                </h3>
-            </div>
-            <div className="pt-0 px-6 pb-6">
-                <div className="flex gap-3">
-                    <button
-                        onClick={onView}
-                        className="flex-1 bg-primary  hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                        <img src={ViewIcon} alt="View Icon" className="h-4 w-4" />
-                        View
-                    </button>
-                    <button
-                        onClick={onDownload}
-                        className="flex-1 bg-primary  hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                        <img src={DownloadIcon} alt="Download Icon" className="h-4 w-4" />
-                        Download
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -88,7 +45,6 @@ const EducatorDashboard = () => {
         { id: 9, title: 'Culinary Creations', type: 'PDF', file: EmergencyKitsPdf }
     ];
 
-
     const gradeOptions = [
         { value: '1', label: 'Grade 3' },
         { value: '2', label: 'Grade 4' },
@@ -110,7 +66,6 @@ const EducatorDashboard = () => {
         { value: 'social_emotional_learning', label: 'Social Emotional Learning' },
         { value: 'vocational_education', label: 'Vocational Education' },
     ];
-
 
     const typeOptions = [
         { value: 'educator_navigation', label: 'Educator Navigation' },
@@ -193,6 +148,11 @@ const EducatorDashboard = () => {
         setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
     };
 
+    const handleErrorClear = (field: string) => {
+        setErrors((prev) => ({ ...prev, [field]: '' }));
+        setOpenDropdown(null);
+    };
+
     useEffect(() => {
         if (!openDropdown) return;
         const handleBackdropClick = (e: MouseEvent) => {
@@ -213,86 +173,9 @@ const EducatorDashboard = () => {
         };
     }, [openDropdown]);
 
-    const Select: React.FC<SelectProps> = ({
-        value,
-        onValueChange,
-        placeholder,
-        options,
-        className = '',
-        isOpen,
-        onToggle,
-        error,
-    }) => {
-        return (
-            <div className="relative w-full sm:w-[250px] custom-select-dropdown">
-                <button
-                    onClick={onToggle}
-                    className={`flex items-center justify-between px-4 py-3  text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg  ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${error ? 'border border-red' : ''} ${className}`}
-                    aria-label={`Select ${placeholder}`}
-                    aria-expanded={isOpen}
-                    role="combobox"
-                    disabled={isSubmitting}
-                >
-                    <span>{value ? options.find((opt) => opt.value === value)?.label : placeholder}</span>
-                    <img
-                        src={ArrowIcon}
-                        alt="Arrow Icon"
-                        className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                    />
-                </button>
-                {isOpen && (
-                    <div
-                        className="absolute w-full bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto top-[50px] mt-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                        role="listbox"
-                    >
-                        {options.map((option) => (
-                            <button
-                                key={option.value}
-                                onClick={() => {
-                                    onValueChange(option.value);
-                                    setErrors((prev) => ({ ...prev, [placeholder.toLowerCase()]: '' }));
-                                    setOpenDropdown(null);
-                                }}
-                                className={`w-full px-4  text-xl font-bold py-2 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''}`}
-                                role="option"
-                                aria-selected={value === option.value}
-                            >
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
-                )}
-                {error && <p className="text-red text-sm mt-1">{error}</p>}
-            </div>
-        );
-    };
-
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-    const openLogoutModal = () => {
-        setShowLogoutModal(true);
-    };
-
-    const closeLogoutModal = () => {
-        setShowLogoutModal(false);
-    };
-
     return (
         <>
-            <header className="fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16 sm:h-[81px] bg-[#EEFAFF] z-[20]">
-                <Link to="/">
-                    <div className="flex items-center gap-3">
-                        <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] object-cover" />
-                    </div>
-                </Link>
-                <button
-                    onClick={openLogoutModal}
-                    className="bg-primary  hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
-                >
-                    <LogOut size={18} />
-                    <span className="hidden md:inline font-bold">Log out</span>
-                </button>
-            </header>
+            <Header />
             <div className="min-h-screen relative overflow-hidden">
                 <div
                     className="fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -303,7 +186,7 @@ const EducatorDashboard = () => {
                     }}
                     aria-hidden="true"
                 />
-                <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-24 sm:pt-24 lg:pt-32  pb-8 sm:pb-8 lg:pb-8">
+                <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-24 sm:pt-24 lg:pt-32 pb-8 sm:pb-8 lg:pb-8">
                     <h2 className="text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-center">
                         Welcome to the Educators Dashboard!
                     </h2>
@@ -319,6 +202,8 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'grade'}
                             onToggle={() => handleDropdownToggle('grade')}
                             error={errors.grade}
+                            isSubmitting={isSubmitting}
+                            onErrorClear={handleErrorClear}
                         />
                         <Select
                             value={selectedTheme}
@@ -328,6 +213,8 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'theme'}
                             onToggle={() => handleDropdownToggle('theme')}
                             error={errors.theme}
+                            isSubmitting={isSubmitting}
+                            onErrorClear={handleErrorClear}
                         />
                         <Select
                             value={selectedType}
@@ -337,12 +224,14 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'type'}
                             onToggle={() => handleDropdownToggle('type')}
                             error={errors.type}
+                            isSubmitting={isSubmitting}
+                            onErrorClear={handleErrorClear}
                         />
                         <div className="relative w-full sm:w-auto">
-
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary  hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg  w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                    }`}
                                 disabled={isSubmitting}
                             >
                                 Submit
@@ -366,7 +255,6 @@ const EducatorDashboard = () => {
                     <PdfRenderer file={currentPdfFile} onClose={() => setShowPdfViewer(false)} />
                 )}
             </div>
-            {showLogoutModal && <LogoutModal onClose={closeLogoutModal} />}
         </>
     );
 };
