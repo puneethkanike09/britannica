@@ -21,6 +21,7 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
     const [showMenu, setShowMenu] = useState(false);
     const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
+    const submenuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
     const navigationItems: NavItem[] = [
         {
@@ -73,27 +74,47 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
         setActiveSubmenu(null);
     };
 
-    const toggleSubmenu = (itemId: string) => {
+    const toggleSubmenu = (itemId: string, event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
         setActiveSubmenu(activeSubmenu === itemId ? null : itemId);
     };
 
-    // Close menu when clicking outside
+    const handleSubmenuClick = (subItem: NavItem, event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        subItem.action?.();
+        setActiveSubmenu(null);
+    };
+
+    // Close menu and submenu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+
+            // Check if click is outside menu
+            if (menuRef.current && !menuRef.current.contains(target)) {
                 setShowMenu(false);
-                setActiveSubmenu(null);
+            }
+
+            // Check if click is outside any active submenu
+            if (activeSubmenu) {
+                const submenuElement = submenuRefs.current[activeSubmenu];
+                if (submenuElement && !submenuElement.contains(target)) {
+                    // Also check if the click is not on the submenu button itself
+                    const submenuButton = submenuElement.previousElementSibling;
+                    if (submenuButton && !submenuButton.contains(target)) {
+                        setActiveSubmenu(null);
+                    }
+                }
             }
         };
 
-        if (showMenu) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showMenu]);
+    }, [showMenu, activeSubmenu]);
 
     return (
         <>
@@ -106,24 +127,31 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-8">
                     {navigationItems.map((item) => (
-                        <div key={item.id} className="relative group">
+                        <div key={item.id} className="relative">
                             {item.subItems ? (
                                 <>
-                                    <button className="flex items-center gap-1 px-3 py-2 text-textColor hover:text-primary font-bold transition-colors duration-200 group cursor-pointer">
-                                        <span className="group-hover:text-primary transition-colors duration-200">{item.label}</span>
+                                    <button
+                                        onClick={(e) => toggleSubmenu(item.id, e)}
+                                        className="flex items-center gap-1 px-3 py-2 text-textColor hover:text-primary font-bold transition-colors duration-200 cursor-pointer"
+                                    >
+                                        <span className="transition-colors duration-200">{item.label}</span>
                                         <ChevronDown
                                             size={14}
-                                            className="group-hover:text-primary group-hover:rotate-180 transition-all duration-200"
+                                            className={`transition-transform duration-200 ${activeSubmenu === item.id ? 'rotate-180' : ''}`}
                                         />
                                     </button>
 
                                     {/* Desktop Dropdown */}
-                                    <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+                                    <div
+                                        ref={(el) => { submenuRefs.current[item.id] = el; }}
+                                        className={`absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg  transition-all duration-200 z-40 ${activeSubmenu === item.id ? 'opacity-100 visible' : 'opacity-0 invisible'
+                                            }`}
+                                    >
                                         <div className="py-1">
                                             {item.subItems.map((subItem) => (
                                                 <button
                                                     key={subItem.id}
-                                                    onClick={subItem.action}
+                                                    onClick={(e) => handleSubmenuClick(subItem, e)}
                                                     className="w-full px-4 py-3 text-left text-textColor hover:text-primary hover:bg-third transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg cursor-pointer"
                                                 >
                                                     {subItem.label}
@@ -192,25 +220,26 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                                 {item.subItems ? (
                                     <>
                                         <button
-                                            onClick={() => toggleSubmenu(item.id)}
+                                            onClick={(e) => toggleSubmenu(item.id, e)}
                                             className="w-full flex items-center justify-between py-3 text-textColor hover:text-primary font-bold transition-colors duration-200 cursor-pointer"
                                         >
                                             <span className="text-lg">{item.label}</span>
                                             <ChevronDown
                                                 size={16}
-                                                className={`transition-transform duration-200 ${activeSubmenu === item.id ? 'rotate-180' : ''
-                                                    }`}
+                                                className={`transition-transform duration-200 ${activeSubmenu === item.id ? 'rotate-180' : ''}`}
                                             />
                                         </button>
 
                                         {/* Mobile Submenu */}
-                                        <div className={`overflow-hidden transition-all duration-300 ${activeSubmenu === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                                            }`}>
+                                        <div
+                                            className={`overflow-hidden transition-all duration-300 ${activeSubmenu === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                                }`}
+                                        >
                                             <div className="pl-4 pt-2 space-y-1">
                                                 {item.subItems.map((subItem) => (
                                                     <button
                                                         key={subItem.id}
-                                                        onClick={subItem.action}
+                                                        onClick={(e) => handleSubmenuClick(subItem, e)}
                                                         className="block w-full text-left py-2.5 px-3 text-textColor hover:text-primary hover:bg-third rounded-lg transition-colors duration-150 cursor-pointer"
                                                     >
                                                         {subItem.label}
