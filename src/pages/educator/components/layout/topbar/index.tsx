@@ -104,7 +104,7 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden lg:flex items-center space-x-8">
+                <nav className="hidden md:flex items-center space-x-8">
                     {navigationItems.map((item) => (
                         <div key={item.id} className="relative group">
                             {item.subItems ? (
@@ -118,7 +118,7 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                                     </button>
 
                                     {/* Desktop Dropdown */}
-                                    <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg  opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+                                    <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
                                         <div className="py-1">
                                             {item.subItems.map((subItem) => (
                                                 <button
@@ -145,7 +145,7 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                 </nav>
 
                 {/* Right side - Desktop */}
-                <div className="hidden sm:flex items-center gap-4">
+                <div className="hidden md:flex items-center gap-4">
                     <button
                         onClick={openLogoutModal}
                         className="bg-primary hover:bg-hover text-white px-6 py-2.5 rounded-lg font-bold cursor-pointer flex items-center gap-2 transition-all duration-200"
@@ -156,7 +156,7 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
                 </div>
 
                 {/* Mobile Menu Button */}
-                <div className="sm:hidden flex items-center gap-3">
+                <div className="md:hidden flex items-center gap-3">
                     <button
                         onClick={openLogoutModal}
                         className="bg-primary hover:bg-hover text-white p-2.5 rounded-lg cursor-pointer transition-all duration-200"
@@ -175,13 +175,13 @@ const CleanHeader: React.FC<HeaderProps> = ({ className = '' }) => {
 
             {/* Mobile Menu Overlay */}
             {showMenu && (
-                <div className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-[25] sm:hidden" onClick={() => setShowMenu(false)} />
+                <div className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-[25] md:hidden" onClick={() => setShowMenu(false)} />
             )}
 
             {/* Mobile Menu */}
             <div
                 ref={menuRef}
-                className={`fixed top-16 right-0 w-80 max-w-[90vw] bg-white  z-[26] transform transition-transform duration-300 sm:hidden ${showMenu ? 'translate-x-0' : 'translate-x-full'
+                className={`fixed top-16 right-0 w-80 max-w-[90vw] bg-white z-[26] transform transition-transform duration-300 md:hidden ${showMenu ? 'translate-x-0' : 'translate-x-full'
                     }`}
                 style={{ height: 'calc(100vh - 4rem)' }}
             >
