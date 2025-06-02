@@ -3,22 +3,25 @@ import { Variants } from "framer-motion";
 export const modalVariants: Variants = {
     hidden: {
         opacity: 0,
-        scale: 0.8,
+        scale: 1.1,
+        filter: "blur(10px)",
     },
     visible: {
         opacity: 1,
         scale: 1,
+        filter: "blur(0px)",
         transition: {
-            duration: 0.2,
+            duration: 0.1,
             ease: "easeOut",
         },
     },
     exit: {
         opacity: 0,
-        scale: 0.8,
+        scale: 1.1,
+        filter: "blur(10px)",
         transition: {
-            duration: 0.2,
-            ease: "easeOut",
+            duration: 0.1,
+            ease: "easeIn",
         },
     },
 };

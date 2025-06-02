@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Menu Button */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-[10px] left-[12px] z-50 bg-transparent text-primary p-3  hover:text-secondary"
+                    className="md:hidden fixed top-[10px] left-[12px] z-50 bg-transparent text-primary p-3  hover:text-textColor"
                     onClick={() => setIsOpen(true)}
                     aria-label="Open menu"
                 >
@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
                 {/* Header */}
                 <div className={`${isCollapsed && !isMobile ? 'px-4 justify-center' : 'pl-6 pr-5 justify-between'
-                    } py-10 border-b border-stone-300/50 h-[81px] flex items-center transition-all duration-300`}>
+                    } py-10 shadow-xs h-[81px] flex items-center transition-all duration-300`}>
 
                     {/* Logo */}
                     {(!isCollapsed || isMobile) && (
@@ -78,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {/* Desktop Collapse Button */}
                     {!isMobile && (
                         <button
-                            className="text-white hover:text-secondary cursor-pointer"
+                            className="text-white hover:text-textColor cursor-pointer"
                             onClick={onToggleCollapse}
                             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                         >
@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {/* Mobile Close Button */}
                     {isMobile && (
                         <button
-                            className="text-white p-2 rounded-lg hover:bg-hover focus:outline-none"
+                            className="text-white  rounded-lg hover:text-textColor "
                             onClick={closeSidebar}
                             aria-label="Close menu"
                         >
@@ -128,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Overlay */}
             {isMobile && isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300"
+                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-50 transition-opacity duration-300"
                     onClick={closeSidebar}
                 />
             )}

@@ -1,3 +1,14 @@
+//topbar nav item
+export interface EducatorNavItem {
+    label: string;
+    to?: string;
+    dropdown?: Array<{
+        label: string;
+        to: string;
+    }>;
+}
+
+
 export interface SelectOption {
     value: string;
     label: string;

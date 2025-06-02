@@ -39,13 +39,13 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
                         className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
@@ -68,23 +68,26 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
 
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-gray-300 rounded-lg overflow-hidden mb-6">
+                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                {/* First Row */}
                                 <div className="grid grid-cols-1 md:grid-cols-3">
-                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">School Name</div>
                                         <div className="text-primary font-medium break-words">{school.name}</div>
                                     </div>
-                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Email Address</div>
                                         <div className="text-primary font-medium break-words">{school.email}</div>
                                     </div>
-                                    <div className="border-b border-gray-300 md:border-b-0 p-6">
+                                    <div className="p-6 border-b border-lightGray md:border-b-0">
                                         <div className="text-textColor mb-2">Phone Number</div>
                                         <div className="text-primary font-medium break-words">{school.phone}</div>
                                     </div>
                                 </div>
-                                <div className="border-t border-gray-300 grid grid-cols-1 md:grid-cols-3">
-                                    <div className="border-r border-gray-300 border-b md:border-b-0 p-6">
+
+                                {/* Second Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                    <div className="p-6 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Address</div>
                                         <div className="text-primary font-medium break-words">
                                             {school.address || "Not provided"}

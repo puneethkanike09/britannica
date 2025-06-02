@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
+import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +22,10 @@ const Login = () => {
   const [forgotPasswordErrors, setForgotPasswordErrors] = useState({
     email: "",
   });
+
+  // Animation state for modals
+  const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
+  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
 
   const validateForm = () => {
     const newErrors = { email: "", password: "" };
@@ -119,12 +125,13 @@ const Login = () => {
         setTimeout(() => {
           if (forgotPasswordEmail) {
             resolve("Password reset email sent!");
-            setShowForgotPasswordModal(false);
+            handleCloseForgotPassword();
             setShowSuccessModal(true);
+            setIsSuccessVisible(true);
           } else {
             reject(new Error("Failed to send password reset email"));
           }
-        }, 2000); // Simulate 2-second API call
+        }, 2000);
       }),
       {
         loading: "Sending reset link...",
@@ -140,20 +147,70 @@ const Login = () => {
     );
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isSubmitting) return;
-    if (e.target === e.currentTarget) {
+  // Handle opening/closing forgot password modal
+  const handleOpenForgotPassword = () => {
+    setShowForgotPasswordModal(true);
+    setIsForgotPasswordVisible(true);
+  };
+
+  const handleCloseForgotPassword = () => {
+    setIsForgotPasswordVisible(false);
+  };
+
+  const handleForgotPasswordAnimationComplete = () => {
+    if (!isForgotPasswordVisible) {
       setShowForgotPasswordModal(false);
+    }
+  };
+
+  // Handle opening/closing success modal
+  const handleCloseSuccess = () => {
+    setIsSuccessVisible(false);
+  };
+
+  const handleSuccessAnimationComplete = () => {
+    if (!isSuccessVisible) {
       setShowSuccessModal(false);
     }
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isSubmitting) return;
+    if (e.target === e.currentTarget) {
+      if (showForgotPasswordModal) {
+        handleCloseForgotPassword();
+      }
+      if (showSuccessModal) {
+        handleCloseSuccess();
+      }
+    }
+  };
+
+  // Handle ESC key for modals
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showForgotPasswordModal && !isSubmitting) {
+          handleCloseForgotPassword();
+        }
+        if (showSuccessModal) {
+          handleCloseSuccess();
+        }
+      }
+    };
+
+    if (showForgotPasswordModal || showSuccessModal) {
+      document.addEventListener('keydown', handleEscKey);
+      return () => document.removeEventListener('keydown', handleEscKey);
+    }
+  }, [showForgotPasswordModal, showSuccessModal, isSubmitting]);
+
   return (
-    <div className="grid min-h-screen w-full  grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
+    <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
       {/* Left side - Login Form */}
       <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
         <div className="max-w-lg w-full">
-          <h1 className=" text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
+          <h1 className="text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
             Access to Britannica
           </h1>
           <h2 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
@@ -223,7 +280,7 @@ const Login = () => {
             <div className="text-right mb-5">
               <button
                 type="button"
-                onClick={() => setShowForgotPasswordModal(true)}
+                onClick={handleOpenForgotPassword}
                 className="text-textColor hover:underline cursor-pointer"
                 disabled={isSubmitting}
               >
@@ -235,7 +292,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleAdminLogin}
-                className="bg-primary  hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 Admin Login
@@ -243,7 +300,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleEducatorLogin}
-                className="bg-primary  hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 Educator Login
@@ -260,92 +317,120 @@ const Login = () => {
       />
 
       {/* Forgot Password Modal */}
-      {showForgotPasswordModal && (
-        <div
-          className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
-          onClick={handleBackdropClick}
-        >
-          <div className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4">
-            <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-              <h2 className="text-3xl font-bold text-secondary">
-                Forgot Password
-              </h2>
-              <button
-                onClick={() => setShowForgotPasswordModal(false)}
-                className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-                  }`}
-                disabled={isSubmitting}
-              >
-                <X className="h-7 w-7" />
-              </button>
-            </div>
+      <AnimatePresence onExitComplete={handleForgotPasswordAnimationComplete}>
+        {showForgotPasswordModal && isForgotPasswordVisible && (
+          <motion.div
+            className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+            onClick={handleBackdropClick}
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            transition={{ duration: 0.1, ease: "easeOut" }}
+          >
+            <motion.div
+              className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
+                <h2 className="text-3xl font-bold text-textColor">
+                  Forgot Password
+                </h2>
+                <button
+                  onClick={handleCloseForgotPassword}
+                  className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                    }`}
+                  disabled={isSubmitting}
+                >
+                  <X className="h-7 w-7" />
+                </button>
+              </div>
 
-            <div className="flex-1 overflow-y-auto px-8 py-6">
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div>
-                  <label className="block text-textColor mb-2">
-                    Email address<span className="text-red">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={forgotPasswordEmail}
-                    onChange={(e) => {
-                      setForgotPasswordEmail(e.target.value);
-                      if (forgotPasswordErrors.email)
-                        setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
-                    }}
-                    className={`w-full p-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${forgotPasswordErrors.email ? "border-red" : "border-inputPlaceholder"
-                      } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
-                    placeholder="Enter your registered email"
-                    disabled={isSubmitting}
-                  />
-                  {forgotPasswordErrors.email && (
-                    <p className="text-red text-sm mt-1">
-                      {forgotPasswordErrors.email}
-                    </p>
-                  )}
-                </div>
+              <div className="flex-1 overflow-y-auto px-8 py-6">
+                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                  <div>
+                    <label className="block text-textColor mb-2">
+                      Email address<span className="text-red">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => {
+                        setForgotPasswordEmail(e.target.value);
+                        if (forgotPasswordErrors.email)
+                          setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
+                      }}
+                      className={`w-full p-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${forgotPasswordErrors.email ? "border-red" : "border-inputPlaceholder"
+                        } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                      placeholder="Enter your registered email"
+                      disabled={isSubmitting}
+                    />
+                    {forgotPasswordErrors.email && (
+                      <p className="text-red text-sm mt-1">
+                        {forgotPasswordErrors.email}
+                      </p>
+                    )}
+                  </div>
 
-                <div className="mt-8">
-                  <button
-                    type="button"
-                    onClick={handleForgotPasswordSubmit}
-                    className={`bg-primary text-white px-8 py-3 rounded-lg font-medium  hover:bg-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-                      }`}
-                    disabled={isSubmitting}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+                  <div className="mt-8">
+                    <button
+                      type="button"
+                      onClick={handleForgotPasswordSubmit}
+                      className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                        }`}
+                      disabled={isSubmitting}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Success Modal */}
-      {showSuccessModal && (
-        <div
-          className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
-          onClick={handleBackdropClick}
-        >
-          <div className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-8">
-            <div className="flex-1 px-8 py-6 text-center">
-              <p className="text-textColor text-lg mb-8">
-                A password reset link sent to your registered email address.
-                Please check your inbox to proceed
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowSuccessModal(false)}
-                className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence onExitComplete={handleSuccessAnimationComplete}>
+        {showSuccessModal && isSuccessVisible && (
+          <motion.div
+            className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+            onClick={handleBackdropClick}
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            transition={{ duration: 0.1, ease: "easeOut" }}
+          >
+            <motion.div
+              className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-8"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex-1 px-8 py-6 text-center">
+                <p className="text-textColor text-lg mb-8">
+                  A password reset link sent to your registered email address.
+                  Please check your inbox to proceed
+                </p>
+                <button
+                  type="button"
+                  onClick={handleCloseSuccess}
+                  className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

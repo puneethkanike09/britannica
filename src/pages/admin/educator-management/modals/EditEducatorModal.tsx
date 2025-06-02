@@ -152,13 +152,13 @@ export default function EditEducatorModal({ onClose, educator }: EducatorActionM
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
                         className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"

@@ -43,7 +43,7 @@ const AdminLayout: React.FC = () => {
                     onOpenLogoutModal={openLogoutModal}
                     isSidebarCollapsed={isSidebarCollapsed}
                 />
-                <main className="p-6 flex-1 sm:bg-gray-100 overflow-x-auto w-full mt-[81px]">
+                <main className="p-6 flex-1 sm:bg-gray/10 overflow-x-auto w-full mt-[81px]">
                     {/* This renders the matched child route */}
                     <Outlet />
                 </main>

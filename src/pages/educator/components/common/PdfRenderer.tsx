@@ -213,13 +213,13 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
             <AnimatePresence onExitComplete={handleAnimationComplete}>
                 {isVisible && (
                     <motion.div
-                        className={`fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4 ${className}`}
+                        className={`fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4 ${className}`}
                         onClick={handleBackdropClick}
                         variants={backdropVariants}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
-                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        transition={{ duration: 0.1, ease: "easeOut" }}
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="error-title"
@@ -239,7 +239,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 </h2>
                                 <button
                                     onClick={handleClose}
-                                    className="text-textColor hover:text-hover cursor-pointer focus:outline-none rounded"
+                                    className="text-textColor hover:text-hover cursor-pointer  rounded"
                                     aria-label="Close dialog"
                                 >
                                     <X className="h-7 w-7" />
@@ -254,7 +254,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleClose}
-                                        className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors focus:outline-none cursor-pointer"
+                                        className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors  cursor-pointer"
                                     >
                                         Close
                                     </button>
@@ -278,13 +278,13 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className={`fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center px-4 ${className}`}
+                    className={`fixed inset-0 bg-black/40  backdrop-blur-xs z-50 flex items-center justify-center px-4 ${className}`}
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="pdf-title"
@@ -306,7 +306,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                     <button
                                         onClick={handleZoomOut}
                                         disabled={scale <= 0.5}
-                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors  cursor-pointer"
                                         aria-label="Zoom out"
                                         title="Zoom out (-)"
                                     >
@@ -318,7 +318,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                     <button
                                         onClick={handleZoomIn}
                                         disabled={scale >= 3.0}
-                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none cursor-pointer"
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors  cursor-pointer"
                                         aria-label="Zoom in"
                                         title="Zoom in (+)"
                                     >
@@ -329,7 +329,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 {/* Rotate Button */}
                                 <button
                                     onClick={handleRotate}
-                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors focus:outline-none cursor-pointer mr-4"
+                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors  cursor-pointer mr-4"
                                     aria-label="Rotate page"
                                     title="Rotate page (R)"
                                 >
@@ -341,7 +341,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 {/* Close Button */}
                                 <button
                                     onClick={handleClose}
-                                    className="p-2 rounded-md text-textColor hover:text-hover transition-colors focus:outline-none cursor-pointer"
+                                    className="p-2 rounded-md text-textColor hover:text-hover transition-colors  cursor-pointer"
                                     aria-label="Close PDF viewer"
                                     title="Close (Esc)"
                                 >
@@ -421,7 +421,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 <button
                                     onClick={handlePrevPage}
                                     disabled={pageNumber <= 1}
-                                    className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
+                                    className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer "
                                     aria-label="Previous page"
                                     title="Previous page (←)"
                                 >
@@ -438,7 +438,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                         onChange={handlePageInputChange}
                                         onBlur={handlePageInputBlur}
                                         onKeyDown={handlePageInputKeyDown}
-                                        className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded focus:outline-none text-textColor cursor-pointer"
+                                        className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded  text-textColor cursor-pointer"
                                         aria-label="Current page number"
                                     />
                                     <span className="text-textColor">of {numPages}</span>
@@ -447,7 +447,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 <button
                                     onClick={handleNextPage}
                                     disabled={pageNumber >= numPages}
-                                    className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer focus:outline-none"
+                                    className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer "
                                     aria-label="Next page"
                                     title="Next page (→)"
                                 >

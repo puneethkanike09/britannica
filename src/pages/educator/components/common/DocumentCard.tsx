@@ -1,7 +1,7 @@
 import React from 'react';
 import ViewIcon from '../../../../assets/dashboard/Educator/home-page/view.svg';
 import DownloadIcon from '../../../../assets/dashboard/Educator/home-page/download.svg';
-import { DocumentCardProps } from '../../../../types/teacher';
+import { DocumentCardProps } from '../../../../types/educator';
 
 const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }) => {
     return (
@@ -12,7 +12,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }
                         PDF
                     </span>
                 </div>
-                <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
+                <h3 className="text-2xl font-black text-textColor leading-tight min-h-[6.5rem] flex items-center">
                     {title}
                 </h3>
             </div>

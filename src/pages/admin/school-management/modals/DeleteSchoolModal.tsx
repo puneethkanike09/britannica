@@ -65,13 +65,13 @@ export default function DeleteSchoolModal({ onClose, school }: SchoolActionModal
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
                         className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4"
@@ -95,15 +95,15 @@ export default function DeleteSchoolModal({ onClose, school }: SchoolActionModal
 
                         {/* Content */}
                         <div className="px-8 py-6">
-                            <p className="text-gray-700 mb-6">
-                                Are you sure you want to delete school <span className="font-bold text-gray-900">{school.name}</span>?
+                            <p className="text-textColor mb-6">
+                                Are you sure you want to delete school <span className="font-bold text-darkGray">{school.name}</span>?
                                 This action cannot be undone.
                             </p>
 
                             <div className="flex justify-end gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-6 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-6 py-2 rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isDeleting}
                                 >
                                     No, Cancel

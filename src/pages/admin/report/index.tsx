@@ -1,14 +1,10 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState } from 'react';
-import CalendarIcon from '../components/common/CalendarIcon';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
 import { ActivityLog } from '../../../types/admin';
-
-// Interface for activity log entries
-
 
 export default function Report() {
     // State with explicit types
@@ -176,10 +172,10 @@ export default function Report() {
                         onChange={(date: Date | null) => setFromDate(date)}
                         placeholderText="From Date"
                         dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-gray-400"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <CalendarIcon />
+                        <Calendar className="w-5 h-5 text-inputPlaceholder" />
                     </div>
                 </div>
 
@@ -189,10 +185,10 @@ export default function Report() {
                         onChange={(date: Date | null) => setToDate(date)}
                         placeholderText="To Date"
                         dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-gray-400"
+                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <CalendarIcon />
+                        <Calendar className="w-5 h-5 text-inputPlaceholder" />
                     </div>
                 </div>
             </div>
@@ -207,14 +203,14 @@ export default function Report() {
                             <col className="w-48" />
                         </colgroup>
                         <thead>
-                            <tr className="bg-indigo-900 text-white">
-                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">
+                            <tr className="bg-secondary text-white">
+                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
                                     Date
                                 </th>
-                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">
+                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
                                     Time
                                 </th>
-                                <th className="px-8 py-4 border-r-1 border-gray-200 text-left font-black">
+                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
                                     Activity
                                 </th>
                                 <th className="px-8 py-4 text-left font-black">Users</th>
@@ -253,7 +249,7 @@ export default function Report() {
                                 disabled={currentPage === 1}
                                 className={`p-2 rounded ${currentPage === 1
                                     ? 'text-gray-400 cursor-not-allowed'
-                                    : 'text-secondary cursor-pointer hover:bg-third'
+                                    : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -268,7 +264,7 @@ export default function Report() {
                                     className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage
                                         ? 'bg-secondary text-white'
                                         : typeof number === 'number'
-                                            ? 'text-secondary hover:bg-third'
+                                            ? 'text-textColor hover:bg-third'
                                             : 'text-gray-500'
                                         }`}
                                     disabled={typeof number !== 'number'}
@@ -284,7 +280,7 @@ export default function Report() {
                                 disabled={currentPage === totalPages}
                                 className={`p-2 rounded ${currentPage === totalPages
                                     ? 'text-gray-400 cursor-not-allowed'
-                                    : 'text-secondary cursor-pointer hover:bg-third'
+                                    : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
                             >
                                 <ChevronRight className="h-5 w-5" />
@@ -293,6 +289,6 @@ export default function Report() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

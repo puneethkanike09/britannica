@@ -1,6 +1,6 @@
 import React from 'react';
 import ArrowIcon from '../../../../assets/dashboard/Educator/home-page/arrow.svg';
-import { SelectProps } from '../../../../types/teacher';
+import { SelectProps } from '../../../../types/educator';
 
 const Select: React.FC<SelectProps> = ({
     value,
@@ -41,14 +41,14 @@ const Select: React.FC<SelectProps> = ({
             </button>
             {isOpen && (
                 <div
-                    className="absolute w-full bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto top-[50px] mt-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                    className="absolute w-full bg-white border border-white rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto top-[50px] mt-1 scrollbar-thin scrollbar-thumb-lightGray scrollbar-track-lightGray"
                     role="listbox"
                 >
                     {options.map((option) => (
                         <button
                             key={option.value}
                             onClick={() => handleOptionSelect(option.value)}
-                            className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray-100 text-textColor cursor-pointer ${value === option.value ? 'bg-gray-100' : ''
+                            className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer ${value === option.value ? 'bg-gray/10' : ''
                                 }`}
                             role="option"
                             aria-selected={value === option.value}

@@ -292,10 +292,10 @@ const SchoolManagement: React.FC = () => {
                             <col className="w-80" />
                         </colgroup>
                         <thead>
-                            <tr className="bg-indigo-900 text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">School Name</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Email Address</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-gray-200 font-black">Phone Number</th>
+                            <tr className="bg-secondary text-white">
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Email Address</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Phone Number</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
                         </thead>
@@ -348,7 +348,7 @@ const SchoolManagement: React.FC = () => {
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -357,7 +357,7 @@ const SchoolManagement: React.FC = () => {
                                 <button
                                     key={index}
                                     onClick={() => typeof number === 'number' && paginate(number)}
-                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-secondary hover:bg-third' : 'text-gray-500'}`}
+                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-textColor hover:bg-third' : 'text-darkGray'}`}
                                     disabled={typeof number !== 'number'}
                                 >
                                     {number}
@@ -367,7 +367,7 @@ const SchoolManagement: React.FC = () => {
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-secondary cursor-pointer hover:bg-third'}`}
+                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>
