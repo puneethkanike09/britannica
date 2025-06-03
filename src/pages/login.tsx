@@ -68,7 +68,7 @@ const Login = () => {
         setTimeout(() => {
           if (email && password) {
             resolve("Login successful!");
-            navigate("/admin");
+            navigate("/admin-dashboard");
           } else {
             reject(new Error("Please enter email and password"));
           }
@@ -97,7 +97,7 @@ const Login = () => {
         setTimeout(() => {
           if (email && password) {
             resolve("Login successful!");
-            navigate("/educator");
+            navigate("/educator-dashboard");
           } else {
             reject(new Error("Please enter email and password"));
           }

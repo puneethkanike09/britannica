@@ -8,26 +8,26 @@ import { NavItem } from '../../../types/admin';
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
     {
-        to: "/admin",
+        to: "/admin-dashboard",
         icon: HomeIcon,
         alt: "Home",
         label: "Home",
         end: true
     },
     {
-        to: "/admin/school-management",
+        to: "/school-management",
         icon: SchoolIcon,
         alt: "School Management",
         label: "School Management"
     },
     {
-        to: "/admin/educator-management",
+        to: "/educator-management",
         icon: EducatorIcon,
         alt: "Educator Management",
         label: "Educator Management"
     },
     {
-        to: "/admin/report",
+        to: "/report",
         icon: ReportIcon,
         alt: "Report",
         label: "Report"

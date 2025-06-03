@@ -100,14 +100,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Navigation */}
                 <nav className="flex flex-col p-6 space-y-2 pt-12  overflow-y-auto h-[calc(100vh-81px)]">
-                    {navItems.map(({ to, icon, alt, label, end }) => (
+                    {navItems.map(({ to, icon, alt, label }) => (
                         <NavLink
                             key={to}
                             to={to}
-                            end={end}
                             className={({ isActive }) =>
                                 `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'
-                                } rounded-lg transition-all duration-200 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
+                                } rounded-lg transition-all duration-300 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
                                 }`
                             }
                             onClick={closeSidebar}

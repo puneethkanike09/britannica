@@ -11,6 +11,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
 
 function App() {
+
   return (
     <BrowserRouter>
       <Toaster
@@ -29,16 +30,16 @@ function App() {
         <Route path="/" element={<Login />} />
 
         {/* Admin routes with persistent layout */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="school-management" element={<SchoolManagement />} />
-          <Route path="educator-management" element={<EducatorManagement />} />
-          <Route path="report" element={<Report />} />
+        <Route element={<AdminLayout />}>
+          <Route path="/admin-dashboard" index element={<AdminDashboard />} />
+          <Route path="/school-management" element={<SchoolManagement />} />
+          <Route path="/educator-management" element={<EducatorManagement />} />
+          <Route path="/report" element={<Report />} />
         </Route>
 
         {/* Educator routes with persistent layout */}
-        <Route path="/educator" element={<EducatorLayout />}>
-          <Route index element={<EducatorDashboard />} />
+        <Route element={<EducatorLayout />}>
+          <Route path="/educator-dashboard" element={<EducatorDashboard />} />
         </Route>
 
         {/* Catch-all route for 404 - Page Not Found */}

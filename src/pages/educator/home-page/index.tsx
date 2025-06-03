@@ -8,9 +8,9 @@ import toast from 'react-hot-toast';
 
 // Import PDF files
 import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
-import Header from '../components/layout/topbar';
 import Select from '../components/common/Select';
 import DocumentCard from '../components/common/DocumentCard';
+import Topbar from '../components/layout/topbar';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -175,7 +175,7 @@ const EducatorDashboard = () => {
 
     return (
         <>
-            <Header />
+            <Topbar />
             <div className="min-h-screen relative overflow-hidden">
                 <div
                     className="fixed inset-0 bg-cover bg-center bg-no-repeat"

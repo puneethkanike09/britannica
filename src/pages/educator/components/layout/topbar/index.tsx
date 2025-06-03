@@ -5,7 +5,7 @@ import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo.pn
 import LogoutModal from './modals/LogoutModal';
 import { EDUCATOR_NAV_ITEMS } from '../../../../../config/constants/Educator/topbar';
 
-const CleanHeader: React.FC = () => {
+const Topbar: React.FC = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
@@ -37,10 +37,10 @@ const CleanHeader: React.FC = () => {
 
     return (
         <>
-            <header className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16 sm:h-[70px] bg-white z-20 shadow-sm`}>
+            <header className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}>
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-3 cursor-pointer">
-                    <img src={LogoIcon} alt="Britannica Education Logo" className="h-[36px] object-cover" />
+                    <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] object-cover" />
                 </Link>
 
                 {/* Desktop Navigation */}
@@ -50,10 +50,10 @@ const CleanHeader: React.FC = () => {
                             <div className="relative" ref={resourcesDropdownRef} key={item.label}>
                                 <button
                                     onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
-                                    className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-200"
+                                    className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
                                 >
                                     {item.label}
-                                    <ChevronDown size={16} className={`transition-transform duration-200 ${isResourcesDropdownOpen ? 'rotate-180' : ''}`} />
+                                    <ChevronDown size={16} className={`transition-transform duration-300 ${isResourcesDropdownOpen ? 'rotate-180' : ''}`} />
                                 </button>
                                 {isResourcesDropdownOpen && (
                                     <div className="absolute top-full left-0 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2 ">
@@ -61,7 +61,7 @@ const CleanHeader: React.FC = () => {
                                             <Link
                                                 to={sub.to}
                                                 key={sub.label}
-                                                className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-200"
+                                                className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
                                             >
                                                 {sub.label}
                                             </Link>
@@ -73,7 +73,7 @@ const CleanHeader: React.FC = () => {
                             <Link
                                 to={item.to || ''}
                                 key={item.label}
-                                className="text-textColor hover:text-primary font-medium transition-colors duration-200"
+                                className="text-textColor hover:text-primary font-medium transition-colors duration-300"
                             >
                                 {item.label}
                             </Link>
@@ -82,10 +82,10 @@ const CleanHeader: React.FC = () => {
                     {/* Logout Button */}
                     <button
                         onClick={openLogoutModal}
-                        className="bg-primary hover:bg-hover text-white px-6 py-2.5 rounded-lg font-bold cursor-pointer flex items-center gap-2 transition-all duration-200"
+                        className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                     >
-                        <LogOut size={16} />
-                        <span className="font-bold">Log out</span>
+                        <LogOut className='font-black' size={18} />
+                        <span className="hidden md:inline font-bold">Log out</span>
                     </button>
                 </nav>
 
@@ -94,7 +94,7 @@ const CleanHeader: React.FC = () => {
                     {/* Mobile Logout Button (Icon only) */}
                     <button
                         onClick={openLogoutModal}
-                        className="p-2 text-textColor hover:text-primary transition-colors duration-200"
+                        className="p-2 text-textColor hover:text-primary transition-colors duration-300"
                         aria-label="Log out"
                     >
                         <LogOut size={20} />
@@ -103,7 +103,7 @@ const CleanHeader: React.FC = () => {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMobileMenu}
-                        className="p-2 text-textColor hover:text-primary transition-colors duration-200"
+                        className="text-textColor hover:text-primary transition-colors duration-300"
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -116,7 +116,7 @@ const CleanHeader: React.FC = () => {
                         {/* About us */}
                         <Link
                             to=""
-                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-200 font-medium"
+                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
                             onClick={closeMobileMenu}
                         >
                             About us
@@ -126,10 +126,10 @@ const CleanHeader: React.FC = () => {
                         <div className="py-3 px-4">
                             <button
                                 onClick={() => setIsMobileResourcesOpen(!isMobileResourcesOpen)}
-                                className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-200"
+                                className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
                             >
                                 Resources
-                                <ChevronDown size={16} className={`transition-transform duration-200 ${isMobileResourcesOpen ? 'rotate-180' : ''}`} />
+                                <ChevronDown size={16} className={`transition-transform duration-300 ${isMobileResourcesOpen ? 'rotate-180' : ''}`} />
                             </button>
 
                             {/* Mobile Resources Submenu */}
@@ -137,14 +137,14 @@ const CleanHeader: React.FC = () => {
                                 <div className="mt-3 ml-4 space-y-2">
                                     <Link
                                         to=""
-                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-200"
+                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
                                         onClick={closeMobileMenu}
                                     >
                                         PBL Orientation Guide
                                     </Link>
                                     <Link
                                         to=""
-                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-200"
+                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
                                         onClick={closeMobileMenu}
                                     >
                                         Design Thinkers' Journal
@@ -156,7 +156,7 @@ const CleanHeader: React.FC = () => {
                         {/* Support */}
                         <Link
                             to=""
-                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-200 font-medium"
+                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
                             onClick={closeMobileMenu}
                         >
                             Support
@@ -177,4 +177,4 @@ const CleanHeader: React.FC = () => {
     );
 };
 
-export default CleanHeader;
+export default Topbar;
