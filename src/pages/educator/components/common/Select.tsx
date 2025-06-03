@@ -7,7 +7,6 @@ const Select: React.FC<SelectProps> = ({
     onValueChange,
     placeholder,
     options,
-    className = '',
     isOpen,
     onToggle,
     error,
@@ -26,17 +25,19 @@ const Select: React.FC<SelectProps> = ({
             <button
                 onClick={onToggle}
                 className={`flex items-center justify-between px-4 py-3 text-left w-full bg-orange hover:bg-orange/80 text-white font-bold text-xl rounded-lg ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                    } ${error ? 'border border-red' : ''} ${className}`}
+                    } ${error ? 'border border-red' : ''}`}
                 aria-label={`Select ${placeholder}`}
                 aria-expanded={isOpen}
                 role="combobox"
                 disabled={isSubmitting}
             >
-                <span>{value ? options.find((opt) => opt.value === value)?.label : placeholder}</span>
+                <p className="break-all pr-2 flex-1">
+                    {value ? options.find((opt) => opt.value === value)?.label : placeholder}
+                </p>
                 <img
                     src={ArrowIcon}
                     alt="Arrow Icon"
-                    className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    className={`h-4 w-4 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
             {isOpen && (
@@ -48,7 +49,7 @@ const Select: React.FC<SelectProps> = ({
                         <button
                             key={option.value}
                             onClick={() => handleOptionSelect(option.value)}
-                            className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer ${value === option.value ? 'bg-gray/10' : ''
+                            className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor break-all cursor-pointer ${value === option.value ? 'bg-gray/10' : ''
                                 }`}
                             role="option"
                             aria-selected={value === option.value}

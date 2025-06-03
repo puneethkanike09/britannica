@@ -252,17 +252,17 @@ const EducatorManagement: React.FC = () => {
 
                                 return (
                                     <tr key={educator.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-8 py-4 break-words">
+                                        <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">
                                                 {`${educator.firstName} ${educator.lastName}`}
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 break-words">
+                                        <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">
                                                 {schoolName}
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 break-words">
+                                        <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">
                                                 {educator.email}
                                             </div>

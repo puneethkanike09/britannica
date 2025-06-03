@@ -85,17 +85,17 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                 <div className="grid grid-cols-1 md:grid-cols-3">
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Full Name</div>
-                                        <div className="text-primary font-medium break-words">
+                                        <div className="text-primary font-medium break-all">
                                             {`${educator.firstName} ${educator.lastName}`}
                                         </div>
                                     </div>
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Email Address</div>
-                                        <div className="text-primary font-medium break-words">{educator.email}</div>
+                                        <div className="text-primary font-medium break-all">{educator.email}</div>
                                     </div>
                                     <div className="p-6 border-b border-lightGray md:border-b-0">
                                         <div className="text-textColor mb-2">Phone Number</div>
-                                        <div className="text-primary font-medium break-words">{educator.phone}</div>
+                                        <div className="text-primary font-medium break-all">{educator.phone}</div>
                                     </div>
                                 </div>
 
@@ -103,13 +103,13 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                 <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Login ID</div>
-                                        <div className="text-primary font-medium break-words">
+                                        <div className="text-primary font-medium break-all">
                                             {educator.loginId}
                                         </div>
                                     </div>
                                     <div className="p-6 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">School</div>
-                                        <div className="text-primary font-medium break-words">{schoolName}</div>
+                                        <div className="text-primary font-medium break-all">{schoolName}</div>
                                     </div>
                                     <div className="hidden md:block"></div>
                                 </div>

@@ -73,15 +73,15 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                                 <div className="grid grid-cols-1 md:grid-cols-3">
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">School Name</div>
-                                        <div className="text-primary font-medium break-words">{school.name}</div>
+                                        <div className="text-primary font-medium break-all">{school.name}</div>
                                     </div>
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Email Address</div>
-                                        <div className="text-primary font-medium break-words">{school.email}</div>
+                                        <div className="text-primary font-medium break-all">{school.email}</div>
                                     </div>
                                     <div className="p-6 border-b border-lightGray md:border-b-0">
                                         <div className="text-textColor mb-2">Phone Number</div>
-                                        <div className="text-primary font-medium break-words">{school.phone}</div>
+                                        <div className="text-primary font-medium break-all">{school.phone}</div>
                                     </div>
                                 </div>
 
@@ -89,7 +89,7 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                                 <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                     <div className="p-6 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Address</div>
-                                        <div className="text-primary font-medium break-words">
+                                        <div className="text-primary font-medium break-all">
                                             {school.address || "Not provided"}
                                         </div>
                                     </div>

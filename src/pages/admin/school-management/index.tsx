@@ -302,10 +302,10 @@ const SchoolManagement: React.FC = () => {
                         <tbody>
                             {currentItems.map((school, index) => (
                                 <tr key={school.id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                    <td className="px-8  py-4 break-words">
+                                    <td className="px-8  py-4 break-all">
                                         <div className="text-textColor">{school.name}</div>
                                     </td>
-                                    <td className="px-8  py-4 break-words">
+                                    <td className="px-8  py-4 break-all">
                                         <div className="text-textColor">{school.email}</div>
                                     </td>
                                     <td className="px-8  py-4 ">

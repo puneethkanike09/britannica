@@ -222,16 +222,16 @@ export default function Report() {
                                     key={log.id}
                                     className={index % 2 === 1 ? 'bg-sky-50' : 'bg-white'}
                                 >
-                                    <td className="px-8 py-4 break-words">
+                                    <td className="px-8 py-4 break-all">
                                         <div className="text-textColor">{log.date}</div>
                                     </td>
-                                    <td className="px-8 py-4 break-words">
+                                    <td className="px-8 py-4 break-all">
                                         <div className="text-textColor">{log.time}</div>
                                     </td>
-                                    <td className="px-8 py-4 break-words">
+                                    <td className="px-8 py-4 break-all">
                                         <div className="text-textColor">{log.activity}</div>
                                     </td>
-                                    <td className="px-8 py-4 break-words">
+                                    <td className="px-8 py-4 break-all">
                                         <div className="text-textColor">{log.user}</div>
                                     </td>
                                 </tr>
