@@ -7,10 +7,10 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }
     return (
         <div className="w-full max-w-xs rounded-lg bg-white group">
             <div className="relative pb-4 px-6 pt-6">
-                <div className="absolute top-[-2px] right-4">
-                    <span className="bg-red text-white text-xs font-bold px-4 py-1">
+                <div className="absolute top-0 right-4">
+                    <p className="bg-red text-white text-xs font-bold px-4 py-1">
                         PDF
-                    </span>
+                    </p>
                 </div>
                 <h3 className="text-2xl font-black text-textColor leading-tight min-h-[6.5rem] flex items-center">
                     {title}
