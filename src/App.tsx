@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
+import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/admin/home-page";
 import SchoolManagement from "./pages/admin/school-management";
 import EducatorManagement from "./pages/admin/educator-management";
@@ -28,6 +29,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Admin routes with persistent layout */}
         <Route element={<AdminLayout />}>

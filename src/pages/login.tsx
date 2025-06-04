@@ -166,11 +166,14 @@ const Login = () => {
   // Handle opening/closing success modal
   const handleCloseSuccess = () => {
     setIsSuccessVisible(false);
+    // After animation completes, handleSuccessAnimationComplete will be called
   };
 
   const handleSuccessAnimationComplete = () => {
     if (!isSuccessVisible) {
       setShowSuccessModal(false);
+      // Redirect to reset password page after modal is closed
+      navigate("/reset-password");
     }
   };
 

@@ -4,13 +4,12 @@ import { pdfjs } from 'react-pdf';
 import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
 
-
-
 // Import PDF files
 import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
 import Select from '../components/common/Select';
-import DocumentCard from '../components/common/DocumentCard';
+import DocumentCard from '../components/common/PdfCards';
 import Topbar from '../components/layout/topbar';
+import { gradeOptions, themeOptions, typeOptions } from '../../../config/constants/Educator/home-page';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -43,33 +42,6 @@ const EducatorDashboard = () => {
         { id: 7, title: 'Well-Being in Schools', type: 'PDF', file: EmergencyKitsPdf },
         { id: 8, title: 'Crafting Fragrance from Waste', type: 'PDF', file: EmergencyKitsPdf },
         { id: 9, title: 'Culinary Creations', type: 'PDF', file: EmergencyKitsPdf }
-    ];
-
-    const gradeOptions = [
-        { value: '1', label: 'Grade 3' },
-        { value: '2', label: 'Grade 4' },
-        { value: '3', label: 'Grade 5' },
-        { value: '4', label: 'Grade 6' },
-        { value: '5', label: 'Grade 7' },
-        { value: '6', label: 'Grade 8' },
-        { value: '7', label: 'Grade 9' },
-        { value: '8', label: 'Grade 10' },
-        { value: '9', label: 'Grade 11' },
-        { value: '10', label: 'Grade 12' },
-    ];
-
-    const themeOptions = [
-        { value: 'environment', label: 'Environment' },
-        { value: 'entrepreneurship', label: 'Entrepreneurship' },
-        { value: 'ai_robotics', label: 'AI & Robotics' },
-        { value: 'cultural_development', label: 'Cultural Development' },
-        { value: 'social_emotional_learning', label: 'Social Emotional Learning' },
-        { value: 'vocational_education', label: 'Vocational Education' },
-    ];
-
-    const typeOptions = [
-        { value: 'educator_navigation', label: 'Educator Navigation' },
-        { value: 'students_explorer', label: 'Students Explorer' },
     ];
 
     const validateForm = () => {
