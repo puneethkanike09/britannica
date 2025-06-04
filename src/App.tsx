@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import AdminLayout from "./pages/admin/AdminLayout";
 import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
+import CreatePassword from "./pages/CreatePassword";
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         {/* Public routes */}
         <Route path="/" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/create-password" element={<CreatePassword />} />
 
         {/* Admin routes with persistent layout */}
         <Route element={<AdminLayout />}>
