@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import Loader from '../components/common/Loader';
 
 // Import SVG files
 import EducatorsIcon from '../../../assets/dashboard/Admin/home-page/educators.svg';
@@ -8,6 +8,8 @@ import DownloadsIcon from '../../../assets/dashboard/Admin/home-page/downloads.s
 import { DashboardCard } from '../../../types/admin';
 
 const AdminDashboard: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(true);
+
     const dashboardCards: DashboardCard[] = [
         {
             id: 'educators',
@@ -37,6 +39,15 @@ const AdminDashboard: React.FC = () => {
             iconSize: 'md'
         }
     ];
+
+    // Simulate loading for 2 seconds on component mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const getIconSizeClasses = (size: string = 'md') => {
         const sizeMap = {
@@ -71,9 +82,15 @@ const AdminDashboard: React.FC = () => {
                             alt={card.alt}
                             className={`absolute top-4 sm:top-6 right-4 sm:right-6 ${getIconSizeClasses(card.iconSize)}`}
                         />
-                        <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${card.colorClass} mb-2`}>
-                            {card.value.toLocaleString()}
-                        </div>
+                        {isLoading ? (
+                            <div className="h-[60px] sm:h-[72px] lg:h-[84px] flex items-center justify-start">
+                                <Loader />
+                            </div>
+                        ) : (
+                            <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${card.colorClass} mb-2`}>
+                                {card.value.toLocaleString()}
+                            </div>
+                        )}
                         <div className="text-textColor font-semibold text-base sm:text-lg">
                             {card.title}
                         </div>
@@ -85,4 +102,3 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
-

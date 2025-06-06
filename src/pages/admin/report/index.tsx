@@ -1,10 +1,11 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
 import { ActivityLog } from '../../../types/admin';
+import Loader from '../components/common/Loader';
 
 export default function Report() {
     // State with explicit types
@@ -12,6 +13,7 @@ export default function Report() {
     const [toDate, setToDate] = useState<Date | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const itemsPerPage: number = 6;
 
     // Activity logs with typed array
@@ -73,6 +75,15 @@ export default function Report() {
             user: 'Sagar',
         },
     ];
+
+    // Simulate loading for 2 seconds on component mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     // Calculate total pages
     const totalPages: number = Math.ceil(activityLogs.length / itemsPerPage);
@@ -155,8 +166,8 @@ export default function Report() {
 
                 <button
                     onClick={handleDownload}
-                    disabled={isDownloading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    disabled={isDownloading || isLoading}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading || isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                         }`}
                 >
                     <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
@@ -173,6 +184,7 @@ export default function Report() {
                         placeholderText="From Date"
                         dateFormat="MM/dd/yyyy"
                         className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
+                        disabled={isLoading}
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <Calendar className="w-5 h-5 text-inputPlaceholder" />
@@ -186,6 +198,7 @@ export default function Report() {
                         placeholderText="To Date"
                         dateFormat="MM/dd/yyyy"
                         className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
+                        disabled={isLoading}
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <Calendar className="w-5 h-5 text-inputPlaceholder" />
@@ -217,37 +230,45 @@ export default function Report() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((log, index) => (
-                                <tr
-                                    key={log.id}
-                                    className={index % 2 === 1 ? 'bg-sky-50' : 'bg-white'}
-                                >
-                                    <td className="px-8 py-4 break-all">
-                                        <div className="text-textColor">{log.date}</div>
-                                    </td>
-                                    <td className="px-8 py-4 break-all">
-                                        <div className="text-textColor">{log.time}</div>
-                                    </td>
-                                    <td className="px-8 py-4 break-all">
-                                        <div className="text-textColor">{log.activity}</div>
-                                    </td>
-                                    <td className="px-8 py-4 break-all">
-                                        <div className="text-textColor">{log.user}</div>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={4} className="px-8 py-16">
+                                        <Loader message="Loading activity logs..." />
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                currentItems.map((log, index) => (
+                                    <tr
+                                        key={log.id}
+                                        className={index % 2 === 1 ? 'bg-sky-50' : 'bg-white'}
+                                    >
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.date}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.time}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.activity}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.user}</div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {!isLoading && totalPages > 1 && (
                     <div className="flex justify-center items-center mt-6 w-full">
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading
                                     ? 'text-gray-400 cursor-not-allowed'
                                     : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
@@ -267,7 +288,7 @@ export default function Report() {
                                             ? 'text-textColor hover:bg-third'
                                             : 'text-gray-500'
                                         }`}
-                                    disabled={typeof number !== 'number'}
+                                    disabled={typeof number !== 'number' || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -277,8 +298,8 @@ export default function Report() {
                                 onClick={() =>
                                     currentPage < totalPages && paginate(currentPage + 1)
                                 }
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading
                                     ? 'text-gray-400 cursor-not-allowed'
                                     : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
@@ -289,6 +310,6 @@ export default function Report() {
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 }

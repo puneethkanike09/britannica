@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import AddEducatorModal from './modals/AddEducatorModal';
 import EditEducatorModal from './modals/EditEducatorModal';
@@ -9,6 +9,7 @@ import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/dele
 import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { Educator } from '../../../types/admin';
+import Loader from '../components/common/Loader';
 
 // Mock schools data
 const schools = [
@@ -137,8 +138,18 @@ const EducatorManagement: React.FC = () => {
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const itemsPerPage = 6;
+
+    // Simulate loading for 2 seconds on component mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     // Calculate total pages
     const totalPages = Math.ceil(educators.length / itemsPerPage);
@@ -223,9 +234,11 @@ const EducatorManagement: React.FC = () => {
                 <h1 className="text-3xl font-bold text-secondary">Educator List</h1>
                 <button
                     onClick={openAddEducatorModal}
-                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    disabled={isLoading}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
                 >
-                    <img src={AddEducatorIcon} alt="Add" className="w-5 h-5" />
+                    <img src={AddEducatorIcon} alt="Add Educator" className="h-5 w-5" />
                     <span className="hidden md:inline font-bold">Add Educator</span>
                 </button>
             </div>
@@ -233,7 +246,13 @@ const EducatorManagement: React.FC = () => {
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full table-fixed min-w-[800px]">
-                        <colgroup><col className="w-48" /><col className="w-48" /><col className="w-72" /><col className="w-48" /><col className="w-80" /></colgroup>
+                        <colgroup>
+                            <col className="w-48" />
+                            <col className="w-48" />
+                            <col className="w-72" />
+                            <col className="w-48" />
+                            <col className="w-80" />
+                        </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Educator Name</th>
@@ -244,73 +263,84 @@ const EducatorManagement: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((educator, index) => {
-                                // Find school name or display 'Not assigned'
-                                const schoolName = educator.schoolId
-                                    ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
-                                    : "Not assigned";
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-16">
+                                        <Loader message="Loading educator data..." />
+                                    </td>
+                                </tr>
+                            ) : (
+                                currentItems.map((educator, index) => {
+                                    // Find school name or display 'Not assigned'
+                                    const schoolName = educator.schoolId
+                                        ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
+                                        : "Not assigned";
 
-                                return (
-                                    <tr key={educator.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">
-                                                {`${educator.firstName} ${educator.lastName}`}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">
-                                                {schoolName}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">
-                                                {educator.email}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-4">
-                                            <div className="text-textColor">
-                                                {educator.phone}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-4">
-                                            <div className="flex flex-nowrap gap-2">
-                                                <button
-                                                    onClick={() => openViewEducatorModal(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                >
-                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">View</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openEditEducatorModal(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                >
-                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">Edit</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openDeleteEducatorModal(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                >
-                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">Delete</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                                    return (
+                                        <tr key={educator.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">
+                                                    {`${educator.firstName} ${educator.lastName}`}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">
+                                                    {schoolName}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">
+                                                    {educator.email}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4">
+                                                <div className="text-textColor">
+                                                    {educator.phone}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4">
+                                                <div className="flex flex-nowrap gap-2">
+                                                    <button
+                                                        onClick={() => openViewEducatorModal(educator)}
+                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">View</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openEditEducatorModal(educator)}
+                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">Edit</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDeleteEducatorModal(educator)}
+                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">Delete</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
                         </tbody>
                     </table>
                 </div>
 
-                {totalPages > 1 && (
+                {!isLoading && totalPages > 1 && (
                     <div className="flex justify-center items-center mt-6 w-full">
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -320,7 +350,7 @@ const EducatorManagement: React.FC = () => {
                                     key={index}
                                     onClick={() => typeof number === 'number' && paginate(number)}
                                     className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-textColor hover:bg-third' : 'text-darkGray'}`}
-                                    disabled={typeof number !== 'number'}
+                                    disabled={typeof number !== 'number' || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -328,8 +358,8 @@ const EducatorManagement: React.FC = () => {
 
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>

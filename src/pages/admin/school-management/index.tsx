@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import AddSchoolModal from './modals/AddSchoolModal';
 import EditSchoolModal from './modals/EditSchoolModal';
@@ -11,6 +11,7 @@ import EditIcon from '../../../assets/dashboard/Admin/school-management/edit.svg
 import DeleteIcon from '../../../assets/dashboard/Admin/school-management/delete.svg';
 import AddSchoolIcon from '../../../assets/dashboard/Admin/school-management/add-school.svg';
 import { School } from '../../../types/admin';
+import Loader from '../components/common/Loader';
 
 // Mock data for schools
 const schools = [
@@ -67,7 +68,6 @@ const schools = [
         email: "debra.holt@example.com",
         phone: "+19362632376",
     },
-    // Additional mock data updated with school names and phone numbers in E.164 format
     {
         id: 9,
         name: "Sunshine Academy",
@@ -179,8 +179,6 @@ const schools = [
     },
 ];
 
-
-
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -188,8 +186,18 @@ const SchoolManagement: React.FC = () => {
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const itemsPerPage = 6;
+
+    // Simulate loading for 2 seconds on component mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     // Calculate total pages
     const totalPages = Math.ceil(schools.length / itemsPerPage);
@@ -269,13 +277,14 @@ const SchoolManagement: React.FC = () => {
     };
 
     return (
-
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-secondary">School List</h1>
                 <button
                     onClick={openAddSchoolModal}
-                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                    disabled={isLoading}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
                 >
                     <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add School</span>
@@ -300,49 +309,57 @@ const SchoolManagement: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((school, index) => (
-                                <tr key={school.id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                    <td className="px-8  py-4 break-all">
-                                        <div className="text-textColor">{school.name}</div>
-                                    </td>
-                                    <td className="px-8  py-4 break-all">
-                                        <div className="text-textColor">{school.email}</div>
-                                    </td>
-                                    <td className="px-8  py-4 ">
-                                        <div className="text-textColor">{school.phone}</div>
-                                    </td>
-                                    <td className="px-8 py-4">
-                                        <div className="flex flex-nowrap gap-2">
-                                            <button
-                                                onClick={() => openViewSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
-                                            >
-                                                <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                <span className="hidden md:inline font-bold">View</span>
-                                            </button>
-                                            <button
-                                                onClick={() => openEditSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
-                                            >
-                                                <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                <span className="hidden md:inline font-bold">Edit</span>
-                                            </button>
-                                            <button
-                                                onClick={() => openDeleteSchoolModal(school)}
-                                                className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1   min-w-[80px] justify-center"
-                                            >
-                                                <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                <span className="hidden md:inline font-bold">Delete</span>
-                                            </button>
-                                        </div>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={4} className="px-8 py-16">
+                                        <Loader message="Loading school data..." />
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                currentItems.map((school, index) => (
+                                    <tr key={school.id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{school.name}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{school.email}</div>
+                                        </td>
+                                        <td className="px-8 py-4">
+                                            <div className="text-textColor">{school.phone}</div>
+                                        </td>
+                                        <td className="px-8 py-4">
+                                            <div className="flex flex-nowrap gap-2">
+                                                <button
+                                                    onClick={() => openViewSchoolModal(school)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                >
+                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">View</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditSchoolModal(school)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                >
+                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">Edit</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteSchoolModal(school)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                >
+                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">Delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
 
-                {totalPages > 1 && (
+                {!isLoading && totalPages > 1 && (
                     <div className="flex justify-center items-center mt-6 w-full">
                         <nav className="flex items-center space-x-1">
                             <button
