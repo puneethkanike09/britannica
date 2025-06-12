@@ -64,7 +64,7 @@ const Login = () => {
         login(loginId, password),
         {
           loading: "Logging in...",
-          success: (response) => {
+          success: () => {
             const redirectPath = role === "admin" ? "/admin-dashboard" : "/educator-dashboard";
             navigate(redirectPath);
             return "Login successful!";

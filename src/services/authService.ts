@@ -23,6 +23,7 @@ export class AuthService {
     static decodeToken(token: string): any {
         try {
             const payload = token.split(".")[1];
+
             const decoded = atob(payload);
             return JSON.parse(decoded);
         } catch (error) {
@@ -73,7 +74,11 @@ export class AuthService {
                 }
             }
 
-            return response;
+            // Always return the expected type, even on failure
+            return {
+                success: false,
+                message: response.message || "Login failed",
+            };
         } catch (error) {
             console.error("Login error:", error);
             return {
