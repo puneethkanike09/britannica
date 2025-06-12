@@ -76,7 +76,7 @@ export const apiClient = {
                 }
             }
 
-            const response = await fetch(`/britanica/pbl_api${endpoint}`, {
+            const response = await fetch(`https://pbl.4edgeit.com/britanica/pbl_api${endpoint}`, {
                 method: "GET",
                 headers,
             });
