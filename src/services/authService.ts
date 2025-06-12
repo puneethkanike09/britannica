@@ -37,7 +37,7 @@ export class AuthService {
     }): Promise<ApiResponse<AuthResponse & { user: User }>> {
         try {
             const response = await apiClient.post<AuthResponse>(
-                "https://pbl.4edgeit.com/britanica/pbl_api/auth/login",
+                "/auth/login",
                 credentials,
                 false // No token for login
             );
