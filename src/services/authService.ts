@@ -74,11 +74,7 @@ export class AuthService {
                 }
             }
 
-            // Always return the expected type, even on failure
-            return {
-                success: false,
-                message: response.message || "Login failed",
-            };
+            return response;
         } catch (error) {
             console.error("Login error:", error);
             return {
