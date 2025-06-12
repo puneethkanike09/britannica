@@ -1,33 +1,49 @@
 import { X } from "lucide-react";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
-import { AddSchoolModalProps, School } from "../../../../types/admin";
+import { AddSchoolModalProps } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
-export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
-    const [formData, setFormData] = useState<Omit<School, 'id'>>({
-        name: '',
-        email: '',
-        phone: '',
-        address: ''
+export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
+    // Use correct School fields for formData
+    const [formData, setFormData] = useState<{
+        school_name: string;
+        school_email: string;
+        school_mobile_no: string;
+        address_line1: string;
+        address_line2: string;
+        city: string;
+        state: string;
+        country: string;
+        pincode: string;
+    }>({
+        school_name: '',
+        school_email: '',
+        school_mobile_no: '',
+        address_line1: '',
+        address_line2: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: '',
     });
 
     const [errors, setErrors] = useState({
-        name: '',
-        email: '',
-        phone: ''
+        school_name: '',
+        school_email: '',
+        school_mobile_no: ''
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
-    };
+    }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -51,7 +67,7 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
 
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
-    }, [isSubmitting]);
+    }, [isSubmitting, handleClose]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -62,35 +78,35 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
     };
 
     const handlePhoneNumberChange = (value: string | undefined) => {
-        setFormData(prev => ({ ...prev, phone: value || '' }));
-        if (errors.phone) {
-            setErrors(prev => ({ ...prev, phone: '' }));
+        setFormData(prev => ({ ...prev, school_mobile_no: value || '' }));
+        if (errors.school_mobile_no) {
+            setErrors(prev => ({ ...prev, school_mobile_no: '' }));
         }
     };
 
     const validateForm = () => {
         const newErrors = {
-            name: '',
-            email: '',
-            phone: ''
+            school_name: '',
+            school_email: '',
+            school_mobile_no: ''
         };
         let isValid = true;
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'School name is required';
+        if (!formData.school_name.trim()) {
+            newErrors.school_name = 'School name is required';
             isValid = false;
         }
 
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email address is required';
+        if (!formData.school_email.trim()) {
+            newErrors.school_email = 'Email address is required';
             isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.school_email)) {
+            newErrors.school_email = 'Please enter a valid email address';
             isValid = false;
         }
 
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
+        if (!formData.school_mobile_no.trim()) {
+            newErrors.school_mobile_no = 'Phone number is required';
             isValid = false;
         }
 
@@ -98,26 +114,26 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
         return isValid;
     };
 
-    const handleAddSchool = () => {
+    const handleAddSchool = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
             toast.promise(
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve('School added successfully!');
-                    }, 2000);
-                }),
+                (async () => {
+                    const response = await import('../../../../services/schoolService').then(m => m.SchoolService.addSchool(formData));
+                    if (response.error === false || response.error === "false") {
+                        setIsSubmitting(false);
+                        if (onSchoolAdded) onSchoolAdded();
+                        handleClose();
+                        return response.message || 'School added successfully!';
+                    } else {
+                        setIsSubmitting(false);
+                        throw new Error(response.message || 'Failed to add school');
+                    }
+                })(),
                 {
                     loading: 'Adding school...',
-                    success: () => {
-                        setIsSubmitting(false);
-                        handleClose();
-                        return 'School added successfully!';
-                    },
-                    error: (err) => {
-                        setIsSubmitting(false);
-                        return `Error: ${err.message}`;
-                    }
+                    success: (msg) => msg,
+                    error: (err) => err.message || 'Failed to add school',
                 }
             );
         }
@@ -165,14 +181,14 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
                                         </label>
                                         <input
                                             type="text"
-                                            name="name"
-                                            value={formData.name}
+                                            name="school_name"
+                                            value={formData.school_name}
                                             onChange={handleInputChange}
                                             placeholder="Enter School Name"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
+                                        {errors.school_name && <p className="text-red text-sm mt-1">{errors.school_name}</p>}
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
@@ -180,14 +196,14 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
                                         </label>
                                         <input
                                             type="email"
-                                            name="email"
-                                            value={formData.email}
+                                            name="school_email"
+                                            value={formData.school_email}
                                             onChange={handleInputChange}
                                             placeholder="Enter Email Address"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
+                                        {errors.school_email && <p className="text-red text-sm mt-1">{errors.school_email}</p>}
                                     </div>
                                 </div>
 
@@ -199,22 +215,89 @@ export default function AddSchoolModal({ onClose }: AddSchoolModalProps) {
                                         <PhoneInput
                                             international
                                             defaultCountry="IN"
-                                            value={formData.phone}
+                                            value={formData.school_mobile_no}
                                             onChange={handlePhoneNumberChange}
                                             placeholder="Enter Phone Number"
-                                            className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`phone-input-container ${errors.school_mobile_no ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
+                                        {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Address</label>
+                                        <label className="block text-textColor text-base mb-2">Address Line 1</label>
                                         <input
                                             type="text"
-                                            name="address"
-                                            value={formData.address}
+                                            name="address_line1"
+                                            value={formData.address_line1}
                                             onChange={handleInputChange}
-                                            placeholder="Enter Address"
+                                            placeholder="Enter Address Line 1"
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">Address Line 2</label>
+                                        <input
+                                            type="text"
+                                            name="address_line2"
+                                            value={formData.address_line2}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Address Line 2"
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">City</label>
+                                        <input
+                                            type="text"
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter City"
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">State</label>
+                                        <input
+                                            type="text"
+                                            name="state"
+                                            value={formData.state}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter State"
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">Country</label>
+                                        <input
+                                            type="text"
+                                            name="country"
+                                            value={formData.country}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Country"
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">Pincode</label>
+                                        <input
+                                            type="text"
+                                            name="pincode"
+                                            value={formData.pincode}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Pincode"
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
                                             disabled={isSubmitting}
                                         />

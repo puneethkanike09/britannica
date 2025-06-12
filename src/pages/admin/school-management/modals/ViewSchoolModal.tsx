@@ -2,10 +2,31 @@ import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SchoolActionModalProps } from "../../../../types/admin";
 import { useState, useEffect } from "react";
+import { SchoolService } from "../../../../services/schoolService";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
 export default function ViewSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [schoolDetails, setSchoolDetails] = useState<typeof school | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setLoading(true);
+        setError(null);
+        SchoolService.fetchSchoolById(school.school_id)
+            .then((res) => {
+                if (res.error === false || res.error === "false") {
+                    setSchoolDetails(res.school!);
+                } else {
+                    setError(res.message || "Failed to fetch school details");
+                }
+            })
+            .catch((err) => {
+                setError(err.message || "Failed to fetch school details");
+            })
+            .finally(() => setLoading(false));
+    }, [school.school_id]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -23,14 +44,12 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
         }
     };
 
-    // Optional: Handle ESC key
     useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 handleClose();
             }
         };
-
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
     }, []);
@@ -53,7 +72,7 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                         initial="hidden"
                         animate="visible"
                         exit="exit"
-                        onClick={(e) => e.stopPropagation()} // Prevent backdrop click when clicking modal content
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
@@ -65,38 +84,84 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                                 <X className="h-7 w-7" />
                             </button>
                         </div>
-
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
-                                {/* First Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3">
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">School Name</div>
-                                        <div className="text-primary font-medium break-all">{school.name}</div>
-                                    </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">Email Address</div>
-                                        <div className="text-primary font-medium break-all">{school.email}</div>
-                                    </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0">
-                                        <div className="text-textColor mb-2">Phone Number</div>
-                                        <div className="text-primary font-medium break-all">{school.phone}</div>
-                                    </div>
-                                </div>
-
-                                {/* Second Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
-                                    <div className="p-6 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">Address</div>
-                                        <div className="text-primary font-medium break-all">
-                                            {school.address || "Not provided"}
+                            {loading ? (
+                                <div className="py-12 text-center text-lg text-gray">Loading school details...</div>
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : schoolDetails ? (
+                                <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                    {/* First Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">School Name</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.school_name}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Email Address</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.school_email}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">Phone Number</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.school_mobile_no}</div>
                                         </div>
                                     </div>
-                                    <div className="hidden md:block"></div>
-                                    <div className="hidden md:block"></div>
+                                    {/* Second Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Address Line 1</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.address_line1}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Address Line 2</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.address_line2 || "-"}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">City</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.city}</div>
+                                        </div>
+                                    </div>
+                                    {/* Third Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">State</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.state}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Country</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.country}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">Pincode</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.pincode}</div>
+                                        </div>
+                                    </div>
+                                    {/* Fourth Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Created By</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.created_user || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">Created At</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.created_ts ? new Date(schoolDetails.created_ts).toLocaleString() : '-'}</div>
+                                        </div>
+                                    </div>
+                                    {/* Fifth Row: Audit Fields */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 md:border-t md:border-lightGray">
+                                        <div className="p-6 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Last Updated By</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.last_updated_user || '-'}</div>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="text-textColor mb-2">Last Updated At</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.last_updated_ts ? new Date(schoolDetails.last_updated_ts).toLocaleString() : '-'}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
                     </motion.div>
                 </motion.div>

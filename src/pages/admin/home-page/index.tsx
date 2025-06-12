@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../components/common/Loader';
+import { EducatorService } from '../../../services/educatorService';
 
 // Import SVG files
 import EducatorsIcon from '../../../assets/dashboard/Admin/home-page/educators.svg';
@@ -8,13 +9,33 @@ import DownloadsIcon from '../../../assets/dashboard/Admin/home-page/downloads.s
 import { DashboardCard } from '../../../types/admin';
 
 const AdminDashboard: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [educatorCount, setEducatorCount] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchEducatorCount = async () => {
+            try {
+                setIsLoading(true);
+                const response = await EducatorService.fetchTeachers();
+                if (response.error === false || response.error === 'false') {
+                    setEducatorCount(response.teachers ? response.teachers.length : 0);
+                } else {
+                    setEducatorCount(0);
+                }
+            } catch {
+                setEducatorCount(0);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchEducatorCount();
+    }, []);
 
     const dashboardCards: DashboardCard[] = [
         {
             id: 'educators',
             title: 'Total Educators',
-            value: 50,
+            value: educatorCount,
             icon: EducatorsIcon,
             alt: 'Educators',
             colorClass: 'text-green',
@@ -39,15 +60,6 @@ const AdminDashboard: React.FC = () => {
             iconSize: 'md'
         }
     ];
-
-    // Simulate loading for 2 seconds on component mount
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1500);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     const getIconSizeClasses = (size: string = 'md') => {
         const sizeMap = {

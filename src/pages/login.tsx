@@ -5,10 +5,12 @@ import loginImage from "../assets/loginImage.png";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const { login } = useAuth();
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
@@ -16,25 +18,18 @@ const Login = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({
-    email: "",
+    loginId: "",
     password: "",
   });
   const [forgotPasswordErrors, setForgotPasswordErrors] = useState({
     email: "",
   });
 
-  // Animation state for modals
-  const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
-  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
-
   const validateForm = () => {
-    const newErrors = { email: "", password: "" };
+    const newErrors = { loginId: "", password: "" };
     let isValid = true;
-    if (!email.trim()) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "Please enter a valid email address";
+    if (!loginId.trim()) {
+      newErrors.loginId = "Login ID is required";
       isValid = false;
     }
     if (!password.trim()) {
@@ -59,62 +54,27 @@ const Login = () => {
     return isValid;
   };
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, role: "admin" | "educator") => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
-    toast.promise(
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (email && password) {
-            resolve("Login successful!");
-            navigate("/admin-dashboard");
-          } else {
-            reject(new Error("Please enter email and password"));
-          }
-        }, 2000);
-      }),
-      {
-        loading: "Logging in...",
-        success: () => {
-          setIsSubmitting(false);
-          return "Login successful!";
-        },
-        error: (err) => {
-          setIsSubmitting(false);
-          return `Error: ${err.message}`;
-        },
-      }
-    );
-  };
 
-  const handleEducatorLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    setIsSubmitting(true);
-    toast.promise(
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (email && password) {
-            resolve("Login successful!");
-            navigate("/educator-dashboard");
-          } else {
-            reject(new Error("Please enter email and password"));
-          }
-        }, 2000);
-      }),
-      {
-        loading: "Logging in...",
-        success: () => {
-          setIsSubmitting(false);
-          return "Login successful!";
-        },
-        error: (err) => {
-          setIsSubmitting(false);
-          return `Error: ${err.message}`;
-        },
-      }
-    );
+    try {
+      await toast.promise(
+        login(loginId, password),
+        {
+          loading: "Logging in...",
+          success: (response) => {
+            const redirectPath = role === "admin" ? "/admin-dashboard" : "/educator-dashboard";
+            navigate(redirectPath);
+            return "Login successful!";
+          },
+          error: (err) => `Error: ${err.message}`,
+        }
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleForgotPasswordSubmit = () => {
@@ -147,7 +107,6 @@ const Login = () => {
     );
   };
 
-  // Handle opening/closing forgot password modal
   const handleOpenForgotPassword = () => {
     setShowForgotPasswordModal(true);
     setIsForgotPasswordVisible(true);
@@ -163,16 +122,13 @@ const Login = () => {
     }
   };
 
-  // Handle opening/closing success modal
   const handleCloseSuccess = () => {
     setIsSuccessVisible(false);
-    // After animation completes, handleSuccessAnimationComplete will be called
   };
 
   const handleSuccessAnimationComplete = () => {
     if (!isSuccessVisible) {
       setShowSuccessModal(false);
-      // Redirect to reset password page after modal is closed
       navigate("/reset-password");
     }
   };
@@ -189,10 +145,9 @@ const Login = () => {
     }
   };
 
-  // Handle ESC key for modals
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         if (showForgotPasswordModal && !isSubmitting) {
           handleCloseForgotPassword();
         }
@@ -203,10 +158,13 @@ const Login = () => {
     };
 
     if (showForgotPasswordModal || showSuccessModal) {
-      document.addEventListener('keydown', handleEscKey);
-      return () => document.removeEventListener('keydown', handleEscKey);
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
     }
   }, [showForgotPasswordModal, showSuccessModal, isSubmitting]);
+
+  const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
+  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
 
   return (
     <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
@@ -223,27 +181,27 @@ const Login = () => {
           <form>
             <div className="mb-5">
               <label
-                htmlFor="email"
+                htmlFor="loginId"
                 className="block text-textColor text-base mb-2"
               >
-                Email<span className="text-red">*</span>
+                Login ID<span className="text-red">*</span>
               </label>
               <input
-                type="email"
-                id="email"
-                placeholder="Enter Your Email"
-                value={email}
+                type="text"
+                id="loginId"
+                placeholder="Enter Your Login ID"
+                value={loginId}
                 onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errors.email)
-                    setErrors((prev) => ({ ...prev, email: "" }));
+                  setLoginId(e.target.value);
+                  if (errors.loginId)
+                    setErrors((prev) => ({ ...prev, loginId: "" }));
                 }}
-                className={`p-4 py-3 w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? "border-red" : "border-inputPlaceholder"
+                className={`p-4 py-3 w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? "border-red" : "border-inputPlaceholder"
                   } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                 disabled={isSubmitting}
               />
-              {errors.email && (
-                <p className="text-red text-sm mt-1">{errors.email}</p>
+              {errors.loginId && (
+                <p className="text-red text-sm mt-1">{errors.loginId}</p>
               )}
             </div>
 
@@ -294,7 +252,7 @@ const Login = () => {
             <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center sm:justify-start w-full">
               <button
                 type="button"
-                onClick={handleAdminLogin}
+                onClick={(e) => handleLogin(e, "admin")}
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
@@ -302,7 +260,7 @@ const Login = () => {
               </button>
               <button
                 type="button"
-                onClick={handleEducatorLogin}
+                onClick={(e) => handleLogin(e, "educator")}
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
@@ -323,7 +281,7 @@ const Login = () => {
       <AnimatePresence onExitComplete={handleForgotPasswordAnimationComplete}>
         {showForgotPasswordModal && isForgotPasswordVisible && (
           <motion.div
-            className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
             onClick={handleBackdropClick}
             variants={backdropVariants}
             initial="hidden"
@@ -401,7 +359,7 @@ const Login = () => {
       <AnimatePresence onExitComplete={handleSuccessAnimationComplete}>
         {showSuccessModal && isSuccessVisible && (
           <motion.div
-            className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
             onClick={handleBackdropClick}
             variants={backdropVariants}
             initial="hidden"

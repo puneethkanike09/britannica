@@ -8,156 +8,52 @@ import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.s
 import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
 import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
-import { Educator } from '../../../types/admin';
+import { EducatorService } from '../../../services/educatorService';
+import { Teacher } from '../../../types/admin';
 import Loader from '../components/common/Loader';
-
-// Mock schools data
-const schools = [
-    { id: 1, name: "Britanica School" },
-    { id: 2, name: "St. Mary's School" },
-    { id: 3, name: "Delhi Public School" },
-    { id: 4, name: "Kendriya Vidyalaya" },
-];
-
-// Mock data for educators with schoolId
-const educators: Educator[] = [
-    {
-        id: 1,
-        firstName: "Kristin",
-        lastName: "Watson",
-        email: "michelle.rivera@example.com",
-        phone: "+92857324517",
-        loginId: "kristin.w",
-        schoolId: 1,
-    },
-    {
-        id: 2,
-        firstName: "Marvin",
-        lastName: "McKinney",
-        email: "debbie.baker@example.com",
-        phone: "+19857324517",
-        loginId: "marvin.m",
-        schoolId: 2,
-    },
-    {
-        id: 3,
-        firstName: "Jane",
-        lastName: "Cooper",
-        email: "kenzi.lawson@example.com",
-        phone: "+19362632376",
-        loginId: "jane.c",
-        schoolId: 3,
-    },
-    {
-        id: 4,
-        firstName: "Cody",
-        lastName: "Fisher",
-        email: "nathan.roberts@example.com",
-        phone: "+18434436274",
-        loginId: "cody.f",
-        schoolId: 4,
-    },
-    {
-        id: 5,
-        firstName: "Bessie",
-        lastName: "Cooper",
-        email: "felicia.reid@example.com",
-        phone: "+17823456901",
-        loginId: "bessie.c",
-        schoolId: 1,
-    },
-    {
-        id: 6,
-        firstName: "Leslie",
-        lastName: "Alexander",
-        email: "tim.jennings@example.com",
-        phone: "+17823456901",
-        loginId: "leslie.a",
-        schoolId: 2,
-    },
-    {
-        id: 7,
-        firstName: "Guy",
-        lastName: "Hawkins",
-        email: "alma.lawson@example.com",
-        phone: "+18434436274",
-        loginId: "guy.h",
-        schoolId: 3,
-    },
-    {
-        id: 8,
-        firstName: "Theresa",
-        lastName: "Webb",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-        loginId: "theresa.w",
-        schoolId: 4,
-    },
-    {
-        id: 9,
-        firstName: "Theresa",
-        lastName: "Webb",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-        loginId: "theresa.w2",
-        schoolId: 1,
-    },
-    {
-        id: 10,
-        firstName: "Theresa",
-        lastName: "Webb",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-        loginId: "theresa.w3",
-        schoolId: 2,
-    },
-    {
-        id: 11,
-        firstName: "Theresa",
-        lastName: "Webb",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-        loginId: "theresa.w4",
-        schoolId: 3,
-    },
-    {
-        id: 12,
-        firstName: "Theresa",
-        lastName: "Webb",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-        loginId: "theresa.w5",
-        schoolId: 4,
-    },
-];
+import toast from 'react-hot-toast';
 
 const EducatorManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
-    const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
+    const [selectedEducator, setSelectedEducator] = useState<Teacher | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [teachers, setTeachers] = useState<Teacher[]>([]);
 
     const itemsPerPage = 6;
 
-    // Simulate loading for 2 seconds on component mount
-    useEffect(() => {
-        const timer = setTimeout(() => {
+    // Fetch teachers from backend
+    const loadTeachers = async () => {
+        setIsLoading(true);
+        try {
+            const response = await EducatorService.fetchTeachers();
+            console.log("Fetched schools:", response);
+            if (response.error === false || response.error === "false") {
+                setTeachers(response.teachers || []);
+            } else {
+                toast.error(response.message || "Failed to load educators");
+            }
+        } catch (error) {
+            console.error("Error fetching educators:", error);
+            toast.error("Error loading educators");
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
+    };
 
-        return () => clearTimeout(timer);
+    useEffect(() => {
+        loadTeachers();
     }, []);
-
     // Calculate total pages
-    const totalPages = Math.ceil(educators.length / itemsPerPage);
+    const totalPages = Math.ceil(teachers.length / itemsPerPage);
 
     // Get current items
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = educators.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = teachers.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -168,13 +64,13 @@ const EducatorManagement: React.FC = () => {
     };
 
     // Open Edit Educator Modal
-    const openEditEducatorModal = (educator: Educator) => {
+    const openEditEducatorModal = (educator: Teacher) => {
         setSelectedEducator(educator);
         setShowEditModal(true);
     };
 
     // Open View Educator Modal
-    const openViewEducatorModal = (educator: Educator) => {
+    const openViewEducatorModal = (educator: Teacher) => {
         setSelectedEducator(educator);
         setShowViewModal(true);
     };
@@ -218,7 +114,7 @@ const EducatorManagement: React.FC = () => {
         setSelectedEducator(null);
     };
 
-    const openDeleteEducatorModal = (educator: Educator) => {
+    const openDeleteEducatorModal = (educator: Teacher) => {
         setSelectedEducator(educator);
         setShowDeleteModal(true);
     };
@@ -226,6 +122,14 @@ const EducatorManagement: React.FC = () => {
     const closeDeleteEducatorModal = () => {
         setShowDeleteModal(false);
         setSelectedEducator(null);
+    };
+
+    // Callbacks for after educator is added/updated
+    const handleEducatorAdded = () => {
+        loadTeachers();
+    };
+    const handleEducatorUpdated = () => {
+        loadTeachers();
     };
 
     return (
@@ -242,93 +146,78 @@ const EducatorManagement: React.FC = () => {
                     <span className="hidden md:inline font-bold">Add Educator</span>
                 </button>
             </div>
-
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full table-fixed min-w-[800px]">
                         <colgroup>
                             <col className="w-48" />
                             <col className="w-48" />
-                            <col className="w-72" />
                             <col className="w-48" />
-                            <col className="w-80" />
+                            <col className="w-78" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Educator Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Teacher Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Email Address</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Phone Number</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Login ID</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-16">
+                                    <td colSpan={4} className="px-8 py-16">
                                         <Loader message="Loading educator data..." />
                                     </td>
                                 </tr>
+                            ) : teachers.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="px-8 py-16 text-center text-textColor">
+                                        No educators found.
+                                    </td>
+                                </tr>
                             ) : (
-                                currentItems.map((educator, index) => {
-                                    // Find school name or display 'Not assigned'
-                                    const schoolName = educator.schoolId
-                                        ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
-                                        : "Not assigned";
-
-                                    return (
-                                        <tr key={educator.id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                            <td className="px-8 py-4 break-all">
-                                                <div className="text-textColor">
-                                                    {`${educator.firstName} ${educator.lastName}`}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4 break-all">
-                                                <div className="text-textColor">
-                                                    {schoolName}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4 break-all">
-                                                <div className="text-textColor">
-                                                    {educator.email}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4">
-                                                <div className="text-textColor">
-                                                    {educator.phone}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-4">
-                                                <div className="flex flex-nowrap gap-2">
-                                                    <button
-                                                        onClick={() => openViewEducatorModal(educator)}
-                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                        <span className="hidden md:inline font-bold">View</span>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openEditEducatorModal(educator)}
-                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <img src={EditIcon} alt="Edit" className="h-4 w-4" />
-                                                        <span className="hidden md:inline font-bold">Edit</span>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openDeleteEducatorModal(educator)}
-                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
-                                                        <span className="hidden md:inline font-bold">Delete</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
+                                currentItems.map((teacher, index) => (
+                                    <tr key={teacher.teacher_id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{teacher.teacher_name}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{teacher.school_name}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{teacher.teacher_login}</div>
+                                        </td>
+                                        <td className="px-8 py-4">
+                                            <div className="flex flex-nowrap gap-2">
+                                                <button
+                                                    onClick={() => openViewEducatorModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
+                                                >
+                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">View</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditEducatorModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
+                                                >
+                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">Edit</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteEducatorModal(teacher)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
+                                                >
+                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">Delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
                             )}
                         </tbody>
                     </table>
@@ -368,9 +257,9 @@ const EducatorManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} />}
+            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} onEducatorAdded={handleEducatorAdded} />}
             {showEditModal && selectedEducator && (
-                <EditEducatorModal onClose={closeEditEducatorModal} educator={selectedEducator} />
+                <EditEducatorModal onClose={closeEditEducatorModal} educator={selectedEducator} onEducatorUpdated={handleEducatorUpdated} />
             )}
             {showViewModal && selectedEducator && (
                 <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />

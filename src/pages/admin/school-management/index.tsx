@@ -1,183 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import AddSchoolModal from './modals/AddSchoolModal';
-import EditSchoolModal from './modals/EditSchoolModal';
-import ViewSchoolModal from './modals/ViewSchoolModal';
-import DeleteSchoolModal from './modals/DeleteSchoolModal';
-
-// Import custom SVG icons
-import ViewIcon from '../../../assets/dashboard/Admin/school-management/view.svg';
-import EditIcon from '../../../assets/dashboard/Admin/school-management/edit.svg';
-import DeleteIcon from '../../../assets/dashboard/Admin/school-management/delete.svg';
-import AddSchoolIcon from '../../../assets/dashboard/Admin/school-management/add-school.svg';
-import { School } from '../../../types/admin';
-import Loader from '../components/common/Loader';
-
-// Mock data for schools
-const schools = [
-    {
-        id: 1,
-        name: "Britanica School",
-        email: "michelle.rivera@example.com",
-        phone: "+91857324517",
-        address: "123 Main St, Anytown, USA",
-    },
-    {
-        id: 2,
-        name: "St. Mary's School",
-        email: "debbie.baker@example.com",
-        phone: "+19857324517",
-        address: "456 Oak Ave, Anytown, USA",
-    },
-    {
-        id: 3,
-        name: "Delhi Public School",
-        email: "kenzi.lawson@example.com",
-        phone: "+19362632376",
-        address: "789 Pine Rd, Anytown, USA",
-    },
-    {
-        id: 4,
-        name: "Kendriya Vidyalaya",
-        email: "nathan.roberts@example.com",
-        phone: "+18434436274",
-        address: "101 Elm St, Anytown, USA",
-    },
-    {
-        id: 5,
-        name: "Springfield Academy",
-        email: "felicia.reid@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 6,
-        name: "Greenwood High",
-        email: "tim.jennings@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 7,
-        name: "Riverside School",
-        email: "alma.lawson@example.com",
-        phone: "+18434436274",
-        address: "202 Maple Dr, Anytown, USA",
-    },
-    {
-        id: 8,
-        name: "Hilltop Institute",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-    },
-    {
-        id: 9,
-        name: "Sunshine Academy",
-        email: "nathan.roberts@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 10,
-        name: "Bright Future School",
-        email: "felicia.reid@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 11,
-        name: "Evergreen High",
-        email: "tim.jennings@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 12,
-        name: "Lakeside Academy",
-        email: "alma.lawson@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 13,
-        name: "Horizon School",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-    },
-    {
-        id: 14,
-        name: "Pinnacle Institute",
-        email: "michelle.rivera@example.com",
-        phone: "+91857324517",
-        address: "303 Cedar Ln, Anytown, USA",
-    },
-    {
-        id: 15,
-        name: "Summit Academy",
-        email: "debbie.baker@example.com",
-        phone: "+19857324517",
-    },
-    {
-        id: 16,
-        name: "Starlight School",
-        email: "kenzi.lawson@example.com",
-        phone: "+19362632376",
-    },
-    {
-        id: 17,
-        name: "Crestview High",
-        email: "nathan.roberts@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 18,
-        name: "Oakwood Academy",
-        email: "felicia.reid@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 19,
-        name: "Maple Grove School",
-        email: "tim.jennings@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 20,
-        name: "Riverdale Institute",
-        email: "alma.lawson@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 21,
-        name: "Sunny Hills School",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-    },
-    {
-        id: 22,
-        name: "Westview Academy",
-        email: "nathan.roberts@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 23,
-        name: "Eastside High",
-        email: "felicia.reid@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 24,
-        name: "Northpoint School",
-        email: "tim.jennings@example.com",
-        phone: "+17823456901",
-    },
-    {
-        id: 25,
-        name: "Southview Academy",
-        email: "alma.lawson@example.com",
-        phone: "+18434436274",
-    },
-    {
-        id: 26,
-        name: "Central High",
-        email: "debra.holt@example.com",
-        phone: "+19362632376",
-    },
-];
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import AddSchoolModal from "./modals/AddSchoolModal";
+import EditSchoolModal from "./modals/EditSchoolModal";
+import ViewSchoolModal from "./modals/ViewSchoolModal";
+import DeleteSchoolModal from "./modals/DeleteSchoolModal";
+import ViewIcon from "../../../assets/dashboard/Admin/school-management/view.svg";
+import EditIcon from "../../../assets/dashboard/Admin/school-management/edit.svg";
+import DeleteIcon from "../../../assets/dashboard/Admin/school-management/delete.svg";
+import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add-school.svg";
+import { School } from "../../../types/admin";
+import Loader from "../components/common/Loader";
+import { SchoolService } from "../../../services/schoolService";
+import toast from "react-hot-toast";
 
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -187,16 +21,31 @@ const SchoolManagement: React.FC = () => {
     const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [schools, setSchools] = useState<School[]>([]);
 
     const itemsPerPage = 6;
 
-    // Simulate loading for 2 seconds on component mount
-    useEffect(() => {
-        const timer = setTimeout(() => {
+    // Fetch schools on mount and when needed
+    const loadSchools = async () => {
+        setIsLoading(true);
+        try {
+            const response = await SchoolService.fetchSchools();
+            console.log("Fetched schools:", response);
+            if (response.error === false || response.error === "false") {
+                setSchools(response.schools || []);
+            } else {
+                toast.error(response.message || "Failed to load schools");
+            }
+        } catch (error) {
+            console.error("Error fetching schools:", error);
+            toast.error("Error loading schools");
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
+    };
 
-        return () => clearTimeout(timer);
+    useEffect(() => {
+        loadSchools();
     }, []);
 
     // Calculate total pages
@@ -239,11 +88,11 @@ const SchoolManagement: React.FC = () => {
             pageNumbers.push(1);
 
             if (currentPage <= 2) {
-                pageNumbers.push(2, 3, '...');
+                pageNumbers.push(2, 3, "...");
             } else if (currentPage >= totalPages - 1) {
-                pageNumbers.push('...', totalPages - 2, totalPages - 1);
+                pageNumbers.push("...", totalPages - 2, totalPages - 1);
             } else {
-                pageNumbers.push('...', currentPage - 1, currentPage, currentPage + 1, '...');
+                pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
             }
 
             pageNumbers.push(totalPages);
@@ -254,6 +103,14 @@ const SchoolManagement: React.FC = () => {
 
     const closeAddSchoolModal = () => {
         setShowAddModal(false);
+    };
+
+    // Callback for after school is added or updated
+    const handleSchoolAdded = () => {
+        loadSchools();
+    };
+    const handleSchoolUpdated = () => {
+        loadSchools();
     };
 
     const closeEditSchoolModal = () => {
@@ -283,7 +140,7 @@ const SchoolManagement: React.FC = () => {
                 <button
                     onClick={openAddSchoolModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                         }`}
                 >
                     <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
@@ -315,17 +172,23 @@ const SchoolManagement: React.FC = () => {
                                         <Loader message="Loading school data..." />
                                     </td>
                                 </tr>
+                            ) : schools.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="px-8 py-16 text-center text-textColor">
+                                        No schools found.
+                                    </td>
+                                </tr>
                             ) : (
                                 currentItems.map((school, index) => (
-                                    <tr key={school.id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                    <tr key={school.school_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{school.name}</div>
+                                            <div className="text-textColor">{school.school_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{school.email}</div>
+                                            <div className="text-textColor">{school.school_email}</div>
                                         </td>
                                         <td className="px-8 py-4">
-                                            <div className="text-textColor">{school.phone}</div>
+                                            <div className="text-textColor">{school.school_mobile_no}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
@@ -365,7 +228,8 @@ const SchoolManagement: React.FC = () => {
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
+                                className={`p-2 rounded ${currentPage === 1 ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"
+                                    }`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -373,9 +237,14 @@ const SchoolManagement: React.FC = () => {
                             {getPageNumbers().map((number, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => typeof number === 'number' && paginate(number)}
-                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-textColor hover:bg-third' : 'text-darkGray'}`}
-                                    disabled={typeof number !== 'number'}
+                                    onClick={() => typeof number === "number" && paginate(number)}
+                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage
+                                        ? "bg-secondary text-white"
+                                        : typeof number === "number"
+                                            ? "text-textColor hover:bg-third"
+                                            : "text-darkGray"
+                                        }`}
+                                    disabled={typeof number !== "number"}
                                 >
                                     {number}
                                 </button>
@@ -384,7 +253,10 @@ const SchoolManagement: React.FC = () => {
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? 'text-gray cursor-not-allowed' : 'text-textColor cursor-pointer hover:bg-third'}`}
+                                className={`p-2 rounded ${currentPage === totalPages
+                                    ? "text-gray cursor-not-allowed"
+                                    : "text-textColor cursor-pointer hover:bg-third"
+                                    }`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>
@@ -393,9 +265,9 @@ const SchoolManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddSchoolModal onClose={closeAddSchoolModal} />}
+            {showAddModal && <AddSchoolModal onClose={closeAddSchoolModal} onSchoolAdded={handleSchoolAdded} />}
             {showEditModal && selectedSchool && (
-                <EditSchoolModal onClose={closeEditSchoolModal} school={selectedSchool} />
+                <EditSchoolModal onClose={closeEditSchoolModal} school={selectedSchool} onSchoolUpdated={handleSchoolUpdated} />
             )}
             {showViewModal && selectedSchool && (
                 <ViewSchoolModal onClose={closeViewSchoolModal} school={selectedSchool} />

@@ -3,7 +3,11 @@ import ViewIcon from '../../../../assets/dashboard/Educator/home-page/view.svg';
 import DownloadIcon from '../../../../assets/dashboard/Educator/home-page/download.svg';
 import { DocumentCardProps } from '../../../../types/educator';
 
-const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }) => {
+interface DocumentCardWithLoadingProps extends DocumentCardProps {
+    viewLoading?: boolean;
+}
+
+const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading }) => {
     return (
         <div className="w-full max-w-xs rounded-lg bg-white group">
             <div className="relative pb-4 px-6 pt-6">
@@ -20,9 +24,14 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, onView, onDownload }
                 <div className="flex gap-3">
                     <button
                         onClick={onView}
-                        className="flex-1 bg-primary hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                        className={`flex-1 bg-primary hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer ${viewLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        disabled={viewLoading}
                     >
-                        <img src={ViewIcon} alt="View Icon" className="h-4 w-4" />
+                        {viewLoading ? (
+                            <span className="loader h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        ) : (
+                            <img src={ViewIcon} alt="View Icon" className="h-4 w-4" />
+                        )}
                         View
                     </button>
                     <button

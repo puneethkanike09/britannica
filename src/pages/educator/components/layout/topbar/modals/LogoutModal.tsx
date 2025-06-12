@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
+import { AuthService } from "../../../../../../services/authService";
 
 interface LogoutModalProps {
     onClose: () => void;
@@ -47,9 +48,10 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
         setIsLoggingOut(true);
         toast.promise(
             new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('Logged out successfully!');
-                }, 2000);
+
+                AuthService.logout();
+                resolve('Logged out successfully!');
+
             }),
             {
                 loading: 'Logging out...',
@@ -66,7 +68,6 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
             }
         );
     };
-
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (

@@ -3,13 +3,11 @@ import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.p
 import { pdfjs } from 'react-pdf';
 import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
-
-// Import PDF files
-import EmergencyKitsPdf from '../../../assets/pdfs/demo.pdf';
+import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
 import Select from '../components/common/Select';
 import DocumentCard from '../components/common/PdfCards';
 import Topbar from '../components/layout/topbar';
-import { gradeOptions, themeOptions, typeOptions } from '../../../config/constants/Educator/home-page';
+import { PdfProject } from '../../../types/educator';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -31,18 +29,41 @@ const EducatorDashboard = () => {
     const [showPdfViewer, setShowPdfViewer] = useState(false);
     const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [gradeOptions, setGradeOptions] = useState<{ value: string; label: string }[]>([]);
+    const [themeOptions, setThemeOptions] = useState<{ value: string; label: string }[]>([]);
+    const [typeOptions, setTypeOptions] = useState<{ value: string; label: string }[]>([]);
+    const [pdfProjects, setPdfProjects] = useState<PdfProject[]>([]);
+    const [viewLoadingId, setViewLoadingId] = useState<string | number | null>(null);
 
-    const pdfProjects = [
-        { id: 1, title: 'Emergency Kits', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 2, title: 'School Gardening Initiative', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 3, title: 'DIY Water Filter', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 4, title: 'Mini Garbage Collector Robot', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 5, title: 'Mental Health Awareness', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 6, title: 'Campaign: Promoting Mental Well-Being in Schools', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 7, title: 'Well-Being in Schools', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 8, title: 'Crafting Fragrance from Waste', type: 'PDF', file: EmergencyKitsPdf },
-        { id: 9, title: 'Culinary Creations', type: 'PDF', file: EmergencyKitsPdf }
-    ];
+    // Fetch dropdown data on mount
+    useEffect(() => {
+        setIsSubmitting(true);
+        EducatorDashboardService.fetchAllDropdownsSequentially()
+            .then(([gradesRes, themesRes, typesRes]) => {
+                // gradesRes is always the result of fetchGrades
+                if ('grade' in gradesRes && (gradesRes.error === false || gradesRes.error === 'false')) {
+                    setGradeOptions((gradesRes.grade ?? []).map((g: { grade_id: string; grade_name: string }) => ({ value: g.grade_id, label: g.grade_name })));
+                } else {
+                    toast.error(gradesRes.message || 'Failed to load grades');
+                }
+                // themesRes is always the result of fetchThemes
+                if ('theme' in themesRes && (themesRes.error === false || themesRes.error === 'false')) {
+                    setThemeOptions((themesRes.theme ?? []).map((t: { theme_id: string; theme_name: string }) => ({ value: t.theme_id, label: t.theme_name })));
+                } else {
+                    toast.error(themesRes.message || 'Failed to load themes');
+                }
+                // typesRes is always the result of fetchUserAccessTypes
+                if ('user_access_type' in typesRes && (typesRes.error === false || typesRes.error === 'false')) {
+                    setTypeOptions((typesRes.user_access_type ?? []).map((t: { user_access_type_id: string; user_access_type_name: string }) => ({ value: t.user_access_type_id, label: t.user_access_type_name })));
+                } else {
+                    toast.error(typesRes.message || 'Failed to load types');
+                }
+            })
+            .catch(() => {
+                toast.error('Failed to load dropdown data');
+            })
+            .finally(() => setIsSubmitting(false));
+    }, []);
 
     const validateForm = () => {
         const newErrors = {
@@ -71,31 +92,51 @@ const EducatorDashboard = () => {
         return isValid;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            toast.promise(
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        // Simulate a successful API call
-                        resolve('Filters applied successfully!');
-                    }, 1000); // Simulate 1-second API call
-                }),
-                {
-                    loading: 'Applying filters...',
-                    success: () => {
-                        setIsSubmitting(false);
-                        setOpenDropdown(null);
-                        setShowResults(true);
-                        console.log('Filters:', { selectedGrade, selectedTheme, selectedType });
-                        return 'Filters applied successfully!';
-                    },
-                    error: (err) => {
-                        setIsSubmitting(false);
-                        return `Error: ${err.message}`;
-                    },
+            setShowResults(false);
+            const fetchFiles = async () => {
+                const token = '';
+                const res = await EducatorDashboardService.fetchPblFiles({
+                    token,
+                    grade_id: selectedGrade,
+                    theme_id: selectedTheme,
+                    user_access_type_id: selectedType,
+                });
+                if (res.error === false || res.error === 'false') {
+                    // Map API response to PdfProject[]
+                    const files = (res.pbl_file || []).map((file: {
+                        pbl_id: string | number;
+                        pbl_file_path: string;
+                        pbl_name: string;
+                    }) => ({
+                        id: file.pbl_id,
+                        title: file.pbl_name,
+                        type: 'PDF',
+                        file: `/${file.pbl_file_path}` // Ensure leading slash for static serving
+                    }));
+                    setPdfProjects(files);
+                    setShowResults(true);
+                    if (files.length === 0) {
+                        throw new Error('No files found with this filter');
+                    }
+                    return 'Files loaded successfully!';
+                } else {
+                    setPdfProjects([]);
+                    throw new Error(res.message || 'No files found');
                 }
-            );
+            };
+            toast.promise(
+                fetchFiles(),
+                {
+                    loading: 'Loading files...',
+                    success: (msg) => msg,
+                    error: (err) => err.message || 'Failed to load files',
+                }
+            ).finally(() => {
+                setIsSubmitting(false);
+            });
         }
     };
 
@@ -110,9 +151,47 @@ const EducatorDashboard = () => {
         }
     };
 
-    const handleView = (file: string | null) => {
-        setCurrentPdfFile(file);
-        setShowPdfViewer(true);
+    const handleView = async (pblId?: string | number) => {
+        if (!pblId) return;
+        setViewLoadingId(pblId);
+        setIsSubmitting(true);
+        try {
+            const token = '';
+            const res = await EducatorDashboardService.fetchPblFileById({ token, pbl_id: pblId });
+            if (res.error === false || res.error === 'false') {
+                let fileUrl = res.pbl_file && res.pbl_file[0]?.file_url;
+                if (fileUrl) {
+                    // If fileUrl is absolute, rewrite to relative for proxy
+                    if (fileUrl.startsWith('https://pbl.4edgeit.com')) {
+                        const url = new URL(fileUrl);
+                        fileUrl = url.pathname + url.search;
+                    }
+                    // Fetch the PDF with required headers
+                    const headers: HeadersInit = {
+                        'API-KEY': import.meta.env.VITE_API_KEY || '',
+                    };
+                    const storedToken = localStorage.getItem('token');
+                    if (storedToken) {
+                        headers['Authorization'] = `Bearer ${storedToken}`;
+                    }
+                    const response = await fetch(fileUrl, { headers });
+                    if (!response.ok) throw new Error('Failed to fetch PDF file');
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    setCurrentPdfFile(blobUrl);
+                    setShowPdfViewer(true);
+                } else {
+                    toast.error('No file URL found');
+                }
+            } else {
+                toast.error(res.message || 'Failed to fetch file');
+            }
+        } catch (err) {
+            toast.error((err as Error).message || 'Failed to fetch file');
+        } finally {
+            setIsSubmitting(false);
+            setViewLoadingId(null);
+        }
     };
 
     const handleDropdownToggle = (dropdownId: string) => {
@@ -211,16 +290,21 @@ const EducatorDashboard = () => {
                         </div>
                     </div>
                     {showResults && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 justify-items-center w-full md:max-w-2xl lg:max-w-5xl px-4">
-                            {pdfProjects.map((project) => (
-                                <DocumentCard
-                                    key={project.id}
-                                    title={project.title}
-                                    onView={() => handleView(project.file)}
-                                    onDownload={() => handleDownload(project.title)}
-                                />
-                            ))}
-                        </div>
+                        pdfProjects.length === 0 ? (
+                            <div className="text-center text-lg text-red font-semibold py-8">No files found with this filter.</div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 justify-items-center w-full md:max-w-2xl lg:max-w-5xl px-4">
+                                {pdfProjects.map((project) => (
+                                    <DocumentCard
+                                        key={project.id}
+                                        title={project.title}
+                                        onView={() => handleView(project.id)}
+                                        onDownload={() => handleDownload(project.title)}
+                                        viewLoading={viewLoadingId === project.id}
+                                    />
+                                ))}
+                            </div>
+                        )
                     )}
                 </div>
                 {showPdfViewer && (

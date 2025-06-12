@@ -11,45 +11,83 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
 import CreatePassword from "./pages/CreatePassword";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            padding: "16px",
-            color: "white",
-            backgroundColor: "#141E8C",
-          },
-        }}
-      />
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Login />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/create-password" element={<CreatePassword />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              padding: "16px",
+              color: "white",
+              backgroundColor: "#141E8C",
+            },
+          }}
+        />
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/create-password" element={<CreatePassword />} />
 
-        {/* Admin routes with persistent layout */}
-        <Route element={<AdminLayout />}>
-          <Route path="/admin-dashboard" index element={<AdminDashboard />} />
-          <Route path="/school-management" element={<SchoolManagement />} />
-          <Route path="/educator-management" element={<EducatorManagement />} />
-          <Route path="/report" element={<Report />} />
-        </Route>
+          {/* Admin routes with persistent layout */}
+          <Route element={<AdminLayout />}>
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/school-management"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <SchoolManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/educator-management"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <EducatorManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/report"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <Report />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
 
-        {/* Educator routes with persistent layout */}
-        <Route element={<EducatorLayout />}>
-          <Route path="/educator-dashboard" element={<EducatorDashboard />} />
-        </Route>
+          {/* Educator routes with persistent layout */}
+          <Route element={<EducatorLayout />}>
+            <Route
+              path="/educator-dashboard"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <EducatorDashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
 
-        {/* Catch-all route for 404 - Page Not Found */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Catch-all route for 404 - Page Not Found */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

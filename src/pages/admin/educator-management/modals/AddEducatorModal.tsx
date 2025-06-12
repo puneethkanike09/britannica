@@ -1,21 +1,15 @@
 import { X } from "lucide-react";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
 import { AddEducatorModalProps, School, Educator } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { EducatorService } from '../../../../services/educatorService';
+import { SchoolService } from '../../../../services/schoolService';
 
-// Mock data for schools dropdown
-const schools: Pick<School, 'id' | 'name'>[] = [
-    { id: 1, name: "Britanica School" },
-    { id: 2, name: "St. Mary's School" },
-    { id: 3, name: "Delhi Public School" },
-    { id: 4, name: "Kendriya Vidyalaya" },
-];
-
-export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
+export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducatorModalProps) {
     const [formData, setFormData] = useState<Omit<Educator, 'id'>>({
         firstName: '',
         lastName: '',
@@ -33,11 +27,14 @@ export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const [schools, setSchools] = useState<Pick<School, 'school_id' | 'school_name'>[]>([]);
+    const [isSchoolsLoading, setIsSchoolsLoading] = useState(true);
 
-    const handleClose = () => {
+    // Wrap handleClose in useCallback for stable reference
+    const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
-    };
+    }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -52,6 +49,7 @@ export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
         }
     };
 
+    // Fix useEffect dependency
     useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && !isSubmitting) {
@@ -61,7 +59,7 @@ export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
 
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
-    }, [isSubmitting]);
+    }, [isSubmitting, handleClose]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -123,30 +121,65 @@ export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
         return isValid;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
             toast.promise(
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve('Educator added successfully!');
-                    }, 2000);
-                }),
+                (async () => {
+                    const response = await EducatorService.addTeacher({
+                        school_id: formData.schoolId!,
+                        first_name: formData.firstName,
+                        last_name: formData.lastName,
+                        mobile_no: formData.phone,
+                        email_id: formData.email,
+                        login_id: formData.loginId,
+                    });
+                    if (response.error === false || response.error === "false") {
+                        setIsSubmitting(false);
+                        if (onEducatorAdded) onEducatorAdded();
+                        handleClose();
+                        return response.message || 'Educator added successfully!';
+                    } else {
+                        setIsSubmitting(false);
+                        throw new Error(response.message || 'Failed to add educator');
+                    }
+                })(),
                 {
                     loading: 'Adding educator...',
-                    success: () => {
-                        setIsSubmitting(false);
-                        handleClose();
-                        return 'Educator added successfully!';
-                    },
-                    error: (err) => {
-                        setIsSubmitting(false);
-                        return `Error: ${err.message}`;
-                    }
+                    success: (msg) => msg,
+                    error: (err) => err.message || 'Failed to add educator',
                 }
             );
         }
     };
+
+    useEffect(() => {
+        let mounted = true;
+        setIsSchoolsLoading(true);
+
+        SchoolService.fetchSchoolsForDropdown().then((res) => {
+            console.log('Schools response:', res);
+            if (mounted) {
+                if (res && !res.error) {
+                    console.log('Schools loaded:', res.schools);
+                    setSchools(res.schools || []);
+                } else {
+                    setSchools([]);
+                    toast.error('Failed to load schools');
+                }
+                setIsSchoolsLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setSchools([]);
+                setIsSchoolsLoading(false);
+                toast.error('Failed to load schools');
+            }
+        });
+
+        return () => { mounted = false; };
+    }, []);
+
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
@@ -270,15 +303,15 @@ export default function AddEducatorModal({ onClose }: AddEducatorModalProps) {
                                         </label>
                                         <select
                                             name="schoolId"
-                                            value={formData.schoolId ?? ''}
+                                            value={formData.schoolId ? String(formData.schoolId) : ''}
                                             onChange={handleInputChange}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting}
+                                            disabled={isSubmitting || isSchoolsLoading}
                                         >
-                                            <option value="">Select School</option>
+                                            <option value="">{isSchoolsLoading ? 'Loading schools...' : 'Select School'}</option>
                                             {schools.map(school => (
-                                                <option key={school.id} value={school.id}>
-                                                    {school.name}
+                                                <option key={school.school_id} value={school.school_id}>
+                                                    {school.school_name}
                                                 </option>
                                             ))}
                                         </select>

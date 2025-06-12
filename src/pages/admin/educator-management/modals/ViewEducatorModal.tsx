@@ -1,19 +1,33 @@
 import { X } from "lucide-react";
-import { School, EducatorActionModalProps } from "../../../../types/admin";
+import { EducatorActionModalProps } from "../../../../types/admin";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-
-// Mock schools data (same as in EditEducatorModal)
-const schools: Pick<School, 'id' | 'name'>[] = [
-    { id: 1, name: "Britanica School" },
-    { id: 2, name: "St. Mary's School" },
-    { id: 3, name: "Delhi Public School" },
-    { id: 4, name: "Kendriya Vidyalaya" },
-];
+import { EducatorService } from "../../../../services/educatorService";
 
 export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [educatorDetails, setEducatorDetails] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setLoading(true);
+        setError(null);
+        EducatorService.fetchTeacherById(educator.teacher_id)
+            .then((res) => {
+                if (res.error === false || res.error === "false") {
+                    setEducatorDetails(res.teacher!);
+                } else {
+                    setError(res.message || "Failed to fetch educator details");
+                }
+            })
+            .catch((err) => {
+                setError(err.message || "Failed to fetch educator details");
+            })
+            .finally(() => setLoading(false));
+    }, [educator.teacher_id]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -37,15 +51,9 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                 handleClose();
             }
         };
-
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
     }, []);
-
-    // Find the school name if schoolId is provided
-    const schoolName = educator.schoolId
-        ? schools.find((school) => school.id === educator.schoolId)?.name || "Not assigned"
-        : "Not assigned";
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
@@ -77,43 +85,59 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                 <X className="h-7 w-7" />
                             </button>
                         </div>
-
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
-                                {/* First Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3">
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">Full Name</div>
-                                        <div className="text-primary font-medium break-all">
-                                            {`${educator.firstName} ${educator.lastName}`}
+                            {loading ? (
+                                <div className="py-12 text-center text-lg text-gray">Loading educator details...</div>
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : educatorDetails ? (
+                                <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                    {/* First Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Full Name</div>
+                                            <div className="text-primary font-medium break-all">
+                                                {educatorDetails.first_name} {educatorDetails.last_name}
+                                            </div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Login</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.login_id}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">School</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.school_name}</div>
                                         </div>
                                     </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">Email Address</div>
-                                        <div className="text-primary font-medium break-all">{educator.email}</div>
-                                    </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0">
-                                        <div className="text-textColor mb-2">Phone Number</div>
-                                        <div className="text-primary font-medium break-all">{educator.phone}</div>
-                                    </div>
-                                </div>
-
-                                {/* Second Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">Login ID</div>
-                                        <div className="text-primary font-medium break-all">
-                                            {educator.loginId}
+                                    {/* Second Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Status</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.status || '-'}</div>
+                                        </div>
+                                        <div className="p-6 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Created By</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.created_user || '-'}</div>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="text-textColor mb-2">Created At</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.created_ts ? new Date(educatorDetails.created_ts).toLocaleString() : '-'}</div>
                                         </div>
                                     </div>
-                                    <div className="p-6 md:border-r md:border-lightGray">
-                                        <div className="text-textColor mb-2">School</div>
-                                        <div className="text-primary font-medium break-all">{schoolName}</div>
+                                    {/* Third Row: Audit Fields */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 md:border-t md:border-lightGray">
+                                        <div className="p-6 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Last Updated By</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.last_updated_user || '-'}</div>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="text-textColor mb-2">Last Updated At</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.last_updated_ts ? new Date(educatorDetails.last_updated_ts).toLocaleString() : '-'}</div>
+                                        </div>
                                     </div>
-                                    <div className="hidden md:block"></div>
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
                     </motion.div>
                 </motion.div>

@@ -5,6 +5,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import Loader from '../../../admin/components/common/Loader';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -365,10 +366,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 }}
                             >
                                 {isLoading && (
-                                    <div className="flex items-center justify-center py-20">
-                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                                        <span className="ml-3 text-textColor">Loading PDF...</span>
-                                    </div>
+                                    <Loader message='Loading PDF...' />
                                 )}
 
                                 <Document

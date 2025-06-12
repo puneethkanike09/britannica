@@ -35,20 +35,32 @@ export interface ActivityLog {
 
 // school management page
 export interface School {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    address?: string;
+    school_id: string;
+    school_name: string;
+    school_email: string;
+    school_mobile_no: string;
+    address_line1: string;
+    address_line2?: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    status?: string;
+    created_user?: string;
+    created_ts?: string;
+    last_updated_user?: string;
+    last_updated_ts?: string;
 }
 
 export interface AddSchoolModalProps {
     onClose: () => void;
+    onSchoolAdded?: () => void;
 }
 
 export interface SchoolActionModalProps {
     onClose: () => void;
     school: School;
+    onSchoolUpdated?: () => void;
 }
 
 // educator management page
@@ -64,9 +76,22 @@ export interface Educator {
 
 export interface AddEducatorModalProps {
     onClose: () => void;
+    onEducatorAdded?: () => void;
 }
 
 export interface EducatorActionModalProps {
     onClose: () => void;
-    educator: Educator;
+    educator: Teacher;
+    onEducatorUpdated?: () => void;
+}
+
+export interface Teacher {
+    teacher_id: string;
+    teacher_name: string;
+    school_name: string;
+    teacher_login: string;
+    email: string;
+    phone: string;
+    schoolId: number;
+    user_id?: number;
 }

@@ -1,6 +1,5 @@
 import { X } from "lucide-react";
-import toast from "react-hot-toast";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { EducatorActionModalProps } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
@@ -9,10 +8,10 @@ export default function DeleteEducatorModal({ onClose, educator }: EducatorActio
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (isDeleting) return;
         setIsVisible(false);
-    };
+    }, [isDeleting]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -36,29 +35,15 @@ export default function DeleteEducatorModal({ onClose, educator }: EducatorActio
 
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
-    }, [isDeleting]);
+    }, [isDeleting, handleClose]);
 
     const handleDelete = () => {
         setIsDeleting(true);
-        toast.promise(
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('Educator deleted successfully!');
-                }, 2000);
-            }),
-            {
-                loading: 'Deleting educator...',
-                success: () => {
-                    setIsDeleting(false);
-                    handleClose();
-                    return 'Educator deleted successfully!';
-                },
-                error: (err: Error) => {
-                    setIsDeleting(false);
-                    return `Error: ${err.message}`;
-                }
-            }
-        );
+        // TODO: Call backend delete API here
+        setTimeout(() => {
+            setIsDeleting(false);
+            handleClose();
+        }, 1000);
     };
 
     return (
@@ -96,24 +81,23 @@ export default function DeleteEducatorModal({ onClose, educator }: EducatorActio
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete educator <span className="font-medium text-darkGray">{`${educator.firstName} ${educator.lastName}`}</span>?
-                                This action cannot be undone.
+                                Are you sure you want to delete educator <span className="font-medium text-darkGray">{educator.teacher_name}</span>? This action cannot be undone.
                             </p>
 
                             <div className="flex justify-end gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-6 py-2 rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className="btn btn-secondary"
                                     disabled={isDeleting}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleDelete}
-                                    className={`px-6 py-2 rounded-lg bg-red text-white hover:bg-red/80 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className="btn btn-danger"
                                     disabled={isDeleting}
                                 >
-                                    Yes, Delete
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
                                 </button>
                             </div>
                         </div>
