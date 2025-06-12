@@ -23,7 +23,6 @@ export class AuthService {
     static decodeToken(token: string): any {
         try {
             const payload = token.split(".")[1];
-
             const decoded = atob(payload);
             return JSON.parse(decoded);
         } catch (error) {
@@ -71,10 +70,20 @@ export class AuthService {
                         },
                         message: response.data.message,
                     };
+                } else {
+                    // Handle invalid token payload
+                    return {
+                        success: false,
+                        message: "Invalid token payload",
+                    };
                 }
             }
 
-            return response;
+            // Return a failure response if login was not successful
+            return {
+                success: false,
+                message: response.message || "Login failed",
+            };
         } catch (error) {
             console.error("Login error:", error);
             return {
