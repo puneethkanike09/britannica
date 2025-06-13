@@ -5,7 +5,7 @@ import { SchoolActionModalProps } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
-export default function DeleteSchoolModal({ onClose }: SchoolActionModalProps) {
+export default function DeleteSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
@@ -96,7 +96,7 @@ export default function DeleteSchoolModal({ onClose }: SchoolActionModalProps) {
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete school?
+                                Are you sure you want to delete school <span className="font-bold text-darkGray">{school.name}</span>?
                                 This action cannot be undone.
                             </p>
 

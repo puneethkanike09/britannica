@@ -1,0 +1,871 @@
+{
+	"info": {
+		"_postman_id": "93d3bc81-574a-430f-8c5c-d61c9db39a15",
+		"name": "Britanica-Server-12062025",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30850803"
+	},
+	"item": [
+		{
+			"name": "Admin Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"login_id\": \"johndoe\",\r\n \"password\": \"Vidhya1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/auth/admin-login",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"auth",
+						"admin-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"login_id\": \"johndoe\",\r\n \"password\": \"Vidhya1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/auth/teacher-login",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"auth",
+						"teacher-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Grade",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzEzMzUyLCJleHAiOjE3NDk3MTM5NTJ9.uqOutew5toWNQPXqa0hztN-657us8yija5z0lMawaVs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/grade",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"grade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Theme",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzEzMzk1LCJleHAiOjE3NDk3MTM5OTV9.dtChtG9y_ToxerGAixr5HchcKFbhMMfAQD8mU-o_Keg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/theme",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"theme"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Access Type",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzEzNDE3LCJleHAiOjE3NDk3MTQwMTd9.9rPTUBpuyiLGhW289SwHbSIq2RZo4d8Z3ja3mR7pisU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/user_access_type",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"user_access_type"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PBL files",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzEzNDQwLCJleHAiOjE3NDk3MTQwNDB9.qEHNnxc_ZIq40wTFd_juMOQ11TYskARE4t_Fu2e7Nbk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"grade_id\": 1,\r\n  \"theme_id\": 1,\r\n  \"user_access_type_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/file",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"file"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PBL file By id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MDgxLCJleHAiOjE3NDk3MTQ2ODF9.7RkNMeoW3cj7_Tf7j0R1DJcngk9XnMW1zXl0Vxr4zNI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/file/1",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"file",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "School Create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MDk5LCJleHAiOjE3NDk3MTQ2OTl9.ud9x0aFXU1UWbE0ifGQzkCkp7G0F0T4dWclgT13oqPg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"school_name\": \"ABCD5555 International School89908990\",\r\n    \"school_email\": \"contact@abcschool.edu\",\r\n    \"school_mobile_no\": \"9876543210\",\r\n    \"address_line1\": \"123 Main Street\",\r\n    \"address_line2\": \"123 Main Sub Street\",\r\n    \"city\": \"Mangalore\",\r\n    \"state\": \"Karnataka\",\r\n    \"country\": \"India\",\r\n    \"pin\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/school/create",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"school",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "School Update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MTI3LCJleHAiOjE3NDk3MTQ3Mjd9.ianetlNJZvwgFU-HQ67a75eih4b_Owpoa5CBiwfy0bg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"school_id\" : 1,\r\n    \"school_name\": \"ABCD5555 International School89908990\",\r\n    \"school_email\": \"contact@abcschool.edu\",\r\n    \"school_mobile_no\": \"9876543210\",\r\n    \"address_line1\": \"123 Main Street\",\r\n    \"address_line2\": \"123 Main Sub Street\",\r\n    \"city\": \"Mangalore\",\r\n    \"state\": \"Karnataka\",\r\n    \"country\": \"India\",\r\n    \"pin\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/school/update",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"school",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "School Dropdown",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MjcwLCJleHAiOjE3NDk3MTQ4NzB9.a0smzOW7NpR6vnnv0Vt2RRnnbTexCkkRvS1vbdoaaeM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/school",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"school"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "School List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0Mjk0LCJleHAiOjE3NDk3MTQ4OTR9.gYqdUkFkzH35gYRCrjIovb0xmAKadqHF8kgWIKqto74",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/school/all",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"school",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "School Detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MzE4LCJleHAiOjE3NDk3MTQ5MTh9.D6QYEsM8FGRTKhqy8dayXgV3hbt1-O68bsrRnwE9chk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/school/1",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"school",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0MzQxLCJleHAiOjE3NDk3MTQ5NDF9.WNiqxXzD6Utieow6XjV00uVYH0OtaBwUPPwQaFLkP_M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"school\": {\r\n    \"school_id\": 3\r\n  },\r\n  \"first_name\": \"VidhyaTest12062025\",\r\n  \"last_name\": \"Doe\",\r\n  \"mobile_no\": \"9876543210\",\r\n  \"email_id\": \"vidhyashree17091995@gmail.com\",\r\n  \"login_id\": \"VidhyaTest12062025\",\r\n  \"user_roles\": [\r\n    {\r\n      \"role\": {\r\n        \"role_id\": 2\r\n      }\r\n      \r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/teacher/create",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"teacher",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0NDU1LCJleHAiOjE3NDk3MTUwNTV9.QfmrUW5awSAcg0VXE7f91xnHlCU9TcnRHRrDappaEDo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\": 19,\r\n  \"first_name\": \"VidhyaTest12062025\",\r\n  \"last_name\": \"Doe\",\r\n  \"mobile_no\": \"9876543210\",\r\n  \"email_id\": \"vidhyashree17091995@gmail.com\",\r\n  \"login_id\": \"VidhyaTest12062025\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/teacher/update",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"teacher",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0NjI1LCJleHAiOjE3NDk3MTUyMjV9.UOeC_VubUCcHkX6IUuX3rddTA3Yq4_mvdO0RJD6-0cA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/teacher",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"teacher"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher Detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzE0NjQ1LCJleHAiOjE3NDk3MTUyNDV9.wp5lOp4xP-G8r2nyAa7WFOAO6mMtSK4PiwLIa75-MuQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/teacher/1",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"teacher",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher Complete Detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzMwMTAxLCJleHAiOjE3NDk3MzA3MDF9.D6OtL2gLgz2eIXxOdiNOT4ydGS4aOte31KGYt-IOsfk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/teacher/info/1",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"teacher",
+						"info",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Password Create",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "7gDjsC3XejuIxdxAiduAFA%3D%3D",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\" : \"Vidhya1\",\r\n    \"confirm_password\" : \"Vidhya1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/auth/password",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"auth",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "File View",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzMxNjIzLCJleHAiOjE3NDk3MzIyMjN9.Ja_qoijbBNL1XxCagFtI8dRXV3WBLSFDBPtDqAHs-iw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/file/view?filePath=/grade/2/theme/2/access_type/1/ac43542da92dcd62ff477723cab69dfd.pdf",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"file",
+						"view"
+					],
+					"query": [
+						{
+							"key": "filePath",
+							"value": "/grade/2/theme/2/access_type/1/ac43542da92dcd62ff477723cab69dfd.pdf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "File Download",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZXMiOlsiQWRtaW4iXSwiaWF0IjoxNzQ5NzI5NzY2LCJleHAiOjE3NDk3MzAzNjZ9.AXu5F1zN2-PhpRWl_MoI3Ptim_rzoKQJevoBJgFjFZ4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/file/download?filePath=/grade/2/theme/2/access_type/1/ac43542da92dcd62ff477723cab69dfd.pdf",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"file",
+						"download"
+					],
+					"query": [
+						{
+							"key": "filePath",
+							"value": "/grade/2/theme/2/access_type/1/ac43542da92dcd62ff477723cab69dfd.pdf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2aWRoeWEiLCJ1c2VybmFtZSI6InZpZGh5YSIsInJvbGVzIjpbIlRlYWNoZXIiXSwiaWF0IjoxNzQ5NzA3Nzc3LCJleHAiOjE3NDk3MDgzNzd9.6mim-JiiptX5fhpxhGaz268WazT8G90WWL5C4-tRmD4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "API-KEY",
+						"value": "478be88bb38731ccf5c050a137104039",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pbl.4edgeit.com/britanica_pbl/auth/logout",
+					"protocol": "https",
+					"host": [
+						"pbl",
+						"4edgeit",
+						"com"
+					],
+					"path": [
+						"britanica_pbl",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

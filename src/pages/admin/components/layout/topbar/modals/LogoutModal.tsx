@@ -44,29 +44,28 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isLoggingOut]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setIsLoggingOut(true);
-        toast.promise(
-            new Promise((resolve) => {
 
-                AuthService.logout();
-                resolve('Logged out successfully!');
-
-            }),
-            {
-                loading: 'Logging out...',
-                success: () => {
-                    setIsLoggingOut(false);
-                    handleClose();
-                    navigate('/');
-                    return 'Logged out successfully!';
-                },
-                error: (err) => {
-                    setIsLoggingOut(false);
-                    return `Error: ${err.message}`;
+        try {
+            const response = await AuthService.logout();
+            await toast.promise(
+                Promise.resolve(response),
+                {
+                    loading: 'Logging out...',
+                    success: (res: { message?: string }) => res.message || 'Logged out successfully!',
+                    error: (err: { message?: string }) => err?.message || 'Logout failed',
                 }
-            }
-        );
+            );
+            handleClose();
+            navigate('/');
+        } catch (error) {
+            const errMsg = (error as { message?: string })?.message || 'Logout failed';
+            await toast.error(errMsg);
+            console.error('Logout error:', error);
+        } finally {
+            setIsLoggingOut(false);
+        }
     };
 
     return (

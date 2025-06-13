@@ -11,7 +11,7 @@ interface FetchSchoolsResponse {
 export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {
         try {
-            const response = await apiClient.get<FetchSchoolsResponse>("/schools/all");
+            const response = await apiClient.get<FetchSchoolsResponse>("/school/all");
             if (response.data) {
                 return response.data;
             } else {
@@ -46,7 +46,7 @@ export class SchoolService {
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
             const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string }>(
-                "/schools/create",
+                "/school/create",
                 schoolData
             );
             if (response.data) {
@@ -80,7 +80,7 @@ export class SchoolService {
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
             const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string }>(
-                "/schools/update",
+                "/school/update",
                 schoolData
             );
             if (response.data) {
@@ -103,7 +103,7 @@ export class SchoolService {
     static async fetchSchoolById(school_id: string | number): Promise<{ error: boolean | string; school?: School; token?: string; message?: string }> {
         try {
             const response = await apiClient.get<{ error: boolean | string; school?: School; token?: string; message?: string }>(
-                `/schools/${school_id}`
+                `/school/${school_id}`
             );
             if (response.data) {
                 return response.data;
@@ -128,13 +128,14 @@ export class SchoolService {
         token?: string;
         message?: string;
     }> {
+
         try {
             const response = await apiClient.get<{
                 error: boolean | string;
                 schools?: Pick<School, 'school_id' | 'school_name'>[];
                 token?: string;
                 message?: string;
-            }>("/schools");
+            }>("/school");
 
             if (response.data) {
                 return response.data;

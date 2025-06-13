@@ -5,14 +5,14 @@ import {
     FetchUserAccessTypesResponse,
     FetchPblFilesPayload,
     FetchPblFilesResponse,
-    FetchPblFileByIdResponse
+    FetchPblFileByIdResponse,
 } from '../types/educator';
 
 export class EducatorDashboardService {
     static async fetchGrades(): Promise<FetchGradesResponse> {
         try {
             const response = await apiClient.get<FetchGradesResponse>(
-                "/grades"
+                "/grade"
             );
             if (response.data) {
                 return response.data;
@@ -34,7 +34,7 @@ export class EducatorDashboardService {
     static async fetchThemes(): Promise<FetchThemesResponse> {
         try {
             const response = await apiClient.get<FetchThemesResponse>(
-                "/themes"
+                "/theme"
             );
             if (response.data) {
                 return response.data;
@@ -56,7 +56,7 @@ export class EducatorDashboardService {
     static async fetchUserAccessTypes(): Promise<FetchUserAccessTypesResponse> {
         try {
             const response = await apiClient.get<FetchUserAccessTypesResponse>(
-                "/user_access_types"
+                "/user_access_type"
             );
             if (response.data) {
                 return response.data;
@@ -78,7 +78,7 @@ export class EducatorDashboardService {
     static async fetchPblFiles(payload: FetchPblFilesPayload): Promise<FetchPblFilesResponse> {
         try {
             const response = await apiClient.post<FetchPblFilesResponse>(
-                "/pbl_files",
+                "/file",
                 payload
             );
             if (response.data) {
@@ -98,11 +98,10 @@ export class EducatorDashboardService {
         }
     }
 
-    static async fetchPblFileById(payload: { token: string; pbl_id: string | number }): Promise<FetchPblFileByIdResponse> {
+    static async fetchPblFileById(pblId: string | number): Promise<FetchPblFileByIdResponse> {
         try {
-            const response = await apiClient.post<FetchPblFileByIdResponse>(
-                "/pbl_files/by-id",
-                payload
+            const response = await apiClient.get<FetchPblFileByIdResponse>(
+                `/file/${pblId}`
             );
             if (response.data) {
                 return response.data;
@@ -113,7 +112,7 @@ export class EducatorDashboardService {
                 };
             }
         } catch (error) {
-            console.error("Error fetching PBL file by id:", error);
+            console.error(`Error fetching PBL file by ID ${pblId}:`, error);
             return {
                 error: true,
                 message: error instanceof Error ? error.message : "Unknown error",

@@ -4,6 +4,7 @@ import { pdfjs } from 'react-pdf';
 import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
 import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
+import { apiClient } from '../../../utils/apiClient';
 import Select from '../components/common/Select';
 import DocumentCard from '../components/common/PdfCards';
 import Topbar from '../components/layout/topbar';
@@ -114,7 +115,7 @@ const EducatorDashboard = () => {
                         id: file.pbl_id,
                         title: file.pbl_name,
                         type: 'PDF',
-                        file: `/${file.pbl_file_path}` // Ensure leading slash for static serving
+                        file: file.pbl_file_path // Store the filePath as provided by the API
                     }));
                     setPdfProjects(files);
                     setShowResults(true);
@@ -140,57 +141,46 @@ const EducatorDashboard = () => {
         }
     };
 
-    const handleDownload = (title: string) => {
-        console.log(`Downloading project: ${title}`);
-        const project = pdfProjects.find((p) => p.title === title);
-        if (project?.file) {
-            const link = document.createElement('a');
-            link.href = project.file;
-            link.download = `${title}.${project.type.toLowerCase()}`;
-            link.click();
+    const handleView = async (pblId: string | number) => {
+        const project = pdfProjects.find((p) => p.id === pblId);
+        if (!project?.file) {
+            toast.error('File path not found');
+            return;
+        }
+        setViewLoadingId(pblId);
+        try {
+            const viewResponse = await apiClient.getFileViewUrl(project.file);
+            if (viewResponse.success && viewResponse.data) {
+                setCurrentPdfFile(viewResponse.data);
+                setShowPdfViewer(true);
+            } else {
+                throw new Error(viewResponse.message || 'Failed to get view URL');
+            }
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to view file');
+        } finally {
+            setViewLoadingId(null);
         }
     };
 
-    const handleView = async (pblId?: string | number) => {
-        if (!pblId) return;
-        setViewLoadingId(pblId);
-        setIsSubmitting(true);
+    const handleDownload = async (pblId: string | number, title: string) => {
+        const project = pdfProjects.find((p) => p.id === pblId);
+        if (!project?.file) {
+            toast.error('File path not found');
+            return;
+        }
         try {
-            const token = '';
-            const res = await EducatorDashboardService.fetchPblFileById({ token, pbl_id: pblId });
-            if (res.error === false || res.error === 'false') {
-                let fileUrl = res.pbl_file && res.pbl_file[0]?.file_url;
-                if (fileUrl) {
-                    // If fileUrl is absolute, rewrite to relative for proxy
-                    if (fileUrl.startsWith('https://pbl.4edgeit.com')) {
-                        const url = new URL(fileUrl);
-                        fileUrl = url.pathname + url.search;
-                    }
-                    // Fetch the PDF with required headers
-                    const headers: HeadersInit = {
-                        'API-KEY': import.meta.env.VITE_API_KEY || '',
-                    };
-                    const storedToken = localStorage.getItem('token');
-                    if (storedToken) {
-                        headers['Authorization'] = `Bearer ${storedToken}`;
-                    }
-                    const response = await fetch(fileUrl, { headers });
-                    if (!response.ok) throw new Error('Failed to fetch PDF file');
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
-                    setCurrentPdfFile(blobUrl);
-                    setShowPdfViewer(true);
-                } else {
-                    toast.error('No file URL found');
-                }
+            const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
+            if (downloadResponse.success && downloadResponse.data) {
+                const link = document.createElement('a');
+                link.href = downloadResponse.data;
+                link.download = `${title}.pdf`;
+                link.click();
             } else {
-                toast.error(res.message || 'Failed to fetch file');
+                throw new Error(downloadResponse.message || 'Failed to get download URL');
             }
-        } catch (err) {
-            toast.error((err as Error).message || 'Failed to fetch file');
-        } finally {
-            setIsSubmitting(false);
-            setViewLoadingId(null);
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to download file');
         }
     };
 
@@ -299,7 +289,7 @@ const EducatorDashboard = () => {
                                         key={project.id}
                                         title={project.title}
                                         onView={() => handleView(project.id)}
-                                        onDownload={() => handleDownload(project.title)}
+                                        onDownload={() => handleDownload(project.id, project.title)}
                                         viewLoading={viewLoadingId === project.id}
                                     />
                                 ))}

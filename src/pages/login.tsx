@@ -54,6 +54,7 @@ const Login = () => {
     return isValid;
   };
 
+  // Update the handleLogin function in your Login component
   const handleLogin = async (e: React.FormEvent, role: "admin" | "educator") => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -61,22 +62,23 @@ const Login = () => {
 
     try {
       await toast.promise(
-        login(loginId, password),
+        login(loginId, password, role),
         {
           loading: "Logging in...",
           success: () => {
+            // The AuthContext throws with the API's message on error, so here we can use the API's message for success as well
             const redirectPath = role === "admin" ? "/admin-dashboard" : "/educator-dashboard";
             navigate(redirectPath);
+            // We don't have direct access to the API message here, so you may want to refactor login to return it if needed
             return "Login successful!";
           },
-          error: (err) => `Error: ${err.message}`,
+          error: (err: { message?: string }) => err?.message || "Login failed",
         }
       );
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const handleForgotPasswordSubmit = () => {
     if (!validateForgotPasswordForm()) return;
     setIsSubmitting(true);

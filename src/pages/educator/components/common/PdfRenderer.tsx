@@ -36,6 +36,8 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
     const [pageWidth, setPageWidth] = useState<number>(800);
     const [isVisible, setIsVisible] = useState(true);
 
+    console.log(`Rendering PDF: ${file}`);
+
     // Calculate responsive page width
     useEffect(() => {
         const updatePageWidth = () => {

@@ -13,8 +13,8 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isInitialized: boolean;
     user: User | null;
-    login: (login_id: string, password: string) => Promise<void>;
-    logout: () => void;
+    login: (login_id: string, password: string, role: "admin" | "educator") => Promise<void>;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,20 +35,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         initializeAuth();
     }, []);
 
-    const login = async (login_id: string, password: string) => {
-        const response = await AuthService.login({ login_id, password });
+    const login = async (login_id: string, password: string, role: "admin" | "educator") => {
+        const response = await AuthService.login({ login_id, password }, role);
         if (response.success && response.data) {
             setIsAuthenticated(true);
             setUser(response.data.user);
         } else {
+            // Always throw the API's message for toast to use
             throw new Error(response.message || "Login failed");
         }
     };
 
-    const logout = () => {
-        AuthService.logout();
-        setIsAuthenticated(false);
-        setUser(null);
+    const logout = async () => {
+        try {
+            await AuthService.logout();
+        } catch (error) {
+            console.error("Logout error:", error);
+            // Even if API fails, clear local state
+        } finally {
+            setIsAuthenticated(false);
+            setUser(null);
+        }
     };
 
     return (

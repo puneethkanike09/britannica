@@ -1,4 +1,5 @@
 import { apiClient } from "../utils/apiClient";
+import { JwtPayload } from "../types/global/jwt";
 
 interface AuthResponse {
     token: string;
@@ -20,24 +21,30 @@ interface ApiResponse<T> {
 }
 
 export class AuthService {
-    static decodeToken(token: string): any {
+    static decodeToken(token: string): JwtPayload | null {
         try {
             const payload = token.split(".")[1];
             const decoded = atob(payload);
-            return JSON.parse(decoded);
+            return JSON.parse(decoded) as JwtPayload;
         } catch (error) {
             console.error("Error decoding token:", error);
             return null;
         }
     }
 
-    static async login(credentials: {
-        login_id: string;
-        password: string;
-    }): Promise<ApiResponse<AuthResponse & { user: User }>> {
+    static async login(
+        credentials: {
+            login_id: string;
+            password: string;
+        },
+        role: "admin" | "educator"
+    ): Promise<ApiResponse<AuthResponse & { user: User }>> {
         try {
+            // Use different endpoints based on role
+            const endpoint = role === "admin" ? "/auth/admin-login" : "/auth/teacher-login";
+
             const response = await apiClient.post<AuthResponse>(
-                "/auth/login",
+                endpoint,
                 credentials,
                 false // No token for login
             );
@@ -53,10 +60,10 @@ export class AuthService {
                             ? ("admin" as const)
                             : ("educator" as const);
                     const user: User = {
-                        id: tokenPayload.sub || tokenPayload.username,
-                        login_id: tokenPayload.username || tokenPayload.sub,
+                        id: tokenPayload.sub || tokenPayload.username || "",
+                        login_id: tokenPayload.username || tokenPayload.sub || "",
                         role: userRole,
-                        name: tokenPayload.username,
+                        name: tokenPayload.username || "",
                         email: tokenPayload.email || "",
                     };
                     localStorage.setItem("user", JSON.stringify(user));
@@ -70,19 +77,13 @@ export class AuthService {
                         },
                         message: response.data.message,
                     };
-                } else {
-                    // Handle invalid token payload
-                    return {
-                        success: false,
-                        message: "Invalid token payload",
-                    };
                 }
             }
 
-            // Return a failure response if login was not successful
             return {
-                success: false,
-                message: response.message || "Login failed",
+                success: response.success,
+                data: undefined,
+                message: response.message,
             };
         } catch (error) {
             console.error("Login error:", error);
@@ -93,9 +94,23 @@ export class AuthService {
         }
     }
 
-    static logout() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+    static async logout(): Promise<{ success: boolean; message?: string }> {
+        try {
+            // Call the logout API
+            const response = await apiClient.post("/auth/logout", {}, true); // true means include token
+            // Always clear local storage regardless of API response
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            return { success: response.success, message: response.message };
+        } catch (error) {
+            console.error("Logout API error:", error);
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            return {
+                success: false,
+                message: error instanceof Error ? error.message : "Logout failed",
+            };
+        }
     }
 
     static isAuthenticated(): boolean {

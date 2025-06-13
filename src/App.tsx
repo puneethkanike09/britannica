@@ -76,7 +76,7 @@ function App() {
             <Route
               path="/educator-dashboard"
               element={
-                <ProtectedRoute requiredRole="admin">
+                <ProtectedRoute requiredRole="educator">
                   <EducatorDashboard />
                 </ProtectedRoute>
               }

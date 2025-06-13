@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import toast from "react-hot-toast";
 import { EducatorActionModalProps, School } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +30,9 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
     const [isVisible, setIsVisible] = useState(true);
     const [schools, setSchools] = useState<Pick<School, 'school_id' | 'school_name'>[]>([]);
     const [isSchoolsLoading, setIsSchoolsLoading] = useState(true);
+    const [teacherLoading, setTeacherLoading] = useState(true);
+    const [teacherError, setTeacherError] = useState<string | null>(null);
+    const hasFetchedTeacher = useRef(false);
 
     // Handle modal close
     const handleClose = useCallback(() => {
@@ -61,11 +64,9 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isSubmitting, handleClose]);
 
-    // Fetch schools for dropdown
     useEffect(() => {
         let mounted = true;
         setIsSchoolsLoading(true);
-
         SchoolService.fetchSchoolsForDropdown().then((res) => {
             if (mounted) {
                 if (res && !res.error) {
@@ -83,9 +84,48 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                 toast.error('Failed to load schools');
             }
         });
-
         return () => { mounted = false; };
     }, []);
+
+    // Only fetch teacher details after schools are loaded, and only once
+    const schoolsLoaded = !isSchoolsLoading;
+    useEffect(() => {
+        if (!schoolsLoaded || hasFetchedTeacher.current) return;
+        hasFetchedTeacher.current = true;
+        let mounted = true;
+        setTeacherLoading(true);
+        setTeacherError(null);
+        EducatorService.fetchTeacherCompleteDetails(educator.teacher_id).then((res) => {
+            if (!mounted) return;
+            if (res.error === false || res.error === "false") {
+                setFormData(prev => {
+                    let matchedSchoolId = prev.schoolId;
+                    if (res.teacher?.school_name && schools.length > 0) {
+                        const match = schools.find(s => s.school_name === res.teacher?.school_name);
+                        if (match) matchedSchoolId = Number(match.school_id);
+                    }
+                    return {
+                        ...prev,
+                        teacher_id: String(res.teacher?.teacher_id ?? prev.teacher_id),
+                        firstName: res.teacher?.first_name ?? '',
+                        lastName: res.teacher?.last_name ?? '',
+                        email: res.teacher?.email_id ?? '',
+                        phone: res.teacher?.mobile_no ?? '',
+                        loginId: res.teacher?.login_id ?? '',
+                        schoolId: matchedSchoolId,
+                    };
+                });
+            } else {
+                setTeacherError(res.message || 'Failed to fetch educator details');
+            }
+            setTeacherLoading(false);
+        }).catch((err) => {
+            if (!mounted) return;
+            setTeacherError(err.message || 'Failed to fetch educator details');
+            setTeacherLoading(false);
+        });
+        return () => { mounted = false; };
+    }, [schools, schoolsLoaded, educator.teacher_id]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -211,124 +251,129 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                                 <X className="h-7 w-7" />
                             </button>
                         </div>
-
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            First Name<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter First Name"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
+                            {teacherLoading ? (
+                                <div className="py-12 text-center text-lg text-gray">Loading educator details...</div>
+                            ) : teacherError ? (
+                                <div className="py-12 text-center text-red">{teacherError}</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                First Name<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value={formData.firstName}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter First Name"
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Last Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Last Name"
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Last Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Last Name"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
-                                            disabled={isSubmitting}
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Email Address<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Email Address"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Email Address<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Email Address"
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Phone Number<span className="text-red">*</span>
+                                            </label>
+                                            <PhoneInput
+                                                international
+                                                defaultCountry="IN"
+                                                value={formData.phone}
+                                                onChange={handlePhoneNumberChange}
+                                                placeholder="Enter Phone Number"
+                                                className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
+                                        </div>
                                     </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Phone Number<span className="text-red">*</span>
-                                        </label>
-                                        <PhoneInput
-                                            international
-                                            defaultCountry="IN"
-                                            value={formData.phone}
-                                            onChange={handlePhoneNumberChange}
-                                            placeholder="Enter Phone Number"
-                                            className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
-                                    </div>
-                                </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Login ID<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="loginId"
-                                            value={formData.loginId}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Login ID"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Login ID<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="loginId"
+                                                value={formData.loginId}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Login ID"
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                School<span className="text-red">*</span>
+                                            </label>
+                                            <select
+                                                name="schoolId"
+                                                value={formData.schoolId ? String(formData.schoolId) : ''}
+                                                onChange={handleInputChange}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting || isSchoolsLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                disabled={isSubmitting || isSchoolsLoading}
+                                            >
+                                                <option value="">{isSchoolsLoading ? 'Loading schools...' : 'Select School'}</option>
+                                                {schools.map((school: Pick<School, 'school_id' | 'school_name'>) => (
+                                                    <option key={school.school_id} value={school.school_id}>
+                                                        {school.school_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.schoolId && <p className="text-red text-sm mt-1">{errors.schoolId}</p>}
+                                        </div>
                                     </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            School<span className="text-red">*</span>
-                                        </label>
-                                        <select
-                                            name="schoolId"
-                                            value={formData.schoolId ? String(formData.schoolId) : ''}
-                                            onChange={handleInputChange}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting || isSchoolsLoading ? 'cursor-not-allowed opacity-50' : ''}`}
-                                            disabled={isSubmitting || isSchoolsLoading}
+
+                                    <div className="mt-12">
+                                        <button
+                                            onClick={handleSubmit}
+                                            type="button"
+                                            className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            disabled={isSubmitting}
                                         >
-                                            <option value="">{isSchoolsLoading ? 'Loading schools...' : 'Select School'}</option>
-                                            {schools.map(school => (
-                                                <option key={school.school_id} value={school.school_id}>
-                                                    {school.school_name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        {errors.schoolId && <p className="text-red text-sm mt-1">{errors.schoolId}</p>}
+                                            Save
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div className="mt-12">
-                                    <button
-                                        onClick={handleSubmit}
-                                        type="button"
-                                        className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        disabled={isSubmitting}
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>
