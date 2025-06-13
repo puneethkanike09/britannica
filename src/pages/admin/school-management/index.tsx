@@ -3,10 +3,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import AddSchoolModal from "./modals/AddSchoolModal";
 import EditSchoolModal from "./modals/EditSchoolModal";
 import ViewSchoolModal from "./modals/ViewSchoolModal";
-import DeleteSchoolModal from "./modals/DeleteSchoolModal";
+// import DeleteSchoolModal from "./modals/DeleteSchoolModal";
 import ViewIcon from "../../../assets/dashboard/Admin/school-management/view.svg";
 import EditIcon from "../../../assets/dashboard/Admin/school-management/edit.svg";
-import DeleteIcon from "../../../assets/dashboard/Admin/school-management/delete.svg";
+// import DeleteIcon from "../../../assets/dashboard/Admin/school-management/delete.svg";
 import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add-school.svg";
 import { School } from "../../../types/admin";
 import Loader from "../components/common/Loader";
@@ -19,7 +19,7 @@ const SchoolManagement: React.FC = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [schools, setSchools] = useState<School[]>([]);
 
@@ -123,15 +123,15 @@ const SchoolManagement: React.FC = () => {
         setSelectedSchool(null);
     };
 
-    const openDeleteSchoolModal = (school: School) => {
-        setSelectedSchool(school);
-        setShowDeleteModal(true);
-    };
+    // const openDeleteSchoolModal = (school: School) => {
+    //     setSelectedSchool(school);
+    //     // setShowDeleteModal(true);
+    // };
 
-    const closeDeleteSchoolModal = () => {
-        setShowDeleteModal(false);
-        setSelectedSchool(null);
-    };
+    // const closeDeleteSchoolModal = () => {
+    //     setShowDeleteModal(false);
+    //     setSelectedSchool(null);
+    // };
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
@@ -206,13 +206,13 @@ const SchoolManagement: React.FC = () => {
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
-                                                <button
+                                                {/* <button
                                                     onClick={() => openDeleteSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
-                                                </button>
+                                                </button> */}
                                             </div>
                                         </td>
                                     </tr>
@@ -272,9 +272,9 @@ const SchoolManagement: React.FC = () => {
             {showViewModal && selectedSchool && (
                 <ViewSchoolModal onClose={closeViewSchoolModal} school={selectedSchool} />
             )}
-            {showDeleteModal && selectedSchool && (
+            {/* {showDeleteModal && selectedSchool && (
                 <DeleteSchoolModal onClose={closeDeleteSchoolModal} school={selectedSchool} />
-            )}
+            )} */}
         </div>
     );
 };

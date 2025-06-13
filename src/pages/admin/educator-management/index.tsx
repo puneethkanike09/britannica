@@ -5,7 +5,7 @@ import EditEducatorModal from './modals/EditEducatorModal';
 import ViewEducatorModal from './modals/ViewEducatorModal';
 import ViewIcon from '../../../assets/dashboard/Admin/educator-management/view.svg';
 import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.svg';
-import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
+// import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
 import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/educatorService';
@@ -114,10 +114,10 @@ const EducatorManagement: React.FC = () => {
         setSelectedEducator(null);
     };
 
-    const openDeleteEducatorModal = (educator: Teacher) => {
-        setSelectedEducator(educator);
-        setShowDeleteModal(true);
-    };
+    // const openDeleteEducatorModal = (educator: Teacher) => {
+    //     setSelectedEducator(educator);
+    //     setShowDeleteModal(true);
+    // };
 
     const closeDeleteEducatorModal = () => {
         setShowDeleteModal(false);
@@ -206,14 +206,14 @@ const EducatorManagement: React.FC = () => {
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
-                                                <button
+                                                {/* <button
                                                     onClick={() => openDeleteEducatorModal(teacher)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
-                                                </button>
+                                                </button> */}
                                             </div>
                                         </td>
                                     </tr>
