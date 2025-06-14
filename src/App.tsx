@@ -35,52 +35,29 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
 
-          {/* Admin routes with persistent layout */}
-          <Route element={<AdminLayout />}>
-            <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/school-management"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <SchoolManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/educator-management"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <EducatorManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/report"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <Report />
-                </ProtectedRoute>
-              }
-            />
+          {/* Admin routes with persistent layout and role protection */}
+          <Route
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/school-management" element={<SchoolManagement />} />
+            <Route path="/educator-management" element={<EducatorManagement />} />
+            <Route path="/report" element={<Report />} />
           </Route>
 
-          {/* Educator routes with persistent layout */}
-          <Route element={<EducatorLayout />}>
-            <Route
-              path="/educator-dashboard"
-              element={
-                <ProtectedRoute requiredRole="educator">
-                  <EducatorDashboard />
-                </ProtectedRoute>
-              }
-            />
+          {/* Educator routes with persistent layout and role protection */}
+          <Route
+            element={
+              <ProtectedRoute requiredRole="educator">
+                <EducatorLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/educator-dashboard" element={<EducatorDashboard />} />
           </Route>
 
           {/* Catch-all route for 404 - Page Not Found */}
