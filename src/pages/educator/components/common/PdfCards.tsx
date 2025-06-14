@@ -5,9 +5,10 @@ import { DocumentCardProps } from '../../../../types/educator';
 
 interface DocumentCardWithLoadingProps extends DocumentCardProps {
     viewLoading?: boolean;
+    downloadLoading?: boolean;
 }
 
-const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading }) => {
+const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading }) => {
     return (
         <div className="w-full max-w-xs rounded-lg bg-white group">
             <div className="relative pb-4 px-6 pt-6">
@@ -36,9 +37,14 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
                     </button>
                     <button
                         onClick={onDownload}
-                        className="flex-1 bg-primary hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                        className={`flex-1 bg-primary hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer ${downloadLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        disabled={downloadLoading}
                     >
-                        <img src={DownloadIcon} alt="Download Icon" className="h-4 w-4" />
+                        {downloadLoading ? (
+                            <span className="loader h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        ) : (
+                            <img src={DownloadIcon} alt="Download Icon" className="h-4 w-4" />
+                        )}
                         Download
                     </button>
                 </div>

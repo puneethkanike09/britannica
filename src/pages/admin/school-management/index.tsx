@@ -30,7 +30,6 @@ const SchoolManagement: React.FC = () => {
         setIsLoading(true);
         try {
             const response = await SchoolService.fetchSchools();
-            console.log("Fetched schools:", response);
             if (response.error === false || response.error === "false") {
                 setSchools(response.schools || []);
             } else {

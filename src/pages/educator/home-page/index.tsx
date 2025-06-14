@@ -30,14 +30,18 @@ const EducatorDashboard = () => {
     const [showPdfViewer, setShowPdfViewer] = useState(false);
     const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmittingDropdowns, setIsSubmittingDropdowns] = useState(false);
+    const [isLoadingFiles, setIsLoadingFiles] = useState(false);
     const [gradeOptions, setGradeOptions] = useState<{ value: string; label: string }[]>([]);
     const [themeOptions, setThemeOptions] = useState<{ value: string; label: string }[]>([]);
     const [typeOptions, setTypeOptions] = useState<{ value: string; label: string }[]>([]);
     const [pdfProjects, setPdfProjects] = useState<PdfProject[]>([]);
     const [viewLoadingId, setViewLoadingId] = useState<string | number | null>(null);
+    const [downloadLoadingId, setDownloadLoadingId] = useState<string | number | null>(null);
 
     // Fetch dropdown data on mount
     useEffect(() => {
+        setIsSubmittingDropdowns(true);
         setIsSubmitting(true);
         EducatorDashboardService.fetchAllDropdownsSequentially()
             .then(([gradesRes, themesRes, typesRes]) => {
@@ -63,7 +67,10 @@ const EducatorDashboard = () => {
             .catch(() => {
                 toast.error('Failed to load dropdown data');
             })
-            .finally(() => setIsSubmitting(false));
+            .finally(() => {
+                setIsSubmittingDropdowns(false);
+                setIsSubmitting(false);
+            });
     }, []);
 
     const validateForm = () => {
@@ -97,6 +104,7 @@ const EducatorDashboard = () => {
         if (validateForm()) {
             setIsSubmitting(true);
             setShowResults(false);
+            setIsLoadingFiles(true);
             const fetchFiles = async () => {
                 const token = '';
                 const res = await EducatorDashboardService.fetchPblFiles({
@@ -137,6 +145,7 @@ const EducatorDashboard = () => {
                 }
             ).finally(() => {
                 setIsSubmitting(false);
+                setIsLoadingFiles(false);
             });
         }
     };
@@ -169,6 +178,7 @@ const EducatorDashboard = () => {
             toast.error('File path not found');
             return;
         }
+        setDownloadLoadingId(pblId);
         try {
             const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
             if (downloadResponse.success && downloadResponse.data) {
@@ -181,6 +191,8 @@ const EducatorDashboard = () => {
             }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to download file');
+        } finally {
+            setDownloadLoadingId(null);
         }
     };
 
@@ -243,7 +255,8 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'grade'}
                             onToggle={() => handleDropdownToggle('grade')}
                             error={errors.grade}
-                            isSubmitting={isSubmitting}
+                            isSubmitting={isSubmitting || isLoadingFiles}
+                            isSubmittingDropdowns={isSubmittingDropdowns}
                             onErrorClear={handleErrorClear}
                         />
                         <Select
@@ -254,7 +267,8 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'theme'}
                             onToggle={() => handleDropdownToggle('theme')}
                             error={errors.theme}
-                            isSubmitting={isSubmitting}
+                            isSubmitting={isSubmitting || isLoadingFiles}
+                            isSubmittingDropdowns={isSubmittingDropdowns}
                             onErrorClear={handleErrorClear}
                         />
                         <Select
@@ -265,16 +279,20 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'type'}
                             onToggle={() => handleDropdownToggle('type')}
                             error={errors.type}
-                            isSubmitting={isSubmitting}
+                            isSubmitting={isSubmitting || isLoadingFiles}
+                            isSubmittingDropdowns={isSubmittingDropdowns}
                             onErrorClear={handleErrorClear}
                         />
                         <div className="relative w-full sm:w-auto">
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg w-full sm:w-auto ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 ${isSubmitting && !isLoadingFiles ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                                     }`}
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || isLoadingFiles}
                             >
+                                {isLoadingFiles ? (
+                                    <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                ) : null}
                                 Submit
                             </button>
                         </div>
@@ -291,6 +309,7 @@ const EducatorDashboard = () => {
                                         onView={() => handleView(project.id)}
                                         onDownload={() => handleDownload(project.id, project.title)}
                                         viewLoading={viewLoadingId === project.id}
+                                        downloadLoading={downloadLoadingId === project.id}
                                     />
                                 ))}
                             </div>

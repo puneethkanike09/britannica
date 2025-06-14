@@ -6,7 +6,7 @@ import ViewEducatorModal from './modals/ViewEducatorModal';
 import ViewIcon from '../../../assets/dashboard/Admin/educator-management/view.svg';
 import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.svg';
 // import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
-import DeleteEducatorModal from './modals/DeleteEducatorModal';
+// import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/educatorService';
 import { Teacher } from '../../../types/admin';
@@ -19,7 +19,7 @@ const EducatorManagement: React.FC = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<Teacher | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
 
@@ -30,7 +30,6 @@ const EducatorManagement: React.FC = () => {
         setIsLoading(true);
         try {
             const response = await EducatorService.fetchTeachers();
-            console.log("Fetched schools:", response);
             if (response.error === false || response.error === "false") {
                 setTeachers(response.teachers || []);
             } else {
@@ -119,10 +118,10 @@ const EducatorManagement: React.FC = () => {
     //     setShowDeleteModal(true);
     // };
 
-    const closeDeleteEducatorModal = () => {
-        setShowDeleteModal(false);
-        setSelectedEducator(null);
-    };
+    // const closeDeleteEducatorModal = () => {
+    //     setShowDeleteModal(false);
+    //     setSelectedEducator(null);
+    // };
 
     // Callbacks for after educator is added/updated
     const handleEducatorAdded = () => {
@@ -264,9 +263,9 @@ const EducatorManagement: React.FC = () => {
             {showViewModal && selectedEducator && (
                 <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
             )}
-            {showDeleteModal && selectedEducator && (
+            {/* {showDeleteModal && selectedEducator && (
                 <DeleteEducatorModal onClose={closeDeleteEducatorModal} educator={selectedEducator} />
-            )}
+            )} */}
         </div>
     );
 };

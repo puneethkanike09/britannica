@@ -1,7 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+
 import { AuthService } from "../services/authService";
 import { ProtectedRouteProps } from '../types/global';
+import { useAuth } from "../hooks/useAuth";
 
 const ProtectedRoute = ({
     children,

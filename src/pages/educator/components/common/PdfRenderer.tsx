@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from '../../../admin/components/common/Loader';
+import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -35,20 +36,19 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [pageWidth, setPageWidth] = useState<number>(800);
     const [isVisible, setIsVisible] = useState(true);
-
-    console.log(`Rendering PDF: ${file}`);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     // Calculate responsive page width
     useEffect(() => {
         const updatePageWidth = () => {
-            const maxWidth = Math.min(800, window.innerWidth * 0.75);
+            const maxWidth = Math.min(800, window.innerWidth * (isFullscreen ? 0.95 : 0.75));
             setPageWidth(maxWidth);
         };
 
         updatePageWidth();
         window.addEventListener('resize', updatePageWidth);
         return () => window.removeEventListener('resize', updatePageWidth);
-    }, []);
+    }, [isFullscreen]);
 
     // Reset state when file changes
     useEffect(() => {
@@ -78,16 +78,24 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         }
     }, [handleClose]);
 
+    const toggleFullscreen = useCallback(() => {
+        setIsFullscreen(prev => !prev);
+    }, []);
+
     useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
-                handleClose();
+                if (isFullscreen) {
+                    setIsFullscreen(false);
+                } else {
+                    handleClose();
+                }
             }
         };
 
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
-    }, [handleClose]);
+    }, [handleClose, isFullscreen]);
 
     const handleNextPage = useCallback(() => {
         if (numPages && pageNumber < numPages) {
@@ -122,6 +130,9 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!numPages) return;
 
+            // Don't handle shortcuts if user is typing in input
+            if (e.target instanceof HTMLInputElement) return;
+
             switch (e.key) {
                 case 'ArrowLeft':
                 case 'ArrowUp':
@@ -147,6 +158,11 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                     e.preventDefault();
                     handleRotate();
                     break;
+                case 'f':
+                case 'F':
+                    e.preventDefault();
+                    toggleFullscreen();
+                    break;
                 case 'Home':
                     e.preventDefault();
                     setPageNumber(1);
@@ -162,7 +178,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [numPages, pageNumber, handleNextPage, handlePrevPage, handleZoomIn, handleZoomOut, handleRotate]);
+    }, [numPages, pageNumber, handleNextPage, handlePrevPage, handleZoomIn, handleZoomOut, handleRotate, toggleFullscreen]);
 
     const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
@@ -216,7 +232,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
             <AnimatePresence onExitComplete={handleAnimationComplete}>
                 {isVisible && (
                     <motion.div
-                        className={`fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4 ${className}`}
+                        className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4 ${className}`}
                         onClick={handleBackdropClick}
                         variants={backdropVariants}
                         initial="hidden"
@@ -235,21 +251,18 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             exit="exit"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            {/* Sticky Header */}
                             <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                                <h2 id="error-title" className="text-3xl font-bold text-textColor">
-                                    {error ? "PDF Load Error" : "File Error"}
-                                </h2>
+                                <img src={LogoIcon} alt="Britannica Education Logo" className="h-8 hidden sm:block" />
+                                <h2 id="error-title" className="text-3xl font-bold text-textColor"></h2>
                                 <button
                                     onClick={handleClose}
-                                    className="text-textColor hover:text-hover cursor-pointer  rounded"
+                                    className="text-textColor hover:text-hover cursor-pointer rounded"
                                     aria-label="Close dialog"
                                 >
                                     <X className="h-7 w-7" />
                                 </button>
                             </div>
 
-                            {/* Scrollable Content */}
                             <div className="flex-1 overflow-y-auto px-8 py-6">
                                 <p className="text-textColor text-base mb-6">
                                     {error || "This file type is not supported for viewing."}
@@ -257,14 +270,13 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleClose}
-                                        className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors  cursor-pointer"
+                                        className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover transition-colors cursor-pointer"
                                     >
                                         Close
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Mobile swipe hint - Only visible on mobile */}
                             <div className="bg-inputBg border-inputBorder px-8 py-4 text-sm text-textColor border-t block md:hidden">
                                 <div className="text-center">
                                     <span>← Swipe to navigate pages →</span>
@@ -281,7 +293,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className={`fixed inset-0 bg-black/40  backdrop-blur-xs z-50 flex items-center justify-center px-4 ${className}`}
+                    className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center ${isFullscreen ? 'p-0' : 'px-4'} ${className}`}
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
@@ -293,23 +305,24 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                     aria-labelledby="pdf-title"
                 >
                     <motion.div
-                        className="bg-white rounded-lg w-full max-w-6xl overflow-hidden flex flex-col max-h-[95vh] shadow-2xl"
+                        className={`bg-white ${isFullscreen ? 'w-full h-full' : 'rounded-lg w-full max-w-6xl max-h-[95vh]'} overflow-hidden flex flex-col shadow-2xl`}
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
                         onClick={(e) => e.stopPropagation()}
+                        layout
+                        transition={{ duration: 0.2 }}
                     >
-                        {/* Header */}
                         <div className="bg-white px-6 py-4 flex justify-between items-center border-b border-inputPlaceholder">
-                            <div></div>
+                            <img src={LogoIcon} alt="Britannica Education Logo" className="h-8 hidden sm:block" />
+                            <div className='block sm:hidden'></div>
                             <div className="flex items-center gap-2">
-                                {/* Zoom Controls */}
                                 <div className="flex items-center gap-1 mr-4">
                                     <button
                                         onClick={handleZoomOut}
                                         disabled={scale <= 0.5}
-                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors  cursor-pointer"
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                                         aria-label="Zoom out"
                                         title="Zoom out (-)"
                                     >
@@ -321,7 +334,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                     <button
                                         onClick={handleZoomIn}
                                         disabled={scale >= 3.0}
-                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors  cursor-pointer"
+                                        className="p-2 rounded-md text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                                         aria-label="Zoom in"
                                         title="Zoom in (+)"
                                     >
@@ -329,10 +342,9 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                     </button>
                                 </div>
 
-                                {/* Rotate Button */}
                                 <button
                                     onClick={handleRotate}
-                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors  cursor-pointer mr-4"
+                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors cursor-pointer mr-4"
                                     aria-label="Rotate page"
                                     title="Rotate page (R)"
                                 >
@@ -341,10 +353,18 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                     </svg>
                                 </button>
 
-                                {/* Close Button */}
+                                <button
+                                    onClick={toggleFullscreen}
+                                    className="p-2 rounded-md text-textColor hover:bg-hover/10 transition-colors cursor-pointer"
+                                    aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                                    title={`${isFullscreen ? "Exit" : "Enter"} fullscreen (F)`}
+                                >
+                                    {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                                </button>
+
                                 <button
                                     onClick={handleClose}
-                                    className="p-2 rounded-md text-textColor hover:text-hover transition-colors  cursor-pointer"
+                                    className="p-2 rounded-md text-textColor hover:text-hover transition-colors cursor-pointer"
                                     aria-label="Close PDF viewer"
                                     title="Close (Esc)"
                                 >
@@ -353,23 +373,9 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             </div>
                         </div>
 
-                        {/* PDF Content - Fixed scrolling container */}
-                        <div
-                            className="flex-grow bg-inputBg border-inputBorder overflow-auto"
-                            style={{
-                                scrollBehavior: 'smooth'
-                            }}
-                        >
-                            {/* Container with proper padding and centering */}
-                            <div
-                                className="min-h-full flex items-center justify-center p-6"
-                                style={{
-                                    minWidth: scale > 1 ? `${pageWidth * scale + 48}px` : '100%'
-                                }}
-                            >
-                                {isLoading && (
-                                    <Loader message='Loading PDF...' />
-                                )}
+                        <div className="flex-grow bg-inputBg border-inputBorder overflow-auto" style={{ scrollBehavior: 'smooth' }}>
+                            <div className="min-h-full flex items-center justify-center p-6" style={{ minWidth: scale > 1 ? `${pageWidth * scale + 48}px` : '100%' }}>
+                                {isLoading && <Loader message='Loading PDF...' />}
 
                                 <Document
                                     file={file}
@@ -387,26 +393,12 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                         rotate={rotation}
                                         className="shadow-lg border border-inputPlaceholder"
                                         loading={
-                                            <div
-                                                className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg"
-                                                style={{
-                                                    width: pageWidth * scale,
-                                                    height: pageWidth * scale * 1.4,
-                                                    minHeight: '400px'
-                                                }}
-                                            >
+                                            <div className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4, minHeight: '400px' }}>
                                                 <div className="animate-pulse text-textColor">Loading page...</div>
                                             </div>
                                         }
                                         error={
-                                            <div
-                                                className="flex items-center justify-center bg-white border border-red-200 shadow-lg text-red-600"
-                                                style={{
-                                                    width: pageWidth * scale,
-                                                    height: pageWidth * scale * 1.4,
-                                                    minHeight: '400px'
-                                                }}
-                                            >
+                                            <div className="flex items-center justify-center bg-white border border-red-200 shadow-lg text-red-600" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4, minHeight: '400px' }}>
                                                 Failed to load page
                                             </div>
                                         }
@@ -415,13 +407,12 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             </div>
                         </div>
 
-                        {/* Navigation Footer */}
                         {numPages && (
                             <div className="bg-white px-6 py-4 flex justify-center items-center gap-4 border-t border-inputPlaceholder">
                                 <button
                                     onClick={handlePrevPage}
                                     disabled={pageNumber <= 1}
-                                    className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer "
+                                    className="px-3 py-2 rounded-md border border-inputPlaceholder text-textColor hover:bg-hover/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                                     aria-label="Previous page"
                                     title="Previous page (←)"
                                 >
@@ -438,7 +429,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                         onChange={handlePageInputChange}
                                         onBlur={handlePageInputBlur}
                                         onKeyDown={handlePageInputKeyDown}
-                                        className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded  text-textColor cursor-pointer"
+                                        className="w-16 px-2 py-1 text-center border border-inputPlaceholder rounded text-textColor cursor-pointer"
                                         aria-label="Current page number"
                                     />
                                     <span className="text-textColor">of {numPages}</span>
@@ -447,7 +438,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                 <button
                                     onClick={handleNextPage}
                                     disabled={pageNumber >= numPages}
-                                    className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer "
+                                    className="px-3 py-2 rounded-md bg-primary text-white hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                                     aria-label="Next page"
                                     title="Next page (→)"
                                 >
@@ -456,12 +447,12 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                             </div>
                         )}
 
-                        {/* Keyboard shortcuts help - Hidden on mobile */}
                         <div className="bg-inputBg border-inputBorder px-6 py-2 text-xs text-textColor border-t hidden md:block">
                             <div className="flex flex-wrap gap-4 justify-center">
                                 <span>← → Navigate pages</span>
                                 <span>+ - Zoom</span>
                                 <span>R Rotate</span>
+                                <span>F Fullscreen</span>
                                 <span>Esc Close</span>
                             </div>
                         </div>

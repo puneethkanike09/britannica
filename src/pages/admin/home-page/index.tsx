@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../components/common/Loader';
 import { EducatorService } from '../../../services/educatorService';
+import toast from 'react-hot-toast';
 
 // Import SVG files
 import EducatorsIcon from '../../../assets/dashboard/Admin/home-page/educators.svg';
@@ -21,9 +22,11 @@ const AdminDashboard: React.FC = () => {
                     setEducatorCount(response.teachers ? response.teachers.length : 0);
                 } else {
                     setEducatorCount(0);
+                    toast.error(response.message || "Failed to load educator count");
                 }
-            } catch {
-                setEducatorCount(0);
+            } catch (error) {
+                console.error("Error fetching educator count:", error);
+                toast.error("Error loading educator count");
             } finally {
                 setIsLoading(false);
             }

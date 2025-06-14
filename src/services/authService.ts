@@ -1,17 +1,12 @@
 import { apiClient } from "../utils/apiClient";
 import { JwtPayload } from "../types/global/jwt";
+import { TokenService } from "./tokenService";
+import { User } from "../types/global/user";
+
 
 interface AuthResponse {
     token: string;
     message: string;
-}
-
-interface User {
-    id: string;
-    login_id: string;
-    role: "admin" | "educator";
-    name: string;
-    email?: string;
 }
 
 interface ApiResponse<T> {
@@ -51,7 +46,7 @@ export class AuthService {
 
             if (response.success && response.data?.token) {
                 const token = response.data.token;
-                localStorage.setItem("token", token);
+                TokenService.updateToken(token);
 
                 const tokenPayload = this.decodeToken(token);
                 if (tokenPayload) {
@@ -66,7 +61,7 @@ export class AuthService {
                         name: tokenPayload.username || "",
                         email: tokenPayload.email || "",
                     };
-                    localStorage.setItem("user", JSON.stringify(user));
+                    TokenService.setUser(user);
 
                     return {
                         success: true,
@@ -99,13 +94,13 @@ export class AuthService {
             // Call the logout API
             const response = await apiClient.post("/auth/logout", {}, true); // true means include token
             // Always clear local storage regardless of API response
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            TokenService.clearToken();
+            TokenService.clearUser();
             return { success: response.success, message: response.message };
         } catch (error) {
             console.error("Logout API error:", error);
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            TokenService.clearToken();
+            TokenService.clearUser();
             return {
                 success: false,
                 message: error instanceof Error ? error.message : "Logout failed",
@@ -114,7 +109,7 @@ export class AuthService {
     }
 
     static isAuthenticated(): boolean {
-        const token = localStorage.getItem("token");
+        const token = TokenService.getToken();
         if (!token) return false;
 
         try {
@@ -132,7 +127,6 @@ export class AuthService {
     }
 
     static getUser(): User | null {
-        const user = localStorage.getItem("user");
-        return user ? JSON.parse(user) : null;
+        return TokenService.getUser();
     }
 }

@@ -12,6 +12,7 @@ const Select: React.FC<SelectProps> = ({
     error,
     isSubmitting = false,
     onErrorClear,
+    isSubmittingDropdowns = false,
 }) => {
     const handleOptionSelect = (optionValue: string) => {
         onValueChange(optionValue);
@@ -32,6 +33,9 @@ const Select: React.FC<SelectProps> = ({
                 disabled={isSubmitting}
             >
                 <p className="break-all pr-2 flex-1">
+                    {isSubmittingDropdowns ? (
+                        <span className="loader h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block align-middle mr-2"></span>
+                    ) : null}
                     {value ? options.find((opt) => opt.value === value)?.label : placeholder}
                 </p>
                 <img

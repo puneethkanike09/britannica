@@ -5,7 +5,8 @@ import loginImage from "../assets/loginImage.png";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Login = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [adminSubmitting, setAdminSubmitting] = useState(false);
+  const [educatorSubmitting, setEducatorSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     loginId: "",
     password: "",
@@ -58,18 +61,17 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent, role: "admin" | "educator") => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (role === "admin") setAdminSubmitting(true);
+    if (role === "educator") setEducatorSubmitting(true);
     setIsSubmitting(true);
-
     try {
       await toast.promise(
         login(loginId, password, role),
         {
           loading: "Logging in...",
           success: () => {
-            // The AuthContext throws with the API's message on error, so here we can use the API's message for success as well
             const redirectPath = role === "admin" ? "/admin-dashboard" : "/educator-dashboard";
             navigate(redirectPath);
-            // We don't have direct access to the API message here, so you may want to refactor login to return it if needed
             return "Login successful!";
           },
           error: (err: { message?: string }) => err?.message || "Login failed",
@@ -77,6 +79,8 @@ const Login = () => {
       );
     } finally {
       setIsSubmitting(false);
+      if (role === "admin") setAdminSubmitting(false);
+      if (role === "educator") setEducatorSubmitting(false);
     }
   };
   const handleForgotPasswordSubmit = () => {
@@ -258,6 +262,9 @@ const Login = () => {
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
+                {adminSubmitting && (
+                  <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
                 Admin Login
               </button>
               <button
@@ -266,6 +273,9 @@ const Login = () => {
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
+                {educatorSubmitting && (
+                  <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
                 Educator Login
               </button>
             </div>

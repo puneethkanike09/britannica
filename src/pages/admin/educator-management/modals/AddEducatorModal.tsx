@@ -158,10 +158,8 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
         setIsSchoolsLoading(true);
 
         SchoolService.fetchSchoolsForDropdown().then((res) => {
-            console.log('Schools response:', res);
             if (mounted) {
                 if (res && !res.error) {
-                    console.log('Schools loaded:', res.schools);
                     setSchools(res.schools || []);
                 } else {
                     setSchools([]);
