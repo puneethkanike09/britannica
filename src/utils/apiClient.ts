@@ -40,6 +40,10 @@ export const apiClient = {
             }
 
             if (!response.ok) {
+                if (response.status === 403) {
+                    TokenService.clearToken();
+                    window.location.href = "/"; // Redirect to login
+                }
                 return {
                     success: false,
                     message: result.message || "Request failed",
@@ -89,6 +93,10 @@ export const apiClient = {
             }
 
             if (!response.ok) {
+                if (response.status === 403) {
+                    TokenService.clearToken();
+                    window.location.href = "/"; // Redirect to login
+                }
                 return {
                     success: false,
                     message: result.message || "Request failed",
@@ -141,9 +149,13 @@ export const apiClient = {
                     const result = await response.json();
                     errorMessage = result.message || "Failed to get file view URL";
                 } else {
-                    // Handle plain text or other content types
                     const text = await response.text();
                     errorMessage = text || "Failed to get file view URL";
+                }
+
+                if (response.status === 403) {
+                    TokenService.clearToken();
+                    window.location.href = "/"; // Redirect to login
                 }
 
                 return {
@@ -199,9 +211,13 @@ export const apiClient = {
                     const result = await response.json();
                     errorMessage = result.message || "Failed to get file download URL";
                 } else {
-                    // Handle plain text or other content types
                     const text = await response.text();
                     errorMessage = text || "Failed to get file download URL";
+                }
+
+                if (response.status === 403) {
+                    TokenService.clearToken();
+                    window.location.href = "/"; // Redirect to login
                 }
 
                 return {

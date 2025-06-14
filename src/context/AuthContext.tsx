@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const initializeAuth = async () => {
             const isAuth = AuthService.isAuthenticated();
-            const userData = AuthService.getUser();
+            const userData = AuthService.getUser(); // Fetches from token, not localStorage
             setIsAuthenticated(isAuth);
             setUser(userData);
             setIsInitialized(true);
