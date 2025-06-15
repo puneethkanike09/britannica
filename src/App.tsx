@@ -13,8 +13,27 @@ import EducatorLayout from "./pages/educator/EducatorLayout";
 import CreatePassword from "./pages/CreatePassword";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 function App() {
+  useEffect(() => {
+    const showOfflineToast = () => toast.error("No internet connection. You're offline.");
+    const showOnlineToast = () => toast.success("You're back online!");
+
+
+    if (!navigator.onLine) {
+      showOfflineToast();
+    }
+
+    window.addEventListener("offline", showOfflineToast);
+    window.addEventListener("online", showOnlineToast);
+    return () => {
+      window.removeEventListener("offline", showOfflineToast);
+      window.removeEventListener("online", showOnlineToast);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>

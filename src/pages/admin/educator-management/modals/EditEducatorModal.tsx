@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import { SchoolService } from '../../../../services/schoolService';
+import Loader from "../../components/common/Loader";
 
 export default function EditEducatorModal({ onClose, educator, onEducatorUpdated }: EducatorActionModalProps) {
     const [formData, setFormData] = useState({
@@ -254,7 +255,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             {teacherLoading ? (
-                                <div className="py-12 text-center text-lg text-gray">Loading educator details...</div>
+                                <Loader message="Loading educator details..." />
                             ) : teacherError ? (
                                 <div className="py-12 text-center text-red">{teacherError}</div>
                             ) : (

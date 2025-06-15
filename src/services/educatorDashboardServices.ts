@@ -119,12 +119,4 @@ export class EducatorDashboardService {
             };
         }
     }
-
-    // Helper to fetch all dropdowns in sequence to avoid refresh token issues
-    static async fetchAllDropdownsSequentially() {
-        const gradesRes = await this.fetchGrades();
-        const themesRes = await this.fetchThemes();
-        const typesRes = await this.fetchUserAccessTypes();
-        return [gradesRes, themesRes, typesRes];
-    }
 }

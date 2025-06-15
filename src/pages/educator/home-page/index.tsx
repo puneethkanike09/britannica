@@ -43,21 +43,36 @@ const EducatorDashboard = () => {
     useEffect(() => {
         setIsSubmittingDropdowns(true);
         setIsSubmitting(true);
-        EducatorDashboardService.fetchAllDropdownsSequentially()
-            .then(([gradesRes, themesRes, typesRes]) => {
-                // gradesRes is always the result of fetchGrades
+
+        // Fetch grades
+        EducatorDashboardService.fetchGrades()
+            .then((gradesRes) => {
                 if ('grade' in gradesRes && (gradesRes.error === false || gradesRes.error === 'false')) {
                     setGradeOptions((gradesRes.grade ?? []).map((g: { grade_id: string; grade_name: string }) => ({ value: g.grade_id, label: g.grade_name })));
                 } else {
                     toast.error(gradesRes.message || 'Failed to load grades');
                 }
-                // themesRes is always the result of fetchThemes
+            })
+            .catch(() => {
+                toast.error('Failed to load grades');
+            });
+
+        // Fetch themes
+        EducatorDashboardService.fetchThemes()
+            .then((themesRes) => {
                 if ('theme' in themesRes && (themesRes.error === false || themesRes.error === 'false')) {
                     setThemeOptions((themesRes.theme ?? []).map((t: { theme_id: string; theme_name: string }) => ({ value: t.theme_id, label: t.theme_name })));
                 } else {
                     toast.error(themesRes.message || 'Failed to load themes');
                 }
-                // typesRes is always the result of fetchUserAccessTypes
+            })
+            .catch(() => {
+                toast.error('Failed to load themes');
+            });
+
+        // Fetch types
+        EducatorDashboardService.fetchUserAccessTypes()
+            .then((typesRes) => {
                 if ('user_access_type' in typesRes && (typesRes.error === false || typesRes.error === 'false')) {
                     setTypeOptions((typesRes.user_access_type ?? []).map((t: { user_access_type_id: string; user_access_type_name: string }) => ({ value: t.user_access_type_id, label: t.user_access_type_name })));
                 } else {
@@ -65,7 +80,7 @@ const EducatorDashboard = () => {
                 }
             })
             .catch(() => {
-                toast.error('Failed to load dropdown data');
+                toast.error('Failed to load types');
             })
             .finally(() => {
                 setIsSubmittingDropdowns(false);
