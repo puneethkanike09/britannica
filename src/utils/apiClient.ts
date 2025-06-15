@@ -75,6 +75,10 @@ class TokenManager {
                 TokenService.updateToken(result.token);
             }
 
+            if (response.status === 401) {
+                TokenService.clearToken();
+                window.location.href = "/"; // Redirect to login
+            }
             if (response.status === 401 && !this.isRetrying) {
                 // Handle 401 with retry using fresh token
                 return this.handleTokenRetry<T>(requestFn);
@@ -97,9 +101,19 @@ class TokenManager {
                 message: result.message,
             };
         } catch (error) {
+            let message = "Unknown error";
+            if (error instanceof TypeError && error.message === "Failed to fetch") {
+                if (!navigator.onLine) {
+                    message = "No internet connection";
+                } else {
+                    message = "Network error";
+                }
+            } else if (error instanceof Error) {
+                message = error.message;
+            }
             return {
                 success: false,
-                message: error instanceof Error ? error.message : "Unknown error",
+                message,
             };
         }
     }
