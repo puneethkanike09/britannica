@@ -46,6 +46,10 @@ function App() {
               color: "white",
               backgroundColor: "#141E8C",
             },
+            ariaProps: {
+              role: "status",
+              "aria-live": "polite",
+            },
           }}
         />
         <Routes>
