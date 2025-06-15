@@ -94,15 +94,3 @@ export interface FetchPblFilesResponse {
     }>;
     message?: string;
 }
-
-export interface FetchPblFileByIdResponse {
-    error: boolean | string;
-    token?: string;
-    pbl_file?: Array<{
-        file_url: string;
-        pbl_id: string | number;
-        pbl_name: string;
-        pbl_file_path: string;
-    }>;
-    message?: string;
-}

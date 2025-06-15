@@ -5,7 +5,7 @@ import {
     FetchUserAccessTypesResponse,
     FetchPblFilesPayload,
     FetchPblFilesResponse,
-    FetchPblFileByIdResponse,
+
 } from '../types/educator';
 
 export class EducatorDashboardService {
@@ -91,28 +91,6 @@ export class EducatorDashboardService {
             }
         } catch (error) {
             console.error("Error fetching PBL files:", error);
-            return {
-                error: true,
-                message: error instanceof Error ? error.message : "Unknown error",
-            };
-        }
-    }
-
-    static async fetchPblFileById(pblId: string | number): Promise<FetchPblFileByIdResponse> {
-        try {
-            const response = await apiClient.get<FetchPblFileByIdResponse>(
-                `/file/${pblId}`
-            );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
-        } catch (error) {
-            console.error(`Error fetching PBL file by ID ${pblId}:`, error);
             return {
                 error: true,
                 message: error instanceof Error ? error.message : "Unknown error",
