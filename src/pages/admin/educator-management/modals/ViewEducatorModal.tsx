@@ -98,16 +98,16 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">Full Name</div>
                                             <div className="text-primary font-medium break-all">
-                                                {educatorDetails.first_name} {educatorDetails.last_name}
+                                                {(educatorDetails.first_name || '-') + ' ' + (educatorDetails.last_name || '-')}
                                             </div>
                                         </div>
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">Login</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.login_id}</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.login_id || '-'}</div>
                                         </div>
                                         <div className="p-6 border-b border-lightGray md:border-b-0">
                                             <div className="text-textColor mb-2">School</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.school_name}</div>
+                                            <div className="text-primary font-medium break-all">{educatorDetails.school_name || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Second Row */}

@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
-    // Use correct School fields for formData
     const [formData, setFormData] = useState<{
         school_name: string;
         school_email: string;
@@ -34,7 +33,12 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
     const [errors, setErrors] = useState({
         school_name: '',
         school_email: '',
-        school_mobile_no: ''
+        school_mobile_no: '',
+        address_line1: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: ''
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,7 +92,12 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         const newErrors = {
             school_name: '',
             school_email: '',
-            school_mobile_no: ''
+            school_mobile_no: '',
+            address_line1: '',
+            city: '',
+            state: '',
+            country: '',
+            pincode: ''
         };
         let isValid = true;
 
@@ -107,6 +116,31 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
 
         if (!formData.school_mobile_no.trim()) {
             newErrors.school_mobile_no = 'Phone number is required';
+            isValid = false;
+        }
+
+        if (!formData.address_line1.trim()) {
+            newErrors.address_line1 = 'Address line 1 is required';
+            isValid = false;
+        }
+
+        if (!formData.city.trim()) {
+            newErrors.city = 'City is required';
+            isValid = false;
+        }
+
+        if (!formData.state.trim()) {
+            newErrors.state = 'State is required';
+            isValid = false;
+        }
+
+        if (!formData.country.trim()) {
+            newErrors.country = 'Country is required';
+            isValid = false;
+        }
+
+        if (!formData.pincode.trim()) {
+            newErrors.pincode = 'Pincode is required';
             isValid = false;
         }
 
@@ -224,16 +258,19 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                         {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Address Line 1</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Address Line 1<span className="text-red">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="address_line1"
                                             value={formData.address_line1}
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 1"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.address_line1 && <p className="text-red text-sm mt-1">{errors.address_line1}</p>}
                                     </div>
                                 </div>
 
@@ -251,56 +288,69 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                         />
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">City</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            City<span className="text-red">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="city"
                                             value={formData.city}
                                             onChange={handleInputChange}
                                             placeholder="Enter City"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">State</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            State<span className="text-red">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="state"
                                             value={formData.state}
                                             onChange={handleInputChange}
                                             placeholder="Enter State"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+
+                                        {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Country</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Country<span className="text-red">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="country"
                                             value={formData.country}
                                             onChange={handleInputChange}
                                             placeholder="Enter Country"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Pincode</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Pincode<span className="text-red">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="pincode"
                                             value={formData.pincode}
                                             onChange={handleInputChange}
                                             placeholder="Enter Pincode"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
                                     </div>
                                 </div>
 
