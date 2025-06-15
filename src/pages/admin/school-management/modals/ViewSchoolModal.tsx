@@ -137,29 +137,6 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                                             <div className="text-primary font-medium break-all">{schoolDetails.pincode}</div>
                                         </div>
                                     </div>
-                                    {/* Fourth Row */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
-
-                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                            <div className="text-textColor mb-2">Created By</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.created_user || '-'}</div>
-                                        </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0">
-                                            <div className="text-textColor mb-2">Created At</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.created_ts ? new Date(schoolDetails.created_ts).toLocaleString() : '-'}</div>
-                                        </div>
-                                    </div>
-                                    {/* Fifth Row: Audit Fields */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 md:border-t md:border-lightGray">
-                                        <div className="p-6 md:border-r md:border-lightGray">
-                                            <div className="text-textColor mb-2">Last Updated By</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.last_updated_user || '-'}</div>
-                                        </div>
-                                        <div className="p-6">
-                                            <div className="text-textColor mb-2">Last Updated At</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.last_updated_ts ? new Date(schoolDetails.last_updated_ts).toLocaleString() : '-'}</div>
-                                        </div>
-                                    </div>
                                 </div>
                             ) : null}
                         </div>

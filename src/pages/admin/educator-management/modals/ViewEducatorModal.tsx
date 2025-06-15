@@ -116,25 +116,6 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                             <div className="text-textColor mb-2">Status</div>
                                             <div className="text-primary font-medium break-all">{educatorDetails.status || '-'}</div>
                                         </div>
-                                        <div className="p-6 md:border-r md:border-lightGray">
-                                            <div className="text-textColor mb-2">Created By</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.created_user || '-'}</div>
-                                        </div>
-                                        <div className="p-6">
-                                            <div className="text-textColor mb-2">Created At</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.created_ts ? new Date(educatorDetails.created_ts).toLocaleString() : '-'}</div>
-                                        </div>
-                                    </div>
-                                    {/* Third Row: Audit Fields */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 md:border-t md:border-lightGray">
-                                        <div className="p-6 md:border-r md:border-lightGray">
-                                            <div className="text-textColor mb-2">Last Updated By</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.last_updated_user || '-'}</div>
-                                        </div>
-                                        <div className="p-6">
-                                            <div className="text-textColor mb-2">Last Updated At</div>
-                                            <div className="text-primary font-medium break-all">{educatorDetails.last_updated_ts ? new Date(educatorDetails.last_updated_ts).toLocaleString() : '-'}</div>
-                                        </div>
                                     </div>
                                 </div>
                             ) : null}
