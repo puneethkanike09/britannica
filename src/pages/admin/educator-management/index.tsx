@@ -10,7 +10,7 @@ import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.s
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/educatorService';
 import { Teacher } from '../../../types/admin';
-import Loader from '../components/common/Loader';
+import Loader from '../../../components/common/Loader';
 import toast from 'react-hot-toast';
 
 const EducatorManagement: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../components/common/Loader';
+import Loader from '../../../components/common/Loader';
 import { EducatorService } from '../../../services/educatorService';
 import toast from 'react-hot-toast';
 

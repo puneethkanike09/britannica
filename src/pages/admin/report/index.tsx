@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
 import { ActivityLog } from '../../../types/admin';
-import Loader from '../components/common/Loader';
+import Loader from '../../../components/common/Loader';
 
 export default function Report() {
     // State with explicit types

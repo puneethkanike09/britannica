@@ -5,7 +5,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import Loader from '../../../admin/components/common/Loader';
+import Loader from '../../../../components/common/Loader';
 import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
 
 // Configure PDF.js worker

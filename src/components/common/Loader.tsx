@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoaderProps } from '../../../../types/global';
+import { LoaderProps } from '../../types/global';
 
 
 

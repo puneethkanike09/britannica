@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { AuthService } from "../services/authService";
 import { ProtectedRouteProps } from '../types/global';
 import { useAuth } from "../hooks/useAuth";
-import Loader from "../pages/admin/components/common/Loader";
+import Loader from "./common/Loader";
 
 const ProtectedRoute = ({
     children,

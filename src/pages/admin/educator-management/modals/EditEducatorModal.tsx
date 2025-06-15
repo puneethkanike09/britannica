@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import { SchoolService } from '../../../../services/schoolService';
-import Loader from "../../components/common/Loader";
+import Loader from "../../../../components/common/Loader";
 
 export default function EditEducatorModal({ onClose, educator, onEducatorUpdated }: EducatorActionModalProps) {
     const [formData, setFormData] = useState({
