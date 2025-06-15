@@ -7,13 +7,9 @@ import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import { ADMIN_NAV_ITEMS } from '../../../../../config/constants/Admin/sidebar';
 import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.png';
 import LogoutModal from '../topbar/modals/LogoutModal';
+import { SidebarProps } from '../../../../../types/admin';
 
-interface SidebarProps {
-    showLogoutModal: boolean;
-    onCloseLogoutModal: () => void;
-    isCollapsed: boolean;
-    onToggleCollapse: () => void;
-}
+
 
 const Sidebar: React.FC<SidebarProps> = ({
     showLogoutModal,

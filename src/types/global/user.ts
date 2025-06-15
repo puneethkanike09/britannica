@@ -5,3 +5,13 @@ export interface User {
     name: string;
     email?: string;
 }
+
+
+
+export interface AuthContextType {
+    isAuthenticated: boolean;
+    isInitialized: boolean;
+    user: User | null;
+    login: (login_id: string, password: string, role: "admin" | "educator") => Promise<void>;
+    logout: () => Promise<void>;
+}

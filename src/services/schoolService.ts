@@ -1,12 +1,7 @@
 import { apiClient } from "../utils/apiClient";
-import { School } from "../types/admin";
+import { FetchSchoolsResponse, School } from "../types/admin";
 
-interface FetchSchoolsResponse {
-    error: boolean | string; // API returns "false" or "true" as strings
-    schools: School[];
-    token: string;
-    message?: string;
-}
+
 
 export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {

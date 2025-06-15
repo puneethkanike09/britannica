@@ -35,11 +35,24 @@ export interface DocumentCardProps {
     onDownload: () => void;
 }
 
+export interface DocumentCardWithLoadingProps extends DocumentCardProps {
+    viewLoading?: boolean;
+    downloadLoading?: boolean;
+}
+
 export interface PdfProject {
     id: string | number;
     title: string;
     type: string;
     file: string;
+}
+
+
+export interface PdfRendererProps {
+    file: string | File | null;
+    onClose: () => void;
+    initialPage?: number;
+    className?: string;
 }
 
 export interface Grade {

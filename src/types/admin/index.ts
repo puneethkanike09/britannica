@@ -13,6 +13,13 @@ export interface TopbarProps {
     isSidebarCollapsed?: boolean;
 }
 
+export interface SidebarProps {
+    showLogoutModal: boolean;
+    onCloseLogoutModal: () => void;
+    isCollapsed: boolean;
+    onToggleCollapse: () => void;
+}
+
 //home page
 export interface DashboardCard {
     id: string;
@@ -50,6 +57,13 @@ export interface School {
     created_ts?: string;
     last_updated_user?: string;
     last_updated_ts?: string;
+}
+
+export interface FetchSchoolsResponse {
+    error: boolean | string; // API returns "false" or "true" as strings
+    schools: School[];
+    token: string;
+    message?: string;
 }
 
 export interface AddSchoolModalProps {

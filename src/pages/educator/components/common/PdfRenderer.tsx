@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from '../../../../components/common/Loader';
 import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
+import { PdfRendererProps } from '../../../../types/educator';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -14,12 +15,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-interface PdfRendererProps {
-    file: string | File | null;
-    onClose: () => void;
-    initialPage?: number;
-    className?: string;
-}
+
 
 const PdfRenderer: React.FC<PdfRendererProps> = ({
     file,
@@ -393,9 +389,7 @@ const PdfRenderer: React.FC<PdfRendererProps> = ({
                                         rotate={rotation}
                                         className="shadow-lg border border-inputPlaceholder"
                                         loading={
-                                            <div className="flex items-center justify-center bg-white border border-inputPlaceholder shadow-lg" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4, minHeight: '400px' }}>
-                                                <div className="animate-pulse text-textColor">Loading page...</div>
-                                            </div>
+                                            <Loader message='Loading page...' />
                                         }
                                         error={
                                             <div className="flex items-center justify-center bg-white border border-red-200 shadow-lg text-red-600" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4, minHeight: '400px' }}>

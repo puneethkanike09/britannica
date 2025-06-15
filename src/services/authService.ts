@@ -2,17 +2,9 @@ import { apiClient } from "../utils/apiClient";
 import { JwtPayload } from "../types/global/jwt";
 import { TokenService } from "./tokenService";
 import { User } from "../types/global/user";
+import { ApiResponse, AuthResponse } from "../types/global";
 
-interface AuthResponse {
-    token: string;
-    message: string;
-}
 
-interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    message?: string;
-}
 
 // Define role mapping for backend to frontend roles
 const roleMapping: Record<string, "admin" | "educator"> = {

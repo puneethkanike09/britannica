@@ -1,13 +1,10 @@
 import { API_KEY } from "../config/constants/global";
 import { TokenService } from "../services/tokenService";
+import { ApiResponse } from "../types/global";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    message?: string;
-}
+
 
 // Request queue to handle concurrent requests
 class RequestQueue {

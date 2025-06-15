@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
 import { AuthService } from "../../../../../../services/authService";
+import { LogoutModalProps } from "../../../../../../types/global";
 
-interface LogoutModalProps {
-    onClose: () => void;
-}
+
 
 export default function LogoutModal({ onClose }: LogoutModalProps) {
     const [isLoggingOut, setIsLoggingOut] = useState(false);

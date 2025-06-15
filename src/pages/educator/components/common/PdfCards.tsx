@@ -1,12 +1,7 @@
 import React from 'react';
 import ViewIcon from '../../../../assets/dashboard/Educator/home-page/view.svg';
 import DownloadIcon from '../../../../assets/dashboard/Educator/home-page/download.svg';
-import { DocumentCardProps } from '../../../../types/educator';
-
-interface DocumentCardWithLoadingProps extends DocumentCardProps {
-    viewLoading?: boolean;
-    downloadLoading?: boolean;
-}
+import { DocumentCardWithLoadingProps } from '../../../../types/educator';
 
 const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading }) => {
     return (
