@@ -4,6 +4,7 @@ import { SchoolActionModalProps } from "../../../../types/admin";
 import { useState, useEffect } from "react";
 import { SchoolService } from "../../../../services/schoolService";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import Loader from "../../../../components/common/Loader";
 
 export default function ViewSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
@@ -87,7 +88,7 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             {loading ? (
-                                <div className="py-12 text-center text-lg text-gray">Loading school details...</div>
+                                <Loader message="Loading School Details..." />
                             ) : error ? (
                                 <div className="py-12 text-center text-red">{error}</div>
                             ) : schoolDetails ? (

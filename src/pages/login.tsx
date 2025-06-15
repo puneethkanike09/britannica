@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
@@ -263,8 +263,7 @@ const Login = () => {
                 disabled={isSubmitting}
               >
                 {adminSubmitting && (
-                  <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                )}
+                  <Loader2 className="animate-spin" />)}
                 Admin Login
               </button>
               <button
@@ -274,7 +273,7 @@ const Login = () => {
                 disabled={isSubmitting}
               >
                 {educatorSubmitting && (
-                  <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <Loader2 className="animate-spin" />
                 )}
                 Educator Login
               </button>

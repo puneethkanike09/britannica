@@ -5,7 +5,7 @@ import { SchoolService } from "../../../../services/schoolService";
 import PhoneInput from 'react-phone-number-input';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 
 export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: SchoolActionModalProps) {
     // Use correct School fields for formData
@@ -288,11 +288,15 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 <div className="mt-12">
                                     <button
                                         type="submit"
-                                        className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                         onClick={handleSubmit}
                                     >
-                                        Save
+                                        {isSubmitting ? (
+                                            <Loader2 className="animate-spin" />
+                                        ) : (
+                                            'Save'
+                                        )}
                                     </button>
                                 </div>
                             </div>

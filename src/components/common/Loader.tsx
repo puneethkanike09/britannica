@@ -6,6 +6,7 @@ import { LoaderProps } from '../../types/global';
 const Loader: React.FC<LoaderProps> = ({ message }) => {
     return (
         <div className="flex justify-center items-center">
+
             <style>
                 {`
                     .loader {

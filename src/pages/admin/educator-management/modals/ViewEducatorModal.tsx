@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from "../../../../services/educatorService";
+import Loader from "../../../../components/common/Loader";
 
 export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
@@ -88,7 +89,7 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             {loading ? (
-                                <div className="py-12 text-center text-lg text-gray">Loading educator details...</div>
+                                <Loader message="Loading educator details..." />
                             ) : error ? (
                                 <div className="py-12 text-center text-red">{error}</div>
                             ) : educatorDetails ? (

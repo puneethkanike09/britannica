@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -116,10 +116,14 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className={`px-6 py-2 rounded-lg bg-red text-white hover:bg-red/80 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-6 py-2 rounded-lg bg-red text-white hover:bg-red/80 flex items-center justify-center gap-2 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isLoggingOut}
                                 >
-                                    Yes, Logout
+                                    {isLoggingOut ? (
+                                        <Loader2 className="animate-spin" />
+                                    ) : (
+                                        'Yes, Logout'
+                                    )}
                                 </button>
                             </div>
                         </div>

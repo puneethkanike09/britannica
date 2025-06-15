@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState, useEffect, useCallback } from 'react';
@@ -324,7 +324,11 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
                                         className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                     >
-                                        <span className="font-bold">Add Educator</span>
+                                        {isSubmitting ? (
+                                            <Loader2 className="animate-spin" />
+                                        ) : (
+                                            <span className="font-bold">Add Educator</span>
+                                        )}
                                     </button>
                                 </div>
                             </div>

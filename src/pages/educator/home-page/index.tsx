@@ -9,6 +9,7 @@ import Select from '../components/common/Select';
 import DocumentCard from '../components/common/PdfCards';
 import Topbar from '../components/layout/topbar';
 import { PdfProject } from '../../../types/educator';
+import { Loader2 } from 'lucide-react';
 
 // Set pdfjs worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -301,14 +302,16 @@ const EducatorDashboard = () => {
                         <div className="relative w-full sm:w-auto">
                             <button
                                 onClick={handleSubmit}
-                                className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 ${isSubmitting && !isLoadingFiles ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                                    }`}
+                                className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold text-xl rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 ${(isSubmitting || isLoadingFiles) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting || isLoadingFiles}
                             >
-                                {isLoadingFiles ? (
-                                    <span className="loader h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                ) : null}
-                                Submit
+                                {(isLoadingFiles || isSubmitting) ? (
+                                    <>
+                                        <Loader2 className="animate-spin" />
+                                    </>
+                                ) : (
+                                    'Submit'
+                                )}
                             </button>
                         </div>
                     </div>
