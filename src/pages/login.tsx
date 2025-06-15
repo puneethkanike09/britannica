@@ -262,9 +262,11 @@ const Login = () => {
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
-                {adminSubmitting && (
-                  <Loader2 className="animate-spin" />)}
-                Admin Login
+                {adminSubmitting ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <span className="font-bold">Admin Login</span>
+                )}
               </button>
               <button
                 type="button"
@@ -272,10 +274,11 @@ const Login = () => {
                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
-                {educatorSubmitting && (
+                {educatorSubmitting ? (
                   <Loader2 className="animate-spin" />
+                ) : (
+                  <span className="font-bold">Educator Login</span>
                 )}
-                Educator Login
               </button>
             </div>
           </form>
@@ -352,11 +355,15 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={handleForgotPasswordSubmit}
-                      className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                      className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                         }`}
                       disabled={isSubmitting}
                     >
-                      Submit
+                      {isSubmitting ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        'Submit'
+                      )}
                     </button>
                   </div>
                 </form>
