@@ -1,19 +1,10 @@
 export class TokenService {
     private static tokenLock = false;
-
-    private static updateQueue: Array<{
-        token: string | null;
-        resolve: () => void;
-    }> = [];
     private static updateListeners: Array<(token: string | null) => void> = [];
 
-    static async updateToken(token: string | null) {
-        if (this.tokenLock) {
-            // Queue the token update
-            return new Promise<void>(resolve => {
-                this.updateQueue.push({ token, resolve });
-            });
-        }
+    static updateToken(token: string | null) {
+        // Prevent concurrent token updates
+        if (this.tokenLock) return;
 
         this.tokenLock = true;
 
@@ -24,20 +15,8 @@ export class TokenService {
                 localStorage.removeItem("token");
             }
 
-            // Notify listeners
+            // Notify listeners about token update
             this.notifyListeners(token);
-
-            // Process queued updates
-            while (this.updateQueue.length > 0) {
-                const { token: queuedToken, resolve } = this.updateQueue.shift()!;
-                if (queuedToken) {
-                    localStorage.setItem("token", queuedToken);
-                } else {
-                    localStorage.removeItem("token");
-                }
-                this.notifyListeners(queuedToken);
-                resolve();
-            }
         } finally {
             this.tokenLock = false;
         }

@@ -1,4 +1,5 @@
 import { API_KEY } from "../config/constants/global";
+import { TokenService } from "../services/tokenService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,189 +9,89 @@ interface ApiResponse<T> {
     message?: string;
 }
 
-// Optimized Token Service with better concurrency handling
-export class TokenService {
-    private static token: string | null = null;
-    private static initialized = false;
-    private static updateListeners: Set<(token: string | null) => void> = new Set();
-
-    // Use a single promise for token updates to prevent race conditions
-    private static updatePromise: Promise<void> | null = null;
-
-    // Initialize token from localStorage once
-    private static initialize() {
-        if (!this.initialized) {
-            this.token = localStorage.getItem("token");
-            this.initialized = true;
-        }
-    }
-
-    static async updateToken(newToken: string | null): Promise<void> {
-        // If there's already an update in progress, wait for it
-        if (this.updatePromise) {
-            await this.updatePromise;
-        }
-
-        // Create new update promise
-        this.updatePromise = this.performUpdate(newToken);
-
-        try {
-            await this.updatePromise;
-        } finally {
-            this.updatePromise = null;
-        }
-    }
-
-    private static async performUpdate(newToken: string | null): Promise<void> {
-        this.initialize();
-
-        // Only update if token actually changed
-        if (this.token === newToken) {
-            return;
-        }
-
-        this.token = newToken;
-
-        // Update localStorage
-        try {
-            if (newToken) {
-                localStorage.setItem("token", newToken);
-            } else {
-                localStorage.removeItem("token");
-            }
-        } catch (error) {
-            console.error('Failed to update localStorage:', error);
-            // Don't throw - continue with in-memory token
-        }
-
-        // Notify listeners (using Set for better performance)
-        this.notifyListeners(newToken);
-    }
-
-    static getToken(): string | null {
-        this.initialize();
-        return this.token;
-    }
-
-    static clearToken(): Promise<void> {
-        return this.updateToken(null);
-    }
-
-    static addTokenUpdateListener(listener: (token: string | null) => void): () => void {
-        this.updateListeners.add(listener);
-
-        // Return cleanup function
-        return () => {
-            this.updateListeners.delete(listener);
-        };
-    }
-
-    private static notifyListeners(token: string | null): void {
-        this.updateListeners.forEach(listener => {
-            try {
-                listener(token);
-            } catch (error) {
-                console.error('Error in token update listener:', error);
-            }
-        });
-    }
-
-    static hasValidToken(): boolean {
-        const token = this.getToken();
-        return !!(token && token.trim());
-    }
-
-    static getTokenSafely(): string {
-        return this.getToken() || '';
-    }
-}
-
-// Simplified Request Queue with better error handling
+// Request queue to handle concurrent requests
 class RequestQueue {
-    private queue: Array<() => Promise<any>> = [];
+    private queue: Array<{
+        request: () => Promise<any>;
+        resolve: (value: any) => void;
+        reject: (error: any) => void;
+    }> = [];
     private processing = false;
-    private readonly maxConcurrent = 5; // Limit concurrent requests
-    private activeRequests = 0;
 
     async enqueue<T>(request: () => Promise<T>): Promise<T> {
         return new Promise((resolve, reject) => {
-            const wrappedRequest = async () => {
-                try {
-                    const result = await request();
-                    resolve(result);
-                } catch (error) {
-                    reject(error);
-                }
-            };
-
-            this.queue.push(wrappedRequest);
+            this.queue.push({ request, resolve, reject });
             this.processQueue();
         });
     }
 
-    private async processQueue(): Promise<void> {
-        if (this.processing || this.activeRequests >= this.maxConcurrent) {
-            return;
-        }
+    private async processQueue() {
+        if (this.processing || this.queue.length === 0) return;
 
         this.processing = true;
 
-        while (this.queue.length > 0 && this.activeRequests < this.maxConcurrent) {
-            const request = this.queue.shift()!;
-            this.activeRequests++;
-
-            // Process request without awaiting (allows concurrency)
-            request().finally(() => {
-                this.activeRequests--;
-                this.processQueue(); // Process next batch
-            });
+        while (this.queue.length > 0) {
+            const { request, resolve, reject } = this.queue.shift()!;
+            try {
+                const result = await request();
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
         }
 
         this.processing = false;
     }
 }
 
-// Optimized Token Manager with better retry logic
-class TokenManager {
-    private refreshPromise: Promise<void> | null = null;
+// Create a single instance of the request queue
+const requestQueue = new RequestQueue();
 
+// Helper function to handle 401 errors consistently
+const handle401Error = (): void => {
+    TokenService.clearToken();
+    window.location.href = "/";
+};
+
+// Token management for handling 401 retries
+class TokenManager {
     async executeWithTokenRetry<T>(
         requestFn: () => Promise<Response>
     ): Promise<ApiResponse<T>> {
         try {
-            let response = await requestFn();
-            let result = await this.parseResponse(response);
+            // First attempt
+            const response = await requestFn();
+            const result = await response.json();
 
             // Update token if present in response
             if (result.token) {
-                await TokenService.updateToken(result.token);
+                TokenService.updateToken(result.token);
             }
 
-            // Handle 401 with single retry
             if (response.status === 401) {
-                const retryResult = await this.handleTokenRefresh(requestFn);
-                if (retryResult) {
-                    response = retryResult.response;
-                    result = retryResult.result;
-                }
-            }
-
-            // Handle 403 - clear token and redirect
-            if (response.status === 403) {
-                await TokenService.clearToken();
-                this.redirectToLogin();
+                // Always handle 401 by clearing token and redirecting
+                handle401Error();
                 return {
                     success: false,
-                    message: "Access forbidden. Please login again.",
+                    message: "Authentication failed. Redirecting to login.",
+                };
+            }
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                    TokenService.clearToken();
+                }
+                return {
+                    success: false,
+                    message: result.message || "Request failed",
                 };
             }
 
             return {
-                success: response.ok,
-                data: response.ok ? result : undefined,
-                message: result.message || (response.ok ? undefined : "Request failed"),
+                success: true,
+                data: result,
+                message: result.message,
             };
-
         } catch (error) {
             console.error("Error in request:", error);
             return {
@@ -199,66 +100,8 @@ class TokenManager {
             };
         }
     }
-
-    private async handleTokenRefresh(
-        requestFn: () => Promise<Response>
-    ): Promise<{ response: Response; result: any } | null> {
-        // Use single refresh promise to prevent multiple refresh attempts
-        if (this.refreshPromise) {
-            await this.refreshPromise;
-        } else {
-            this.refreshPromise = this.performTokenRefresh();
-            await this.refreshPromise;
-            this.refreshPromise = null;
-        }
-
-        // Retry request with refreshed token
-        try {
-            const response = await requestFn();
-            const result = await this.parseResponse(response);
-
-            if (result.token) {
-                await TokenService.updateToken(result.token);
-            }
-
-            return { response, result };
-        } catch (error) {
-            console.error("Retry request failed:", error);
-            return null;
-        }
-    }
-
-    private async performTokenRefresh(): Promise<void> {
-        // Small delay to allow other requests to queue up
-        await new Promise(resolve => setTimeout(resolve, 50));
-
-        // Check if we still have a valid token after delay
-        if (!TokenService.hasValidToken()) {
-            await TokenService.clearToken();
-            this.redirectToLogin();
-            throw new Error("No valid token available");
-        }
-    }
-
-    private async parseResponse(response: Response): Promise<any> {
-        const contentType = response.headers.get("content-type");
-
-        if (contentType?.includes("application/json")) {
-            return await response.json();
-        } else {
-            const text = await response.text();
-            return { message: text };
-        }
-    }
-
-    private redirectToLogin(): void {
-        // Use replace to prevent back button issues
-        window.location.replace("/");
-    }
 }
 
-// Create singleton instances
-const requestQueue = new RequestQueue();
 const tokenManager = new TokenManager();
 
 export const apiClient = {
@@ -347,6 +190,15 @@ export const apiClient = {
                 );
 
                 if (!response.ok) {
+                    // Handle 401 errors
+                    if (response.status === 401) {
+                        handle401Error();
+                        return {
+                            success: false,
+                            message: "Authentication failed. Redirecting to login.",
+                        };
+                    }
+
                     const contentType = response.headers.get("Content-Type") || "";
                     let errorMessage: string;
 
@@ -360,7 +212,6 @@ export const apiClient = {
 
                     if (response.status === 403) {
                         TokenService.clearToken();
-                        window.location.href = "/"; // Redirect to login
                     }
 
                     return {
@@ -411,6 +262,15 @@ export const apiClient = {
                 );
 
                 if (!response.ok) {
+                    // Handle 401 errors
+                    if (response.status === 401) {
+                        handle401Error();
+                        return {
+                            success: false,
+                            message: "Authentication failed. Redirecting to login.",
+                        };
+                    }
+
                     const contentType = response.headers.get("Content-Type") || "";
                     let errorMessage: string;
 
@@ -424,7 +284,6 @@ export const apiClient = {
 
                     if (response.status === 403) {
                         TokenService.clearToken();
-                        window.location.href = "/"; // Redirect to login
                     }
 
                     return {

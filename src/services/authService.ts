@@ -104,6 +104,7 @@ export class AuthService {
             const payload = this.decodeToken(token);
             const exp = payload?.exp;
             if (exp) {
+                console.log("Token expiration time:", exp);
                 const currentTime = Math.floor(Date.now() / 1000);
                 return exp > currentTime;
             }

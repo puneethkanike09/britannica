@@ -6,9 +6,7 @@ import { Loader2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
-import { TokenService } from "../services/tokenService";
 import { AuthService } from "../services/authService";
-
 
 const Login = () => {
   const navigate = useNavigate();
@@ -154,6 +152,12 @@ const Login = () => {
   };
 
   useEffect(() => {
+    if (AuthService.isAuthenticated()) {
+      navigate("/admin-dashboard");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (showForgotPasswordModal && !isSubmitting) {
@@ -173,23 +177,6 @@ const Login = () => {
 
   const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
   const [isSuccessVisible, setIsSuccessVisible] = useState(false);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (TokenService.hasValidToken()) {
-      const token = TokenService.getToken();
-      const payload = token ? AuthService.decodeToken(token) : null;
-      const role = payload?.roles?.[0]?.toLowerCase();
-      if (role === "admin") {
-        navigate("/admin-dashboard", { replace: true });
-      } else if (role === "teacher" || role === "educator") {
-        navigate("/educator-dashboard", { replace: true });
-      } else {
-        // fallback if role is unknown
-        navigate("/admin-dashboard", { replace: true });
-      }
-    }
-  }, [navigate]);
 
   return (
     <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[5.4fr_4.6fr]">
