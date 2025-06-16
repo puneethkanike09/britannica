@@ -62,27 +62,17 @@ class TokenManager {
         try {
             // First attempt
             const response = await requestFn();
+
+            // Check if response is ok before trying to parse JSON
+            if (!response.ok) {
+                return this.handleErrorResponse<T>(response);
+            }
+
             const result = await response.json();
 
             // Update token if present in response
             if (result.token) {
                 TokenService.updateToken(result.token);
-            }
-
-            if (response.status === 401 && !this.isRetrying) {
-                // Handle 401 with retry using fresh token
-                return this.handleTokenRetry<T>(requestFn, endpoint);
-            }
-
-            if (!response.ok) {
-                if (response.status === 403) {
-                    TokenService.clearToken();
-                    window.location.href = "/"; // Redirect to login
-                }
-                return {
-                    success: false,
-                    message: result.message || "Request failed",
-                };
             }
 
             return {
@@ -91,12 +81,49 @@ class TokenManager {
                 message: result.message,
             };
         } catch (error) {
+            // Handle 401 specifically for token retry
+            if (error instanceof Error && error.message.includes('401') && !this.isRetrying) {
+                return this.handleTokenRetry<T>(requestFn);
+            }
+
             console.error(`Error in ${endpoint}:`, error);
             return {
                 success: false,
                 message: error instanceof Error ? error.message : "Unknown error",
             };
         }
+    }
+
+    private async handleErrorResponse<T>(response: Response): Promise<ApiResponse<T>> {
+        let errorMessage = "Request failed";
+
+        try {
+            const contentType = response.headers.get("Content-Type") || "";
+            if (contentType.includes("application/json")) {
+                const result = await response.json();
+                errorMessage = result.message || errorMessage;
+            } else {
+                const text = await response.text();
+                errorMessage = text || errorMessage;
+            }
+        } catch {
+            // Failed to parse error response, use default message
+        }
+
+        // Handle specific status codes
+        if (response.status === 401 && !this.isRetrying) {
+            return this.handleTokenRetry<T>(() => Promise.reject(new Error('401')));
+        }
+
+        if (response.status === 403) {
+            TokenService.clearToken();
+            window.location.href = "/";
+        }
+
+        return {
+            success: false,
+            message: errorMessage,
+        };
     }
 
     private async handleTokenRetry<T>(
@@ -124,6 +151,11 @@ class TokenManager {
 
             // Retry the request with fresh token
             const retryResponse = await requestFn();
+
+            if (!retryResponse.ok) {
+                throw new Error(`Retry failed with status ${retryResponse.status}`);
+            }
+
             const retryResult = await retryResponse.json();
 
             // Update token if present in retry response
@@ -132,9 +164,9 @@ class TokenManager {
             }
 
             const result: ApiResponse<T> = {
-                success: retryResponse.ok,
-                data: retryResponse.ok ? retryResult : undefined,
-                message: retryResult.message || (retryResponse.ok ? undefined : "Request failed"),
+                success: true,
+                data: retryResult,
+                message: retryResult.message,
             };
 
             // Process queued requests
@@ -248,17 +280,21 @@ export const apiClient = {
                     const contentType = response.headers.get("Content-Type") || "";
                     let errorMessage: string;
 
-                    if (contentType.includes("application/json")) {
-                        const result = await response.json();
-                        errorMessage = result.message || "Failed to get file view URL";
-                    } else {
-                        const text = await response.text();
-                        errorMessage = text || "Failed to get file view URL";
+                    try {
+                        if (contentType.includes("application/json")) {
+                            const result = await response.json();
+                            errorMessage = result.message || "Failed to get file view URL";
+                        } else {
+                            const text = await response.text();
+                            errorMessage = text || "Failed to get file view URL";
+                        }
+                    } catch {
+                        errorMessage = "Failed to get file view URL";
                     }
 
                     if (response.status === 403) {
                         TokenService.clearToken();
-                        window.location.href = "/"; // Redirect to login
+                        window.location.href = "/";
                     }
 
                     return {
@@ -312,17 +348,21 @@ export const apiClient = {
                     const contentType = response.headers.get("Content-Type") || "";
                     let errorMessage: string;
 
-                    if (contentType.includes("application/json")) {
-                        const result = await response.json();
-                        errorMessage = result.message || "Failed to get file download URL";
-                    } else {
-                        const text = await response.text();
-                        errorMessage = text || "Failed to get file download URL";
+                    try {
+                        if (contentType.includes("application/json")) {
+                            const result = await response.json();
+                            errorMessage = result.message || "Failed to get file download URL";
+                        } else {
+                            const text = await response.text();
+                            errorMessage = text || "Failed to get file download URL";
+                        }
+                    } catch {
+                        errorMessage = "Failed to get file download URL";
                     }
 
                     if (response.status === 403) {
                         TokenService.clearToken();
-                        window.location.href = "/"; // Redirect to login
+                        window.location.href = "/";
                     }
 
                     return {
@@ -364,15 +404,38 @@ export const apiClient = {
                 "API-KEY": API_KEY,
                 "token": customToken,
             };
+
             try {
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: "POST",
                     headers,
                     body: JSON.stringify(data),
                 });
+
+                if (!response.ok) {
+                    let errorMessage = "Request failed";
+                    try {
+                        const contentType = response.headers.get("Content-Type") || "";
+                        if (contentType.includes("application/json")) {
+                            const errorResult = await response.json();
+                            errorMessage = errorResult.message || errorMessage;
+                        } else {
+                            const text = await response.text();
+                            errorMessage = text || errorMessage;
+                        }
+                    } catch {
+                        // Use default error message if parsing fails
+                    }
+
+                    return {
+                        success: false,
+                        message: errorMessage,
+                    };
+                }
+
                 const result = await response.json();
                 return {
-                    success: response.ok && (result.error === false || result.error === "false"),
+                    success: result.error === false || result.error === "false",
                     data: result,
                     message: result.message,
                 };
