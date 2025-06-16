@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { apiClient } from "../utils/apiClient";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 
 const CreatePassword = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -19,10 +17,6 @@ const CreatePassword = () => {
         newPassword: "",
         confirmPassword: "",
     });
-
-    // Extract token from URL
-    const searchParams = new URLSearchParams(location.search);
-    const urlToken = searchParams.get("token") || "";
 
     const validateForm = () => {
         const newErrors = { newPassword: "", confirmPassword: "" };
@@ -48,29 +42,17 @@ const CreatePassword = () => {
         return isValid;
     };
 
-    const handleCreatePassword = async (e: React.FormEvent) => {
+    const handleCreatePassword = (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
-        if (!urlToken) {
-            toast.error("Invalid or missing token.");
-            return;
-        }
         setIsSubmitting(true);
         toast.promise(
-            apiClient.postWithCustomToken<{ error: string | boolean; message: string }>(
-                "/auth/password",
-                {
-                    password: newPassword,
-                    confirm_password: confirmPassword,
-                },
-                urlToken
-            ).then((res) => {
-                if (res.success) {
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve("Password created successfully!");
                     setShowSuccessModal(true);
                     setIsSuccessVisible(true);
-                } else {
-                    throw new Error(res.message || "Failed to create password");
-                }
+                }, 2000);
             }),
             {
                 loading: "Creating password...",
@@ -78,12 +60,9 @@ const CreatePassword = () => {
                     setIsSubmitting(false);
                     return "Password created successfully!";
                 },
-                error: (err: unknown) => {
+                error: (err) => {
                     setIsSubmitting(false);
-                    if (err instanceof Error) {
-                        return `Error: ${err.message}`;
-                    }
-                    return "Error: Failed to create password";
+                    return `Error: ${err.message}`;
                 },
             }
         );
