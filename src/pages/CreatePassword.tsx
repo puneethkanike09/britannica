@@ -1,40 +1,46 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import { apiClient } from "../utils/apiClient";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 
 const CreatePassword = () => {
     const navigate = useNavigate();
-    const [oldPassword, setOldPassword] = useState("");
+    const location = useLocation();
     const [newPassword, setNewPassword] = useState("");
-    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isSuccessVisible, setIsSuccessVisible] = useState(false);
     const [errors, setErrors] = useState({
-        oldPassword: "",
         newPassword: "",
+        confirmPassword: "",
     });
 
+    // Extract token from URL
+    const searchParams = new URLSearchParams(location.search);
+    const urlToken = searchParams.get("token") || "";
+
     const validateForm = () => {
-        const newErrors = { oldPassword: "", newPassword: "" };
+        const newErrors = { newPassword: "", confirmPassword: "" };
         let isValid = true;
 
-        if (!oldPassword.trim()) {
-            newErrors.oldPassword = "Old Password is required";
+        if (!newPassword.trim()) {
+            newErrors.newPassword = "New Password is required";
+            isValid = false;
+        } else if (newPassword.length < 8) {
+            newErrors.newPassword = "New Password must be at least 8 characters";
             isValid = false;
         }
 
-        if (!newPassword.trim()) {
-            newErrors.newPassword = "New password is required";
+        if (!confirmPassword.trim()) {
+            newErrors.confirmPassword = "Confirm Password is required";
             isValid = false;
-        } else if (newPassword.length < 8) {
-            newErrors.newPassword = "New password must be at least 8 characters";
-            isValid = false;
-        } else if (oldPassword === newPassword) {
-            newErrors.newPassword = "New password must be different from Old Password";
+        } else if (newPassword !== confirmPassword) {
+            newErrors.confirmPassword = "Passwords do not match";
             isValid = false;
         }
 
@@ -42,43 +48,54 @@ const CreatePassword = () => {
         return isValid;
     };
 
-    const handleCreatePassword = (e: React.FormEvent) => {
+    const handleCreatePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
+        if (!urlToken) {
+            toast.error("Invalid or missing token.");
+            return;
+        }
         setIsSubmitting(true);
         toast.promise(
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve("Password updated successfully!");
+            apiClient.postWithCustomToken<{ error: string | boolean; message: string }>(
+                "/auth/password",
+                {
+                    password: newPassword,
+                    confirm_password: confirmPassword,
+                },
+                urlToken
+            ).then((res) => {
+                if (res.success) {
                     setShowSuccessModal(true);
                     setIsSuccessVisible(true);
-                }, 2000);
+                } else {
+                    throw new Error(res.message || "Failed to create password");
+                }
             }),
             {
-                loading: "Updating password...",
+                loading: "Creating password...",
                 success: () => {
                     setIsSubmitting(false);
-                    return "Password updated successfully!";
+                    return "Password created successfully!";
                 },
-                error: (err) => {
+                error: (err: unknown) => {
                     setIsSubmitting(false);
-                    return `Error: ${err.message}`;
+                    if (err instanceof Error) {
+                        return `Error: ${err.message}`;
+                    }
+                    return "Error: Failed to create password";
                 },
             }
         );
     };
 
-    // Handle opening/closing success modal
     const handleCloseSuccess = () => {
         setIsSuccessVisible(false);
-        // After animation completes, handleSuccessAnimationComplete will be called
-        // which will set showSuccessModal to false and then navigate to previous page
     };
 
     const handleSuccessAnimationComplete = () => {
         if (!isSuccessVisible) {
             setShowSuccessModal(false);
-            // Navigate back to previous page or dashboard
             navigate("/");
         }
     };
@@ -90,7 +107,6 @@ const CreatePassword = () => {
         }
     };
 
-    // Handle ESC key for modals
     useState(() => {
         const handleEscKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && showSuccessModal) {
@@ -106,7 +122,6 @@ const CreatePassword = () => {
 
     return (
         <div className="grid min-h-screen w-full grid-cols-1">
-            {/* Create Password Form */}
             <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
                 <div className="max-w-lg w-full">
                     <h1 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
@@ -114,39 +129,6 @@ const CreatePassword = () => {
                     </h1>
 
                     <form onSubmit={handleCreatePassword}>
-                        <div className="mb-5 relative">
-                            <label
-                                htmlFor="oldPassword"
-                                className="block text-textColor text-base mb-2"
-                            >
-                                Old Password<span className="text-red">*</span>
-                            </label>
-                            <input
-                                type={showOldPassword ? "text" : "password"}
-                                id="oldPassword"
-                                placeholder="Enter Old Password"
-                                value={oldPassword}
-                                onChange={(e) => {
-                                    setOldPassword(e.target.value);
-                                    if (errors.oldPassword)
-                                        setErrors((prev) => ({ ...prev, oldPassword: "" }));
-                                }}
-                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.oldPassword ? "border-red" : "border-inputPlaceholder"
-                                    } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
-                                disabled={isSubmitting}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowOldPassword(!showOldPassword)}
-                                className="absolute right-3 top-11 text-primary text-base hover:underline cursor-pointer"
-                            >
-                                {showOldPassword ? "Hide" : "Show"}
-                            </button>
-                            {errors.oldPassword && (
-                                <p className="text-red text-sm mt-1">{errors.oldPassword}</p>
-                            )}
-                        </div>
-
                         <div className="mb-5 relative">
                             <label
                                 htmlFor="newPassword"
@@ -180,20 +162,52 @@ const CreatePassword = () => {
                             )}
                         </div>
 
+                        <div className="mb-5 relative">
+                            <label
+                                htmlFor="confirmPassword"
+                                className="block text-textColor text-base mb-2"
+                            >
+                                Confirm Password<span className="text-red">*</span>
+                            </label>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                placeholder="Confirm New Password"
+                                value={confirmPassword}
+                                onChange={(e) => {
+                                    setConfirmPassword(e.target.value);
+                                    if (errors.confirmPassword)
+                                        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+                                }}
+                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.confirmPassword ? "border-red" : "border-inputPlaceholder"
+                                    } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                disabled={isSubmitting}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-3 top-11 text-primary text-base hover:underline cursor-pointer"
+                            >
+                                {showConfirmPassword ? "Hide" : "Show"}
+                            </button>
+                            {errors.confirmPassword && (
+                                <p className="text-red text-sm mt-1">{errors.confirmPassword}</p>
+                            )}
+                        </div>
+
                         <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center sm:justify-start w-full">
                             <button
                                 type="submit"
                                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={isSubmitting}
                             >
-                                Update Password
+                                Create Password
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            {/* Success Modal */}
             <AnimatePresence onExitComplete={handleSuccessAnimationComplete}>
                 {showSuccessModal && isSuccessVisible && (
                     <motion.div
@@ -208,14 +222,13 @@ const CreatePassword = () => {
                         <motion.div
                             className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-8"
                             variants={modalVariants}
-                            initial="hidden"
+                            initial="exit"
                             animate="visible"
-                            exit="exit"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="flex-1 px-8 py-6 text-center">
+                            <div className="flex-1 px-4 sm:px-8 py-6 text-center">
                                 <p className="text-textColor text-lg mb-8">
-                                    Your password has been updated successfully.
+                                    Your password has been created successfully.
                                 </p>
                                 <button
                                     type="button"

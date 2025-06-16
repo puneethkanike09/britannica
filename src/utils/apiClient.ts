@@ -1,27 +1,26 @@
 import { API_KEY } from "../config/constants/global";
 import { TokenService } from "../services/tokenService";
-import { ApiResponse } from "../types/global";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
+interface ApiResponse<T> {
+    success: boolean;
+    data?: T;
+    message?: string;
+}
 
 // Request queue to handle concurrent requests
 class RequestQueue {
     private queue: Array<{
-        request: () => Promise<ApiResponse<unknown>>;
-        resolve: (value: ApiResponse<unknown>) => void;
-        reject: (error: ApiResponse<unknown>) => void;
+        request: () => Promise<any>;
+        resolve: (value: any) => void;
+        reject: (error: any) => void;
     }> = [];
     private processing = false;
 
-    async enqueue<T>(request: () => Promise<ApiResponse<T>>): Promise<ApiResponse<T>> {
+    async enqueue<T>(request: () => Promise<T>): Promise<T> {
         return new Promise((resolve, reject) => {
-            this.queue.push({
-                request: request as () => Promise<ApiResponse<unknown>>,
-                resolve: resolve as (value: ApiResponse<unknown>) => void,
-                reject: reject as (error: ApiResponse<unknown>) => void,
-            });
+            this.queue.push({ request, resolve, reject });
             this.processQueue();
         });
     }
@@ -37,10 +36,7 @@ class RequestQueue {
                 const result = await request();
                 resolve(result);
             } catch (error) {
-                reject({
-                    success: false,
-                    message: error instanceof Error ? error.message : "Unknown error",
-                });
+                reject(error);
             }
         }
 
@@ -55,12 +51,13 @@ const requestQueue = new RequestQueue();
 class TokenManager {
     private isRetrying = false;
     private retryQueue: Array<{
-        resolve: (value: ApiResponse<unknown>) => void;
-        reject: (error: ApiResponse<unknown>) => void;
+        resolve: (value: any) => void;
+        reject: (error: any) => void;
     }> = [];
 
     async executeWithTokenRetry<T>(
-        requestFn: () => Promise<Response>
+        requestFn: () => Promise<Response>,
+        endpoint: string
     ): Promise<ApiResponse<T>> {
         try {
             // First attempt
@@ -72,13 +69,9 @@ class TokenManager {
                 TokenService.updateToken(result.token);
             }
 
-            if (response.status === 401) {
-                TokenService.clearToken();
-                window.location.href = "/"; // Redirect to login
-            }
             if (response.status === 401 && !this.isRetrying) {
                 // Handle 401 with retry using fresh token
-                return this.handleTokenRetry<T>(requestFn);
+                return this.handleTokenRetry<T>(requestFn, endpoint);
             }
 
             if (!response.ok) {
@@ -98,33 +91,22 @@ class TokenManager {
                 message: result.message,
             };
         } catch (error) {
-            let message = "Unknown error";
-            if (error instanceof TypeError && error.message === "Failed to fetch") {
-                if (!navigator.onLine) {
-                    message = "No internet connection";
-                } else {
-                    message = "Network error";
-                }
-            } else if (error instanceof Error) {
-                message = error.message;
-            }
+            console.error(`Error in ${endpoint}:`, error);
             return {
                 success: false,
-                message,
+                message: error instanceof Error ? error.message : "Unknown error",
             };
         }
     }
 
     private async handleTokenRetry<T>(
-        requestFn: () => Promise<Response>
+        requestFn: () => Promise<Response>,
+        endpoint: string
     ): Promise<ApiResponse<T>> {
         if (this.isRetrying) {
             // If already retrying, queue this request
             return new Promise((resolve, reject) => {
-                this.retryQueue.push({
-                    resolve: resolve as (value: ApiResponse<unknown>) => void,
-                    reject: reject as (error: ApiResponse<unknown>) => void,
-                });
+                this.retryQueue.push({ resolve, reject });
             });
         }
 
@@ -157,7 +139,7 @@ class TokenManager {
             };
 
             // Process queued requests
-            this.retryQueue.forEach(({ resolve }) => resolve(result as ApiResponse<unknown>));
+            this.retryQueue.forEach(({ resolve }) => resolve(result));
             this.retryQueue = [];
 
             return result;
@@ -168,7 +150,7 @@ class TokenManager {
             };
 
             // Reject queued requests
-            this.retryQueue.forEach(({ reject }) => reject(errorResult as ApiResponse<unknown>));
+            this.retryQueue.forEach(({ reject }) => reject(errorResult));
             this.retryQueue = [];
 
             return errorResult;
@@ -207,7 +189,7 @@ export const apiClient = {
                 });
             };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest);
+            return tokenManager.executeWithTokenRetry<T>(createRequest, `POST ${endpoint}`);
         });
     },
 
@@ -234,7 +216,7 @@ export const apiClient = {
                 });
             };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest);
+            return tokenManager.executeWithTokenRetry<T>(createRequest, `GET ${endpoint}`);
         });
     },
 
@@ -358,6 +340,44 @@ export const apiClient = {
                 };
             } catch (error) {
                 console.error(`Error in GET file/download?filePath=${filePath}:`, error);
+                return {
+                    success: false,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                };
+            }
+        });
+    },
+
+    /**
+     * POST request with a custom token header (for password creation, etc.)
+     * @param endpoint API endpoint
+     * @param data Request body
+     * @param customToken Token to send in the 'token' header
+     */
+    async postWithCustomToken<T, D = unknown>(
+        endpoint: string,
+        data: D,
+        customToken: string
+    ): Promise<ApiResponse<T>> {
+        return requestQueue.enqueue(async () => {
+            const headers: HeadersInit = {
+                "Content-Type": "application/json",
+                "API-KEY": API_KEY,
+                "token": customToken,
+            };
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                return {
+                    success: response.ok && (result.error === false || result.error === "false"),
+                    data: result,
+                    message: result.message,
+                };
+            } catch (error) {
                 return {
                     success: false,
                     message: error instanceof Error ? error.message : "Unknown error",
