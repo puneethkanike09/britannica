@@ -101,7 +101,6 @@ class TokenManager {
 
     private async handleTokenRetry<T>(
         requestFn: () => Promise<Response>,
-        endpoint: string
     ): Promise<ApiResponse<T>> {
         if (this.isRetrying) {
             // If already retrying, queue this request
