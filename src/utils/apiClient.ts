@@ -321,13 +321,12 @@ export const apiClient = {
         });
     },
 
-    async getFileUrl(
-        endpoint: string,
+    async getFileViewUrl(
         filePath: string,
         includeToken: boolean = true
     ): Promise<ApiResponse<string>> {
         return requestQueue.enqueue(async () => {
-            const createRequest = () => {
+            try {
                 const headers: HeadersInit = {
                     "API-KEY": API_KEY,
                 };
@@ -339,25 +338,114 @@ export const apiClient = {
                     }
                 }
 
-                return fetch(
-                    `${API_BASE_URL}${endpoint}?filePath=${encodeURIComponent(filePath)}`,
+                const response = await fetch(
+                    `${API_BASE_URL}/file/view?filePath=${encodeURIComponent(filePath)}`,
                     {
                         method: "GET",
                         headers,
                     }
                 );
-            };
 
-            return tokenManager.executeWithTokenRetry<string>(createRequest);
+                if (!response.ok) {
+                    const contentType = response.headers.get("Content-Type") || "";
+                    let errorMessage: string;
+
+                    if (contentType.includes("application/json")) {
+                        const result = await response.json();
+                        errorMessage = result.message || "Failed to get file view URL";
+                    } else {
+                        const text = await response.text();
+                        errorMessage = text || "Failed to get file view URL";
+                    }
+
+                    if (response.status === 403) {
+                        TokenService.clearToken();
+                        window.location.href = "/"; // Redirect to login
+                    }
+
+                    return {
+                        success: false,
+                        message: errorMessage,
+                    };
+                }
+
+                const result = await response.text();
+                return {
+                    success: true,
+                    data: result,
+                    message: "File view URL retrieved successfully",
+                };
+            } catch (error) {
+                console.error(`Error in GET file/view?filePath=${filePath}:`, error);
+                return {
+                    success: false,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                };
+            }
         });
     },
 
-    // Convenience methods
-    getFileViewUrl(filePath: string, includeToken: boolean = true) {
-        return this.getFileUrl("/file/view", filePath, includeToken);
-    },
+    async getFileDownloadUrl(
+        filePath: string,
+        includeToken: boolean = true
+    ): Promise<ApiResponse<string>> {
+        return requestQueue.enqueue(async () => {
+            try {
+                const headers: HeadersInit = {
+                    "API-KEY": API_KEY,
+                };
 
-    getFileDownloadUrl(filePath: string, includeToken: boolean = true) {
-        return this.getFileUrl("/file/download", filePath, includeToken);
+                if (includeToken) {
+                    const token = TokenService.getToken();
+                    if (token) {
+                        headers["Authorization"] = `Bearer ${token}`;
+                    }
+                }
+
+                const response = await fetch(
+                    `${API_BASE_URL}/file/download?filePath=${encodeURIComponent(filePath)}`,
+                    {
+                        method: "GET",
+                        headers,
+                    }
+                );
+
+                if (!response.ok) {
+                    const contentType = response.headers.get("Content-Type") || "";
+                    let errorMessage: string;
+
+                    if (contentType.includes("application/json")) {
+                        const result = await response.json();
+                        errorMessage = result.message || "Failed to get file download URL";
+                    } else {
+                        const text = await response.text();
+                        errorMessage = text || "Failed to get file download URL";
+                    }
+
+                    if (response.status === 403) {
+                        TokenService.clearToken();
+                        window.location.href = "/"; // Redirect to login
+                    }
+
+                    return {
+                        success: false,
+                        message: errorMessage,
+                    };
+                }
+
+                const result = await response.text();
+                return {
+                    success: true,
+                    data: result,
+                    message: "File download URL retrieved successfully",
+                };
+            } catch (error) {
+                console.error(`Error in GET file/download?filePath=${filePath}:`, error);
+                return {
+                    success: false,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                };
+            }
+        });
     },
 };
