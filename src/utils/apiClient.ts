@@ -153,7 +153,6 @@ class RequestQueue {
 // Optimized Token Manager with better retry logic
 class TokenManager {
     private refreshPromise: Promise<void> | null = null;
-    private readonly maxRetries = 1;
 
     async executeWithTokenRetry<T>(
         requestFn: () => Promise<Response>
@@ -201,7 +200,7 @@ class TokenManager {
         }
     }
 
-    private async handleTokenRefresh<T>(
+    private async handleTokenRefresh(
         requestFn: () => Promise<Response>
     ): Promise<{ response: Response; result: any } | null> {
         // Use single refresh promise to prevent multiple refresh attempts
