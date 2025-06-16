@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
+import { apiClient } from "../utils/apiClient"; // Import the apiClient
 
 const CreatePassword = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // To extract the token from the URL
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -17,6 +19,19 @@ const CreatePassword = () => {
         newPassword: "",
         confirmPassword: "",
     });
+    const [token, setToken] = useState<string | null>(null); // Store the token from the URL
+
+    // Extract token from URL on component mount
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const tokenFromUrl = searchParams.get("token");
+        if (tokenFromUrl) {
+            setToken(tokenFromUrl);
+        } else {
+            toast.error("Invalid or missing token in the URL");
+            navigate("/"); // Redirect if no token is found
+        }
+    }, [location, navigate]);
 
     const validateForm = () => {
         const newErrors = { newPassword: "", confirmPassword: "" };
@@ -42,30 +57,40 @@ const CreatePassword = () => {
         return isValid;
     };
 
-    const handleCreatePassword = (e: React.FormEvent) => {
+    const handleCreatePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
+        if (!token) {
+            toast.error("Token is missing");
+            return;
+        }
+
         setIsSubmitting(true);
-        toast.promise(
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve("Password created successfully!");
-                    setShowSuccessModal(true);
-                    setIsSuccessVisible(true);
-                }, 2000);
-            }),
-            {
-                loading: "Creating password...",
-                success: () => {
-                    setIsSubmitting(false);
-                    return "Password created successfully!";
-                },
-                error: (err) => {
-                    setIsSubmitting(false);
-                    return `Error: ${err.message}`;
-                },
-            }
+
+        // Prepare the payload
+        const payload = {
+            password: newPassword,
+            confirm_password: confirmPassword,
+        };
+
+        // Make the API call with the token in the headers (not the Authorization token)
+        const response = await apiClient.post<{ error: boolean; message: string }>(
+            "/auth/password",
+            payload,
+            false, // Do not include the Authorization token
+            { token } // Pass the token in the headers
         );
+
+        if (response.success && response.data && response.data.error === false) {
+            // Success response
+            setShowSuccessModal(true);
+            setIsSuccessVisible(true);
+            toast.success(response.data.message || "Password created successfully!");
+        } else {
+            // Failure response
+            toast.error(response.message || "Error creating the password");
+            setIsSubmitting(false);
+        }
     };
 
     const handleCloseSuccess = () => {
@@ -86,18 +111,18 @@ const CreatePassword = () => {
         }
     };
 
-    useState(() => {
+    useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && showSuccessModal) {
+            if (e.key === "Escape" && showSuccessModal) {
                 handleCloseSuccess();
             }
         };
 
         if (showSuccessModal) {
-            document.addEventListener('keydown', handleEscKey);
-            return () => document.removeEventListener('keydown', handleEscKey);
+            document.addEventListener("keydown", handleEscKey);
+            return () => document.removeEventListener("keydown", handleEscKey);
         }
-    });
+    }, [showSuccessModal]);
 
     return (
         <div className="grid min-h-screen w-full grid-cols-1">

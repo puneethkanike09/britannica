@@ -164,13 +164,15 @@ export const apiClient = {
     async post<T, D = unknown>(
         endpoint: string,
         data: D,
-        includeToken: boolean = true
+        includeToken: boolean = true,
+        customHeaders: Record<string, string> = {} // Add support for custom headers
     ): Promise<ApiResponse<T>> {
         return requestQueue.enqueue(async () => {
             const createRequest = () => {
                 const headers: HeadersInit = {
                     "Content-Type": "application/json",
                     "API-KEY": API_KEY,
+                    ...customHeaders, // Add custom headers (e.g., token)
                 };
 
                 if (includeToken) {
