@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.png';
 import { pdfjs } from 'react-pdf';
-import PdfRenderer from '../components/common/PdfRenderer';
 import toast from 'react-hot-toast';
 import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
 import { apiClient } from '../../../utils/apiClient';
@@ -28,8 +27,6 @@ const EducatorDashboard = () => {
     });
     const [showResults, setShowResults] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-    const [showPdfViewer, setShowPdfViewer] = useState(false);
-    const [currentPdfFile, setCurrentPdfFile] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmittingDropdowns, setIsSubmittingDropdowns] = useState(false);
     const [isLoadingFiles, setIsLoadingFiles] = useState(false);
@@ -176,8 +173,8 @@ const EducatorDashboard = () => {
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
             if (viewResponse.success && viewResponse.data) {
-                setCurrentPdfFile(viewResponse.data);
-                setShowPdfViewer(true);
+                // Open PDF in a new tab for viewing
+                window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
             }
@@ -198,10 +195,20 @@ const EducatorDashboard = () => {
         try {
             const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
             if (downloadResponse.success && downloadResponse.data) {
+                // Fetch the file as a blob and trigger download
+                const response = await fetch(downloadResponse.data, { credentials: 'omit' });
+                if (!response.ok) throw new Error('Failed to fetch file for download');
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.href = downloadResponse.data;
+                link.href = url;
                 link.download = `${title}.pdf`;
+                document.body.appendChild(link);
                 link.click();
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                }, 100);
             } else {
                 throw new Error(downloadResponse.message || 'Failed to get download URL');
             }
@@ -334,9 +341,6 @@ const EducatorDashboard = () => {
                         )
                     )}
                 </div>
-                {showPdfViewer && (
-                    <PdfRenderer file={currentPdfFile} onClose={() => setShowPdfViewer(false)} />
-                )}
             </div>
         </>
     );
