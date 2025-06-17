@@ -56,15 +56,27 @@ const Topbar: React.FC = () => {
                                     <ChevronDown size={16} className={`transition-transform duration-300 ${isResourcesDropdownOpen ? 'rotate-180' : ''}`} />
                                 </button>
                                 {isResourcesDropdownOpen && (
-                                    <div className="absolute top-full left-0 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2 ">
+                                    <div className="absolute top-full left-0 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2">
                                         {item.dropdown.map((sub) => (
-                                            <Link
-                                                to={sub.to}
-                                                key={sub.label}
-                                                className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
-                                            >
-                                                {sub.label}
-                                            </Link>
+                                            sub.isExternal ? (
+                                                <a
+                                                    href={sub.to}
+                                                    key={sub.label}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
+                                                >
+                                                    {sub.label}
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    to={sub.to}
+                                                    key={sub.label}
+                                                    className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
+                                                >
+                                                    {sub.label}
+                                                </Link>
+                                            )
                                         ))}
                                     </div>
                                 )}
@@ -110,8 +122,7 @@ const Topbar: React.FC = () => {
                 </div>
 
                 {/* Mobile Navigation */}
-                <div className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out  md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                    }`}>
+                <div className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                     <nav className="flex flex-col p-6 gap-2">
                         {/* About us */}
                         <Link
@@ -135,20 +146,29 @@ const Topbar: React.FC = () => {
                             {/* Mobile Resources Submenu */}
                             {isMobileResourcesOpen && (
                                 <div className="mt-3 ml-4 space-y-2">
-                                    <Link
-                                        to=""
-                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
-                                        onClick={closeMobileMenu}
-                                    >
-                                        PBL Orientation Guide
-                                    </Link>
-                                    <Link
-                                        to=""
-                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
-                                        onClick={closeMobileMenu}
-                                    >
-                                        Design Thinkers' Journal
-                                    </Link>
+                                    {EDUCATOR_NAV_ITEMS.find(item => item.label === 'Resources')?.dropdown?.map((sub) => (
+                                        sub.isExternal ? (
+                                            <a
+                                                href={sub.to}
+                                                key={sub.label}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                {sub.label}
+                                            </a>
+                                        ) : (
+                                            <Link
+                                                to={sub.to}
+                                                key={sub.label}
+                                                className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                {sub.label}
+                                            </Link>
+                                        )
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -167,7 +187,7 @@ const Topbar: React.FC = () => {
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-10 md:hidden"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-10 md:hidden"
                     onClick={closeMobileMenu}
                 />
             )}

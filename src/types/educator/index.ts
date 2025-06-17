@@ -5,6 +5,7 @@ export interface EducatorNavItem {
     dropdown?: Array<{
         label: string;
         to: string;
+        isExternal?: boolean; // Add this to handle external links like PDFs
     }>;
 }
 
