@@ -7,31 +7,22 @@ import Loader from "./common/Loader";
 
 const ProtectedRoute = ({
     children,
-    requiredRole,
-    redirectTo = "/",
-}: ProtectedRouteProps) => {
-    const { isAuthenticated, user, isInitialized } = useAuth();
+    redirectTo = "/admin-login",
+}: Omit<ProtectedRouteProps, 'requiredRole'>) => {
+    const { isAuthenticated, isInitialized } = useAuth();
     const location = useLocation();
 
     // Show loading while auth is initializing
     if (!isInitialized) {
-        return (
-            <Loader message="Auth is initializing..." />
-        );
+        return <Loader message="Auth is initializing..." />;
     }
 
-    // Double-check token validity
+    // Only check for valid token
     const hasValidToken = AuthService.isAuthenticated();
 
-    // If not authenticated or no valid token, redirect to login
     if (!isAuthenticated || !hasValidToken) {
+        // Redirect to login (default to admin-login, can be changed per usage)
         return <Navigate to={redirectTo} state={{ from: location }} replace />;
-    }
-
-    // If role is required and user doesn't have it, redirect to appropriate dashboard
-    if (requiredRole && user?.role !== requiredRole) {
-        const defaultRedirect = user?.role === "admin" ? "/admin-dashboard" : "/educator-dashboard";
-        return <Navigate to={defaultRedirect} replace />;
     }
 
     return <>{children}</>;

@@ -48,15 +48,21 @@ class RequestQueue {
 const requestQueue = new RequestQueue();
 
 // Helper function to handle 401 errors consistently
-const handle401Error = (): void => {
+const handle401Error = (endpoint: string): void => {
     TokenService.clearToken();
-    window.location.href = "/";
+    // Redirect based on endpoint
+    if (endpoint.includes('/school') || endpoint.includes('/teacher')) {
+        window.location.href = '/admin-login';
+    } else {
+        window.location.href = '/educator-login';
+    }
 };
 
 // Token management for handling 401 retries
 class TokenManager {
     async executeWithTokenRetry<T>(
-        requestFn: () => Promise<Response>
+        requestFn: () => Promise<Response>,
+        endpoint: string
     ): Promise<ApiResponse<T>> {
         try {
             // First attempt
@@ -70,7 +76,7 @@ class TokenManager {
 
             if (response.status === 401) {
                 // Always handle 401 by clearing token and redirecting
-                handle401Error();
+                handle401Error(endpoint);
                 return {
                     success: false,
                     message: "Authentication failed. Redirecting to login.",
@@ -133,7 +139,7 @@ export const apiClient = {
                 });
             };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest);
+            return tokenManager.executeWithTokenRetry<T>(createRequest, endpoint);
         });
     },
 
@@ -160,7 +166,7 @@ export const apiClient = {
                 });
             };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest);
+            return tokenManager.executeWithTokenRetry<T>(createRequest, endpoint);
         });
     },
 
@@ -181,8 +187,9 @@ export const apiClient = {
                     }
                 }
 
+                const endpoint = `/file/view?filePath=${encodeURIComponent(filePath)}`;
                 const response = await fetch(
-                    `${API_BASE_URL}/file/view?filePath=${encodeURIComponent(filePath)}`,
+                    `${API_BASE_URL}${endpoint}`,
                     {
                         method: "GET",
                         headers,
@@ -192,7 +199,7 @@ export const apiClient = {
                 if (!response.ok) {
                     // Handle 401 errors
                     if (response.status === 401) {
-                        handle401Error();
+                        handle401Error(endpoint);
                         return {
                             success: false,
                             message: "Authentication failed. Redirecting to login.",
@@ -253,8 +260,9 @@ export const apiClient = {
                     }
                 }
 
+                const endpoint = `/file/download?filePath=${encodeURIComponent(filePath)}`;
                 const response = await fetch(
-                    `${API_BASE_URL}/file/download?filePath=${encodeURIComponent(filePath)}`,
+                    `${API_BASE_URL}${endpoint}`,
                     {
                         method: "GET",
                         headers,
@@ -264,7 +272,7 @@ export const apiClient = {
                 if (!response.ok) {
                     // Handle 401 errors
                     if (response.status === 401) {
-                        handle401Error();
+                        handle401Error(endpoint);
                         return {
                             success: false,
                             message: "Authentication failed. Redirecting to login.",

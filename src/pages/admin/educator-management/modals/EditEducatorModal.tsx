@@ -128,19 +128,40 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
         return () => { mounted = false; };
     }, [schools, schoolsLoaded, educator.teacher_id]);
 
+    // Helper for restricting input
+    const restrictInput = (name: string, value: string) => {
+        switch (name) {
+            case 'firstName':
+            case 'lastName':
+                // Only allow letters, spaces, min 2, max 50
+                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'loginId':
+                // Allow alphanumeric, min 3, max 30
+                return value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 30);
+            case 'phone':
+                // Only allow digits and +, max 15
+                return value.replace(/[^0-9+]/g, '').slice(0, 15);
+            default:
+                return value;
+        }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        const newValue = restrictInput(name, value);
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'schoolId' ? (value ? Number(value) : undefined) : value,
+            [name]: name === 'schoolId' ? (value ? Number(value) : undefined) : newValue,
         }));
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
+    // Phone input: reset country code if international is selected
     const handlePhoneNumberChange = (value: string | undefined) => {
-        setFormData(prev => ({ ...prev, phone: value || '' }));
+        const phone = value || '';
+        setFormData(prev => ({ ...prev, phone }));
         if (errors.phone) {
             setErrors(prev => ({ ...prev, phone: '' }));
         }
@@ -156,26 +177,39 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
         };
         let isValid = true;
 
+        // First name: min 2, max 50, only letters/spaces
         if (!formData.firstName.trim()) {
             newErrors.firstName = 'First name is required';
             isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.firstName.trim())) {
+            newErrors.firstName = 'First name must be 2-50 letters only';
+            isValid = false;
         }
 
+        // Email: stricter regex
         if (!formData.email.trim()) {
             newErrors.email = 'Email address is required';
             isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
             newErrors.email = 'Please enter a valid email address';
             isValid = false;
         }
 
+        // Mobile: min 8, max 15 digits, allow +
         if (!formData.phone.trim()) {
             newErrors.phone = 'Phone number is required';
             isValid = false;
+        } else if (!/^\+?[0-9]{8,15}$/.test(formData.phone)) {
+            newErrors.phone = 'Enter a valid phone number (8-15 digits)';
+            isValid = false;
         }
 
+        // Login ID: min 3, max 30, alphanumeric
         if (!formData.loginId.trim()) {
             newErrors.loginId = 'Login ID is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z0-9]{3,30}$/.test(formData.loginId)) {
+            newErrors.loginId = 'Login ID must be 3-30 alphanumeric characters';
             isValid = false;
         }
 

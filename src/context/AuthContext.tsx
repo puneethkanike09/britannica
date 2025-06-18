@@ -1,31 +1,26 @@
 import { useState, useEffect, ReactNode } from "react";
 import { AuthService } from "../services/authService";
 import { AuthContext } from "./AuthContextInstance";
-import { AuthContextType } from "../types/global/user";
 
 
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
-    const [user, setUser] = useState<AuthContextType["user"]>(null);
 
     useEffect(() => {
         const initializeAuth = async () => {
             const isAuth = AuthService.isAuthenticated();
-            const userData = AuthService.getUser(); // Fetches from token, not localStorage
             setIsAuthenticated(isAuth);
-            setUser(userData);
             setIsInitialized(true);
         };
         initializeAuth();
     }, []);
 
-    const login = async (login_id: string, password: string, role: "admin" | "educator") => {
-        const response = await AuthService.login({ login_id, password }, role);
+    const login = async (login_id: string, password: string, endpoint: "/auth/admin-login" | "/auth/teacher-login") => {
+        const response = await AuthService.login({ login_id, password }, endpoint);
         if (response.success && response.data) {
             setIsAuthenticated(true);
-            setUser(response.data.user);
         } else {
             throw new Error(response.message || "Login failed");
         }
@@ -38,13 +33,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.error("Logout error:", error);
         } finally {
             setIsAuthenticated(false);
-            setUser(null);
         }
     };
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, isInitialized, user, login, logout }}
+            value={{ isAuthenticated, isInitialized, login, logout }}
         >
             {children}
         </AuthContext.Provider>

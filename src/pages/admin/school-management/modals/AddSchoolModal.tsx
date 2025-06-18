@@ -73,16 +73,46 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isSubmitting, handleClose]);
 
+    // Helper for restricting input
+    const restrictInput = (name: string, value: string) => {
+        switch (name) {
+            case 'school_name':
+            case 'city':
+            case 'state':
+                // Only allow letters, spaces, min 2, max 50
+                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'country':
+                // Only allow letters, spaces, min 2, max 50
+                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'address_line1':
+            case 'address_line2':
+                // Allow letters, numbers, spaces, comma, dot, min 5, max 100
+                return value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 100);
+            case 'pincode':
+                // Only allow digits, max 10
+                return value.replace(/[^0-9]/g, '').slice(0, 10);
+            default:
+                return value;
+        }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const newValue = restrictInput(name, value);
+        setFormData(prev => ({ ...prev, [name]: newValue }));
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
+    // Phone input: reset country code if international is selected
     const handlePhoneNumberChange = (value: string | undefined) => {
-        setFormData(prev => ({ ...prev, school_mobile_no: value || '' }));
+        const phone = value || '';
+        // Remove country code if international is selected (starts with '+')
+        if (phone.startsWith('+')) {
+            // Keep as is, but you can add logic to reset if needed
+        }
+        setFormData(prev => ({ ...prev, school_mobile_no: phone }));
         if (errors.school_mobile_no) {
             setErrors(prev => ({ ...prev, school_mobile_no: '' }));
         }
@@ -101,46 +131,75 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         };
         let isValid = true;
 
+        // School name: min 2, max 50, only letters/spaces
         if (!formData.school_name.trim()) {
             newErrors.school_name = 'School name is required';
             isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.school_name.trim())) {
+            newErrors.school_name = 'Name must be 2-50 letters only';
+            isValid = false;
         }
 
+        // Email: stricter regex
         if (!formData.school_email.trim()) {
             newErrors.school_email = 'Email address is required';
             isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.school_email)) {
+        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
             newErrors.school_email = 'Please enter a valid email address';
             isValid = false;
         }
 
+        // Mobile: min 8, max 15 digits, allow +
         if (!formData.school_mobile_no.trim()) {
             newErrors.school_mobile_no = 'Phone number is required';
             isValid = false;
+        } else if (!/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
+            newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
+            isValid = false;
         }
 
+        // Address line 1: min 5, max 100
         if (!formData.address_line1.trim()) {
             newErrors.address_line1 = 'Address line 1 is required';
             isValid = false;
+        } else if (formData.address_line1.length < 5 || formData.address_line1.length > 100) {
+            newErrors.address_line1 = 'Address must be 5-100 characters';
+            isValid = false;
         }
 
+        // City: min 2, max 50, only letters/spaces
         if (!formData.city.trim()) {
             newErrors.city = 'City is required';
             isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
+            newErrors.city = 'City must be 2-50 letters only';
+            isValid = false;
         }
 
+        // State: min 2, max 50, only letters/spaces
         if (!formData.state.trim()) {
             newErrors.state = 'State is required';
             isValid = false;
-        }
-
-        if (!formData.country.trim()) {
-            newErrors.country = 'Country is required';
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
+            newErrors.state = 'State must be 2-50 letters only';
             isValid = false;
         }
 
+        // Country: min 2, max 50, only letters/spaces
+        if (!formData.country.trim()) {
+            newErrors.country = 'Country is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
+            newErrors.country = 'Country must be 2-50 letters only';
+            isValid = false;
+        }
+
+        // Pincode: only digits, min 4, max 10
         if (!formData.pincode.trim()) {
             newErrors.pincode = 'Pincode is required';
+            isValid = false;
+        } else if (!/^\d{4,10}$/.test(formData.pincode)) {
+            newErrors.pincode = 'Pincode must be 4-10 digits';
             isValid = false;
         }
 
@@ -276,7 +335,9 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Address Line 2</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Address Line 2
+                                        </label>
                                         <input
                                             type="text"
                                             name="address_line2"

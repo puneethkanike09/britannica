@@ -57,7 +57,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                 }
             );
             handleClose();
-            navigate('/');
+            navigate('/admin-login', { replace: true });
         } catch (error) {
             const errMsg = (error as { message?: string })?.message || 'Logout failed';
             await toast.error(errMsg);

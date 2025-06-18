@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
+import AdminLogin from "./pages/admin-login";
+import EducatorLogin from "./pages/educator-login";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/admin/home-page";
 import SchoolManagement from "./pages/admin/school-management";
@@ -20,7 +21,6 @@ function App() {
   useEffect(() => {
     const showOfflineToast = () => toast.error("No internet connection. You're offline.");
     const showOnlineToast = () => toast.success("You're back online!");
-
 
     if (!navigator.onLine) {
       showOfflineToast();
@@ -54,14 +54,16 @@ function App() {
         />
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Login />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/educator-login" element={<EducatorLogin />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
+          {/* <Route path="/" element={<AdminLogin />} />a */}
 
-          {/* Admin routes with persistent layout and role protection */}
+          {/* Admin routes with persistent layout */}
           <Route
             element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute redirectTo="/admin-login">
                 <AdminLayout />
               </ProtectedRoute>
             }
@@ -72,10 +74,10 @@ function App() {
             <Route path="/report" element={<Report />} />
           </Route>
 
-          {/* Educator routes with persistent layout and role protection */}
+          {/* Educator routes with persistent layout */}
           <Route
             element={
-              <ProtectedRoute requiredRole="educator">
+              <ProtectedRoute redirectTo="/educator-login">
                 <EducatorLayout />
               </ProtectedRoute>
             }

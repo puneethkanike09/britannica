@@ -173,8 +173,8 @@ const EducatorDashboard = () => {
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
             if (viewResponse.success && viewResponse.data) {
-                // Open PDF in a new tab for viewing
-                window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
+                // Open PDF in the same tab for viewing
+                window.open(viewResponse.data, '_self', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
             }

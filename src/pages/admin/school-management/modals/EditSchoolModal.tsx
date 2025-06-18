@@ -8,7 +8,6 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 import { X, Loader2 } from "lucide-react";
 
 export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: SchoolActionModalProps) {
-    // Use correct School fields for formData
     const [formData, setFormData] = useState({
         school_id: school.school_id,
         school_name: school.school_name,
@@ -57,16 +56,42 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isSubmitting, handleClose]);
 
+    // Helper for restricting input
+    const restrictInput = (name: string, value: string) => {
+        switch (name) {
+            case 'school_name':
+            case 'city':
+            case 'state':
+                // Only allow letters, spaces, min 2, max 50
+                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'country':
+                // Only allow letters, spaces, min 2, max 50
+                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'address_line1':
+            case 'address_line2':
+                // Allow letters, numbers, spaces, comma, dot, min 5, max 100
+                return value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 100);
+            case 'pincode':
+                // Only allow digits, max 10
+                return value.replace(/[^0-9]/g, '').slice(0, 10);
+            default:
+                return value;
+        }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const newValue = restrictInput(name, value);
+        setFormData(prev => ({ ...prev, [name]: newValue }));
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
+    // Phone input: reset country code if international is selected
     const handlePhoneNumberChange = (value: string | undefined) => {
-        setFormData(prev => ({ ...prev, school_mobile_no: value || '' }));
+        const phone = value || '';
+        setFormData(prev => ({ ...prev, school_mobile_no: phone }));
         if (errors.school_mobile_no) {
             setErrors(prev => ({ ...prev, school_mobile_no: '' }));
         }
@@ -79,21 +104,34 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             school_mobile_no: ''
         };
         let isValid = true;
+
+        // School name: min 2, max 50, only letters/spaces
         if (!formData.school_name.trim()) {
             newErrors.school_name = 'School name is required';
             isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.school_name.trim())) {
+            newErrors.school_name = 'Name must be 2-50 letters only';
+            isValid = false;
         }
+
+        // Email: stricter regex
         if (!formData.school_email.trim()) {
             newErrors.school_email = 'Email address is required';
             isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.school_email)) {
+        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
             newErrors.school_email = 'Please enter a valid email address';
             isValid = false;
         }
+
+        // Mobile: min 8, max 15 digits, allow +
         if (!formData.school_mobile_no.trim()) {
             newErrors.school_mobile_no = 'Phone number is required';
             isValid = false;
+        } else if (!/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
+            newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
+            isValid = false;
         }
+
         setErrors(newErrors);
         return isValid;
     };
@@ -207,7 +245,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                         {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Address Line 1</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Address Line 1
+                                        </label>
                                         <input
                                             type="text"
                                             name="address_line1"
@@ -221,7 +261,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Address Line 2</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Address Line 2
+                                        </label>
                                         <input
                                             type="text"
                                             name="address_line2"
@@ -233,7 +275,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                         />
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">City</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            City
+                                        </label>
                                         <input
                                             type="text"
                                             name="city"
@@ -247,7 +291,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">State</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            State
+                                        </label>
                                         <input
                                             type="text"
                                             name="state"
@@ -259,7 +305,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                         />
                                     </div>
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Country</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Country
+                                        </label>
                                         <input
                                             type="text"
                                             name="country"
@@ -273,7 +321,9 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">Pincode</label>
+                                        <label className="block text-textColor text-base mb-2">
+                                            Pincode
+                                        </label>
                                         <input
                                             type="text"
                                             name="pincode"
