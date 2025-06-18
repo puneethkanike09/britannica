@@ -7,7 +7,6 @@ import { EducatorActionModalProps, School } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
-import { SchoolService } from '../../../../services/schoolService';
 import Loader from "../../../../components/common/Loader";
 
 export default function EditEducatorModal({ onClose, educator, onEducatorUpdated }: EducatorActionModalProps) {
@@ -68,23 +67,27 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
     useEffect(() => {
         let mounted = true;
         setIsSchoolsLoading(true);
-        SchoolService.fetchSchoolsForDropdown().then((res) => {
-            if (mounted) {
-                if (res && !res.error) {
-                    setSchools(res.schools || []);
-                } else {
+
+        import('../../../../services/schoolService').then(({ SchoolService }) => {
+            SchoolService.fetchSchoolsForDropdown().then((res) => {
+                if (mounted) {
+                    if (res && !res.error) {
+                        setSchools(res.schools || []);
+                    } else {
+                        setSchools([]);
+                        toast.error('Failed to load schools');
+                    }
+                    setIsSchoolsLoading(false);
+                }
+            }).catch(() => {
+                if (mounted) {
                     setSchools([]);
+                    setIsSchoolsLoading(false);
                     toast.error('Failed to load schools');
                 }
-                setIsSchoolsLoading(false);
-            }
-        }).catch(() => {
-            if (mounted) {
-                setSchools([]);
-                setIsSchoolsLoading(false);
-                toast.error('Failed to load schools');
-            }
+            });
         });
+
         return () => { mounted = false; };
     }, []);
 

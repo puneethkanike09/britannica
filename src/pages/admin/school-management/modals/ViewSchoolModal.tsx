@@ -2,7 +2,6 @@ import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SchoolActionModalProps } from "../../../../types/admin";
 import { useState, useEffect } from "react";
-import { SchoolService } from "../../../../services/schoolService";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from "../../../../components/common/Loader";
 
@@ -15,18 +14,20 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
     useEffect(() => {
         setLoading(true);
         setError(null);
-        SchoolService.fetchSchoolById(school.school_id)
-            .then((res) => {
-                if (res.error === false || res.error === "false") {
-                    setSchoolDetails(res.school!);
-                } else {
-                    setError(res.message || "Failed to fetch school details");
-                }
-            })
-            .catch((err) => {
-                setError(err.message || "Failed to fetch school details");
-            })
-            .finally(() => setLoading(false));
+        import('../../../../services/schoolService').then(({ SchoolService }) => {
+            SchoolService.fetchSchoolById(school.school_id)
+                .then((res) => {
+                    if (res.error === false || res.error === "false") {
+                        setSchoolDetails(res.school!);
+                    } else {
+                        setError(res.message || "Failed to fetch school details");
+                    }
+                })
+                .catch((err) => {
+                    setError(err.message || "Failed to fetch school details");
+                })
+                .finally(() => setLoading(false));
+        });
     }, [school.school_id]);
 
     const handleClose = () => {

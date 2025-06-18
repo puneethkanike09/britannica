@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
 import { SchoolActionModalProps } from "../../../../types/admin";
-import { SchoolService } from "../../../../services/schoolService";
 import PhoneInput from 'react-phone-number-input';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
@@ -142,6 +141,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             setIsSubmitting(true);
             toast.promise(
                 (async () => {
+                    const { SchoolService } = await import('../../../../services/schoolService');
                     const response = await SchoolService.updateSchool(formData);
                     if (response.error === false || response.error === "false") {
                         setIsSubmitting(false);

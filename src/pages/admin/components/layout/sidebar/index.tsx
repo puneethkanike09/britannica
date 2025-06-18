@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FaTimes } from 'react-icons/fa';
-import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, X } from 'lucide-react'; // Replaced FaTimes with X
 
 // Import constants and components
 import { ADMIN_NAV_ITEMS } from '../../../../../config/constants/Admin/sidebar';
 import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.png';
 import LogoutModal from '../topbar/modals/LogoutModal';
 import { SidebarProps } from '../../../../../types/admin';
-
-
 
 const Sidebar: React.FC<SidebarProps> = ({
     showLogoutModal,
@@ -42,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Menu Button */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-[10px] left-[12px] z-50 bg-transparent text-primary p-3  hover:text-textColor"
+                    className="md:hidden fixed top-[10px] left-[12px] z-50 bg-transparent text-primary p-3 hover:text-textColor"
                     onClick={() => setIsOpen(true)}
                     aria-label="Open menu"
                 >
@@ -85,17 +82,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {/* Mobile Close Button */}
                     {isMobile && (
                         <button
-                            className="text-white  rounded-lg hover:text-textColor "
+                            className="text-white rounded-lg hover:text-textColor"
                             onClick={closeSidebar}
                             aria-label="Close menu"
                         >
-                            <FaTimes className="h-5 w-5" />
+                            <X className="h-7 w-7" /> {/* Replaced FaTimes with X */}
                         </button>
                     )}
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex flex-col p-6 space-y-2 pt-12  overflow-y-auto h-[calc(100vh-81px)]">
+                <nav className="flex flex-col p-6 space-y-2 pt-12 overflow-y-auto h-[calc(100vh-81px)]">
                     {navItems.map(({ to, icon, alt, label }) => (
                         <NavLink
                             key={to}
@@ -123,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Overlay */}
             {isMobile && isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-50 transition-opacity duration-300"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300"
                     onClick={closeSidebar}
                 />
             )}

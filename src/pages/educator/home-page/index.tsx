@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.png';
-import { pdfjs } from 'react-pdf';
 import toast from 'react-hot-toast';
 import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
 import { apiClient } from '../../../utils/apiClient';
@@ -10,11 +9,6 @@ import Topbar from '../components/layout/topbar';
 import { PdfProject } from '../../../types/educator';
 import { Loader2 } from 'lucide-react';
 
-// Set pdfjs worker
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url
-).toString();
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');

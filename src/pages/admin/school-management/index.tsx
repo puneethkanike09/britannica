@@ -10,7 +10,6 @@ import EditIcon from "../../../assets/dashboard/Admin/school-management/edit.svg
 import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add-school.svg";
 import { School } from "../../../types/admin";
 import Loader from "../../../components/common/Loader";
-import { SchoolService } from "../../../services/schoolService";
 import toast from "react-hot-toast";
 
 const SchoolManagement: React.FC = () => {
@@ -29,6 +28,7 @@ const SchoolManagement: React.FC = () => {
     const loadSchools = async () => {
         setIsLoading(true);
         try {
+            const { SchoolService } = await import("../../../services/schoolService");
             const response = await SchoolService.fetchSchools();
             if (response.error === false || response.error === "false") {
                 setSchools(response.schools || []);
