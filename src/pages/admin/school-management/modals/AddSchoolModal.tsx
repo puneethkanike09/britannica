@@ -131,7 +131,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         };
         let isValid = true;
 
-        // School name: min 2, max 50, only letters/spaces
+        // School name: mandatory, min 2, max 50, only letters/spaces
         if (!formData.school_name.trim()) {
             newErrors.school_name = 'School name is required';
             isValid = false;
@@ -140,25 +140,19 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             isValid = false;
         }
 
-        // Email: stricter regex
-        if (!formData.school_email.trim()) {
-            newErrors.school_email = 'Email address is required';
-            isValid = false;
-        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
+        // Email: optional, but validate if provided
+        if (formData.school_email.trim() && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
             newErrors.school_email = 'Please enter a valid email address';
             isValid = false;
         }
 
-        // Mobile: min 8, max 15 digits, allow +
-        if (!formData.school_mobile_no.trim()) {
-            newErrors.school_mobile_no = 'Phone number is required';
-            isValid = false;
-        } else if (!/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
+        // Mobile: optional, but validate if provided
+        if (formData.school_mobile_no.trim() && !/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
             newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
             isValid = false;
         }
 
-        // Address line 1: min 5, max 100
+        // Address line 1: mandatory, min 5, max 100
         if (!formData.address_line1.trim()) {
             newErrors.address_line1 = 'Address line 1 is required';
             isValid = false;
@@ -167,38 +161,26 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             isValid = false;
         }
 
-        // City: min 2, max 50, only letters/spaces
-        if (!formData.city.trim()) {
-            newErrors.city = 'City is required';
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
+        // City: optional, but validate if provided
+        if (formData.city.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
             newErrors.city = 'City must be 2-50 letters only';
             isValid = false;
         }
 
-        // State: min 2, max 50, only letters/spaces
-        if (!formData.state.trim()) {
-            newErrors.state = 'State is required';
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
+        // State: optional, but validate if provided
+        if (formData.state.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
             newErrors.state = 'State must be 2-50 letters only';
             isValid = false;
         }
 
-        // Country: min 2, max 50, only letters/spaces
-        if (!formData.country.trim()) {
-            newErrors.country = 'Country is required';
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
+        // Country: optional, but validate if provided
+        if (formData.country.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
             newErrors.country = 'Country must be 2-50 letters only';
             isValid = false;
         }
 
-        // Pincode: only digits, min 4, max 10
-        if (!formData.pincode.trim()) {
-            newErrors.pincode = 'Pincode is required';
-            isValid = false;
-        } else if (!/^\d{4,10}$/.test(formData.pincode)) {
+        // Pincode: optional, but validate if provided
+        if (formData.pincode.trim() && !/^\d{4,10}$/.test(formData.pincode)) {
             newErrors.pincode = 'Pincode must be 4-10 digits';
             isValid = false;
         }
@@ -285,7 +267,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Email address<span className="text-red">*</span>
+                                            Email address
                                         </label>
                                         <input
                                             type="email"
@@ -303,7 +285,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Phone Number<span className="text-red">*</span>
+                                            Phone Number
                                         </label>
                                         <PhoneInput
                                             international
@@ -350,7 +332,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            City<span className="text-red">*</span>
+                                            City
                                         </label>
                                         <input
                                             type="text"
@@ -367,7 +349,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            State<span className="text-red">*</span>
+                                            State
                                         </label>
                                         <input
                                             type="text"
@@ -383,7 +365,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Country<span className="text-red">*</span>
+                                            Country
                                         </label>
                                         <input
                                             type="text"
@@ -400,7 +382,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Pincode<span className="text-red">*</span>
+                                            Pincode
                                         </label>
                                         <input
                                             type="text"

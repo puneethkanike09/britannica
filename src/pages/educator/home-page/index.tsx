@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import BackgroundImage from '../../../assets/dashboard/Educator/home-page/kids.png';
 import toast from 'react-hot-toast';
 import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
 import { apiClient } from '../../../utils/apiClient';
@@ -8,7 +7,8 @@ import DocumentCard from '../components/common/PdfCards';
 import Topbar from '../components/layout/topbar';
 import { PdfProject } from '../../../types/educator';
 import { Loader2 } from 'lucide-react';
-
+import BritannicaHeroSection from '../components/common/Header';
+import FlipCards from '../components/common/Footer';
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -121,7 +121,6 @@ const EducatorDashboard = () => {
                     user_access_type_id: selectedType,
                 });
                 if (res.error === false || res.error === 'false') {
-                    // Map API response to PdfProject[]
                     const files = (res.pbl_file || []).map((file: {
                         pbl_id: string | number;
                         pbl_file_path: string;
@@ -130,7 +129,7 @@ const EducatorDashboard = () => {
                         id: file.pbl_id,
                         title: file.pbl_name,
                         type: 'PDF',
-                        file: file.pbl_file_path // Store the filePath as provided by the API
+                        file: file.pbl_file_path
                     }));
                     setPdfProjects(files);
                     setShowResults(true);
@@ -167,7 +166,6 @@ const EducatorDashboard = () => {
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
             if (viewResponse.success && viewResponse.data) {
-                // Open PDF in the same tab for viewing
                 window.open(viewResponse.data, '_self', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
@@ -189,7 +187,6 @@ const EducatorDashboard = () => {
         try {
             const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
             if (downloadResponse.success && downloadResponse.data) {
-                // Fetch the file as a blob and trigger download
                 const response = await fetch(downloadResponse.data, { credentials: 'omit' });
                 if (!response.ok) throw new Error('Failed to fetch file for download');
                 const blob = await response.blob();
@@ -246,24 +243,10 @@ const EducatorDashboard = () => {
     return (
         <>
             <Topbar />
-            <div className="min-h-screen relative overflow-hidden">
-                <div
-                    className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: `url(${BackgroundImage})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                    aria-hidden="true"
-                />
-                <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-24 sm:pt-24 lg:pt-32 pb-8 sm:pb-8 lg:pb-8">
-                    <h2 className="text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-center">
-                        Welcome to the Educators Dashboard!
-                    </h2>
-                    <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-8 sm:mb-12 text-center">
-                        Project Based Learning
-                    </h1>
-                    <div className="flex flex-col sm:flex-row gap-4 items-start justify-center mb-8 w-full max-w-4xl">
+            <BritannicaHeroSection />
+            <div className="relative bg-fourth py-28">
+                <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-7xl mx-auto">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-4xl mb-8">
                         <Select
                             value={selectedGrade}
                             onValueChange={setSelectedGrade}
@@ -316,26 +299,38 @@ const EducatorDashboard = () => {
                             </button>
                         </div>
                     </div>
+
+                    {/* PDF Results Section */}
                     {showResults && (
-                        pdfProjects.length === 0 ? (
-                            <div className="text-center text-lg text-red font-semibold py-8">No files found with this filter.</div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 justify-items-center w-full md:max-w-2xl lg:max-w-5xl px-4">
-                                {pdfProjects.map((project) => (
-                                    <DocumentCard
-                                        key={project.id}
-                                        title={project.title}
-                                        onView={() => handleView(project.id)}
-                                        onDownload={() => handleDownload(project.id, project.title)}
-                                        viewLoading={viewLoadingId === project.id}
-                                        downloadLoading={downloadLoadingId === project.id}
-                                    />
-                                ))}
-                            </div>
-                        )
+                        <div className="w-full mb-8">
+                            {pdfProjects.length === 0 ? (
+                                <div className="text-center text-lg text-red-500 font-semibold py-8">No files found with this filter.</div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center w-full px-4">
+                                    {pdfProjects.map((project) => (
+                                        <DocumentCard
+                                            key={project.id}
+                                            title={project.title}
+                                            onView={() => handleView(project.id)}
+                                            onDownload={() => handleDownload(project.id, project.title)}
+                                            viewLoading={viewLoadingId === project.id}
+                                            downloadLoading={downloadLoadingId === project.id}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     )}
+
+                    {/* Inspirational Quote Section */}
+                    <div className="w-ful pt-6 text-center">
+                        <p className="text-lg text-textColor leading-relaxed max-w-4xl mx-auto">
+                            "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
+                        </p>
+                    </div>
                 </div>
             </div>
+            <FlipCards />
         </>
     );
 };

@@ -108,4 +108,13 @@ export interface Teacher {
     phone: string;
     schoolId: number;
     user_id?: number;
+    address_line1?: string;
+    address_line2?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    pincode?: string;
+    status?: string;
 }
+
+

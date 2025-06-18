@@ -22,7 +22,13 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
     const [errors, setErrors] = useState({
         school_name: '',
         school_email: '',
-        school_mobile_no: ''
+        school_mobile_no: '',
+        address_line1: '',
+        address_line2: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -100,11 +106,17 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         const newErrors = {
             school_name: '',
             school_email: '',
-            school_mobile_no: ''
+            school_mobile_no: '',
+            address_line1: '',
+            address_line2: '',
+            city: '',
+            state: '',
+            country: '',
+            pincode: ''
         };
         let isValid = true;
 
-        // School name: min 2, max 50, only letters/spaces
+        // School name: mandatory, min 2, max 50, only letters/spaces
         if (!formData.school_name.trim()) {
             newErrors.school_name = 'School name is required';
             isValid = false;
@@ -113,21 +125,54 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             isValid = false;
         }
 
-        // Email: stricter regex
-        if (!formData.school_email.trim()) {
-            newErrors.school_email = 'Email address is required';
-            isValid = false;
-        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
+        // Email: optional, but validate if provided
+        if (formData.school_email.trim() && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
             newErrors.school_email = 'Please enter a valid email address';
             isValid = false;
         }
 
-        // Mobile: min 8, max 15 digits, allow +
-        if (!formData.school_mobile_no.trim()) {
-            newErrors.school_mobile_no = 'Phone number is required';
-            isValid = false;
-        } else if (!/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
+        // Mobile: optional, but validate if provided
+        if (formData.school_mobile_no.trim() && !/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
             newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
+            isValid = false;
+        }
+
+        // Address line 1: mandatory, min 5, max 100
+        if (!formData.address_line1.trim()) {
+            newErrors.address_line1 = 'Address line 1 is required';
+            isValid = false;
+        } else if (formData.address_line1.length < 5 || formData.address_line1.length > 100) {
+            newErrors.address_line1 = 'Address must be 5-100 characters';
+            isValid = false;
+        }
+
+        // Address line 2: optional, but validate if provided
+        if (formData.address_line2.trim() && (formData.address_line2.length < 5 || formData.address_line2.length > 100)) {
+            newErrors.address_line2 = 'Address must be 5-100 characters';
+            isValid = false;
+        }
+
+        // City: optional, but validate if provided
+        if (formData.city.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
+            newErrors.city = 'City must be 2-50 letters only';
+            isValid = false;
+        }
+
+        // State: optional, but validate if provided
+        if (formData.state.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
+            newErrors.state = 'State must be 2-50 letters only';
+            isValid = false;
+        }
+
+        // Country: optional, but validate if provided
+        if (formData.country.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
+            newErrors.country = 'Country must be 2-50 letters only';
+            isValid = false;
+        }
+
+        // Pincode: optional, but validate if the field is provided
+        if (formData.pincode.trim() && !/^\d{4,10}$/.test(formData.pincode)) {
+            newErrors.pincode = 'Pincode must be 4-10 digits';
             isValid = false;
         }
 
@@ -166,7 +211,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
@@ -214,7 +259,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Email Address<span className="text-red">*</span>
+                                            Email Address
                                         </label>
                                         <input
                                             type="email"
@@ -231,7 +276,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Phone Number<span className="text-red">*</span>
+                                            Phone Number
                                         </label>
                                         <PhoneInput
                                             international
@@ -246,7 +291,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Address Line 1
+                                            Address Line 1<span className="text-red">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -254,9 +299,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.address_line1}
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 1"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.address_line1 && <p className="text-red text-sm mt-1">{errors.address_line1}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -270,9 +316,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.address_line2}
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 2"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line2 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.address_line2 && <p className="text-red text-sm mt-1">{errors.address_line2}</p>}
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
@@ -284,9 +331,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.city}
                                             onChange={handleInputChange}
                                             placeholder="Enter City"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -300,9 +348,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.state}
                                             onChange={handleInputChange}
                                             placeholder="Enter State"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
@@ -314,9 +363,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.country}
                                             onChange={handleInputChange}
                                             placeholder="Enter Country"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -330,9 +380,10 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.pincode}
                                             onChange={handleInputChange}
                                             placeholder="Enter Pincode"
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
                                     </div>
                                 </div>
                                 <div className="mt-12">
