@@ -108,10 +108,10 @@ const EducatorLogin = () => {
         );
     };
 
-    const handleOpenForgotPassword = () => {
-        setShowForgotPasswordModal(true);
-        setIsForgotPasswordVisible(true);
-    };
+    // const handleOpenForgotPassword = () => {
+    //     setShowForgotPasswordModal(true);
+    //     setIsForgotPasswordVisible(true);
+    // };
 
     const handleCloseForgotPassword = () => {
         setIsForgotPasswordVisible(false);
@@ -242,7 +242,7 @@ const EducatorLogin = () => {
                             )}
                         </div>
 
-                        <div className="text-right mb-5">
+                        {/* <div className="text-right mb-5">
                             <button
                                 type="button"
                                 onClick={handleOpenForgotPassword}
@@ -251,7 +251,7 @@ const EducatorLogin = () => {
                             >
                                 Forgot Password?
                             </button>
-                        </div>
+                        </div> */}
 
                         <div className="flex justify-center mt-10 w-full">
                             <button
