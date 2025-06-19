@@ -9,6 +9,7 @@ import { PdfProject } from '../../../types/educator';
 import { Loader2 } from 'lucide-react';
 import BritannicaHeroSection from '../components/common/Header';
 import FlipCards from '../components/common/Footer';
+import ScrollingBanner from '../components/common/Scroller';
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -324,13 +325,14 @@ const EducatorDashboard = () => {
 
                     {/* Inspirational Quote Section */}
                     <div className="w-ful pt-6 text-center">
-                        <p className="text-lg text-textColor leading-relaxed max-w-4xl mx-auto">
+                        <p className="text-lg text-textColor font-bold italic leading-relaxed max-w-4xl mx-auto">
                             "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
                         </p>
                     </div>
                 </div>
             </div>
             <FlipCards />
+            <ScrollingBanner />
         </>
     );
 };

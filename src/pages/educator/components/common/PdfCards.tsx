@@ -12,7 +12,7 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
                         PDF
                     </p>
                 </div>
-                <h3 className="text-2xl font-black text-textColor leading-tight min-h-[6.5rem] flex items-center">
+                <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
                     {title}
                 </h3>
             </div>

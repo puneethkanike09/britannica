@@ -29,7 +29,7 @@ const CreatePassword = () => {
             setToken(tokenFromUrl);
         } else {
             toast.error("Invalid or missing token in the URL");
-            navigate("/"); // Redirect if no token is found
+            navigate("/educator-login"); // Redirect if no token is found
         }
     }, [location, navigate]);
 
@@ -100,7 +100,7 @@ const CreatePassword = () => {
     const handleSuccessAnimationComplete = () => {
         if (!isSuccessVisible) {
             setShowSuccessModal(false);
-            navigate("/");
+            navigate("/educator-login");
         }
     };
 
