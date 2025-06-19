@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
 import { SchoolActionModalProps } from "../../../../types/admin";
 import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { X, Loader2 } from "lucide-react";
+import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: SchoolActionModalProps) {
     const [formData, setFormData] = useState({
@@ -93,7 +95,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         }
     };
 
-    // Phone input: reset country code if international is selected
+    // Phone input: handle phone number changes
     const handlePhoneNumberChange = (value: string | undefined) => {
         const phone = value || '';
         setFormData(prev => ({ ...prev, school_mobile_no: phone }));
@@ -131,10 +133,18 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             isValid = false;
         }
 
-        // Mobile: optional, but validate if provided
-        if (formData.school_mobile_no.trim() && !/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
-            newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
-            isValid = false;
+        // Mobile: optional, but validate if provided using libphonenumber-js
+        if (formData.school_mobile_no.trim()) {
+            try {
+                const phoneNumber = parsePhoneNumberFromString(formData.school_mobile_no);
+                if (!phoneNumber || !isValidPhoneNumber(formData.school_mobile_no, phoneNumber.country || undefined)) {
+                    newErrors.school_mobile_no = 'Enter a valid phone number for the selected country';
+                    isValid = false;
+                }
+            } catch {
+                newErrors.school_mobile_no = 'Enter a valid phone number';
+                isValid = false;
+            }
         }
 
         // Address line 1: mandatory, min 5, max 100
@@ -170,7 +180,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             isValid = false;
         }
 
-        // Pincode: optional, but validate if the field is provided
+        // Pincode: optional, but validate if provided
         if (formData.pincode.trim() && !/^\d{4,10}$/.test(formData.pincode)) {
             newErrors.pincode = 'Pincode must be 4-10 digits';
             isValid = false;

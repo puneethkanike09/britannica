@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { AddSchoolModalProps } from "../../../../types/admin";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{
@@ -105,13 +106,9 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         }
     };
 
-    // Phone input: reset country code if international is selected
+    // Phone input: handle phone number changes
     const handlePhoneNumberChange = (value: string | undefined) => {
         const phone = value || '';
-        // Remove country code if international is selected (starts with '+')
-        if (phone.startsWith('+')) {
-            // Keep as is, but you can add logic to reset if needed
-        }
         setFormData(prev => ({ ...prev, school_mobile_no: phone }));
         if (errors.school_mobile_no) {
             setErrors(prev => ({ ...prev, school_mobile_no: '' }));
@@ -146,10 +143,18 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             isValid = false;
         }
 
-        // Mobile: optional, but validate if provided
-        if (formData.school_mobile_no.trim() && !/^\+?[0-9]{8,15}$/.test(formData.school_mobile_no)) {
-            newErrors.school_mobile_no = 'Enter a valid phone number (8-15 digits)';
-            isValid = false;
+        // Mobile: optional, but validate if provided using libphonenumber-js
+        if (formData.school_mobile_no.trim()) {
+            try {
+                const phoneNumber = parsePhoneNumberFromString(formData.school_mobile_no);
+                if (!phoneNumber || !isValidPhoneNumber(formData.school_mobile_no, phoneNumber.country || undefined)) {
+                    newErrors.school_mobile_no = 'Enter a valid phone number for the selected country';
+                    isValid = false;
+                }
+            } catch {
+                newErrors.school_mobile_no = 'Enter a valid phone number';
+                isValid = false;
+            }
         }
 
         // Address line 1: mandatory, min 5, max 100
@@ -218,7 +223,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
@@ -360,7 +365,6 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
-
                                         {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
                                     </div>
                                     <div className="mb-3 relative">
