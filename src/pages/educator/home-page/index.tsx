@@ -167,7 +167,7 @@ const EducatorDashboard = () => {
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
             if (viewResponse.success && viewResponse.data) {
-                window.open(viewResponse.data, '_self', 'noopener,noreferrer');
+                window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
             }
