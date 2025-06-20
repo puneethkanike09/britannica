@@ -1,6 +1,5 @@
 import { createContext } from "react";
 
-// AuthContext now only provides isAuthenticated, isInitialized, login, logout
 export interface AuthContextType {
     isAuthenticated: boolean;
     isInitialized: boolean;

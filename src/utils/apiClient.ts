@@ -1,41 +1,44 @@
 import { API_KEY } from "../config/constants/global";
 import { TokenService } from "../services/tokenService";
+import { ApiResponse } from "../types/global";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    message?: string;
+interface QueueItem<T> {
+    request: () => Promise<T>;
+    resolve: (value: T) => void;
+    reject: (error: unknown) => void;
 }
 
-// Request queue to handle concurrent requests
 class RequestQueue {
-    private queue: Array<{
-        request: () => Promise<any>;
-        resolve: (value: any) => void;
-        reject: (error: any) => void;
-    }> = [];
+    private queue: QueueItem<unknown>[] = [];
     private processing = false;
 
     async enqueue<T>(request: () => Promise<T>): Promise<T> {
-        return new Promise((resolve, reject) => {
-            this.queue.push({ request, resolve, reject });
+        return new Promise<T>((resolve, reject) => {
+            this.queue.push({
+                request: request as () => Promise<unknown>,
+                resolve: resolve as (value: unknown) => void,
+                reject
+            });
             this.processQueue();
         });
     }
 
-    private async processQueue() {
+    private async processQueue(): Promise<void> {
         if (this.processing || this.queue.length === 0) return;
 
         this.processing = true;
 
         while (this.queue.length > 0) {
-            const { request, resolve, reject } = this.queue.shift()!;
+            const item = this.queue.shift();
+            if (!item) break;
+
+            const { request, resolve, reject } = item;
             try {
                 const result = await request();
                 resolve(result);
-            } catch (error) {
+            } catch (error: unknown) {
                 reject(error);
             }
         }
@@ -44,10 +47,8 @@ class RequestQueue {
     }
 }
 
-// Create a single instance of the request queue
 const requestQueue = new RequestQueue();
 
-// Helper function to handle 401 errors consistently
 const handle401Error = (endpoint: string): void => {
     TokenService.clearToken();
     // Redirect based on endpoint
@@ -58,58 +59,6 @@ const handle401Error = (endpoint: string): void => {
     }
 };
 
-// Token management for handling 401 retries
-class TokenManager {
-    async executeWithTokenRetry<T>(
-        requestFn: () => Promise<Response>,
-        endpoint: string
-    ): Promise<ApiResponse<T>> {
-        try {
-            // First attempt
-            const response = await requestFn();
-            const result = await response.json();
-
-            // Update token if present in response
-            if (result.token) {
-                TokenService.updateToken(result.token);
-            }
-
-            if (response.status === 401) {
-                // Always handle 401 by clearing token and redirecting
-                handle401Error(endpoint);
-                return {
-                    success: false,
-                    message: "Authentication failed. Redirecting to login.",
-                };
-            }
-
-            if (!response.ok) {
-                if (response.status === 403) {
-                    TokenService.clearToken();
-                }
-                return {
-                    success: false,
-                    message: result.message || "Request failed",
-                };
-            }
-
-            return {
-                success: true,
-                data: result,
-                message: result.message,
-            };
-        } catch (error) {
-            console.error("Error in request:", error);
-            return {
-                success: false,
-                message: error instanceof Error ? error.message : "Unknown error",
-            };
-        }
-    }
-}
-
-const tokenManager = new TokenManager();
-
 export const apiClient = {
     async post<T, D = unknown>(
         endpoint: string,
@@ -118,7 +67,7 @@ export const apiClient = {
         customHeaders: Record<string, string> = {}
     ): Promise<ApiResponse<T>> {
         return requestQueue.enqueue(async () => {
-            const createRequest = () => {
+            try {
                 const headers: HeadersInit = {
                     "Content-Type": "application/json",
                     "API-KEY": API_KEY,
@@ -132,14 +81,48 @@ export const apiClient = {
                     }
                 }
 
-                return fetch(`${API_BASE_URL}${endpoint}`, {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: "POST",
                     headers,
                     body: JSON.stringify(data),
                 });
-            };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest, endpoint);
+                const result = await response.json();
+
+                if (result.token) {
+                    TokenService.updateToken(result.token);
+                }
+
+                if (response.status === 401) {
+                    handle401Error(endpoint);
+                    return {
+                        success: false,
+                        message: "Authentication failed. Redirecting to login.",
+                    } as ApiResponse<T>;
+                }
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        TokenService.clearToken();
+                    }
+                    return {
+                        success: false,
+                        message: result.message || "Request failed",
+                    } as ApiResponse<T>;
+                }
+
+                return {
+                    success: true,
+                    data: result,
+                    message: result.message,
+                } as ApiResponse<T>;
+            } catch (error: unknown) {
+                console.error("Error in request:", error);
+                return {
+                    success: false,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                } as ApiResponse<T>;
+            }
         });
     },
 
@@ -148,7 +131,7 @@ export const apiClient = {
         includeToken: boolean = true
     ): Promise<ApiResponse<T>> {
         return requestQueue.enqueue(async () => {
-            const createRequest = () => {
+            try {
                 const headers: HeadersInit = {
                     "API-KEY": API_KEY,
                 };
@@ -160,13 +143,47 @@ export const apiClient = {
                     }
                 }
 
-                return fetch(`${API_BASE_URL}${endpoint}`, {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: "GET",
                     headers,
                 });
-            };
 
-            return tokenManager.executeWithTokenRetry<T>(createRequest, endpoint);
+                const result = await response.json();
+
+                if (result.token) {
+                    TokenService.updateToken(result.token);
+                }
+
+                if (response.status === 401) {
+                    handle401Error(endpoint);
+                    return {
+                        success: false,
+                        message: "Authentication failed. Redirecting to login.",
+                    } as ApiResponse<T>;
+                }
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        TokenService.clearToken();
+                    }
+                    return {
+                        success: false,
+                        message: result.message || "Request failed",
+                    } as ApiResponse<T>;
+                }
+
+                return {
+                    success: true,
+                    data: result,
+                    message: result.message,
+                } as ApiResponse<T>;
+            } catch (error: unknown) {
+                console.error("Error in request:", error);
+                return {
+                    success: false,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                } as ApiResponse<T>;
+            }
         });
     },
 
@@ -197,7 +214,6 @@ export const apiClient = {
                 );
 
                 if (!response.ok) {
-                    // Handle 401 errors
                     if (response.status === 401) {
                         handle401Error(endpoint);
                         return {
@@ -233,7 +249,7 @@ export const apiClient = {
                     data: result,
                     message: "File view URL retrieved successfully",
                 };
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error(`Error in GET file/view?filePath=${filePath}:`, error);
                 return {
                     success: false,
@@ -270,7 +286,6 @@ export const apiClient = {
                 );
 
                 if (!response.ok) {
-                    // Handle 401 errors
                     if (response.status === 401) {
                         handle401Error(endpoint);
                         return {
@@ -306,7 +321,7 @@ export const apiClient = {
                     data: result,
                     message: "File download URL retrieved successfully",
                 };
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error(`Error in GET file/download?filePath=${filePath}:`, error);
                 return {
                     success: false,
