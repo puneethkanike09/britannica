@@ -7,6 +7,8 @@ import { AddEducatorModalProps, School, Educator } from "../../../../types/admin
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
+import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
+
 export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducatorModalProps) {
     const [formData, setFormData] = useState<Omit<Educator, 'id'>>({
         firstName: '',
@@ -126,13 +128,18 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
             isValid = false;
         }
 
-        // Mobile: min 8, max 15 digits, allow +
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
-            isValid = false;
-        } else if (!/^\+?[0-9]{8,15}$/.test(formData.phone)) {
-            newErrors.phone = 'Enter a valid phone number (8-15 digits)';
-            isValid = false;
+        // Mobile: optional, but validate if provided using libphonenumber-js
+        if (formData.phone.trim()) {
+            try {
+                const phoneNumber = parsePhoneNumberFromString(formData.phone);
+                if (!phoneNumber || !isValidPhoneNumber(formData.phone, phoneNumber.country || undefined)) {
+                    newErrors.phone = 'Enter a valid phone number for the selected country';
+                    isValid = false;
+                }
+            } catch {
+                newErrors.phone = 'Enter a valid phone number';
+                isValid = false;
+            }
         }
 
         // Login ID: min 3, max 30, alphanumeric
@@ -212,12 +219,11 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
         return () => { mounted = false; };
     }, []);
 
-
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
@@ -298,7 +304,7 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Phone Number<span className="text-red">*</span>
+                                            Phone Number
                                         </label>
                                         <PhoneInput
                                             international
@@ -337,7 +343,7 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
                                             name="schoolId"
                                             value={formData.schoolId ? String(formData.schoolId) : ''}
                                             onChange={handleInputChange}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting || isSchoolsLoading ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting || isSchoolsLoading}
                                         >
                                             <option value="">{isSchoolsLoading ? 'Loading schools...' : 'Select School'}</option>

@@ -76,13 +76,12 @@ export default function BritannicaHeroSection() {
                         <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Alignment with</h3>
                         <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">SGDS</h3>
                     </div>
-
                     <div className="text-center col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 mx-auto group ">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={RealWorldIcon}
-                                alt="Real-world connection"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                alt="Alignment with SGDS"
+                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
                             />
                         </div>
                         <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Real-world</h3>

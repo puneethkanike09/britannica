@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import Loader from "../../../../components/common/Loader";
+import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default function EditEducatorModal({ onClose, educator, onEducatorUpdated }: EducatorActionModalProps) {
     const [formData, setFormData] = useState({
@@ -198,13 +199,18 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
             isValid = false;
         }
 
-        // Mobile: min 8, max 15 digits, allow +
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
-            isValid = false;
-        } else if (!/^\+?[0-9]{8,15}$/.test(formData.phone)) {
-            newErrors.phone = 'Enter a valid phone number (8-15 digits)';
-            isValid = false;
+        // Mobile: optional, but validate if provided using libphonenumber-js
+        if (formData.phone.trim()) {
+            try {
+                const phoneNumber = parsePhoneNumberFromString(formData.phone);
+                if (!phoneNumber || !isValidPhoneNumber(formData.phone, phoneNumber.country || undefined)) {
+                    newErrors.phone = 'Enter a valid phone number for the selected country';
+                    isValid = false;
+                }
+            } catch {
+                newErrors.phone = 'Enter a valid phone number';
+                isValid = false;
+            }
         }
 
         // Login ID: min 3, max 30, alphanumeric
@@ -290,7 +296,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                             </button>
                         </div>
                         {/* Scrollable Form Content */}
-                        <div className="flex-1 overflow-y-auto px-8 py-6">
+                        <div className="flex-1 overflow-y-auto px-인이 py-6">
                             {teacherLoading ? (
                                 <Loader message="Loading educator details..." />
                             ) : teacherError ? (
@@ -347,7 +353,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                                         </div>
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
-                                                Phone Number<span className="text-red">*</span>
+                                                Phone Number
                                             </label>
                                             <PhoneInput
                                                 international

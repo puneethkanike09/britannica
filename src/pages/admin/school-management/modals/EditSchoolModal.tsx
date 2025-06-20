@@ -69,14 +69,15 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             case 'school_name':
             case 'city':
             case 'state':
-                // Only allow letters, spaces, min 2, max 50
-                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
             case 'country':
-                // Only allow letters, spaces, min 2, max 50
+                // Only allow letters, spaces, max 50
                 return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'school_email':
+                // Allow valid email characters, max 100
+                return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100);
             case 'address_line1':
             case 'address_line2':
-                // Allow letters, numbers, spaces, comma, dot, min 5, max 100
+                // Allow letters, numbers, spaces, comma, dot, hyphen, max 100
                 return value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 100);
             case 'pincode':
                 // Only allow digits, max 10
@@ -128,8 +129,8 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         }
 
         // Email: optional, but validate if provided
-        if (formData.school_email.trim() && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email)) {
-            newErrors.school_email = 'Please enter a valid email address';
+        if (formData.school_email.trim() && (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.school_email) || formData.school_email.length > 100)) {
+            newErrors.school_email = 'Please enter a valid email address (max 100 characters)';
             isValid = false;
         }
 
@@ -138,11 +139,11 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             try {
                 const phoneNumber = parsePhoneNumberFromString(formData.school_mobile_no);
                 if (!phoneNumber || !isValidPhoneNumber(formData.school_mobile_no, phoneNumber.country || undefined)) {
-                    newErrors.school_mobile_no = 'Enter a valid phone number for the selected country';
+                    newErrors.school_mobile_no = 'Please enter a valid phone number for the selected country';
                     isValid = false;
                 }
             } catch {
-                newErrors.school_mobile_no = 'Enter a valid phone number';
+                newErrors.school_mobile_no = 'Please enter a valid phone number';
                 isValid = false;
             }
         }
@@ -156,26 +157,35 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             isValid = false;
         }
 
-        // Address line 2: optional, but validate if provided
-        if (formData.address_line2.trim() && (formData.address_line2.length < 5 || formData.address_line2.length > 100)) {
-            newErrors.address_line2 = 'Address must be 5-100 characters';
+        // Address line 2: optional, max 100
+        if (formData.address_line2.trim() && formData.address_line2.length > 100) {
+            newErrors.address_line2 = 'Address must be up to 100 characters';
             isValid = false;
         }
 
-        // City: optional, but validate if provided
-        if (formData.city.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
+        // City: mandatory, min 2, max 50, only letters/spaces
+        if (!formData.city.trim()) {
+            newErrors.city = 'City is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.city.trim())) {
             newErrors.city = 'City must be 2-50 letters only';
             isValid = false;
         }
 
-        // State: optional, but validate if provided
-        if (formData.state.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
+        // State: mandatory, min 2, max 50, only letters/spaces
+        if (!formData.state.trim()) {
+            newErrors.state = 'State is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.state.trim())) {
             newErrors.state = 'State must be 2-50 letters only';
             isValid = false;
         }
 
-        // Country: optional, but validate if provided
-        if (formData.country.trim() && !/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
+        // Country: mandatory, min 2, max 50, only letters/spaces
+        if (!formData.country.trim()) {
+            newErrors.country = 'Country is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.country.trim())) {
             newErrors.country = 'Country must be 2-50 letters only';
             isValid = false;
         }
@@ -200,9 +210,11 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                     const response = await SchoolService.updateSchool(formData);
                     if (response.error === false || response.error === "false") {
                         setIsSubmitting(false);
-                        if (onSchoolUpdated) onSchoolUpdated();
+                        if (onSchoolUpdated) {
+                            onSchoolUpdated();
+                        }
                         handleClose();
-                        return response.message || 'School updated successfully!';
+                        return response.message || 'School updated successfully';
                     } else {
                         setIsSubmitting(false);
                         throw new Error(response.message || 'Failed to update school');
@@ -262,6 +274,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.school_name}
                                             onChange={handleInputChange}
                                             placeholder="Enter School Name"
+                                            maxLength={50}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -277,6 +290,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.school_email}
                                             onChange={handleInputChange}
                                             placeholder="Enter Email Address"
+                                            maxLength={100}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -309,6 +323,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.address_line1}
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 1"
+                                            maxLength={100}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -326,6 +341,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.address_line2}
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 2"
+                                            maxLength={100}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line2 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -333,7 +349,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            City
+                                            City<span className="text-red">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -341,6 +357,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.city}
                                             onChange={handleInputChange}
                                             placeholder="Enter City"
+                                            maxLength={50}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -350,7 +367,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            State
+                                            State<span className="text-red">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -358,6 +375,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.state}
                                             onChange={handleInputChange}
                                             placeholder="Enter State"
+                                            maxLength={50}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -365,7 +383,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            Country
+                                            Country<span className="text-red">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -373,6 +391,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.country}
                                             onChange={handleInputChange}
                                             placeholder="Enter Country"
+                                            maxLength={50}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
@@ -390,6 +409,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                                             value={formData.pincode}
                                             onChange={handleInputChange}
                                             placeholder="Enter Pincode"
+                                            maxLength={10}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
