@@ -18,7 +18,10 @@ export default function FlipCards() {
             type: "image",
             title: "Driving Problems",
             icon: InvestigationIcon,
-            iconSize: { width: '64px', height: '64px' },
+            iconSize: {
+                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
+                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
+            },
             image: Image1,
             backText:
                 "Bridge learning with reality through case studies or real stories.",
@@ -28,7 +31,10 @@ export default function FlipCards() {
             type: "image",
             title: "Focused Investigation",
             icon: AnalysisIcon,
-            iconSize: { width: '64px', height: '64px' },
+            iconSize: {
+                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
+                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
+            },
             image: Image2,
             backText:
                 "Research, conduct surveys, and gather relevant data.",
@@ -38,7 +44,10 @@ export default function FlipCards() {
             type: "image",
             title: "Design Your Path",
             icon: DesignIcon,
-            iconSize: { width: '52px', height: '52px' },
+            iconSize: {
+                width: { mobile: '40px', tablet: '46px', desktop: '52px' },
+                height: { mobile: '40px', tablet: '46px', desktop: '52px' }
+            },
             image: Image3,
             backText:
                 "Brainstorm, plan, and ideate innovative solutions.",
@@ -48,7 +57,10 @@ export default function FlipCards() {
             type: "image",
             title: "Sketch to Structure",
             icon: SketchIcon,
-            iconSize: { width: '60px', height: '60px' },
+            iconSize: {
+                width: { mobile: '46px', tablet: '53px', desktop: '60px' },
+                height: { mobile: '46px', tablet: '53px', desktop: '60px' }
+            },
             image: Image4,
             backText:
                 "Create a working model of your solution.",
@@ -58,7 +70,10 @@ export default function FlipCards() {
             type: "image",
             title: "Launch and Lead",
             icon: LaunchIcon,
-            iconSize: { width: '90px', height: '90px' },
+            iconSize: {
+                width: { mobile: '70px', tablet: '80px', desktop: '90px' },
+                height: { mobile: '70px', tablet: '80px', desktop: '90px' }
+            },
             image: Image5,
             backText:
                 "Deploy the solution and run an awareness drive.",
@@ -68,7 +83,10 @@ export default function FlipCards() {
             type: "image",
             title: "Creative Display",
             icon: CreativeIcon,
-            iconSize: { width: '64px', height: '64px' },
+            iconSize: {
+                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
+                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
+            },
             image: Image6,
             backText:
                 "Showcase final project to peers, educators, and stakeholders; and take feedback to complete your understanding.",
@@ -76,16 +94,16 @@ export default function FlipCards() {
     ];
 
     return (
-        <div className="bg-white p-8 pb-28">
-            <div className="max-w-6xl mx-auto">
+        <div className="bg-white p-4 sm:p-6 md:p-8 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <h1 className="text-4xl py-8 font-bold text-center text-textColor mb-12">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl py-6 sm:py-8 md:py-10 font-bold text-center text-textColor mb-8 sm:mb-10 md:mb-12">
                     Britannica Design Thinking
                 </h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
                     {cards.map((card) => (
-                        <div key={card.id} className="flip-card h-56 group">
+                        <div key={card.id} className="flip-card h-48 sm:h-52 md:h-56 lg:h-60 group">
                             <div className="flip-card-inner relative w-full h-full transition-transform duration-700 transform-gpu group-hover:rotate-y-180" style={{ transformStyle: 'preserve-3d' }}>
                                 {/* Front Side */}
                                 <div className="flip-card-front absolute w-full h-full" style={{ backfaceVisibility: 'hidden' }}>
@@ -95,23 +113,30 @@ export default function FlipCards() {
                                             style={{ backgroundImage: `url(${card.image})` }}
                                         />
                                         <div
-                                            className="absolute inset-0 flex flex-col items-center justify-center text-white"
+                                            className="absolute inset-0 flex flex-col items-center justify-center text-white p-3 sm:p-4 md:p-6"
                                         >
                                             <img
                                                 src={card.icon}
                                                 alt={card.title}
-                                                style={{ width: card.iconSize.width, height: card.iconSize.height }}
-                                                className="mb-4"
+                                                className="mb-2 sm:mb-3 md:mb-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18"
+                                                style={{
+                                                    width: `clamp(${card.iconSize.width.mobile}, 4vw, ${card.iconSize.width.desktop})`,
+                                                    height: `clamp(${card.iconSize.height.mobile}, 4vw, ${card.iconSize.height.desktop})`
+                                                }}
                                             />
-                                            <h3 className="text-2xl font-bold text-center px-4">{card.title}</h3>
+                                            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-center px-2 sm:px-3 md:px-4 leading-tight sm:leading-normal">
+                                                {card.title}
+                                            </h3>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Back Side */}
                                 <div className="flip-card-back absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                                    <div className="bg-fourth rounded-xl p-8 h-full flex items-center justify-center">
-                                        <p className="text-textColor text-center text-xl font-bold leading-relaxed">{card.backText}</p>
+                                    <div className="bg-fourth rounded-xl p-4 sm:p-6 md:p-8 h-full flex items-center justify-center">
+                                        <p className="text-textColor text-center text-sm sm:text-base md:text-lg lg:text-xl font-bold leading-relaxed sm:leading-relaxed md:leading-relaxed">
+                                            {card.backText}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -121,4 +146,4 @@ export default function FlipCards() {
             </div>
         </div>
     );
-} 
+}
