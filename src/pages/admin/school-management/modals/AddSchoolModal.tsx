@@ -82,7 +82,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             case 'state':
             case 'country':
                 // Only allow letters, spaces, max 50
-                return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+                return value.replace(/[^a-zA-Z\s']/g, '').slice(0, 50);
             case 'school_email':
                 // Allow valid email characters, max 100
                 return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100);
@@ -133,7 +133,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         if (!formData.school_name.trim()) {
             newErrors.school_name = 'School name is required';
             isValid = false;
-        } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.school_name.trim())) {
+        } else if (!/^[a-zA-Z\s']{2,50}$/.test(formData.school_name.trim())) {
             newErrors.school_name = 'Name must be 2-50 letters only';
             isValid = false;
         }
