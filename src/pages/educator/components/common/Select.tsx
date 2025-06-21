@@ -27,7 +27,7 @@ const Select: React.FC<SelectProps> = ({
 
     // Calculate required width based on content
     useEffect(() => {
-        if (isOpen && buttonRef.current) {
+        if (isOpen && buttonRef.current && options.length > 0) {
             const buttonWidth = buttonRef.current.offsetWidth;
 
             // Find the longest option text
@@ -88,19 +88,23 @@ const Select: React.FC<SelectProps> = ({
                     }}
                     role="listbox"
                 >
-                    {options.map((option) => (
-                        <button
-                            key={option.value}
-                            onClick={() => handleOptionSelect(option.value)}
-                            className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis ${value === option.value ? 'bg-gray/10' : ''
-                                }`}
-                            role="option"
-                            aria-selected={value === option.value}
-                            title={option.label} // Show full text on hover
-                        >
-                            {option.label}
-                        </button>
-                    ))}
+                    {options.length === 0 ? (
+                        <div className="px-4 py-2 text-textColor font-bold text-lg">No options available</div>
+                    ) : (
+                        options.map((option) => (
+                            <button
+                                key={option.value}
+                                onClick={() => handleOptionSelect(option.value)}
+                                className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis ${value === option.value ? 'bg-gray/10' : ''
+                                    }`}
+                                role="option"
+                                aria-selected={value === option.value}
+                                title={option.label} // Show full text on hover
+                            >
+                                {option.label}
+                            </button>
+                        ))
+                    )}
                 </div>
             )}
             {error && <p className="text-red text-sm mt-1">{error}</p>}
