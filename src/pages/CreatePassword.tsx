@@ -23,9 +23,12 @@ const CreatePassword = () => {
 
     // Extract token from URL on component mount
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const tokenFromUrl = searchParams.get("token");
-        if (tokenFromUrl) {
+        // Extract token directly from URL string to preserve URL encoding
+        const urlParams = location.search;
+        const tokenMatch = urlParams.match(/[?&]token=([^&]*)/);
+
+        if (tokenMatch && tokenMatch[1]) {
+            const tokenFromUrl = tokenMatch[1].trim();
             setToken(tokenFromUrl);
         } else {
             toast.error("Invalid or missing token in the URL");
@@ -60,6 +63,7 @@ const CreatePassword = () => {
     const handleCreatePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
+
         if (!token) {
             toast.error("Token is missing");
             return;

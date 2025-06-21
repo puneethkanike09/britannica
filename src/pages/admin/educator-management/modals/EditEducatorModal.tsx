@@ -296,7 +296,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
                             </button>
                         </div>
                         {/* Scrollable Form Content */}
-                        <div className="flex-1 overflow-y-auto px-인이 py-6">
+                        <div className="flex-1 overflow-y-auto px-8 py-6">
                             {teacherLoading ? (
                                 <Loader message="Loading educator details..." />
                             ) : teacherError ? (

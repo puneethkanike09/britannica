@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                     {/* Logo */}
                     {(!isCollapsed || isMobile) && (
-                        <NavLink to="/" onClick={closeSidebar}>
+                        <NavLink to="/admin-dashboard" onClick={closeSidebar}>
                             <img
                                 src={LogoIcon}
                                 alt="Britannica Education Logo"
