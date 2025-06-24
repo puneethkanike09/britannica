@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import GradeManagement from "./pages/admin/grade-management";
 import ThemeManagement from "./pages/admin/theme-management";
 import TypesManagement from "./pages/admin/types-management";
+import PblFileManagement from "./pages/admin/pbl-files-management";
 
 function App() {
   useEffect(() => {
@@ -77,7 +78,7 @@ function App() {
             <Route path="/master-data/grade" element={<GradeManagement />} />
             <Route path="/master-data/theme" element={<ThemeManagement />} />
             <Route path="/master-data/types" element={<TypesManagement />} />
-            <Route path="/pbl-files" element={<SchoolManagement />} />
+            <Route path="/pbl-files" element={<PblFileManagement />} />
             <Route path="/report" element={<Report />} />
           </Route>
 

@@ -45,6 +45,9 @@ export interface ActivityLog {
     time: string;
     activity: string;
     user: string;
+    userId: string;
+    schoolName: string;
+    activityTimeStamp: string;
 }
 
 // school management page

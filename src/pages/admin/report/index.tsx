@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
-import { ActivityLog } from '../../../types/admin';
 import Loader from '../../../components/common/Loader';
 
 export default function Report() {
@@ -16,63 +15,79 @@ export default function Report() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const itemsPerPage: number = 6;
 
-    // Activity logs with typed array
+    // Activity logs with typed array, removing date field
     const activityLogs: ActivityLog[] = [
         {
             id: 1,
-            date: '03/05/2023',
             time: '10:30 AM',
             activity: 'Login',
             user: 'Amitha',
+            userId: 'Amitha@123',
+            schoolName: 'Horizon Valley School',
+            activityTimeStamp: '10:30 AM'
         },
         {
             id: 2,
-            date: '11/7/2024',
             time: '11:30 AM',
             activity: 'Viewed grade 3 Pdf',
             user: 'Sagar',
+            userId: 'Sagar@123',
+            schoolName: 'Lumina School',
+            activityTimeStamp: '11:30 AM'
         },
         {
             id: 3,
-            date: '03/05/2023',
-            time: '10:30 PM',
+            time: '11:30 AM',
             activity: 'Downloaded grade 3 pdf',
-            user: 'Amitha',
+            user: 'Vidya',
+            userId: 'Vidya@123',
+            schoolName: 'Prism Path School',
+            activityTimeStamp: '11:30 AM'
         },
         {
             id: 4,
-            date: '11/7/2024',
             time: '9:33 AM',
             activity: 'Logout',
-            user: 'Sagar',
+            user: 'Puneeth',
+            userId: 'Puneeth@123',
+            schoolName: 'Nexus Scholars School',
+            activityTimeStamp: '9:33 AM'
         },
         {
             id: 5,
-            date: '03/06/2023',
             time: '2:15 PM',
             activity: 'Updated profile',
             user: 'Amitha',
+            userId: 'Amitha@123',
+            schoolName: 'Horizon Valley School',
+            activityTimeStamp: '2:15 PM'
         },
         {
             id: 6,
-            date: '11/8/2024',
             time: '3:45 PM',
             activity: 'Created new report',
             user: 'Sagar',
+            userId: 'Sagar@123',
+            schoolName: 'Lumina School',
+            activityTimeStamp: '3:45 PM'
         },
         {
             id: 7,
-            date: '03/07/2023',
             time: '8:20 AM',
             activity: 'Login',
             user: 'Amitha',
+            userId: 'Amitha@123',
+            schoolName: 'Horizon Valley School',
+            activityTimeStamp: '8:20 AM'
         },
         {
             id: 8,
-            date: '11/9/2024',
             time: '10:00 AM',
             activity: 'Viewed dashboard',
             user: 'Sagar',
+            userId: 'Sagar@123',
+            schoolName: 'Lumina School',
+            activityTimeStamp: '10:00 AM'
         },
     ];
 
@@ -208,43 +223,52 @@ export default function Report() {
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[800px]">
+                    <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-48" />
-                            <col className="w-48" />
-                            <col className="w-64" />
-                            <col className="w-48" />
+                            <col className="w-[15%] min-w-[120px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[15%] min-w-[120px]" />
+                            <col className="w-[20%] min-w-[160px]" />
+                            <col className="w-[25%] min-w-[200px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
-                                    Date
-                                </th>
-                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
                                     Time
                                 </th>
-                                <th className="px-8 py-4 border-r-1 border-white text-left font-black">
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
                                     Activity
                                 </th>
-                                <th className="px-8 py-4 text-left font-black">Users</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
+                                    Users
+                                </th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
+                                    User ID
+                                </th>
+                                <th className="px-8 py-4 text-left font-black">
+                                    School Name
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-16">
+                                    <td colSpan={5} className="px-8 py-16">
                                         <Loader message="Loading activity logs..." />
+                                    </td>
+                                </tr>
+                            ) : activityLogs.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-16 text-center text-textColor">
+                                        No activity logs found.
                                     </td>
                                 </tr>
                             ) : (
                                 currentItems.map((log, index) => (
                                     <tr
                                         key={log.id}
-                                        className={index % 2 === 1 ? 'bg-sky-50' : 'bg-white'}
+                                        className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.date}</div>
-                                        </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{log.time}</div>
                                         </td>
@@ -253,6 +277,12 @@ export default function Report() {
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{log.user}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.userId}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.schoolName}</div>
                                         </td>
                                     </tr>
                                 ))
@@ -267,9 +297,9 @@ export default function Report() {
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1 || isLoading}
-                                className={`p-2 rounded ${currentPage === 1 || isLoading
-                                    ? 'text-gray-400 cursor-not-allowed'
+                                disabled={currentPage === 1}
+                                className={`p-2 rounded ${currentPage === 1
+                                    ? 'text-gray cursor-not-allowed'
                                     : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
                             >
@@ -286,9 +316,9 @@ export default function Report() {
                                         ? 'bg-secondary text-white'
                                         : typeof number === 'number'
                                             ? 'text-textColor hover:bg-third'
-                                            : 'text-gray-500'
+                                            : 'text-darkGray'
                                         }`}
-                                    disabled={typeof number !== 'number' || isLoading}
+                                    disabled={typeof number !== 'number'}
                                 >
                                     {number}
                                 </button>
@@ -298,9 +328,9 @@ export default function Report() {
                                 onClick={() =>
                                     currentPage < totalPages && paginate(currentPage + 1)
                                 }
-                                disabled={currentPage === totalPages || isLoading}
-                                className={`p-2 rounded ${currentPage === totalPages || isLoading
-                                    ? 'text-gray-400 cursor-not-allowed'
+                                disabled={currentPage === totalPages}
+                                className={`p-2 rounded ${currentPage === totalPages
+                                    ? 'text-gray cursor-not-allowed'
                                     : 'text-textColor cursor-pointer hover:bg-third'
                                     }`}
                             >
@@ -312,4 +342,14 @@ export default function Report() {
             </div>
         </div>
     );
+}
+
+export interface ActivityLog {
+    id: number;
+    time: string;
+    activity: string;
+    user: string;
+    userId: string;
+    schoolName: string;
+    activityTimeStamp: string;
 }
