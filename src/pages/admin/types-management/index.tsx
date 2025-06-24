@@ -13,7 +13,7 @@ import DeleteTypeModal from "./modals/DeleteTypeModal";
 
 interface Type {
     type_id: string;
-    title: string;
+    name: string;
     description: string;
 }
 
@@ -32,7 +32,7 @@ const TypesManagement: React.FC = () => {
     // Dummy data for types
     const dummyTypes: Type[] = Array.from({ length: 12 }, (_, i) => ({
         type_id: `type-${i + 1}`,
-        title: `Type ${i + 1}`,
+        name: `Type ${i + 1}`,
         description: `Description for Type ${i + 1} characteristics and details.`,
     }));
 
@@ -128,7 +128,7 @@ const TypesManagement: React.FC = () => {
     };
 
     // Callback for after type is added
-    const handleTypeAdded = (newType: { title: string; description: string }) => {
+    const handleTypeAdded = (newType: { name: string; description: string }) => {
         const typeWithId = { ...newType, type_id: `type-${types.length + 1}` };
         setTypes([...types, typeWithId]);
         toast.success("Type added successfully");
@@ -173,7 +173,7 @@ const TypesManagement: React.FC = () => {
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Title</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Description</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
@@ -195,7 +195,7 @@ const TypesManagement: React.FC = () => {
                                 currentItems.map((type, index) => (
                                     <tr key={type.type_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{type.title}</div>
+                                            <div className="text-textColor">{type.name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{type.description}</div>

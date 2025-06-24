@@ -6,7 +6,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface DeleteTypeModalProps {
     onClose: () => void;
-    type: { type_id: string; title: string; description: string };
+    type: { type_id: string; name: string; description: string };
     onTypeDeleted: (type_id: string) => void;
 }
 
@@ -84,7 +84,7 @@ export default function DeleteTypeModal({ onClose, type, onTypeDeleted }: Delete
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete the type <span className="font-bold">{type.title}</span>?
+                                Are you sure you want to delete the type <span className="font-bold">{type.name}</span>?
                             </p>
 
                             <div className="flex justify-end gap-4">

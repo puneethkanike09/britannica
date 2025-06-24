@@ -6,7 +6,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface DeleteThemeModalProps {
     onClose: () => void;
-    theme: { theme_id: string; title: string; description: string };
+    theme: { theme_id: string; name: string; description: string };
     onThemeDeleted: (theme_id: string) => void;
 }
 
@@ -84,7 +84,7 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete the theme <span className="font-bold">{theme.title}</span>?
+                                Are you sure you want to delete the theme <span className="font-bold">{theme.name}</span>?
                             </p>
 
                             <div className="flex justify-end gap-4">

@@ -5,7 +5,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface ViewGradeModalProps {
     onClose: () => void;
-    grade: { grade_id: string; title: string; description: string };
+    grade: { grade_id: string; name: string; description: string };
 }
 
 export default function ViewGradeModal({ onClose, grade }: ViewGradeModalProps) {
@@ -63,8 +63,8 @@ export default function ViewGradeModal({ onClose, grade }: ViewGradeModalProps) 
                                 {/* First Row */}
                                 <div className="grid grid-cols-1">
                                     <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Grade Title</div>
-                                        <div className="text-primary font-medium break-all">{grade.title || '-'}</div>
+                                        <div className="text-textColor mb-2">Grade Name</div>
+                                        <div className="text-primary font-medium break-all">{grade.name || '-'}</div>
                                     </div>
                                 </div>
                                 {/* Second Row */}

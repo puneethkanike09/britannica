@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 interface Grade {
     grade_id: string;
-    title: string;
+    name: string;
     description: string;
 }
 
@@ -32,7 +32,7 @@ const GradeManagement: React.FC = () => {
     // Dummy data for grades
     const dummyGrades: Grade[] = Array.from({ length: 12 }, (_, i) => ({
         grade_id: `grade-${i + 1}`,
-        title: `Grade ${i + 1}`,
+        name: `Grade ${i + 1}`,
         description: `Description for Grade ${i + 1} curriculum and subjects.`,
     }));
 
@@ -128,7 +128,7 @@ const GradeManagement: React.FC = () => {
     };
 
     // Callback for after grade is added
-    const handleGradeAdded = (newGrade: { title: string; description: string }) => {
+    const handleGradeAdded = (newGrade: { name: string; description: string }) => {
         const gradeWithId = { ...newGrade, grade_id: `grade-${grades.length + 1}` };
         setGrades([...grades, gradeWithId]);
         toast.success("Grade added successfully");
@@ -165,15 +165,15 @@ const GradeManagement: React.FC = () => {
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[800px]">
+                    <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-48" />
-                            <col className="w-80" />
-                            <col className="w-48" />
+                            <col className="w-[20%] min-w-[160px]" />
+                            <col className="w-[50%] min-w-[300px]" />
+                            <col className="w-[30%] min-w-[240px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Title</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Description</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
@@ -195,7 +195,7 @@ const GradeManagement: React.FC = () => {
                                 currentItems.map((grade, index) => (
                                     <tr key={grade.grade_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{grade.title}</div>
+                                            <div className="text-textColor">{grade.name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{grade.description}</div>

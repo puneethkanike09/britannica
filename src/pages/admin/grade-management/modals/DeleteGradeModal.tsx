@@ -6,7 +6,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface DeleteGradeModalProps {
     onClose: () => void;
-    grade: { grade_id: string; title: string; description: string };
+    grade: { grade_id: string; name: string; description: string };
     onGradeDeleted: (grade_id: string) => void;
 }
 
@@ -84,7 +84,7 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Del
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete the grade <span className="font-bold">{grade.title}</span>?
+                                Are you sure you want to delete the grade <span className="font-bold">{grade.name}</span>?
                             </p>
 
                             <div className="flex justify-end gap-4">

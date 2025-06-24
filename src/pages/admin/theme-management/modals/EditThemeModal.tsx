@@ -6,19 +6,19 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface EditThemeModalProps {
     onClose: () => void;
-    theme: { theme_id: string; title: string; description: string };
-    onThemeUpdated: (theme: { theme_id: string; title: string; description: string }) => void;
+    theme: { theme_id: string; name: string; description: string };
+    onThemeUpdated: (theme: { theme_id: string; name: string; description: string }) => void;
 }
 
 export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditThemeModalProps) {
     const [formData, setFormData] = useState({
         theme_id: theme.theme_id,
-        title: theme.title,
+        name: theme.name,
         description: theme.description || '',
     });
 
     const [errors, setErrors] = useState({
-        title: '',
+        name: '',
         description: ''
     });
 
@@ -55,7 +55,7 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
-            case 'title':
+            case 'name':
                 // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
@@ -68,17 +68,17 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
 
     const validateForm = () => {
         const newErrors = {
-            title: '',
+            name: '',
             description: ''
         };
         let isValid = true;
 
-        // Title: mandatory, min 2, max 50
-        if (!formData.title.trim()) {
-            newErrors.title = 'Theme title is required';
+        // name: mandatory, min 2, max 50
+        if (!formData.name.trim()) {
+            newErrors.name = 'Theme name is required';
             isValid = false;
-        } else if (formData.title.length < 2 || formData.title.length > 50) {
-            newErrors.title = 'Title must be 2-50 characters';
+        } else if (formData.name.length < 2 || formData.name.length > 50) {
+            newErrors.name = 'name must be 2-50 characters';
             isValid = false;
         }
 
@@ -100,7 +100,7 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
                 try {
                     onThemeUpdated({
                         theme_id: formData.theme_id,
-                        title: formData.title.trim(),
+                        name: formData.name.trim(),
                         description: formData.description.trim()
                     });
                     toast.success('Theme updated successfully!');
@@ -152,19 +152,19 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
                             <div className="space-y-6">
                                 <div className="mb-3 relative">
                                     <label className="block text-textColor text-base mb-2">
-                                        Theme Title<span className="text-red">*</span>
+                                        Theme Name<span className="text-red">*</span>
                                     </label>
                                     <input
                                         type="text"
-                                        name="title"
-                                        value={formData.title}
+                                        name="name"
+                                        value={formData.name}
                                         onChange={handleInputChange}
-                                        placeholder="Enter Theme Title"
+                                        placeholder="Enter Theme name"
                                         maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.title ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                         disabled={isSubmitting}
                                     />
-                                    {errors.title && <p className="text-red text-sm mt-1">{errors.title}</p>}
+                                    {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
                                 </div>
 
                                 <div className="mb-3 relative">

@@ -3,7 +3,7 @@ import SchoolIcon from '../../../assets/dashboard/Admin/sidebar/school-managemen
 import EducatorIcon from '../../../assets/dashboard/Admin/sidebar/educator-management.svg';
 import MasterDataIcon from '../../../assets/dashboard/Admin/sidebar/masterData.svg'; // Add this icon
 import PblFilesIcon from '../../../assets/dashboard/Admin/sidebar/pblFiles.svg'; // Add this icon
-// import ReportIcon from '../../../assets/dashboard/Admin/sidebar/report.svg';
+import ReportIcon from '../../../assets/dashboard/Admin/sidebar/report.svg';
 import { NavItem } from '../../../types/admin';
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
@@ -53,10 +53,10 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
         alt: "PBL Files",
         label: "PBL Files"
     },
-    // {
-    //     to: "/report",
-    //     icon: ReportIcon,
-    //     alt: "Report",
-    //     label: "Report"
-    // }
+    {
+        to: "/report",
+        icon: ReportIcon,
+        alt: "Report",
+        label: "Report"
+    }
 ];

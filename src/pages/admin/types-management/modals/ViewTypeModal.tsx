@@ -5,7 +5,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface ViewTypeModalProps {
     onClose: () => void;
-    type: { type_id: string; title: string; description: string };
+    type: { type_id: string; name: string; description: string };
 }
 
 export default function ViewTypeModal({ onClose, type }: ViewTypeModalProps) {
@@ -63,8 +63,8 @@ export default function ViewTypeModal({ onClose, type }: ViewTypeModalProps) {
                                 {/* First Row */}
                                 <div className="grid grid-cols-1">
                                     <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Type Title</div>
-                                        <div className="text-primary font-medium break-all">{type.title || '-'}</div>
+                                        <div className="text-textColor mb-2">Type Name</div>
+                                        <div className="text-primary font-medium break-all">{type.name || '-'}</div>
                                     </div>
                                 </div>
                                 {/* Second Row */}

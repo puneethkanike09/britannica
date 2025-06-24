@@ -5,7 +5,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface ViewThemeModalProps {
     onClose: () => void;
-    theme: { theme_id: string; title: string; description: string };
+    theme: { theme_id: string; name: string; description: string };
 }
 
 export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) {
@@ -63,8 +63,8 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                                 {/* First Row */}
                                 <div className="grid grid-cols-1">
                                     <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Theme Title</div>
-                                        <div className="text-primary font-medium break-all">{theme.title || '-'}</div>
+                                        <div className="text-textColor mb-2">Theme Name</div>
+                                        <div className="text-primary font-medium break-all">{theme.name || '-'}</div>
                                     </div>
                                 </div>
                                 {/* Second Row */}
