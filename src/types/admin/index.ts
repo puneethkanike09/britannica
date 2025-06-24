@@ -1,10 +1,17 @@
 //Sidebar Item
+export interface SubMenuItem {
+    to: string;
+    label: string;
+}
+
 export interface NavItem {
     to: string;
     icon: string;
     alt: string;
     label: string;
     end?: boolean;
+    hasSubmenu?: boolean;
+    submenu?: SubMenuItem[];
 }
 
 //top bar

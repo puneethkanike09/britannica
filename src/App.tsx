@@ -16,6 +16,9 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import GradeManagement from "./pages/admin/grade-management";
+import ThemeManagement from "./pages/admin/theme-management";
+import TypesManagement from "./pages/admin/types-management";
 
 function App() {
   useEffect(() => {
@@ -71,6 +74,10 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/school-management" element={<SchoolManagement />} />
             <Route path="/educator-management" element={<EducatorManagement />} />
+            <Route path="/master-data/grade" element={<GradeManagement />} />
+            <Route path="/master-data/theme" element={<ThemeManagement />} />
+            <Route path="/master-data/types" element={<TypesManagement />} />
+            <Route path="/pbl-files" element={<SchoolManagement />} />
             <Route path="/report" element={<Report />} />
           </Route>
 

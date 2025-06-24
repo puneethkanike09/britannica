@@ -1,10 +1,10 @@
 import HomeIcon from '../../../assets/dashboard/Admin/sidebar/home.svg';
 import SchoolIcon from '../../../assets/dashboard/Admin/sidebar/school-management.svg';
 import EducatorIcon from '../../../assets/dashboard/Admin/sidebar/educator-management.svg';
+import MasterDataIcon from '../../../assets/dashboard/Admin/sidebar/masterData.svg'; // Add this icon
+import PblFilesIcon from '../../../assets/dashboard/Admin/sidebar/pblFiles.svg'; // Add this icon
 // import ReportIcon from '../../../assets/dashboard/Admin/sidebar/report.svg';
 import { NavItem } from '../../../types/admin';
-
-
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
     {
@@ -25,6 +25,33 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
         icon: EducatorIcon,
         alt: "Educator Management",
         label: "Educator Management"
+    },
+    {
+        to: "/master-data",
+        icon: MasterDataIcon,
+        alt: "Master Data Interface",
+        label: "Master Data Interface",
+        hasSubmenu: true,
+        submenu: [
+            {
+                to: "/master-data/grade",
+                label: "Grade"
+            },
+            {
+                to: "/master-data/theme",
+                label: "Theme"
+            },
+            {
+                to: "/master-data/types",
+                label: "Types"
+            }
+        ]
+    },
+    {
+        to: "/pbl-files",
+        icon: PblFilesIcon,
+        alt: "PBL Files",
+        label: "PBL Files"
     },
     // {
     //     to: "/report",
