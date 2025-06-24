@@ -29,8 +29,8 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     {
         to: "/master-data",
         icon: MasterDataIcon,
-        alt: "Master Data Interface",
-        label: "Master Data Interface",
+        alt: "Master Data Management",
+        label: "Master Data Management",
         hasSubmenu: true,
         submenu: [
             {
@@ -51,7 +51,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
         to: "/pbl-files",
         icon: PblFilesIcon,
         alt: "PBL Files",
-        label: "PBL Files"
+        label: "PBL File Management"
     },
     {
         to: "/report",

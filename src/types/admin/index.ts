@@ -41,7 +41,6 @@ export interface DashboardCard {
 // report page
 export interface ActivityLog {
     id: number;
-    date: string;
     time: string;
     activity: string;
     user: string;

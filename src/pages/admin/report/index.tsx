@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
 import Loader from '../../../components/common/Loader';
+import { ActivityLog } from '../../../types/admin';
 
 export default function Report() {
     // State with explicit types
@@ -344,12 +345,3 @@ export default function Report() {
     );
 }
 
-export interface ActivityLog {
-    id: number;
-    time: string;
-    activity: string;
-    user: string;
-    userId: string;
-    schoolName: string;
-    activityTimeStamp: string;
-}
