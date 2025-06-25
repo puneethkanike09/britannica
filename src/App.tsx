@@ -20,6 +20,8 @@ import GradeManagement from "./pages/admin/grade-management";
 import ThemeManagement from "./pages/admin/theme-management";
 import TypesManagement from "./pages/admin/types-management";
 import PblFileManagement from "./pages/admin/pbl-files-management";
+import RegisteredEducatorManagement from "./pages/admin/registered-educator-management";
+import UnregisteredEducatorManagement from "./pages/admin/unregistered-educator-management";
 
 function App() {
   useEffect(() => {
@@ -75,6 +77,8 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/school-management" element={<SchoolManagement />} />
             <Route path="/educator-management" element={<EducatorManagement />} />
+            <Route path="/registered-educator-management" element={<RegisteredEducatorManagement />} />
+            <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
             <Route path="/master-data/grade" element={<GradeManagement />} />
             <Route path="/master-data/theme" element={<ThemeManagement />} />
             <Route path="/master-data/types" element={<TypesManagement />} />

@@ -27,6 +27,18 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
         label: "Educator Management"
     },
     {
+        to: "/registered-educator-management",
+        icon: EducatorIcon,
+        alt: "Registered Educator",
+        label: "Registered Educator"
+    },
+    {
+        to: "/unregistered-educator-management",
+        icon: EducatorIcon,
+        alt: "Unregistered Educator",
+        label: "Unregistered Educator"
+    },
+    {
         to: "/master-data",
         icon: MasterDataIcon,
         alt: "Master Data Management",

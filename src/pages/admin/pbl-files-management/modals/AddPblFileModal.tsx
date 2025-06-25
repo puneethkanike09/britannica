@@ -387,7 +387,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                                 <button
                                                     type="button"
                                                     onClick={removeFile}
-                                                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors"
+                                                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
                                                     disabled={isSubmitting}
                                                 >
                                                     <Trash2 className="h-5 w-5" />

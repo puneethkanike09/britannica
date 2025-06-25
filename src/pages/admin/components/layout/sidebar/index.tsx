@@ -190,7 +190,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex flex-col p-6 space-y-2 pt-12 overflow-y-auto h-[calc(100vh-81px)]">
+                <nav className="flex flex-col p-6 space-y-2 py-12 overflow-y-auto h-[calc(100vh-81px)]">
                     {navItems.map((item) => (
                         <div key={item.to} className="relative">
                             {/* Main Navigation Item */}

@@ -137,13 +137,14 @@ const PblFileManagement: React.FC = () => {
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">
                         <colgroup>
+                            <col className="w-[20%] min-w-[160px]" />
                             <col className="w-[50%] min-w-[300px]" />
-                            <col className="w-[50%] min-w-[300px]" />
+                            <col className="w-[30%] min-w-[240px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
-                                <th className="px-8 py-4 text-left font-black">Description</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Description</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
                         </thead>
