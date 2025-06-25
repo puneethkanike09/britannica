@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
 import { Loader2, X } from "lucide-react";
@@ -253,7 +253,7 @@ const EducatorLogin = () => {
                             </button>
                         </div> */}
 
-                        <div className="flex justify-center mt-10 w-full">
+                        <div className="flex justify-start mt-10 w-full">
                             <button
                                 type="submit"
                                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
@@ -265,6 +265,11 @@ const EducatorLogin = () => {
                                     <span className="font-bold">Educator Login</span>
                                 )}
                             </button>
+                        </div>
+                        <div className="text-left mt-5">
+                            <Link to={'/educator-register'} className="text-textColor">
+                                Don't have an account? <span className="text-primary hover:underline cursor-pointer font-bold">Register here</span>
+                            </Link>
                         </div>
                     </form>
                 </div>

@@ -22,6 +22,7 @@ import TypesManagement from "./pages/admin/types-management";
 import PblFileManagement from "./pages/admin/pbl-files-management";
 import RegisteredEducatorManagement from "./pages/admin/registered-educator-management";
 import UnregisteredEducatorManagement from "./pages/admin/unregistered-educator-management";
+import EducatorRegistration from "./pages/educator-register";
 
 function App() {
   useEffect(() => {
@@ -62,6 +63,7 @@ function App() {
           {/* Public routes */}
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/educator-login" element={<EducatorLogin />} />
+          <Route path="/educator-register" element={<EducatorRegistration />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
           {/* <Route path="/" element={<AdminLogin />} />a */}
