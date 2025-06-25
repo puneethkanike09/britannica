@@ -205,22 +205,22 @@ const Sidebar: React.FC<SidebarProps> = ({
                                         onClick={() => toggleSubmenu(item.to)}
                                         onMouseEnter={() => handleMouseEnter(item.to)}
                                         onMouseLeave={handleMouseLeave}
-                                        className={`w-full flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3 justify-between'
-                                            } transition-all duration-300 ${isParentMenuActive(item) ? "font-bold text-white" : ""
+                                        className={`w-full flex ${isCollapsed && !isMobile ? 'p-3 justify-center items-center' : 'p-3 justify-between items-start'
+                                            } transition-all duration-300 cursor-pointer ${isParentMenuActive(item) ? "font-bold text-white" : ""
                                             }`}
                                         title={isCollapsed && !isMobile ? item.label : ""}
                                     >
-                                        <div className="flex items-center">
+                                        <div className={`flex ${isCollapsed && !isMobile ? 'items-center' : 'items-start'}`}>
                                             <img
                                                 src={item.icon}
                                                 alt={item.alt}
-                                                className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'
+                                                className={`h-5 w-5 flex-shrink-0 ${isCollapsed && !isMobile ? '' : 'mr-3 mt-0.5'
                                                     } ${isParentMenuActive(item) ? 'scale-110' : ''}`}
                                             />
-                                            {(!isCollapsed || isMobile) && <span className="text-lg">{item.label}</span>}
+                                            {(!isCollapsed || isMobile) && <span className="text-lg text-left leading-tight">{item.label}</span>}
                                         </div>
                                         {(!isCollapsed || isMobile) && (
-                                            <div className="ml-2 transition-transform duration-300 ease-in-out">
+                                            <div className="ml-2 mt-0.5 flex-shrink-0 transition-transform duration-300 ease-in-out">
                                                 {expandedMenus[item.to] ? (
                                                     <ChevronUp className="h-4 w-4 transform rotate-0" />
                                                 ) : (
@@ -262,7 +262,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 <NavLink
                                     to={item.to}
                                     className={({ isActive }) =>
-                                        `flex items-center ${isCollapsed && !isMobile ? 'p-3 justify-center' : 'p-3'
+                                        `flex ${isCollapsed && !isMobile ? 'p-3 justify-center items-center' : 'p-3 items-start'
                                         } rounded-lg transition-all duration-300 ${isActive ? "bg-secondary font-bold text-white" : "hover:bg-hover"
                                         }`
                                     }
@@ -272,10 +272,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     <img
                                         src={item.icon}
                                         alt={item.alt}
-                                        className={`h-5 w-5 ${isCollapsed && !isMobile ? '' : 'mr-3'
+                                        className={`h-5 w-5 flex-shrink-0 ${isCollapsed && !isMobile ? '' : 'mr-3 mt-0.5'
                                             } ${location.pathname === item.to ? 'scale-110' : ''}`}
                                     />
-                                    {(!isCollapsed || isMobile) && <span className="text-lg">{item.label}</span>}
+                                    {(!isCollapsed || isMobile) && <span className="text-lg text-left leading-tight">{item.label}</span>}
                                 </NavLink>
                             )}
                         </div>
@@ -283,7 +283,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </nav>
             </div>
 
-            {/* Collapsed Mode Hover Popover - Moved Outside Sidebar */}
             {/* Collapsed Mode Hover Popover - Moved Outside Sidebar */}
             {isCollapsed && !isMobile && hoveredMenu && popoverPosition && (() => {
                 const currentItem = getCurrentHoveredItem();
