@@ -106,7 +106,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                             <div className="flex justify-end gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-6 py-2 rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-6 py-2 rounded-lg border border-primary text-textColor hover:bg-gray/10 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isLoggingOut}
                                 >
                                     No, Cancel

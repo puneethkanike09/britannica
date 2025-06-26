@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Loader2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
 import loginImage from "../assets/loginImage.png";
+
+const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0 },
+};
+
+const modalVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 50 },
+    visible: { opacity: 1, scale: 1, y: 0 },
+    exit: { opacity: 0, scale: 0.8, y: 50 },
+};
 
 interface SchoolFormData {
     schoolName: string;
@@ -34,6 +46,8 @@ const EducatorRegistration = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isSuccessVisible, setIsSuccessVisible] = useState(false);
 
     const [schoolData, setSchoolData] = useState<SchoolFormData>({
         schoolName: "",
@@ -262,6 +276,24 @@ const EducatorRegistration = () => {
         setCurrentStep(1);
     };
 
+    const handleCloseSuccess = () => {
+        setIsSuccessVisible(false);
+    };
+
+    const handleSuccessAnimationComplete = () => {
+        if (!isSuccessVisible) {
+            setShowSuccessModal(false);
+            navigate("/educator-login");
+        }
+    };
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isSubmitting) return;
+        if (e.target === e.currentTarget) {
+            handleCloseSuccess();
+        }
+    };
+
     const handleRegister = async () => {
         if (!validateStep2()) return;
 
@@ -270,13 +302,14 @@ const EducatorRegistration = () => {
             new Promise((resolve) => {
                 setTimeout(() => {
                     resolve("Registration successful!");
+                    setShowSuccessModal(true);
+                    setIsSuccessVisible(true);
                 }, 2000);
             }),
             {
                 loading: "Registering school...",
                 success: () => {
-                    navigate("/educator-login");
-                    return "School registered successfully! Please login to continue.";
+                    return "School registered successfully!";
                 },
                 error: "Registration failed. Please try again.",
             }
@@ -315,7 +348,7 @@ const EducatorRegistration = () => {
                                 </div>
 
                                 {/* Progress Bar */}
-                                <div className="absolute left-18 right-20 top-4 h-0.5 bg-gray-300 z-0">
+                                <div className="absolute left-[75px] right-[85px] top-4 h-0.5 bg-gray-300 z-0">
                                     <div
                                         className={`h-full transition-all duration-300 ${currentStep >= 2 ? "bg-primary" : "bg-gray"
                                             }`}
@@ -340,7 +373,6 @@ const EducatorRegistration = () => {
                                 </div>
                             </div>
                         </div>
-
 
                         <motion.div
                             key={currentStep}
@@ -703,6 +735,55 @@ const EducatorRegistration = () => {
                 className="hidden lg:block fixed top-0 right-0 h-full w-[46%] bg-cover bg-center"
                 style={{ backgroundImage: `url(${loginImage})` }}
             />
+
+            {/* Success Modal */}
+            <AnimatePresence onExitComplete={handleSuccessAnimationComplete}>
+                {showSuccessModal && isSuccessVisible && (
+                    <motion.div
+                        className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
+                        onClick={handleBackdropClick}
+                        variants={backdropVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        transition={{ duration: 0.1, ease: "easeOut" }}
+                    >
+                        <motion.div
+                            className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-8"
+                            variants={modalVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
+                                <h2 className="text-3xl font-bold text-textColor">
+                                    Registration Submitted
+                                </h2>
+                                <button
+                                    onClick={handleCloseSuccess}
+                                    className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isSubmitting}
+                                >
+                                    <X className="h-7 w-7" />
+                                </button>
+                            </div>
+                            <div className="flex-1 px-8 py-6 text-center">
+                                <p className="text-textColor text-lg mb-8">
+                                    An email has been sent to the admin for approval. You will be notified once it's verified.
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseSuccess}
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

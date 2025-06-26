@@ -252,7 +252,7 @@ const AdminLogin = () => {
                             </button>
                         </div> */}
 
-                        <div className="flex justify-center mt-10 w-full">
+                        <div className="flex justify-start mt-10 w-full">
                             <button
                                 type="submit"
                                 className="bg-primary hover:bg-hover text-white px-6 py-3 rounded-lg font-bold cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"

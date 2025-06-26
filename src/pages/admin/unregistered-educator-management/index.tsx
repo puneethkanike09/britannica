@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import DeleteIcon from "../../../assets/dashboard/Admin/unregistered-educator-management/delete.svg";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
 
@@ -123,7 +124,7 @@ const UnregisteredEducatorList: React.FC = () => {
                                                     onClick={() => handleDeleteEducator(educator)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
-                                                    <Trash2 className="h-4 w-4" />
+                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
                                                 </button>
                                             </div>

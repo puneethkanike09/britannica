@@ -134,10 +134,10 @@ const RegisteredEducatorList: React.FC = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => handleCancelEducator(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                 >
                                                     <X className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">Cancel</span>
+                                                    <span className="hidden md:inline font-bold">Reject</span>
                                                 </button>
                                             </div>
                                         </td>
