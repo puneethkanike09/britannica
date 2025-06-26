@@ -7,18 +7,9 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
 import loginImage from "../assets/loginImage.png";
+import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 
-const backdropVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 },
-};
 
-const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: 50 },
-    visible: { opacity: 1, scale: 1, y: 0 },
-    exit: { opacity: 0, scale: 0.8, y: 50 },
-};
 
 interface SchoolFormData {
     schoolName: string;

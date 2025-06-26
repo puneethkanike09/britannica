@@ -45,8 +45,8 @@ export default function FlipCards() {
             title: "Design Your Path",
             icon: DesignIcon,
             iconSize: {
-                width: { mobile: '40px', tablet: '46px', desktop: '52px' },
-                height: { mobile: '40px', tablet: '46px', desktop: '52px' }
+                width: { mobile: '40px', tablet: '46px', desktop: '45px' },
+                height: { mobile: '40px', tablet: '46px', desktop: '45px' }
             },
             image: Image3,
             backText:
