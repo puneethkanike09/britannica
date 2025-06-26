@@ -9,8 +9,6 @@ import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-j
 import loginImage from "../assets/loginImage.png";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 
-
-
 interface SchoolFormData {
     schoolName: string;
     emailAddress: string;
@@ -29,7 +27,7 @@ interface EducatorFormData {
     lastName: string;
     educatorEmail: string;
     educatorPhone: string;
-
+    loginId: string;
 }
 
 const EducatorRegistration = () => {
@@ -57,6 +55,7 @@ const EducatorRegistration = () => {
         lastName: "",
         educatorEmail: "",
         educatorPhone: "",
+        loginId: "",
     });
 
     const [errors, setErrors] = useState<Partial<SchoolFormData & EducatorFormData>>({});
@@ -70,7 +69,6 @@ const EducatorRegistration = () => {
             case "country":
             case "firstName":
             case "lastName":
-            case "department":
                 return value.replace(/[^a-zA-Z\s']/g, "").slice(0, 50);
             case "emailAddress":
             case "educatorEmail":
@@ -81,8 +79,8 @@ const EducatorRegistration = () => {
             case "pincode":
                 return value.replace(/[^0-9]/g, "").slice(0, 10);
             case "schoolCode":
-            case "position":
-                return value.replace(/[^a-zA-Z0-9\s]/g, "").slice(0, 30);
+            case "loginId":
+                return value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
             default:
                 return value;
         }
@@ -234,6 +232,13 @@ const EducatorRegistration = () => {
             }
         }
 
+        if (!educatorData.loginId.trim()) {
+            newErrors.loginId = "Login ID is required";
+            isValid = false;
+        } else if (!/^[a-zA-Z0-9]{3,30}$/.test(educatorData.loginId)) {
+            newErrors.loginId = "Login ID must be 3-30 alphanumeric characters";
+            isValid = false;
+        }
 
         setErrors(newErrors);
         return isValid;
@@ -327,6 +332,8 @@ const EducatorRegistration = () => {
                                             }`}
                                         style={{ width: currentStep >= 2 ? "100%" : "0%" }}
                                     />
+
+
                                 </div>
 
                                 {/* Step 2 */}
@@ -360,6 +367,24 @@ const EducatorRegistration = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
+                                                School Code<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="schoolCode"
+                                                value={schoolData.schoolCode}
+                                                onChange={handleSchoolInputChange}
+                                                placeholder="Enter School Code"
+                                                maxLength={30}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.schoolCode && (
+                                                <p className="text-red text-sm mt-1">{errors.schoolCode}</p>
+                                            )}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
                                                 School Name<span className="text-red">*</span>
                                             </label>
                                             <input
@@ -374,24 +399,6 @@ const EducatorRegistration = () => {
                                             />
                                             {errors.schoolName && (
                                                 <p className="text-red text-sm mt-1">{errors.schoolName}</p>
-                                            )}
-                                        </div>
-                                        <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
-                                                Email Address
-                                            </label>
-                                            <input
-                                                type="email"
-                                                name="emailAddress"
-                                                value={schoolData.emailAddress}
-                                                onChange={handleSchoolInputChange}
-                                                placeholder="Enter Email Address"
-                                                maxLength={100}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.emailAddress ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
-                                                disabled={isSubmitting}
-                                            />
-                                            {errors.emailAddress && (
-                                                <p className="text-red text-sm mt-1">{errors.emailAddress}</p>
                                             )}
                                         </div>
                                     </div>
@@ -416,20 +423,20 @@ const EducatorRegistration = () => {
                                         </div>
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
-                                                School Code<span className="text-red">*</span>
+                                                Email Address
                                             </label>
                                             <input
-                                                type="text"
-                                                name="schoolCode"
-                                                value={schoolData.schoolCode}
+                                                type="email"
+                                                name="emailAddress"
+                                                value={schoolData.emailAddress}
                                                 onChange={handleSchoolInputChange}
-                                                placeholder="Enter School Code"
-                                                maxLength={30}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                placeholder="Enter Email Address"
+                                                maxLength={100}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.emailAddress ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
-                                            {errors.schoolCode && (
-                                                <p className="text-red text-sm mt-1">{errors.schoolCode}</p>
+                                            {errors.emailAddress && (
+                                                <p className="text-red text-sm mt-1">{errors.emailAddress}</p>
                                             )}
                                         </div>
                                     </div>
@@ -533,7 +540,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Pincode"
                                                 maxLength={10}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
@@ -591,6 +598,23 @@ const EducatorRegistration = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
+                                                Educator Phone
+                                            </label>
+                                            <PhoneInput
+                                                international
+                                                defaultCountry="IN"
+                                                value={educatorData.educatorPhone}
+                                                onChange={handleEducatorPhoneChange}
+                                                placeholder="Enter Educator Phone"
+                                                className={`phone-input-container ${errors.educatorPhone ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.educatorPhone && (
+                                                <p className="text-red text-sm mt-1">{errors.educatorPhone}</p>
+                                            )}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
                                                 Educator Email<span className="text-red">*</span>
                                             </label>
                                             <input
@@ -607,26 +631,28 @@ const EducatorRegistration = () => {
                                                 <p className="text-red text-sm mt-1">{errors.educatorEmail}</p>
                                             )}
                                         </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
-                                                Educator Phone
+                                                Login ID<span className="text-red">*</span>
                                             </label>
-                                            <PhoneInput
-                                                international
-                                                defaultCountry="IN"
-                                                value={educatorData.educatorPhone}
-                                                onChange={handleEducatorPhoneChange}
-                                                placeholder="Enter Educator Phone"
-                                                className={`phone-input-container ${errors.educatorPhone ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                            <input
+                                                type="text"
+                                                name="loginId"
+                                                value={educatorData.loginId}
+                                                onChange={handleEducatorInputChange}
+                                                placeholder="Enter Login ID"
+                                                maxLength={30}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
-                                            {errors.educatorPhone && (
-                                                <p className="text-red text-sm mt-1">{errors.educatorPhone}</p>
+                                            {errors.loginId && (
+                                                <p className="text-red text-sm mt-1">{errors.loginId}</p>
                                             )}
                                         </div>
                                     </div>
-
-
 
                                     <div className="flex gap-6 mt-12">
                                         <button
@@ -649,7 +675,6 @@ const EducatorRegistration = () => {
                                             )}
                                         </button>
                                     </div>
-
                                 </div>
                             )}
                         </motion.div>
