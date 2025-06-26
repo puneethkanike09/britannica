@@ -267,8 +267,9 @@ const EducatorLogin = () => {
                             </button>
                         </div>
                         <div className="text-left mt-5">
-                            <Link to={'/educator-register'} className="text-textColor">
-                                Don't have an account? <span className="text-primary hover:underline cursor-pointer font-bold">Register here</span>
+                            Don't have an account?{' '}
+                            <Link to="/educator-register" className="text-primary hover:underline cursor-pointer font-bold">
+                                Please Register here ...
                             </Link>
                         </div>
                     </form>

@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import BritannicaHeroSection from '../components/common/Header';
 import FlipCards from '../components/common/Footer';
 import ScrollingBanner from '../components/common/Scroller';
+import bgImage from '../../../assets/dashboard/Educator/home-page/bg.jpg'
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -245,7 +246,15 @@ const EducatorDashboard = () => {
         <>
             <Topbar />
             <BritannicaHeroSection />
-            <div className="relative bg-fourth py-28">
+            <div
+                className="relative py-28"
+                style={{
+                    backgroundImage: `url(${bgImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
+            >
                 <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-7xl mx-auto">
                     <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-4xl mb-8">
                         <Select
@@ -324,7 +333,7 @@ const EducatorDashboard = () => {
                     )}
 
                     {/* Inspirational Quote Section */}
-                    <div className="w-ful pt-6 text-center">
+                    <div className="w-full pt-6 text-center">
                         <p className="text-lg text-textColor font-bold italic leading-relaxed max-w-4xl mx-auto">
                             "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
                         </p>

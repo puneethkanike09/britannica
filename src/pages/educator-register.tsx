@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Loader2, X } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -38,8 +38,7 @@ interface EducatorFormData {
     lastName: string;
     educatorEmail: string;
     educatorPhone: string;
-    position: string;
-    department: string;
+
 }
 
 const EducatorRegistration = () => {
@@ -67,8 +66,6 @@ const EducatorRegistration = () => {
         lastName: "",
         educatorEmail: "",
         educatorPhone: "",
-        position: "",
-        department: "",
     });
 
     const [errors, setErrors] = useState<Partial<SchoolFormData & EducatorFormData>>({});
@@ -246,21 +243,6 @@ const EducatorRegistration = () => {
             }
         }
 
-        if (!educatorData.position.trim()) {
-            newErrors.position = "Position is required";
-            isValid = false;
-        } else if (!/^[a-zA-Z0-9\s]{3,30}$/.test(educatorData.position)) {
-            newErrors.position = "Position must be 3-30 alphanumeric characters";
-            isValid = false;
-        }
-
-        if (!educatorData.department.trim()) {
-            newErrors.department = "Department is required";
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]{2,50}$/.test(educatorData.department.trim())) {
-            newErrors.department = "Department must be 2-50 letters only";
-            isValid = false;
-        }
 
         setErrors(newErrors);
         return isValid;
@@ -307,9 +289,9 @@ const EducatorRegistration = () => {
                 }, 2000);
             }),
             {
-                loading: "Registering school...",
+                loading: "Registering...",
                 success: () => {
-                    return "School registered successfully!";
+                    return "Registered successfully!";
                 },
                 error: "Registration failed. Please try again.",
             }
@@ -576,11 +558,6 @@ const EducatorRegistration = () => {
                                             Next
                                         </button>
                                     </div>
-                                    <div className="text-left mt-5">
-                                        <Link to={'/educator-login'} className="text-textColor">
-                                            Have an account? <span className="text-primary hover:underline cursor-pointer font-bold">Login here</span>
-                                        </Link>
-                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-6">
@@ -658,44 +635,7 @@ const EducatorRegistration = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
-                                                Position<span className="text-red">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="position"
-                                                value={educatorData.position}
-                                                onChange={handleEducatorInputChange}
-                                                placeholder="Enter Position"
-                                                maxLength={30}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.position ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
-                                                disabled={isSubmitting}
-                                            />
-                                            {errors.position && (
-                                                <p className="text-red text-sm mt-1">{errors.position}</p>
-                                            )}
-                                        </div>
-                                        <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
-                                                Department<span className="text-red">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="department"
-                                                value={educatorData.department}
-                                                onChange={handleEducatorInputChange}
-                                                placeholder="Enter Department"
-                                                maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.department ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
-                                                disabled={isSubmitting}
-                                            />
-                                            {errors.department && (
-                                                <p className="text-red text-sm mt-1">{errors.department}</p>
-                                            )}
-                                        </div>
-                                    </div>
+
 
                                     <div className="flex gap-6 mt-12">
                                         <button
@@ -718,11 +658,7 @@ const EducatorRegistration = () => {
                                             )}
                                         </button>
                                     </div>
-                                    <div className="text-left mt-5">
-                                        <Link to={'/educator-login'} className="text-textColor">
-                                            Have an account? <span className="text-primary hover:underline cursor-pointer font-bold">Login here</span>
-                                        </Link>
-                                    </div>
+
                                 </div>
                             )}
                         </motion.div>
@@ -756,28 +692,16 @@ const EducatorRegistration = () => {
                             exit="exit"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                                <h2 className="text-3xl font-bold text-textColor">
-                                    Registration Submitted
-                                </h2>
-                                <button
-                                    onClick={handleCloseSuccess}
-                                    className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                    disabled={isSubmitting}
-                                >
-                                    <X className="h-7 w-7" />
-                                </button>
-                            </div>
                             <div className="flex-1 px-8 py-6 text-center">
                                 <p className="text-textColor text-lg mb-8">
-                                    An email has been sent to the admin for approval. You will be notified once it's verified.
+                                    Your request has been sent to the Admin. You will receive a notification once it is approved.
                                 </p>
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
                                     className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
                                 >
-                                    Done
+                                    Ok
                                 </button>
                             </div>
                         </motion.div>
