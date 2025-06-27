@@ -657,7 +657,7 @@ const EducatorRegistration = () => {
                                     <div className="flex gap-6 mt-12">
                                         <button
                                             onClick={handlePrevious}
-                                            className={`border border-primary hover:bg-gray/10 text-textColor px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`border border-primary hover:bg-primary/10 text-textColor px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             <ChevronLeft className="w-4 h-4" />

@@ -244,7 +244,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                                         key={subItem.to}
                                                         to={subItem.to}
                                                         className={({ isActive }) =>
-                                                            `flex items-center p-3 pl-8 transition-all duration-300 rounded-md ${isActive || isSubmenuItemActive(subItem.to)
+                                                            `flex items-center p-3 pl-8 transition-all duration-300 rounded-lg ${isActive || isSubmenuItemActive(subItem.to)
                                                                 ? "bg-primary/50 font-bold text-white"
                                                                 : "hover:bg-primary/50 text-white"
                                                             }`
@@ -288,7 +288,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 const currentItem = getCurrentHoveredItem();
                 return currentItem?.submenu ? (
                     <div
-                        className="fixed z-[90] bg-white shadow-lg rounded-md p-1 min-w-[200px] py-1"
+                        className="fixed z-[90] bg-white shadow-lg rounded-lg p-1 min-w-[200px] py-1"
                         style={{
                             top: `${popoverPosition.top}px`,
                             left: `${popoverPosition.left}px`,
@@ -304,7 +304,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 key={subItem.to}
                                 to={subItem.to}
                                 className={({ isActive }) =>
-                                    `block px-4 py-2 text-sm transition-colors rounded-md duration-200 ${isActive || isSubmenuItemActive(subItem.to)
+                                    `block px-4 py-2 text-sm transition-colors rounded-lg duration-200 ${isActive || isSubmenuItemActive(subItem.to)
                                         ? "bg-secondary text-white font-medium"
                                         : "text-textColor hover:bg-third"
                                     }`

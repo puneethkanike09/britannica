@@ -89,7 +89,7 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-gray/10 ${isApproving ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isApproving ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isApproving}
                                 >
                                     No, Cancel

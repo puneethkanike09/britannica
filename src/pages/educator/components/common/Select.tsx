@@ -71,7 +71,7 @@ const Select: React.FC<SelectProps> = ({
                             <button
                                 key={option.value}
                                 onClick={() => handleOptionSelect(option.value)}
-                                className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer break-words leading-tight ${value === option.value ? 'bg-gray/10' : ''
+                                className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-primary/10 text-textColor cursor-pointer break-words leading-tight ${value === option.value ? 'bg-gray/10' : ''
                                     }`}
                                 role="option"
                                 aria-selected={value === option.value}

@@ -81,7 +81,7 @@ export default function DeletePblFileModal({ onClose, file, onFileDeleted }: Del
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-primary/10 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isDeleting}
                                 >
                                     No, Cancel

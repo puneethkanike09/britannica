@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
-import Loader from "../../../components/common/Loader";
-import ViewIcon from "../../../assets/dashboard/Admin/educator-management/view.svg";
+import { ChevronLeft, ChevronRight, Check, X, Eye, CheckSquare, Square } from "lucide-react";
 import ViewEducatorModal from "./modals/ViewEducatorModal";
-import ApproveEducatorModal from "./modals/ApproveEducatorModal"; // New modal import
-import RejectReasonModal from "./modals/RejectReasonModal"; // New modal import
+import ApproveEducatorModal from "./modals/ApproveEducatorModal";
+import RejectReasonModal from "./modals/RejectReasonModal";
+import Loader from "../../../components/common/Loader";
+import BulkActionToolbar from "./components/BulkActionToolbar";
+import BulkApproveModal from "./modals/BulkApproveModal";
+import BulkRejectModal from "./modals/BulkRejectModal";
 
 interface Educator {
     educator_id: string;
@@ -24,9 +26,14 @@ const RegisteredEducatorList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [educators, setEducators] = useState<Educator[]>([]);
+    const [selectedEducators, setSelectedEducators] = useState<Set<string>>(new Set());
+
+    // Modal states
     const [showViewModal, setShowViewModal] = useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
+    const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
+    const [showBulkRejectModal, setShowBulkRejectModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
 
     const itemsPerPage = 6;
@@ -34,9 +41,9 @@ const RegisteredEducatorList: React.FC = () => {
     // Dummy data for educators
     const dummyEducators: Educator[] = Array.from({ length: 15 }, (_, i) => ({
         educator_id: `educator-${i + 1}`,
-        name: `Educator ${i + 1}`,
-        school_name: `School ${Math.floor(i / 3) + 1} High School`,
-        login_id: `educator${i + 1}`,
+        name: `${['Amitha', 'Sagar', 'Vidya', 'Puneeth', 'Rajesh', 'Priya', 'Suresh Kumar Gowda', 'Kavya', 'Ravi', 'Deepa', 'Arun', 'Sneha', 'Kiran', 'Meera', 'Vinay'][i] || `Educator ${i + 1}`}`,
+        school_name: `${['Horizon Valley School', 'Lumina School', 'Spark Bridge Academy', 'Prism Path School', 'Golden Heights Academy'][i % 5]}`,
+        login_id: `${['Amitha123', 'Sagar123', 'vidya123', 'Puneeth123'][i] || `educator${i + 1}`}`,
         email: `educator${i + 1}@school.com`,
         phone: i === 0 ? "9740969649" : "",
         address_line_1: i === 0 ? "Bangalore, Karnataka" : "",
@@ -52,7 +59,7 @@ const RegisteredEducatorList: React.FC = () => {
         setTimeout(() => {
             setEducators(dummyEducators);
             setIsLoading(false);
-        }, 1000); // Simulate loading
+        }, 1000);
     }, []);
 
     // Calculate total pages
@@ -63,57 +70,104 @@ const RegisteredEducatorList: React.FC = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = educators.slice(indexOfFirstItem, indexOfLastItem);
 
+    // Selection handlers
+    const handleSelectAll = () => {
+        if (selectedEducators.size === currentItems.length) {
+            setSelectedEducators(new Set());
+        } else {
+            setSelectedEducators(new Set(currentItems.map(edu => edu.educator_id)));
+        }
+    };
+
+    const handleSelectEducator = (educatorId: string) => {
+        const newSelected = new Set(selectedEducators);
+        if (newSelected.has(educatorId)) {
+            newSelected.delete(educatorId);
+        } else {
+            newSelected.add(educatorId);
+        }
+        setSelectedEducators(newSelected);
+    };
+
+    const isAllSelected = currentItems.length > 0 && selectedEducators.size === currentItems.length;
+    const isIndeterminate = selectedEducators.size > 0 && selectedEducators.size < currentItems.length;
+
+    // Clear selections when page changes
+    useEffect(() => {
+        setSelectedEducators(new Set());
+    }, [currentPage]);
+
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Open Approve Educator Modal
+    // Single educator actions
     const openApproveEducatorModal = (educator: Educator) => {
         setSelectedEducator(educator);
         setShowApproveModal(true);
     };
 
-    // Open Reject Educator Modal
     const openRejectEducatorModal = (educator: Educator) => {
         setSelectedEducator(educator);
         setShowRejectModal(true);
     };
 
-    // Close Approve Educator Modal
-    const closeApproveEducatorModal = () => {
-        setShowApproveModal(false);
-        setSelectedEducator(null);
+    const openViewEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
+        setShowViewModal(true);
     };
 
-    // Close Reject Educator Modal
-    const closeRejectEducatorModal = () => {
-        setShowRejectModal(false);
-        setSelectedEducator(null);
+    // Bulk actions
+    const handleBulkApprove = () => {
+        setShowBulkApproveModal(true);
     };
 
-    // Handle Approve Educator
+    const handleBulkReject = () => {
+        setShowBulkRejectModal(true);
+    };
+
+    // Handle individual approve
     const handleApproveEducator = (educator_id: string) => {
         setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
         setShowApproveModal(false);
         setSelectedEducator(null);
     };
 
-    // Handle Reject Educator
+    // Handle individual reject
     const handleRejectEducator = (educator_id: string, reason: string) => {
-        console.log(`Rejected educator ${educator_id} with reason: ${reason}`); // Log reason for debugging
+        console.log(`Rejected educator ${educator_id} with reason: ${reason}`);
         setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
         setShowRejectModal(false);
         setSelectedEducator(null);
     };
 
-    // Open View Educator Modal
-    const openViewEducatorModal = (educator: Educator) => {
-        setSelectedEducator(educator);
-        setShowViewModal(true);
+    // Handle bulk approve complete
+    const handleBulkApproveComplete = (approvedIds: string[]) => {
+        setEducators(educators.filter(edu => !approvedIds.includes(edu.educator_id)));
+        setSelectedEducators(new Set());
+        setShowBulkApproveModal(false);
     };
 
-    // Close View Educator Modal
+    // Handle bulk reject complete
+    const handleBulkRejectComplete = (rejectedIds: string[], reason: string) => {
+        console.log(`Bulk rejected educators with reason: ${reason}`);
+        setEducators(educators.filter(edu => !rejectedIds.includes(edu.educator_id)));
+        setSelectedEducators(new Set());
+        setShowBulkRejectModal(false);
+    };
+
+    // Close modals
     const closeViewEducatorModal = () => {
         setShowViewModal(false);
+        setSelectedEducator(null);
+    };
+
+    const closeApproveEducatorModal = () => {
+        setShowApproveModal(false);
+        setSelectedEducator(null);
+    };
+
+    const closeRejectEducatorModal = () => {
+        setShowRejectModal(false);
         setSelectedEducator(null);
     };
 
@@ -142,23 +196,55 @@ const RegisteredEducatorList: React.FC = () => {
         return pageNumbers;
     };
 
+    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.educator_id));
+
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-secondary">Registered Educator List</h1>
             </div>
 
+            {/* Bulk Action Toolbar */}
+            {selectedEducators.size > 0 && (
+                <BulkActionToolbar
+                    selectedCount={selectedEducators.size}
+                    onBulkApprove={handleBulkApprove}
+                    onBulkReject={handleBulkReject}
+                    onClearSelection={() => setSelectedEducators(new Set())}
+                />
+            )}
+
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[800px]">
+                    <table className="w-full table-fixed min-w-[900px]">
                         <colgroup>
+                            <col className="w-15" />
                             <col className="w-48" />
                             <col className="w-48" />
                             <col className="w-48" />
-                            <col className="w-78" />
+                            <col className="w-96" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
+                                <th className="px-8 py-4 text-left border-r-1 border-white">
+                                    <div className="flex items-center justify-center">
+                                        <button
+                                            onClick={handleSelectAll}
+                                            className="text-white hover:text-gray-200 transition-colors"
+                                            disabled={isLoading || currentItems.length === 0}
+                                        >
+                                            {isAllSelected ? (
+                                                <CheckSquare className="h-5 w-5" />
+                                            ) : isIndeterminate ? (
+                                                <div className="h-5 w-5 border-2 border-white bg-white/20 rounded flex items-center justify-center">
+                                                    <Check className="h-3 w-3" />
+                                                </div>
+                                            ) : (
+                                                <Square className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Educator Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Login ID</th>
@@ -168,58 +254,82 @@ const RegisteredEducatorList: React.FC = () => {
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-16">
+                                    <td colSpan={5} className="px-8 py-16">
                                         <Loader message="Loading educator data..." />
                                     </td>
                                 </tr>
                             ) : educators.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-16 text-center text-textColor">
+                                    <td colSpan={5} className="px-8 py-16 text-center text-textColor">
                                         No educators found.
                                     </td>
                                 </tr>
                             ) : (
-                                currentItems.map((educator, index) => (
-                                    <tr key={educator.educator_id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{educator.name}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{educator.school_name}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{educator.login_id}</div>
-                                        </td>
-                                        <td className="px-8 py-4">
-                                            <div className="flex flex-nowrap gap-2">
-                                                <button
-                                                    onClick={() => openViewEducatorModal(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                    disabled={isLoading}
-                                                >
-                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">View</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openApproveEducatorModal(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                    disabled={isLoading}
-                                                >
-                                                    <Check className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">Approve</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openRejectEducatorModal(educator)}
-                                                    className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
-                                                    disabled={isLoading}
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                    <span className="hidden md:inline font-bold">Reject</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                currentItems.map((educator, index) => {
+                                    const isSelected = selectedEducators.has(educator.educator_id);
+                                    return (
+                                        <tr
+                                            key={educator.educator_id}
+                                            className={`
+                                                ${index % 2 === 1 ? "bg-sky-50" : "bg-white"}
+                                                ${isSelected ? "!font-bold" : ""}
+                                            `}
+                                        >
+                                            <td className="px-8 py-4">
+                                                <div className="flex items-center justify-center">
+                                                    <button
+                                                        onClick={() => handleSelectEducator(educator.educator_id)}
+                                                        className="text-textColor hover:text-primary transition-colors"
+                                                        disabled={isLoading}
+                                                    >
+                                                        {isSelected ? (
+                                                            <CheckSquare className="h-5 w-5 text-primary" />
+                                                        ) : (
+                                                            <Square className="h-5 w-5" />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">{educator.name}</div>
+                                            </td>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">{educator.school_name}</div>
+                                            </td>
+                                            <td className="px-8 py-4 break-all">
+                                                <div className="text-textColor">{educator.login_id}</div>
+                                            </td>
+                                            <td className="px-8 py-4">
+                                                <div className="flex flex-nowrap gap-2">
+                                                    <button
+                                                        onClick={() => openViewEducatorModal(educator)}
+                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <Eye className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">View</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openApproveEducatorModal(educator)}
+                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <Check className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">Approve</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openRejectEducatorModal(educator)}
+                                                        className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                        disabled={isLoading}
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                        <span className="hidden md:inline font-bold">Reject</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             )}
                         </tbody>
                     </table>
@@ -264,6 +374,7 @@ const RegisteredEducatorList: React.FC = () => {
                 )}
             </div>
 
+            {/* Modals */}
             {showViewModal && selectedEducator && (
                 <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
             )}
@@ -279,6 +390,21 @@ const RegisteredEducatorList: React.FC = () => {
                     onClose={closeRejectEducatorModal}
                     educator={selectedEducator}
                     onEducatorRejected={handleRejectEducator}
+                />
+            )}
+            {showBulkApproveModal && (
+                <BulkApproveModal
+                    onClose={() => setShowBulkApproveModal(false)}
+                    educators={selectedEducatorsList}
+                    onBulkApprove={handleBulkApproveComplete}
+                />
+            )}
+
+            {showBulkRejectModal && (
+                <BulkRejectModal
+                    onClose={() => setShowBulkRejectModal(false)}
+                    educators={selectedEducatorsList}
+                    onBulkReject={handleBulkRejectComplete}
                 />
             )}
         </div>
