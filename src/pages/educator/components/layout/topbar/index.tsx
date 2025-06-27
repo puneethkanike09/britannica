@@ -1,16 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
-import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo.png';
-import LogoutModal from './modals/LogoutModal';
-import { EDUCATOR_NAV_ITEMS } from '../../../../../config/constants/Educator/topbar';
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { LogOut, Menu, X, ChevronDown } from "lucide-react";
+import LogoIcon from "../../../../../assets/dashboard/Educator/home-page/logo.png";
+import LogoutModal from "./modals/LogoutModal";
+import UnregisterReasonModal from "./modals/UnregisterReasonModal";
+import { EDUCATOR_NAV_ITEMS } from "../../../../../config/constants/Educator/topbar";
 
 const Topbar: React.FC = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [showUnregisterModal, setShowUnregisterModal] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
+    const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
     const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
+    const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
     const resourcesDropdownRef = useRef<HTMLDivElement>(null);
+    const settingsDropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!isResourcesDropdownOpen) return;
@@ -24,20 +29,49 @@ const Topbar: React.FC = () => {
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isResourcesDropdownOpen]);
 
+    useEffect(() => {
+        if (!isSettingsDropdownOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                settingsDropdownRef.current &&
+                !settingsDropdownRef.current.contains(event.target as Node)
+            ) {
+                setIsSettingsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSettingsDropdownOpen]);
+
     const openLogoutModal = () => setShowLogoutModal(true);
     const closeLogoutModal = () => setShowLogoutModal(false);
+
+    const openUnregisterModal = () => setShowUnregisterModal(true);
+    const closeUnregisterModal = () => setShowUnregisterModal(false);
+
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
+    const handleUnregisterAccount = (reason: string) => {
+        console.log("Unregister account with reason:", reason);
+        setIsSettingsDropdownOpen(false);
+    };
+
     return (
         <>
-            <header className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}>
+            <header
+                className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}
+            >
                 {/* Logo */}
                 <Link to="/educator-dashboard" className="flex items-center gap-3 cursor-pointer">
                     <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] object-cover" />
@@ -47,18 +81,32 @@ const Topbar: React.FC = () => {
                 <nav className="hidden md:flex items-center gap-8">
                     {EDUCATOR_NAV_ITEMS.map((item) =>
                         item.dropdown ? (
-                            <div className="relative" ref={resourcesDropdownRef} key={item.label}>
+                            <div className="relative" ref={item.label === "Resources" ? resourcesDropdownRef : settingsDropdownRef} key={item.label}>
                                 <button
-                                    onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
+                                    onClick={() => item.label === "Resources" ? setIsResourcesDropdownOpen(!isResourcesDropdownOpen) : setIsSettingsDropdownOpen(!isSettingsDropdownOpen)}
                                     className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
                                 >
                                     {item.label}
-                                    <ChevronDown size={16} className={`transition-transform duration-300 ${isResourcesDropdownOpen ? 'rotate-180' : ''}`} />
+                                    <ChevronDown
+                                        size={16}
+                                        className={`transition-transform duration-300 ${item.label === "Resources" ? isResourcesDropdownOpen ? "rotate-180" : "" : isSettingsDropdownOpen ? "rotate-180" : ""}`}
+                                    />
                                 </button>
-                                {isResourcesDropdownOpen && (
-                                    <div className="absolute top-full left-0 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2">
-                                        {item.dropdown.map((sub) => (
-                                            sub.isExternal ? (
+                                {(item.label === "Resources" ? isResourcesDropdownOpen : isSettingsDropdownOpen) && (
+                                    <div className="absolute top-full left-0 mt-8 w-56 bg-white border border-third rounded-lg shadow-lg py-2">
+                                        {item.dropdown.map((sub) =>
+                                            sub.label === "Unregister Account" ? (
+                                                <button
+                                                    key={sub.label}
+                                                    onClick={() => {
+                                                        openUnregisterModal();
+                                                        setIsSettingsDropdownOpen(false);
+                                                    }}
+                                                    className="block cursor-pointer w-full text-left px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
+                                                >
+                                                    {sub.label}
+                                                </button>
+                                            ) : sub.isExternal ? (
                                                 <a
                                                     href={sub.to}
                                                     key={sub.label}
@@ -77,13 +125,13 @@ const Topbar: React.FC = () => {
                                                     {sub.label}
                                                 </Link>
                                             )
-                                        ))}
+                                        )}
                                     </div>
                                 )}
                             </div>
                         ) : (
                             <Link
-                                to={item.to || ''}
+                                to={item.to || ""}
                                 key={item.label}
                                 className="text-textColor hover:text-primary font-medium transition-colors duration-300"
                             >
@@ -91,27 +139,19 @@ const Topbar: React.FC = () => {
                             </Link>
                         )
                     )}
+
                     {/* Logout Button */}
                     <button
                         onClick={openLogoutModal}
                         className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
                     >
-                        <LogOut className='font-black' size={18} />
-                        <span className="hidden md:inline font-bold">Log out</span>
+                        <LogOut className="font-black" size={18} />
+                        Log out
                     </button>
                 </nav>
 
-                {/* Mobile Right Section - Logout Button + Menu Button */}
-                <div className="md:hidden flex items-center gap-2">
-                    {/* Mobile Logout Button (Icon only) */}
-                    <button
-                        onClick={openLogoutModal}
-                        className="p-2 text-textColor hover:text-primary transition-colors duration-300"
-                        aria-label="Log out"
-                    >
-                        <LogOut size={20} />
-                    </button>
-
+                {/* Mobile Right Section - Menu Button Only */}
+                <div className="md:hidden flex items-center">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMobileMenu}
@@ -122,65 +162,85 @@ const Topbar: React.FC = () => {
                 </div>
 
                 {/* Mobile Navigation */}
-                <div className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div
+                    className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+                        }`}
+                >
                     <nav className="flex flex-col p-6 gap-2">
-                        {/* About us */}
-                        <Link
-                            to=""
-                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
-                            onClick={closeMobileMenu}
-                        >
-                            About us
-                        </Link>
-
-                        {/* Resources */}
-                        <div className="py-3 px-4">
-                            <button
-                                onClick={() => setIsMobileResourcesOpen(!isMobileResourcesOpen)}
-                                className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
-                            >
-                                Resources
-                                <ChevronDown size={16} className={`transition-transform duration-300 ${isMobileResourcesOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            {/* Mobile Resources Submenu */}
-                            {isMobileResourcesOpen && (
-                                <div className="mt-3 ml-4 space-y-2">
-                                    {EDUCATOR_NAV_ITEMS.find(item => item.label === 'Resources')?.dropdown?.map((sub) => (
-                                        sub.isExternal ? (
-                                            <a
-                                                href={sub.to}
-                                                key={sub.label}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
-                                                onClick={closeMobileMenu}
-                                            >
-                                                {sub.label}
-                                            </a>
-                                        ) : (
-                                            <Link
-                                                to={sub.to}
-                                                key={sub.label}
-                                                className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
-                                                onClick={closeMobileMenu}
-                                            >
-                                                {sub.label}
-                                            </Link>
-                                        )
-                                    ))}
+                        {EDUCATOR_NAV_ITEMS.map((item) =>
+                            item.dropdown ? (
+                                <div className="py-3 px-4" key={item.label}>
+                                    <button
+                                        onClick={() => item.label === "Resources" ? setIsMobileResourcesOpen(!isMobileResourcesOpen) : setIsMobileSettingsOpen(!isMobileSettingsOpen)}
+                                        className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
+                                    >
+                                        {item.label}
+                                        <ChevronDown
+                                            size={16}
+                                            className={`transition-transform duration-300 ${item.label === "Resources" ? isMobileResourcesOpen ? "rotate-180" : "" : isMobileSettingsOpen ? "rotate-180" : ""}`}
+                                        />
+                                    </button>
+                                    {(item.label === "Resources" ? isMobileResourcesOpen : isMobileSettingsOpen) && (
+                                        <div className="mt-3 ml-4 space-y-2">
+                                            {item.dropdown.map((sub) =>
+                                                sub.label === "Unregister Account" ? (
+                                                    <button
+                                                        key={sub.label}
+                                                        onClick={() => {
+                                                            openUnregisterModal();
+                                                            closeMobileMenu();
+                                                        }}
+                                                        className="block w-full text-left py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
+                                                    >
+                                                        {sub.label}
+                                                    </button>
+                                                ) : sub.isExternal ? (
+                                                    <a
+                                                        href={sub.to}
+                                                        key={sub.label}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
+                                                        onClick={closeMobileMenu}
+                                                    >
+                                                        {sub.label}
+                                                    </a>
+                                                ) : (
+                                                    <Link
+                                                        to={sub.to}
+                                                        key={sub.label}
+                                                        className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
+                                                        onClick={closeMobileMenu}
+                                                    >
+                                                        {sub.label}
+                                                    </Link>
+                                                )
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-
-                        {/* Support */}
-                        <Link
-                            to=""
-                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
-                            onClick={closeMobileMenu}
+                            ) : (
+                                <Link
+                                    to={item.to || ""}
+                                    key={item.label}
+                                    className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
+                                    onClick={closeMobileMenu}
+                                >
+                                    {item.label}
+                                </Link>
+                            )
+                        )}
+                        {/* Mobile Logout Button */}
+                        <button
+                            onClick={() => {
+                                openLogoutModal();
+                                closeMobileMenu();
+                            }}
+                            className="flex items-center gap-2 w-full py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
                         >
-                            Support
-                        </Link>
+                            <LogOut size={16} />
+                            Log out
+                        </button>
                     </nav>
                 </div>
             </header>
@@ -193,6 +253,9 @@ const Topbar: React.FC = () => {
             )}
 
             {showLogoutModal && <LogoutModal onClose={closeLogoutModal} />}
+            {showUnregisterModal && (
+                <UnregisterReasonModal onClose={closeUnregisterModal} onUnregister={handleUnregisterAccount} />
+            )}
         </>
     );
 };

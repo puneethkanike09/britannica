@@ -1,5 +1,3 @@
-// Nav items for Educator Topbar
-
 import { EducatorNavItem } from "../../../types/educator";
 
 export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
@@ -17,5 +15,11 @@ export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
     {
         label: 'Support',
         to: ''
+    },
+    {
+        label: 'Settings',
+        dropdown: [
+            { label: "Unregister Account", to: "#", isExternal: false }
+        ]
     }
 ];
