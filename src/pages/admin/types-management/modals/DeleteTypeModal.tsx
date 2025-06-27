@@ -87,17 +87,17 @@ export default function DeleteTypeModal({ onClose, type, onTypeDeleted }: Delete
                                 Are you sure you want to delete the type <span className="font-bold">{type.name}</span>?
                             </p>
 
-                            <div className="flex justify-end gap-4">
+                            <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-6 py-2 rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-gray/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isDeleting}
                                 >
                                     No, Cancel
                                 </button>
                                 <button
                                     onClick={handleDelete}
-                                    className={`px-6 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 flex items-center justify-center gap-2 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-8 py-3 font-bold rounded-lg bg-red-600 text-white hover:bg-red-700 flex items-center justify-center gap-2 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isDeleting}
                                 >
                                     {isDeleting ? (

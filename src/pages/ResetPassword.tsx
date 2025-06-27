@@ -221,7 +221,7 @@ const ResetPassword = () => {
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
-                                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer"
                                 >
                                     Done
                                 </button>

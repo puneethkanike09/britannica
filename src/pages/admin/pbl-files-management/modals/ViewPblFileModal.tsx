@@ -37,6 +37,9 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
         return () => document.removeEventListener('keydown', handleEscKey);
     }, []);
 
+    // Mock file size (replace with actual file size logic if available)
+    const fileSize = file.file ? "120.094KB" : "-";
+
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
@@ -88,16 +91,16 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                 {/* Second Row */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                     <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                        <div className="text-textColor mb-2">File</div>
+                                        <div className="text-primary font-medium break-all">{file.name || '-'} {fileSize}</div>
+                                    </div>
+                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                         <div className="text-textColor mb-2">Name</div>
                                         <div className="text-primary font-medium break-all">{file.name || '-'}</div>
                                     </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                    <div className="p-6 border-b border-lightGray md:border-b-0">
                                         <div className="text-textColor mb-2">Description</div>
                                         <div className="text-primary font-medium break-all">{file.description || '-'}</div>
-                                    </div>
-                                    <div className="p-6 border-b border-lightGray md:border-b-0">
-                                        <div className="text-textColor mb-2">File ID</div>
-                                        <div className="text-primary font-medium break-all">{file.file_id || '-'}</div>
                                     </div>
                                 </div>
                             </div>

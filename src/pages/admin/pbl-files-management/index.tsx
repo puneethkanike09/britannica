@@ -35,7 +35,7 @@ const PblFileManagement: React.FC = () => {
 
     const dummyFiles: PblFile[] = Array.from({ length: 12 }, (_, i) => ({
         file_id: `file-${i + 1}`,
-        name: `File ${i + 1}.pdf`,
+        name: `File ${i + 1}`,
         description: `Description for File ${i + 1} details.`,
         grade: `Grade ${i % 3 + 1}`,
         theme: `Theme ${i % 4 + 1}`,
@@ -126,7 +126,7 @@ const PblFileManagement: React.FC = () => {
                 <button
                     onClick={openAddPblFileModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddPblFileIcon} alt="Add PBL File" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add PBL File</span>
@@ -138,26 +138,30 @@ const PblFileManagement: React.FC = () => {
                     <table className="w-full min-w-[800px]">
                         <colgroup>
                             <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[50%] min-w-[300px]" />
-                            <col className="w-[30%] min-w-[240px]" />
+                            <col className="w-[15%] min-w-[120px]" />
+                            <col className="w-[20%] min-w-[160px]" />
+                            <col className="w-[20%] min-w-[160px]" />
+                            <col className="w-[25%] min-w-[200px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Description</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Grade</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Theme</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Type</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={3} className="px-8 py-16">
+                                    <td colSpan={5} className="px-8 py-16">
                                         <Loader message="Loading file data..." />
                                     </td>
                                 </tr>
                             ) : files.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3} className="px-8 py-16 text-center text-textColor">
+                                    <td colSpan={5} className="px-8 py-16 text-center text-textColor">
                                         No files found.
                                     </td>
                                 </tr>
@@ -168,7 +172,13 @@ const PblFileManagement: React.FC = () => {
                                             <div className="text-textColor">{file.name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{file.description}</div>
+                                            <div className="text-textColor">{file.grade}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{file.theme}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{file.type}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

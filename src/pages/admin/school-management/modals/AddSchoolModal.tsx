@@ -423,7 +423,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                     <button
                                         type="button"
                                         onClick={handleAddSchool}
-                                        className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? (

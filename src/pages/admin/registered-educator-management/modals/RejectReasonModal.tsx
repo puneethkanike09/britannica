@@ -2,15 +2,15 @@ import { X, Loader2 } from "lucide-react";
 import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
+import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
-
-interface UnregisterReasonModalProps {
+interface RejectReasonModalProps {
     onClose: () => void;
-    onUnregister: (reason: string) => void;
+    educator: { educator_id: string; name: string };
+    onEducatorRejected: (educator_id: string, reason: string) => void;
 }
 
-export default function UnregisterReasonModal({ onClose, onUnregister }: UnregisterReasonModalProps) {
+export default function RejectReasonModal({ onClose, educator, onEducatorRejected }: RejectReasonModalProps) {
     const [reason, setReason] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +44,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
 
     const validateForm = () => {
         if (!reason.trim()) {
-            setError("Reason for unregistration is required");
+            setError("Reason for rejection is required");
             return false;
         }
         if (reason.length < 10) {
@@ -61,19 +61,18 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
     const handleSubmit = () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation
             setTimeout(() => {
                 try {
-                    onUnregister(reason.trim());
-                    toast.success("Unregistration request submitted successfully!");
+                    onEducatorRejected(educator.educator_id, reason.trim());
+                    toast.success(`${educator.name}'s registration has been rejected`);
                     setIsSubmitting(false);
                     handleClose();
                 } catch (error) {
                     console.error(error);
-                    toast.error("Failed to submit unregistration request");
+                    toast.error("Failed to reject educator");
                     setIsSubmitting(false);
                 }
-            }, 1000); // Simulate delay
+            }, 1000); // Simulate async operation
         }
     };
 
@@ -99,7 +98,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
                     >
                         {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                            <h2 className="text-3xl font-bold text-secondary">Unregister Account</h2>
+                            <h2 className="text-3xl font-bold text-secondary">Reject Educator</h2>
                             <button
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
@@ -114,13 +113,13 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
                             <div className="space-y-6">
                                 <div className="mb-3 relative">
                                     <label className="block text-textColor text-base mb-2">
-                                        Reason for Unregistration<span className="text-red">*</span>
+                                        Reason for Rejection<span className="text-red">*</span>
                                     </label>
                                     <textarea
                                         name="reason"
                                         value={reason}
                                         onChange={handleInputChange}
-                                        placeholder="Please provide the reason for unregistering your account"
+                                        placeholder="Please provide the reason for rejecting the educator's registration"
                                         maxLength={200}
                                         rows={4}
                                         className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}

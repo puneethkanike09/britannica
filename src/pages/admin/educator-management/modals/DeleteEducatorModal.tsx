@@ -84,7 +84,7 @@
 //                                 Are you sure you want to delete educator <span className="font-medium text-darkGray">{educator.teacher_name}</span>? This action cannot be undone.
 //                             </p>
 
-//                             <div className="flex justify-end gap-4">
+//                             <div className="flex justify-start gap-4">
 //                                 <button
 //                                     onClick={handleClose}
 //                                     className="btn btn-secondary"

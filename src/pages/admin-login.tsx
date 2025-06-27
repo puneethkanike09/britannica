@@ -342,7 +342,7 @@ const AdminLogin = () => {
                                         <button
                                             type="button"
                                             onClick={handleForgotPasswordSubmit}
-                                            className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                                                 }`}
                                             disabled={isSubmitting}
                                         >
@@ -388,7 +388,7 @@ const AdminLogin = () => {
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
-                                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer"
                                 >
                                     Done
                                 </button>

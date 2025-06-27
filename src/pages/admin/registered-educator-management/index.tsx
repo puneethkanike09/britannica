@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 import Loader from "../../../components/common/Loader";
-import toast from "react-hot-toast";
 import ViewIcon from "../../../assets/dashboard/Admin/educator-management/view.svg";
-import ViewEducatorModal from "./modals/ViewThemeModal";
+import ViewEducatorModal from "./modals/ViewEducatorModal";
+import ApproveEducatorModal from "./modals/ApproveEducatorModal"; // New modal import
+import RejectReasonModal from "./modals/RejectReasonModal"; // New modal import
 
 interface Educator {
     educator_id: string;
     name: string;
     school_name: string;
     login_id: string;
+    email?: string;
+    phone?: string;
+    address_line_1?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    pincode?: string;
 }
 
 const RegisteredEducatorList: React.FC = () => {
@@ -17,15 +25,25 @@ const RegisteredEducatorList: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [educators, setEducators] = useState<Educator[]>([]);
     const [showViewModal, setShowViewModal] = useState(false);
+    const [showApproveModal, setShowApproveModal] = useState(false);
+    const [showRejectModal, setShowRejectModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
 
     const itemsPerPage = 6;
+
     // Dummy data for educators
     const dummyEducators: Educator[] = Array.from({ length: 15 }, (_, i) => ({
         educator_id: `educator-${i + 1}`,
         name: `Educator ${i + 1}`,
         school_name: `School ${Math.floor(i / 3) + 1} High School`,
-        login_id: `educator${i + 1}@school.com`,
+        login_id: `educator${i + 1}`,
+        email: `educator${i + 1}@school.com`,
+        phone: i === 0 ? "9740969649" : "",
+        address_line_1: i === 0 ? "Bangalore, Karnataka" : "",
+        city: i === 0 ? "Bangalore" : "",
+        state: i === 0 ? "Karnataka" : "",
+        country: i === 0 ? "India" : "",
+        pincode: i === 0 ? "573468" : "",
     }));
 
     // Load dummy educators on mount
@@ -48,16 +66,43 @@ const RegisteredEducatorList: React.FC = () => {
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Handle Approve Educator
-    const handleApproveEducator = (educator: Educator) => {
-        setEducators(educators.filter((edu) => edu.educator_id !== educator.educator_id));
-        toast.success(`${educator.name} has been approved successfully`);
+    // Open Approve Educator Modal
+    const openApproveEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
+        setShowApproveModal(true);
     };
 
-    // Handle Cancel Educator
-    const handleCancelEducator = (educator: Educator) => {
-        setEducators(educators.filter((edu) => edu.educator_id !== educator.educator_id));
-        toast.error(`${educator.name}'s registration has been cancelled`);
+    // Open Reject Educator Modal
+    const openRejectEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
+        setShowRejectModal(true);
+    };
+
+    // Close Approve Educator Modal
+    const closeApproveEducatorModal = () => {
+        setShowApproveModal(false);
+        setSelectedEducator(null);
+    };
+
+    // Close Reject Educator Modal
+    const closeRejectEducatorModal = () => {
+        setShowRejectModal(false);
+        setSelectedEducator(null);
+    };
+
+    // Handle Approve Educator
+    const handleApproveEducator = (educator_id: string) => {
+        setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
+        setShowApproveModal(false);
+        setSelectedEducator(null);
+    };
+
+    // Handle Reject Educator
+    const handleRejectEducator = (educator_id: string, reason: string) => {
+        console.log(`Rejected educator ${educator_id} with reason: ${reason}`); // Log reason for debugging
+        setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
+        setShowRejectModal(false);
+        setSelectedEducator(null);
     };
 
     // Open View Educator Modal
@@ -156,7 +201,7 @@ const RegisteredEducatorList: React.FC = () => {
                                                     <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => handleApproveEducator(educator)}
+                                                    onClick={() => openApproveEducatorModal(educator)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
@@ -164,7 +209,7 @@ const RegisteredEducatorList: React.FC = () => {
                                                     <span className="hidden md:inline font-bold">Approve</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => handleCancelEducator(educator)}
+                                                    onClick={() => openRejectEducatorModal(educator)}
                                                     className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
@@ -221,6 +266,20 @@ const RegisteredEducatorList: React.FC = () => {
 
             {showViewModal && selectedEducator && (
                 <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
+            )}
+            {showApproveModal && selectedEducator && (
+                <ApproveEducatorModal
+                    onClose={closeApproveEducatorModal}
+                    educator={selectedEducator}
+                    onEducatorApproved={handleApproveEducator}
+                />
+            )}
+            {showRejectModal && selectedEducator && (
+                <RejectReasonModal
+                    onClose={closeRejectEducatorModal}
+                    educator={selectedEducator}
+                    onEducatorRejected={handleRejectEducator}
+                />
             )}
         </div>
     );

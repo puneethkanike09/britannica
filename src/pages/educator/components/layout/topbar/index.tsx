@@ -143,7 +143,7 @@ const Topbar: React.FC = () => {
                     {/* Logout Button */}
                     <button
                         onClick={openLogoutModal}
-                        className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                        className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer flex items-center gap-2"
                     >
                         <LogOut className="font-black" size={18} />
                         Log out

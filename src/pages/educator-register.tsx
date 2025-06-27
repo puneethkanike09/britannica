@@ -550,7 +550,7 @@ const EducatorRegistration = () => {
                                     <div className="flex justify-start mt-12">
                                         <button
                                             onClick={handleNext}
-                                            className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             Next
@@ -657,7 +657,7 @@ const EducatorRegistration = () => {
                                     <div className="flex gap-6 mt-12">
                                         <button
                                             onClick={handlePrevious}
-                                            className={`border border-primary hover:bg-gray/10 text-textColor px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`border border-primary hover:bg-gray/10 text-textColor px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             <ChevronLeft className="w-4 h-4" />
@@ -665,7 +665,7 @@ const EducatorRegistration = () => {
                                         </button>
                                         <button
                                             onClick={handleRegister}
-                                            className={`bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             {isSubmitting ? (
@@ -715,7 +715,7 @@ const EducatorRegistration = () => {
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
-                                    className="bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium cursor-pointer"
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer"
                                 >
                                     Ok
                                 </button>

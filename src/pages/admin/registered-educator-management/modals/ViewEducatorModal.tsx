@@ -9,6 +9,13 @@ interface Educator {
     name: string;
     school_name: string;
     login_id: string;
+    email?: string;
+    phone?: string;
+    address_line_1?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    pincode?: string;
 }
 
 interface EducatorActionModalProps {
@@ -21,10 +28,15 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
         educator_id: educator.educator_id,
         firstName: educator.name.split(' ')[0] || '',
         lastName: educator.name.split(' ').slice(1).join(' ') || '',
-        email: educator.login_id || '',
-        phone: '',
+        email: educator.email || educator.login_id || '',
+        phone: educator.phone || '',
         loginId: educator.login_id || '',
         schoolName: educator.school_name || '',
+        addressLine1: educator.address_line_1 || '',
+        city: educator.city || '',
+        state: educator.state || '',
+        country: educator.country || '',
+        pincode: educator.pincode || '',
     });
     const [isVisible, setIsVisible] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -66,10 +78,15 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                 educator_id: educator.educator_id,
                 firstName: educator.name.split(' ')[0] || '',
                 lastName: educator.name.split(' ').slice(1).join(' ') || '',
-                email: educator.login_id || '',
-                phone: '',
+                email: educator.email || educator.login_id || '',
+                phone: educator.phone || '',
                 loginId: educator.login_id || '',
                 schoolName: educator.school_name || '',
+                addressLine1: educator.address_line_1 || '',
+                city: educator.city || '',
+                state: educator.state || '',
+                country: educator.country || '',
+                pincode: educator.pincode || '',
             });
             setIsLoading(false);
         }, 1000); // Simulate loading
@@ -142,6 +159,33 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
                                             <div className="text-textColor mb-2">School</div>
                                             <div className="text-primary font-medium break-all">{formData.schoolName || '-'}</div>
                                         </div>
+                                    </div>
+                                    {/* Third Row for School Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Address Line 1</div>
+                                            <div className="text-primary font-medium break-all">{formData.addressLine1 || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">City</div>
+                                            <div className="text-primary font-medium break-all">{formData.city || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">State</div>
+                                            <div className="text-primary font-medium break-all">{formData.state || '-'}</div>
+                                        </div>
+                                    </div>
+                                    {/* Fourth Row for School Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Country</div>
+                                            <div className="text-primary font-medium break-all">{formData.country || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Pincode</div>
+                                            <div className="text-primary font-medium break-all">{formData.pincode || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0"></div>
                                     </div>
                                 </div>
                             )}

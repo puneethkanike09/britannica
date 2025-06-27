@@ -1,7 +1,7 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, ListRestart } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import toast from 'react-hot-toast';
 import Loader from '../../../components/common/Loader';
@@ -14,84 +14,87 @@ export default function Report() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errors, setErrors] = useState({
+        fromDate: '',
+        toDate: '',
+    });
     const itemsPerPage: number = 6;
 
-    // Activity logs with typed array, removing date field
+    // Activity logs with typed array
     const activityLogs: ActivityLog[] = [
         {
             id: 1,
-            time: '10:30 AM',
+            time: '28-May-2025 10:30 AM',
             activity: 'Login',
-            user: 'Amitha',
+            user: 'Amitha Jake',
             userId: 'Amitha@123',
             schoolName: 'Horizon Valley School',
-            activityTimeStamp: '10:30 AM'
+            activityTimeStamp: '28-May-2025 10:30 AM'
         },
         {
             id: 2,
-            time: '11:30 AM',
+            time: '28-May-2025 11:30 AM',
             activity: 'Viewed grade 3 Pdf',
-            user: 'Sagar',
+            user: 'Sagar Shetty',
             userId: 'Sagar@123',
             schoolName: 'Lumina School',
-            activityTimeStamp: '11:30 AM'
+            activityTimeStamp: '28-May-2025 11:30 AM'
         },
         {
             id: 3,
-            time: '11:30 AM',
+            time: '28-May-2025 11:30 AM',
             activity: 'Downloaded grade 3 pdf',
             user: 'Vidya',
             userId: 'Vidya@123',
             schoolName: 'Prism Path School',
-            activityTimeStamp: '11:30 AM'
+            activityTimeStamp: '28-May-2025 11:30 AM'
         },
         {
             id: 4,
-            time: '9:33 AM',
+            time: '28-May-2025 9:33 AM',
             activity: 'Logout',
-            user: 'Puneeth',
+            user: 'Puneeth Gowda',
             userId: 'Puneeth@123',
             schoolName: 'Nexus Scholars School',
-            activityTimeStamp: '9:33 AM'
+            activityTimeStamp: '28-May-2025 9:33 AM'
         },
         {
             id: 5,
-            time: '2:15 PM',
+            time: '28-May-2025 2:15 PM',
             activity: 'Updated profile',
-            user: 'Amitha',
+            user: 'Amitha Jake',
             userId: 'Amitha@123',
             schoolName: 'Horizon Valley School',
-            activityTimeStamp: '2:15 PM'
+            activityTimeStamp: '28-May-2025 2:15 PM'
         },
         {
             id: 6,
-            time: '3:45 PM',
+            time: '28-May-2025 3:45 PM',
             activity: 'Created new report',
-            user: 'Sagar',
+            user: 'Sagar Shetty',
             userId: 'Sagar@123',
             schoolName: 'Lumina School',
-            activityTimeStamp: '3:45 PM'
+            activityTimeStamp: '28-May-2025 3:45 PM'
         },
         {
             id: 7,
-            time: '8:20 AM',
+            time: '09-Mar-2025 8:20 AM',
             activity: 'Login',
-            user: 'Amitha',
+            user: 'Amitha Jake',
             userId: 'Amitha@123',
             schoolName: 'Horizon Valley School',
-            activityTimeStamp: '8:20 AM'
+            activityTimeStamp: '09-Mar-2025 8:20 AM'
         },
         {
             id: 8,
-            time: '10:00 AM',
+            time: '09-Mar-2025 10:00 AM',
             activity: 'Viewed dashboard',
-            user: 'Sagar',
+            user: 'Sagar Shetty',
             userId: 'Sagar@123',
             schoolName: 'Lumina School',
-            activityTimeStamp: '10:00 AM'
+            activityTimeStamp: '09-Mar-2025 10:00 AM'
         },
     ];
-
     // Simulate loading for 2 seconds on component mount
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -120,22 +123,17 @@ export default function Report() {
         const pageNumbers: (number | string)[] = [];
 
         if (totalPages <= 4) {
-            // If 4 or fewer pages, show all page numbers
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
-            // Always show first page
             pageNumbers.push(1);
 
             if (currentPage <= 2) {
-                // Near the beginning
                 pageNumbers.push(2, 3, '...');
             } else if (currentPage >= totalPages - 1) {
-                // Near the end
                 pageNumbers.push('...', totalPages - 2, totalPages - 1);
             } else {
-                // Middle - show current page, one before and one after
                 pageNumbers.push(
                     '...',
                     currentPage - 1,
@@ -145,7 +143,6 @@ export default function Report() {
                 );
             }
 
-            // Always show last page
             pageNumbers.push(totalPages);
         }
 
@@ -157,9 +154,8 @@ export default function Report() {
         toast.promise(
             new Promise((resolve) => {
                 setTimeout(() => {
-                    // Simulate a successful download API call
                     resolve('Report downloaded successfully!');
-                }, 2000); // Simulate 2-second API call
+                }, 2000);
             }),
             {
                 loading: 'Downloading report...',
@@ -175,6 +171,57 @@ export default function Report() {
         );
     };
 
+    // Validate form before generating the report
+    const validateForm = (): boolean => {
+        const newErrors = {
+            fromDate: '',
+            toDate: '',
+        };
+        let isValid = true;
+
+        // Check if From Date is provided
+        if (!fromDate) {
+            newErrors.fromDate = 'From Date is required';
+            isValid = false;
+        }
+
+        // Check if To Date is provided
+        if (!toDate) {
+            newErrors.toDate = 'To Date is required';
+            isValid = false;
+        }
+
+        // Check if To Date is not earlier than From Date
+        if (fromDate && toDate && toDate < fromDate) {
+            newErrors.toDate = 'To Date cannot be earlier than From Date';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleGenerate = (): void => {
+        if (validateForm()) {
+            toast.success('Report generated successfully!');
+        }
+    };
+
+    // Clear errors when dates change
+    const handleFromDateChange = (date: Date | null) => {
+        setFromDate(date);
+        if (errors.fromDate) {
+            setErrors((prev) => ({ ...prev, fromDate: '' }));
+        }
+    };
+
+    const handleToDateChange = (date: Date | null) => {
+        setToDate(date);
+        if (errors.toDate) {
+            setErrors((prev) => ({ ...prev, toDate: '' }));
+        }
+    };
+
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
@@ -183,70 +230,80 @@ export default function Report() {
                 <button
                     onClick={handleDownload}
                     disabled={isDownloading || isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2 ${isDownloading || isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isDownloading || isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                     <img src={DownloadIcon} alt="Download" className="h-5 w-5" />
                     <span className="hidden md:inline font-bold">Download</span>
                 </button>
             </div>
 
-            {/* Date Range Selectors */}
-            <div className="flex flex-col lg:flex-row gap-4 mb-6">
-                <div className="relative w-full sm:w-auto">
-                    <DatePicker
-                        selected={fromDate}
-                        onChange={(date: Date | null) => setFromDate(date)}
-                        placeholderText="From Date"
-                        dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
-                        disabled={isLoading}
-                    />
-                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <Calendar className="w-5 h-5 text-inputPlaceholder" />
+            {/* Date Range Selectors and Generate Button */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-6 items-start">
+                <div className="relative w-auto flex flex-col gap-1">
+                    <div className="relative">
+                        <DatePicker
+                            selected={fromDate}
+                            onChange={handleFromDateChange}
+                            placeholderText="From Date"
+                            dateFormat="MM/dd/yyyy"
+                            className={`w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
+                            disabled={isLoading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                            <Calendar className="w-5 h-5 text-inputPlaceholder" />
+                        </div>
                     </div>
+                    {errors.fromDate && <p className="text-red text-sm mt-1">{errors.fromDate}</p>}
                 </div>
 
-                <div className="relative w-full sm:w-auto">
-                    <DatePicker
-                        selected={toDate}
-                        onChange={(date: Date | null) => setToDate(date)}
-                        placeholderText="To Date"
-                        dateFormat="MM/dd/yyyy"
-                        className="w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder"
-                        disabled={isLoading}
-                    />
-                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <Calendar className="w-5 h-5 text-inputPlaceholder" />
+                <div className="relative w-auto flex flex-col gap-1">
+                    <div className="relative">
+                        <DatePicker
+                            selected={toDate}
+                            onChange={handleToDateChange}
+                            placeholderText="To Date"
+                            dateFormat="MM/dd/yyyy"
+                            className={`w-full sm:min-w-[180px] pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
+                            disabled={isLoading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                            <Calendar className="w-5 h-5 text-inputPlaceholder" />
+                        </div>
                     </div>
+                    {errors.toDate && <p className="text-red text-sm mt-1">{errors.toDate}</p>}
                 </div>
+
+                <button
+                    onClick={handleGenerate}
+                    disabled={isLoading}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                    <ListRestart className="h-5 w-5" />
+                    <span className="hidden md:inline font-bold">Generate</span>
+                </button>
             </div>
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-[15%] min-w-[120px]" />
-                            <col className="w-[25%] min-w-[200px]" />
-                            <col className="w-[15%] min-w-[120px]" />
-                            <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[23%] min-w-[250px]" />
+                            <col className="w-[33%] min-w-[240px]" />
+                            <col className="w-[18%] min-w-[160px]" />
+                            <col className="w-[23%] min-w-[180px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
-                                    Time
+                                <th className="px-4 sm:px-8 py-4 text-left border-r-1 border-white font-black text-sm sm:text-base">
+                                    Activity Time Stamp
                                 </th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
+                                <th className="px-4 sm:px-8 py-4 text-left border-r-1 border-white font-black text-sm sm:text-base">
                                     Activity
                                 </th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
-                                    Users
+                                <th className="px-4 sm:px-8 py-4 text-left border-r-1 border-white font-black text-sm sm:text-base">
+                                    User Name
                                 </th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">
-                                    User ID
-                                </th>
-                                <th className="px-8 py-4 text-left font-black">
+                                <th className="px-4 sm:px-8 py-4 text-left font-black text-sm sm:text-base">
                                     School Name
                                 </th>
                             </tr>
@@ -254,13 +311,13 @@ export default function Report() {
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-16">
+                                    <td colSpan={4} className="px-4 sm:px-8 py-16">
                                         <Loader message="Loading activity logs..." />
                                     </td>
                                 </tr>
                             ) : activityLogs.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-16 text-center text-textColor">
+                                    <td colSpan={4} className="px-4 sm:px-8 py-16 text-center text-textColor">
                                         No activity logs found.
                                     </td>
                                 </tr>
@@ -270,20 +327,17 @@ export default function Report() {
                                         key={log.id}
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.time}</div>
+                                        <td className="px-4 sm:px-8 py-4 break-all">
+                                            <div className="text-textColor text-sm sm:text-base">{log.activityTimeStamp}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.activity}</div>
+                                        <td className="px-4 sm:px-8 py-4 break-all">
+                                            <div className="text-textColor text-sm sm:text-base">{log.activity}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.user}</div>
+                                        <td className="px-4 sm:px-8 py-4 break-all">
+                                            <div className="text-textColor text-sm sm:text-base">{log.user}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.userId}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.schoolName}</div>
+                                        <td className="px-4 sm:px-8 py-4 break-all">
+                                            <div className="text-textColor text-sm sm:text-base">{log.schoolName}</div>
                                         </td>
                                     </tr>
                                 ))
@@ -344,4 +398,3 @@ export default function Report() {
         </div>
     );
 }
-
