@@ -134,8 +134,8 @@ const RegisteredEducatorList: React.FC = () => {
     };
 
     // Handle individual reject
-    const handleRejectEducator = (educator_id: string, reason: string) => {
-        console.log(`Rejected educator ${educator_id} with reason: ${reason}`);
+    const handleRejectEducator = (educator_id: string) => {
+        // console.log(`Rejected educator ${educator_id} with reason: ${reason}`);
         setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
         setShowRejectModal(false);
         setSelectedEducator(null);
@@ -149,8 +149,8 @@ const RegisteredEducatorList: React.FC = () => {
     };
 
     // Handle bulk reject complete
-    const handleBulkRejectComplete = (rejectedIds: string[], reason: string) => {
-        console.log(`Bulk rejected educators with reason: ${reason}`);
+    const handleBulkRejectComplete = (rejectedIds: string[]) => {
+        // console.log(`Bulk rejected educators with reason: ${reason}`);
         setEducators(educators.filter(edu => !rejectedIds.includes(edu.educator_id)));
         setSelectedEducators(new Set());
         setShowBulkRejectModal(false);
