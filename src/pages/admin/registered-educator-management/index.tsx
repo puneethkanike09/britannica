@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Check, X, Eye, CheckSquare, Square } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, X, CheckSquare, Square } from "lucide-react";
+import ViewIcon from '../../../assets/dashboard/Admin/registered-educator-management/view.svg';
 import ViewEducatorModal from "./modals/ViewEducatorModal";
 import ApproveEducatorModal from "./modals/ApproveEducatorModal";
 import RejectReasonModal from "./modals/RejectReasonModal";
@@ -306,7 +307,7 @@ const RegisteredEducatorList: React.FC = () => {
                                                         className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                         disabled={isLoading}
                                                     >
-                                                        <Eye className="h-4 w-4" />
+                                                        <img src={ViewIcon} alt="View" className="h-4 w-4" />
                                                         <span className="hidden md:inline font-bold">View</span>
                                                     </button>
                                                     <button

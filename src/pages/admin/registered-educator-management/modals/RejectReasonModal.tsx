@@ -43,14 +43,6 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
     };
 
     const validateForm = () => {
-        if (!reason.trim()) {
-            setError("Reason for rejection is required");
-            return false;
-        }
-        if (reason.length < 10) {
-            setError("Reason must be at least 10 characters long");
-            return false;
-        }
         if (reason.length > 200) {
             setError("Reason must be 200 characters or less");
             return false;
@@ -110,16 +102,19 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
 
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
+                            <p className="text-textColor mb-6">
+                                Are you sure you want to reject the registration of <span className="font-bold">{educator.name}</span>?
+                            </p>
                             <div className="space-y-6">
                                 <div className="mb-3 relative">
                                     <label className="block text-textColor text-base mb-2">
-                                        Reason for Rejection<span className="text-red">*</span>
+                                        Reason for Rejection (Optional)
                                     </label>
                                     <textarea
                                         name="reason"
                                         value={reason}
                                         onChange={handleInputChange}
-                                        placeholder="Please provide the reason for rejecting the educator's registration"
+                                        placeholder="Provide a reason for rejecting the educator's registration"
                                         maxLength={200}
                                         rows={4}
                                         className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}

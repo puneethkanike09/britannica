@@ -83,7 +83,7 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to approve <span className="font-bold">{educator.name}</span>?
+                                Are you sure you want to approve the registration of <span className="font-bold">{educator.name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">

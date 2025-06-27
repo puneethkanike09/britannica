@@ -54,14 +54,6 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
     };
 
     const validateForm = () => {
-        if (!reason.trim()) {
-            setError('Reason for rejection is required');
-            return false;
-        }
-        if (reason.length < 10) {
-            setError('Reason must be at least 10 characters long');
-            return false;
-        }
         if (reason.length > 200) {
             setError('Reason must be 200 characters or less');
             return false;
@@ -123,8 +115,8 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             <p className="text-textColor text-base mb-6">
-                                Please provide a reason for rejecting the following{' '}
-                                <span className="font-bold">{educators.length}</span> educator{educators.length !== 1 ? 's' : ''}:
+                                Are you sure you want to reject the registration of the following{' '}
+                                <span className="font-bold">{educators.length}</span> educator{educators.length !== 1 ? 's' : ''}?
                             </p>
 
                             <div className="rounded-lg p-2 max-h-60 overflow-y-auto bg-inputBg border border-inputBorder">
@@ -143,12 +135,12 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                             <div className="mt-6 space-y-6">
                                 <div className="relative">
                                     <label className="block text-textColor text-base mb-2">
-                                        Reason for Rejection <span className="text-red">*</span>
+                                        Reason for Rejection (Optional)
                                     </label>
                                     <textarea
                                         value={reason}
                                         onChange={handleInputChange}
-                                        placeholder="Please provide the reason for rejecting the educators' registrations"
+                                        placeholder="Provide a reason for rejecting the educators' registrations"
                                         maxLength={200}
                                         rows={4}
                                         className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? 'border-red' : 'border-inputBorder'

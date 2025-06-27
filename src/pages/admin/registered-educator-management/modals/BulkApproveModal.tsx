@@ -95,7 +95,7 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             <p className="text-textColor text-base mb-6">
-                                Are you sure you want to approve the following{' '}
+                                Are you sure you want to approve the registration of the following{' '}
                                 <span className="font-bold">{educators.length}</span> educator{educators.length !== 1 ? 's' : ''}?
                             </p>
 
