@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, LogIn } from "lucide-react"; // Added LogIn import
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
@@ -261,7 +261,10 @@ const AdminLogin = () => {
                                 {isSubmitting ? (
                                     <Loader2 className="animate-spin" />
                                 ) : (
-                                    <span className="font-bold">Admin Login</span>
+                                    <>
+                                        <LogIn className="font-black" size={18} /> {/* Added LogIn icon */}
+                                        <span className="font-bold">Admin Login</span>
+                                    </>
                                 )}
                             </button>
                         </div>

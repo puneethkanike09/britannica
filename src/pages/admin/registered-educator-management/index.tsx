@@ -2,25 +2,30 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
+import ViewIcon from "../../../assets/dashboard/Admin/educator-management/view.svg";
+import ViewEducatorModal from "./modals/ViewThemeModal";
 
 interface Educator {
     educator_id: string;
     name: string;
     school_name: string;
+    login_id: string;
 }
 
 const RegisteredEducatorList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [educators, setEducators] = useState<Educator[]>([]);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
 
     const itemsPerPage = 6;
-
     // Dummy data for educators
     const dummyEducators: Educator[] = Array.from({ length: 15 }, (_, i) => ({
         educator_id: `educator-${i + 1}`,
         name: `Educator ${i + 1}`,
         school_name: `School ${Math.floor(i / 3) + 1} High School`,
+        login_id: `educator${i + 1}@school.com`,
     }));
 
     // Load dummy educators on mount
@@ -53,6 +58,18 @@ const RegisteredEducatorList: React.FC = () => {
     const handleCancelEducator = (educator: Educator) => {
         setEducators(educators.filter((edu) => edu.educator_id !== educator.educator_id));
         toast.error(`${educator.name}'s registration has been cancelled`);
+    };
+
+    // Open View Educator Modal
+    const openViewEducatorModal = (educator: Educator) => {
+        setSelectedEducator(educator);
+        setShowViewModal(true);
+    };
+
+    // Close View Educator Modal
+    const closeViewEducatorModal = () => {
+        setShowViewModal(false);
+        setSelectedEducator(null);
     };
 
     // Generate page numbers with ellipsis
@@ -88,46 +105,60 @@ const RegisteredEducatorList: React.FC = () => {
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full min-w-[800px]">
+                    <table className="w-full table-fixed min-w-[800px]">
                         <colgroup>
-                            <col className="w-[35%] min-w-[280px]" />
-                            <col className="w-[35%] min-w-[280px]" />
-                            <col className="w-[30%] min-w-[240px]" />
+                            <col className="w-48" />
+                            <col className="w-48" />
+                            <col className="w-48" />
+                            <col className="w-78" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Educator Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Login ID</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={3} className="px-8 py-16">
+                                    <td colSpan={4} className="px-8 py-16">
                                         <Loader message="Loading educator data..." />
                                     </td>
                                 </tr>
                             ) : educators.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3} className="px-8 py-16 text-center text-textColor">
+                                    <td colSpan={4} className="px-8 py-16 text-center text-textColor">
                                         No educators found.
                                     </td>
                                 </tr>
                             ) : (
                                 currentItems.map((educator, index) => (
-                                    <tr key={educator.educator_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                    <tr key={educator.educator_id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{educator.name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{educator.school_name}</div>
                                         </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{educator.login_id}</div>
+                                        </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
+                                                    onClick={() => openViewEducatorModal(educator)}
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
+                                                >
+                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                    <span className="hidden md:inline font-bold">View</span>
+                                                </button>
+                                                <button
                                                     onClick={() => handleApproveEducator(educator)}
-                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[90px] justify-center"
+                                                    className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <Check className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Approve</span>
@@ -135,6 +166,7 @@ const RegisteredEducatorList: React.FC = () => {
                                                 <button
                                                     onClick={() => handleCancelEducator(educator)}
                                                     className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <X className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Reject</span>
@@ -153,8 +185,8 @@ const RegisteredEducatorList: React.FC = () => {
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -169,7 +201,7 @@ const RegisteredEducatorList: React.FC = () => {
                                             ? "text-textColor hover:bg-third"
                                             : "text-darkGray"
                                         }`}
-                                    disabled={typeof number !== "number"}
+                                    disabled={typeof number !== "number" || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -177,8 +209,8 @@ const RegisteredEducatorList: React.FC = () => {
 
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>
@@ -186,6 +218,10 @@ const RegisteredEducatorList: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {showViewModal && selectedEducator && (
+                <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
+            )}
         </div>
     );
 };

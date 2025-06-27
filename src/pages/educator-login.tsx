@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, LogIn } from "lucide-react"; // Added LogIn import
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
@@ -262,14 +262,17 @@ const EducatorLogin = () => {
                                 {isSubmitting ? (
                                     <Loader2 className="animate-spin" />
                                 ) : (
-                                    <span className="font-bold">Educator Login</span>
+                                    <>
+                                        <LogIn className="font-black" size={18} /> {/* Added LogIn icon */}
+                                        <span className="font-bold">Educator Login</span>
+                                    </>
                                 )}
                             </button>
                         </div>
                         <div className="text-left mt-5">
-                            Don't have an account?{' '}
+                            Don't have an account? Please{' '}
                             <Link to="/educator-register" className="text-primary hover:underline cursor-pointer font-bold">
-                                Please Register here ...
+                                Register here
                             </Link>
                         </div>
                     </form>

@@ -1,19 +1,39 @@
 import { X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import Loader from "../../../../components/common/Loader";
 
-interface ViewThemeModalProps {
-    onClose: () => void;
-    theme: { theme_id: string; name: string; description: string };
+interface Educator {
+    educator_id: string;
+    name: string;
+    school_name: string;
+    login_id: string;
 }
 
-export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) {
-    const [isVisible, setIsVisible] = useState(true);
+interface EducatorActionModalProps {
+    onClose: () => void;
+    educator: Educator;
+}
 
-    const handleClose = () => {
+export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
+    const [formData, setFormData] = useState({
+        educator_id: educator.educator_id,
+        firstName: educator.name.split(' ')[0] || '',
+        lastName: educator.name.split(' ').slice(1).join(' ') || '',
+        email: educator.login_id || '',
+        phone: '',
+        loginId: educator.login_id || '',
+        schoolName: educator.school_name || '',
+    });
+    const [isVisible, setIsVisible] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error] = useState<string | null>(null);
+
+    // Handle modal close
+    const handleClose = useCallback(() => {
         setIsVisible(false);
-    };
+    }, []);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -26,6 +46,34 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
             handleClose();
         }
     };
+
+    // Handle ESC key press
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                handleClose();
+            }
+        };
+        document.addEventListener("keydown", handleEscKey);
+        return () => document.removeEventListener("keydown", handleEscKey);
+    }, [handleClose]);
+
+    // Simulate fetching educator details
+    useEffect(() => {
+        setIsLoading(true);
+        setTimeout(() => {
+            setFormData({
+                educator_id: educator.educator_id,
+                firstName: educator.name.split(' ')[0] || '',
+                lastName: educator.name.split(' ').slice(1).join(' ') || '',
+                email: educator.login_id || '',
+                phone: '',
+                loginId: educator.login_id || '',
+                schoolName: educator.school_name || '',
+            });
+            setIsLoading(false);
+        }, 1000); // Simulate loading
+    }, [educator]);
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
@@ -40,7 +88,7 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                     transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
-                        className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
@@ -49,7 +97,7 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                     >
                         {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                            <h2 className="text-3xl font-bold text-secondary">Theme Details</h2>
+                            <h2 className="text-3xl font-bold text-secondary">Educator Details</h2>
                             <button
                                 onClick={handleClose}
                                 className="text-textColor hover:text-hover cursor-pointer"
@@ -59,22 +107,44 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                         </div>
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
-                                {/* First Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Theme Name</div>
-                                        <div className="text-primary font-medium break-all">{theme.name || '-'}</div>
+                            {isLoading ? (
+                                <Loader message="Loading Educator Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : (
+                                <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                    {/* First Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">First Name</div>
+                                            <div className="text-primary font-medium break-all">{formData.firstName || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Last Name</div>
+                                            <div className="text-primary font-medium break-all">{formData.lastName || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">Email Address</div>
+                                            <div className="text-primary font-medium break-all">{formData.email || '-'}</div>
+                                        </div>
+                                    </div>
+                                    {/* Second Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Phone Number</div>
+                                            <div className="text-primary font-medium break-all">{formData.phone || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Login ID</div>
+                                            <div className="text-primary font-medium break-all">{formData.loginId || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                            <div className="text-textColor mb-2">School</div>
+                                            <div className="text-primary font-medium break-all">{formData.schoolName || '-'}</div>
+                                        </div>
                                     </div>
                                 </div>
-                                {/* Second Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6">
-                                        <div className="text-textColor mb-2">Description</div>
-                                        <div className="text-primary font-medium break-all">{theme.description || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>

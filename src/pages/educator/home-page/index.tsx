@@ -242,6 +242,8 @@ const EducatorDashboard = () => {
         };
     }, [openDropdown]);
 
+
+
     return (
         <>
             <Topbar />

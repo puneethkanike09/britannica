@@ -156,7 +156,7 @@ const EducatorManagement: React.FC = () => {
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Teacher Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Educator Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Login ID</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
