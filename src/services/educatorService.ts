@@ -7,14 +7,7 @@ export class EducatorService {
             const response = await apiClient.get<{ error: boolean | string; teachers?: Teacher[]; token?: string; message?: string }>(
                 "/teacher"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error fetching teachers:", error);
             return {
@@ -48,14 +41,7 @@ export class EducatorService {
                 "/teacher/create",
                 payload
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error adding teacher:", error);
             return {
@@ -79,14 +65,7 @@ export class EducatorService {
                 "/teacher/update",
                 teacherData
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error updating teacher:", error);
             return {
@@ -101,14 +80,7 @@ export class EducatorService {
             const response = await apiClient.get<{ error: boolean | string; teacher?: Teacher; token?: string; message?: string }>(
                 `/teacher/${teacher_id}`
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error fetching teacher detail:", error);
             return {
@@ -157,14 +129,7 @@ export class EducatorService {
                 token?: string;
                 message?: string;
             }>(`/teacher/info/${teacher_id}`);
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error fetching teacher complete details:", error);
             return {

@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (login_id: string, password: string, endpoint: "/auth/admin-login" | "/auth/teacher-login") => {
         const response = await AuthService.login({ login_id, password }, endpoint);
-        if (response.success && response.data) {
+        if (response.error === false || response.error === "false") {
             setIsAuthenticated(true);
         } else {
             throw new Error(response.message || "Login failed");

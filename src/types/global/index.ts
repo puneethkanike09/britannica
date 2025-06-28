@@ -15,12 +15,13 @@ export interface AuthResponse {
     message: string;
 }
 
-export interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
+// Simple API response format that matches the actual API structure
+export interface ApiResponse<T = any> {
+    error: boolean | string;
+    token?: string;
     message?: string;
+    [key: string]: any; // Allow additional properties from T
 }
-
 
 export interface LogoutModalProps {
     onClose: () => void;

@@ -7,16 +7,7 @@ export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {
         try {
             const response = await apiClient.get<FetchSchoolsResponse>("/school/all");
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    schools: [],
-                    token: "",
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response as FetchSchoolsResponse;
         } catch (error) {
             console.error("Error fetching schools:", error);
             return {
@@ -44,14 +35,7 @@ export class SchoolService {
                 "/school/create",
                 schoolData
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error adding school:", error);
             return {
@@ -78,14 +62,7 @@ export class SchoolService {
                 "/school/update",
                 schoolData
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error updating school:", error);
             return {
@@ -100,14 +77,7 @@ export class SchoolService {
             const response = await apiClient.get<{ error: boolean | string; school?: School; token?: string; message?: string }>(
                 `/school/${school_id}`
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error fetching school detail:", error);
             return {
@@ -132,14 +102,7 @@ export class SchoolService {
                 message?: string;
             }>("/school");
 
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            return response;
         } catch (error) {
             console.error("Error fetching schools for dropdown:", error);
             return {

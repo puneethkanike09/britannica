@@ -96,7 +96,7 @@ export const apiClient = {
                 if (response.status === 401) {
                     handle401Error(endpoint);
                     return {
-                        success: false,
+                        error: true,
                         message: "Authentication failed. Redirecting to login.",
                     } as ApiResponse<T>;
                 }
@@ -106,20 +106,17 @@ export const apiClient = {
                         TokenService.clearToken();
                     }
                     return {
-                        success: false,
+                        error: true,
                         message: result.message || "Request failed",
                     } as ApiResponse<T>;
                 }
 
-                return {
-                    success: true,
-                    data: result,
-                    message: result.message,
-                } as ApiResponse<T>;
+                // Return the API response directly as it already has the correct format
+                return result as ApiResponse<T>;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
                 } as ApiResponse<T>;
             }
@@ -157,7 +154,7 @@ export const apiClient = {
                 if (response.status === 401) {
                     handle401Error(endpoint);
                     return {
-                        success: false,
+                        error: true,
                         message: "Authentication failed. Redirecting to login.",
                     } as ApiResponse<T>;
                 }
@@ -167,20 +164,17 @@ export const apiClient = {
                         TokenService.clearToken();
                     }
                     return {
-                        success: false,
+                        error: true,
                         message: result.message || "Request failed",
                     } as ApiResponse<T>;
                 }
 
-                return {
-                    success: true,
-                    data: result,
-                    message: result.message,
-                } as ApiResponse<T>;
+                // Return the API response directly as it already has the correct format
+                return result as ApiResponse<T>;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
                 } as ApiResponse<T>;
             }
@@ -217,7 +211,7 @@ export const apiClient = {
                     if (response.status === 401) {
                         handle401Error(endpoint);
                         return {
-                            success: false,
+                            error: true,
                             message: "Authentication failed. Redirecting to login.",
                         };
                     }
@@ -238,21 +232,21 @@ export const apiClient = {
                     }
 
                     return {
-                        success: false,
+                        error: true,
                         message: errorMessage,
                     };
                 }
 
                 const result = await response.text();
                 return {
-                    success: true,
+                    error: false,
                     data: result,
                     message: "File view URL retrieved successfully",
                 };
             } catch (error: unknown) {
                 console.error(`Error in GET file/view?filePath=${filePath}:`, error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
                 };
             }
@@ -289,7 +283,7 @@ export const apiClient = {
                     if (response.status === 401) {
                         handle401Error(endpoint);
                         return {
-                            success: false,
+                            error: true,
                             message: "Authentication failed. Redirecting to login.",
                         };
                     }
@@ -310,21 +304,21 @@ export const apiClient = {
                     }
 
                     return {
-                        success: false,
+                        error: true,
                         message: errorMessage,
                     };
                 }
 
                 const result = await response.text();
                 return {
-                    success: true,
+                    error: false,
                     data: result,
                     message: "File download URL retrieved successfully",
                 };
             } catch (error: unknown) {
                 console.error(`Error in GET file/download?filePath=${filePath}:`, error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
                 };
             }

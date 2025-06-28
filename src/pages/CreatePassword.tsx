@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
-import { apiClient } from "../utils/apiClient"; // Import the apiClient
+import { apiClient } from "../utils/apiClient";
 
 const CreatePassword = () => {
     const navigate = useNavigate();
-    const location = useLocation(); // To extract the token from the URL
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
+
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -19,37 +21,27 @@ const CreatePassword = () => {
         newPassword: "",
         confirmPassword: "",
     });
-    const [token, setToken] = useState<string | null>(null); // Store the token from the URL
-
-    // Extract token from URL on component mount
-    useEffect(() => {
-        // Extract token directly from URL string to preserve URL encoding
-        const urlParams = location.search;
-        const tokenMatch = urlParams.match(/[?&]token=([^&]*)/);
-
-        if (tokenMatch && tokenMatch[1]) {
-            const tokenFromUrl = tokenMatch[1].trim();
-            setToken(tokenFromUrl);
-        } else {
-            toast.error("Invalid or missing token in the URL");
-            navigate("/educator-login"); // Redirect if no token is found
-        }
-    }, [location, navigate]);
 
     const validateForm = () => {
-        const newErrors = { newPassword: "", confirmPassword: "" };
+        const newErrors = {
+            newPassword: "",
+            confirmPassword: "",
+        };
         let isValid = true;
 
         if (!newPassword.trim()) {
-            newErrors.newPassword = "New Password is required";
+            newErrors.newPassword = "New password is required";
             isValid = false;
         } else if (newPassword.length < 8) {
-            newErrors.newPassword = "New Password must be at least 8 characters";
+            newErrors.newPassword = "Password must be at least 8 characters long";
+            isValid = false;
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+            newErrors.newPassword = "Password must contain at least one uppercase letter, one lowercase letter, and one number";
             isValid = false;
         }
 
         if (!confirmPassword.trim()) {
-            newErrors.confirmPassword = "Confirm Password is required";
+            newErrors.confirmPassword = "Confirm password is required";
             isValid = false;
         } else if (newPassword !== confirmPassword) {
             newErrors.confirmPassword = "Passwords do not match";
@@ -85,11 +77,11 @@ const CreatePassword = () => {
             { token } // Pass the token in the headers
         );
 
-        if (response.success && response.data && response.data.error === false) {
+        if (response.error === false || response.error === "false") {
             // Success response
             setShowSuccessModal(true);
             setIsSuccessVisible(true);
-            toast.success(response.data.message || "Password created successfully!");
+            toast.success(response.message || "Password created successfully!");
         } else {
             // Failure response
             toast.error(response.message || "Error creating the password");

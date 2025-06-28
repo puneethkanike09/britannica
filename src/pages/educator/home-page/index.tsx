@@ -47,8 +47,8 @@ const EducatorDashboard = () => {
                     toast.error(gradesRes.message || 'Failed to load grades');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load grades');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load grades');
             });
 
         // Fetch themes
@@ -60,8 +60,8 @@ const EducatorDashboard = () => {
                     toast.error(themesRes.message || 'Failed to load themes');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load themes');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load themes');
             });
 
         // Fetch types
@@ -73,8 +73,8 @@ const EducatorDashboard = () => {
                     toast.error(typesRes.message || 'Failed to load types');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load types');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load types');
             })
             .finally(() => {
                 setIsSubmittingDropdowns(false);

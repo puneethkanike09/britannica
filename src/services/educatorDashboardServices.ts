@@ -14,14 +14,8 @@ export class EducatorDashboardService {
             const response = await apiClient.get<FetchGradesResponse>(
                 "/grade"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching grades:", error);
             return {
@@ -36,14 +30,8 @@ export class EducatorDashboardService {
             const response = await apiClient.get<FetchThemesResponse>(
                 "/theme"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching themes:", error);
             return {
@@ -58,14 +46,8 @@ export class EducatorDashboardService {
             const response = await apiClient.get<FetchUserAccessTypesResponse>(
                 "/user_access_type"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching user access types:", error);
             return {
@@ -81,14 +63,8 @@ export class EducatorDashboardService {
                 "/file",
                 payload
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching PBL files:", error);
             return {

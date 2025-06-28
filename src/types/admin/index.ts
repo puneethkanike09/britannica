@@ -126,4 +126,102 @@ export interface Teacher {
     status?: string;
 }
 
+// Grade Management
+export interface Grade {
+    grade_id: string;
+    grade_name: string;
+    description?: string;
+}
+
+export interface FetchGradesResponse {
+    error: boolean | string;
+    grade?: Grade[];
+    token?: string;
+    message?: string;
+}
+
+export interface AddGradePayload {
+    grade_name: string;
+    description?: string;
+}
+
+export interface UpdateGradePayload extends AddGradePayload {
+    grade_id: string;
+}
+
+// Theme Management
+export interface Theme {
+    theme_id: string;
+    theme_name: string;
+    description?: string;
+}
+
+export interface FetchThemesResponse {
+    error: boolean | string;
+    theme?: Theme[];
+    token?: string;
+    message?: string;
+}
+
+export interface AddThemePayload {
+    theme_name: string;
+    description?: string;
+}
+
+export interface UpdateThemePayload extends AddThemePayload {
+    theme_id: string;
+}
+
+// Type Management
+export interface Type {
+    type_id: string;
+    type_name: string;
+    description?: string;
+}
+
+export interface FetchTypesResponse {
+    error: boolean | string;
+    type?: Type[];
+    token?: string;
+    message?: string;
+}
+
+export interface AddTypePayload {
+    type_name: string;
+    description?: string;
+}
+
+export interface UpdateTypePayload extends AddTypePayload {
+    type_id: string;
+}
+
+// PBL File Management
+export interface PblFile {
+    pbl_id: string;
+    pbl_name: string;
+    pbl_file_path: string;
+    grade_id?: string;
+    theme_id?: string;
+    type_id?: string;
+}
+
+export interface FetchPblFilesResponse {
+    error: boolean | string;
+    pbl_file?: PblFile[];
+    token?: string;
+    message?: string;
+}
+
+export interface AddPblFilePayload {
+    pbl_name: string;
+    pbl_file_path: string;
+    grade_id: string;
+    theme_id: string;
+    type_id: string;
+}
+
+export interface UpdatePblFilePayload extends AddPblFilePayload {
+    pbl_id: string;
+}
+
 
