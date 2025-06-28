@@ -231,7 +231,7 @@ const RegisteredEducatorList: React.FC = () => {
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={handleSelectAll}
-                                            className="text-white hover:text-gray-200 transition-colors"
+                                            className="text-white hover:text-gray-200 transition-colors cursor-pointer"
                                             disabled={isLoading || currentItems.length === 0}
                                         >
                                             {isAllSelected ? (
@@ -280,7 +280,7 @@ const RegisteredEducatorList: React.FC = () => {
                                                 <div className="flex items-center justify-center">
                                                     <button
                                                         onClick={() => handleSelectEducator(educator.educator_id)}
-                                                        className="text-textColor hover:text-primary transition-colors"
+                                                        className="text-textColor hover:text-primary transition-colors cursor-pointer"
                                                         disabled={isLoading}
                                                     >
                                                         {isSelected ? (
