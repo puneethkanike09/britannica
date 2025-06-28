@@ -1,23 +1,27 @@
+import React, { useState, useCallback } from "react";
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
-interface DeleteThemeModalProps {
+interface UnregisterEducatorModalProps {
     onClose: () => void;
-    theme: { theme_id: string; name: string; description: string };
-    onThemeDeleted: (theme_id: string) => void;
+    educator: { educator_id: string; name: string };
+    onEducatorUnregistered: (educator_id: string) => void;
 }
 
-export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: DeleteThemeModalProps) {
-    const [isDeleting, setIsDeleting] = useState(false);
+const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
+    onClose,
+    educator,
+    onEducatorUnregistered,
+}) => {
+    const [isUnregistering, setIsUnregistering] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
-    const handleClose = () => {
-        if (isDeleting) return;
+    const handleClose = useCallback(() => {
+        if (isUnregistering) return;
         setIsVisible(false);
-    };
+    }, [isUnregistering]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -26,27 +30,26 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isDeleting) return;
+        if (isUnregistering) return;
         if (e.target === e.currentTarget) {
             handleClose();
         }
     };
 
-    const handleDelete = () => {
-        setIsDeleting(true);
-        // Simulate async operation without API
+    const handleUnregister = () => {
+        setIsUnregistering(true);
         setTimeout(() => {
             try {
-                onThemeDeleted(theme.theme_id);
-                toast.success('Theme deleted successfully!');
-                setIsDeleting(false);
+                onEducatorUnregistered(educator.educator_id);
+                toast.success(`${educator.name} has been unregistered successfully!`);
+                setIsUnregistering(false);
                 handleClose();
             } catch (error) {
-                console.log(error);
-                toast.error('Failed to delete theme');
-                setIsDeleting(false);
+                console.error(error);
+                toast.error("Failed to unregister educator");
+                setIsUnregistering(false);
             }
-        }, 1000); // Simulate delay
+        }, 1000);
     };
 
     return (
@@ -71,11 +74,11 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
                     >
                         {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                            <h2 className="text-3xl font-bold text-textColor">Delete Theme</h2>
+                            <h2 className="text-3xl font-bold text-secondary">Unregister Educator</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                disabled={isDeleting}
+                                className={`text-textColor hover:text-hover ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                disabled={isUnregistering}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -83,27 +86,27 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
 
                         {/* Content */}
                         <div className="px-8 py-6">
-                            <p className="text-textColor mb-6">
-                                Are you sure you want to delete the theme <span className="font-bold">{theme.name}</span>?
+                            <p className="text-textColor text-base mb-6">
+                                Are you sure you want to unregister <span className="font-bold">{educator.name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-primary/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                    disabled={isDeleting}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isUnregistering}
                                 >
                                     No, Cancel
                                 </button>
                                 <button
-                                    onClick={handleDelete}
-                                    className={`px-8 py-3 font-bold rounded-lg bg-red text-white hover:bg-red/80 flex items-center justify-center gap-2 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                    disabled={isDeleting}
+                                    onClick={handleUnregister}
+                                    className={`bg-red text-white px-8 py-3 font-bold rounded-lg hover:bg-red/80 flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isUnregistering}
                                 >
-                                    {isDeleting ? (
-                                        <Loader2 className="animate-spin" />
+                                    {isUnregistering ? (
+                                        <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
-                                        'Yes, Delete'
+                                        <span className="font-bold">Yes, Unregister</span>
                                     )}
                                 </button>
                             </div>
@@ -113,4 +116,6 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
             )}
         </AnimatePresence>
     );
-}
+};
+
+export default UnregisterEducatorModal;
