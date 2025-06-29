@@ -83,17 +83,14 @@ export const apiClient = {
                     TokenService.updateToken(result.token);
                 }
 
-                if (response.status === 401) {
-                    TokenService.clearToken();
-                    return {
-                        error: true,
-                        message: "Authentication failed, redirecting to login page",
-                    } as ApiResponse;
-                }
 
                 if (!response.ok) {
-                    if (response.status === 403) {
+                    if (response.status === 401 || response.status === 403) {
                         TokenService.clearToken();
+                        return {
+                            error: true,
+                            message: "Authentication failed. Please login again.",
+                        } as ApiResponse;
                     }
                     return {
                         error: true,
@@ -140,17 +137,14 @@ export const apiClient = {
                     TokenService.updateToken(result.token);
                 }
 
-                if (response.status === 401) {
-                    TokenService.clearToken();
-                    return {
-                        error: true,
-                        message: "Authentication failed, redirecting to login page",
-                    } as ApiResponse;
-                }
 
                 if (!response.ok) {
-                    if (response.status === 403) {
+                    if (response.status === 401 || response.status === 403) {
                         TokenService.clearToken();
+                        return {
+                            error: true,
+                            message: "Authentication failed. Please login again.",
+                        } as ApiResponse;
                     }
                     return {
                         error: true,

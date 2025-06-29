@@ -13,7 +13,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
 import CreatePassword from "./pages/CreatePassword";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import EducatorProtectedRoute from "./components/EducatorProtectedRoute";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import GradeManagement from "./pages/admin/grade-management";
@@ -70,9 +71,9 @@ function App() {
           {/* Admin routes */}
           <Route
             element={
-              <ProtectedRoute redirectTo="/admin-login">
+              <AdminProtectedRoute>
                 <AdminLayout />
-              </ProtectedRoute>
+              </AdminProtectedRoute>
             }
           >
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -90,9 +91,9 @@ function App() {
           {/* Educator routes */}
           <Route
             element={
-              <ProtectedRoute redirectTo="/educator-login">
+              <EducatorProtectedRoute>
                 <EducatorLayout />
-              </ProtectedRoute>
+              </EducatorProtectedRoute>
             }
           >
             <Route path="/educator-dashboard" element={<EducatorDashboard />} />

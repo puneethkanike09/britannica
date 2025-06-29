@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 import { AuthService } from "../services/authService";
 import { AuthContext } from "./AuthContextInstance";
+import { TokenService } from "../services/tokenService";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,6 +14,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setIsInitialized(true);
         };
         initializeAuth();
+    }, []);
+
+    // Listen for token changes
+    useEffect(() => {
+        const handleTokenChange = (token: string | null) => {
+            const isAuth = AuthService.isAuthenticated();
+            setIsAuthenticated(isAuth);
+        };
+
+        // Add listener for token updates
+        const cleanup = TokenService.addTokenUpdateListener(handleTokenChange);
+
+        // Initial check
+        handleTokenChange(TokenService.getToken());
+
+        return cleanup;
     }, []);
 
     const login = async (login_id: string, password: string, endpoint: "/auth/admin-login" | "/auth/teacher-login") => {
