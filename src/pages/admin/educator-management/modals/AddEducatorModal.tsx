@@ -8,6 +8,7 @@ import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
+import { SchoolService } from '../../../../services/schoolService';
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacherModalProps) {
@@ -201,24 +202,22 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
         let mounted = true;
         setIsSchoolsLoading(true);
 
-        import('../../../../services/schoolService').then(({ SchoolService }) => {
-            SchoolService.fetchSchoolsForDropdown().then((res) => {
-                if (mounted) {
-                    if (res && !res.error) {
-                        setSchools(res.schools || []);
-                    } else {
-                        setSchools([]);
-                        toast.error('Failed to load schools');
-                    }
-                    setIsSchoolsLoading(false);
-                }
-            }).catch(() => {
-                if (mounted) {
+        SchoolService.fetchSchoolsForDropdown().then((res) => {
+            if (mounted) {
+                if (res && !res.error) {
+                    setSchools(res.schools || []);
+                } else {
                     setSchools([]);
-                    setIsSchoolsLoading(false);
-                    toast.error('Failed to load schools');
+                    toast.error(res.message || 'Failed to load schools');
                 }
-            });
+                setIsSchoolsLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setSchools([]);
+                setIsSchoolsLoading(false);
+                toast.error('Failed to load schools');
+            }
         });
 
         return () => { mounted = false; };
