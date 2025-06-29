@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Listen for token changes
     useEffect(() => {
-        const handleTokenChange = (token: string | null) => {
+        const handleTokenChange = () => {
             const isAuth = AuthService.isAuthenticated();
             setIsAuthenticated(isAuth);
         };
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const cleanup = TokenService.addTokenUpdateListener(handleTokenChange);
 
         // Initial check
-        handleTokenChange(TokenService.getToken());
+        handleTokenChange();
 
         return cleanup;
     }, []);
