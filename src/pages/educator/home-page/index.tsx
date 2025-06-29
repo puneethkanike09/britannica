@@ -159,7 +159,7 @@ const EducatorDashboard = () => {
         setViewLoadingId(pblId);
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
-            if (viewResponse.success && viewResponse.data) {
+            if (viewResponse.error === false || viewResponse.error === 'false') {
                 window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
@@ -180,7 +180,7 @@ const EducatorDashboard = () => {
         setDownloadLoadingId(pblId);
         try {
             const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
-            if (downloadResponse.success && downloadResponse.data) {
+            if (downloadResponse.error === false || downloadResponse.error === 'false') {
                 const response = await fetch(downloadResponse.data, { credentials: 'omit' });
                 if (!response.ok) throw new Error('Failed to fetch file for download');
                 const blob = await response.blob();

@@ -87,7 +87,7 @@ export const apiClient = {
                     TokenService.clearToken();
                     return {
                         error: true,
-                        message: "Authentication failed",
+                        message: "Authentication failed, redirecting to login page",
                     } as ApiResponse;
                 }
 
@@ -144,7 +144,7 @@ export const apiClient = {
                     TokenService.clearToken();
                     return {
                         error: true,
-                        message: "Authentication failed",
+                        message: "Authentication failed, redirecting to login page",
                     } as ApiResponse;
                 }
 
@@ -158,7 +158,6 @@ export const apiClient = {
                     } as ApiResponse;
                 }
 
-                // Return the API response directly as it already has the correct format
                 return result as ApiResponse;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
@@ -201,7 +200,7 @@ export const apiClient = {
                         TokenService.clearToken();
                         return {
                             error: true,
-                            message: "Authentication failed",
+                            message: "Authentication failed, redirecting to login page",
                         } as ApiResponse;
                     }
 
@@ -273,7 +272,7 @@ export const apiClient = {
                         TokenService.clearToken();
                         return {
                             error: true,
-                            message: "Authentication failed",
+                            message: "Authentication failed, redirecting to login page",
                         } as ApiResponse;
                     }
 
