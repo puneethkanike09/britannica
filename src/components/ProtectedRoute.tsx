@@ -1,21 +1,24 @@
 import { Navigate, useLocation } from "react-router-dom";
-
-import { AuthService } from "../services/authService";
-import { ProtectedRouteProps } from '../types/global';
 import { useAuth } from "../hooks/useAuth";
 
 const ProtectedRoute = ({
     children,
-    redirectTo = "/admin-login",
-}: Omit<ProtectedRouteProps, 'requiredRole'>) => {
-    const { isAuthenticated } = useAuth();
+    redirectTo,
+}: {
+    children: React.ReactNode;
+    redirectTo?: string;
+}) => {
+    const { isAuthenticated, isInitialized } = useAuth();
     const location = useLocation();
 
+    // Show loading while initializing
+    if (!isInitialized) {
+        return <div>Loading...</div>;
+    }
 
-    const hasValidToken = AuthService.isAuthenticated();
-
-    if (!isAuthenticated || !hasValidToken) {
-        return <Navigate to={redirectTo} state={{ from: location }} replace />;
+    // If not authenticated, redirect to login
+    if (!isAuthenticated) {
+        return <Navigate to={redirectTo || "/admin-login"} state={{ from: location }} replace />;
     }
 
     return <>{children}</>;

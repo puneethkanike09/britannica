@@ -1,22 +1,23 @@
 import { X } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from 'react';
 import toast from "react-hot-toast";
-import { EducatorActionModalProps, School } from "../../../../types/admin";
+import { TeacherActionModalProps } from "../../../../types/admin/educator-management";
+import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import Loader from "../../../../components/common/Loader";
 
-export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
+export default function ViewEducatorModal({ onClose, teacher }: TeacherActionModalProps) {
     const [formData, setFormData] = useState({
-        teacher_id: educator.teacher_id,
-        firstName: educator.teacher_name.split(' ')[0] || '',
-        lastName: educator.teacher_name.split(' ').slice(1).join(' ') || '',
-        email: educator.email || '',
-        phone: educator.phone || '',
-        loginId: educator.teacher_login || '',
-        schoolId: educator.schoolId || undefined,
-        schoolName: educator.school_name || '',
+        teacher_id: teacher.teacher_id,
+        firstName: teacher.teacher_name.split(' ')[0] || '',
+        lastName: teacher.teacher_name.split(' ').slice(1).join(' ') || '',
+        email: teacher.email || '',
+        phone: teacher.phone || '',
+        loginId: teacher.teacher_login || '',
+        schoolId: teacher.schoolId || undefined,
+        schoolName: teacher.school_name || '',
     });
     const [isVisible, setIsVisible] = useState(true);
     const [schools, setSchools] = useState<Pick<School, 'school_id' | 'school_name'>[]>([]);
@@ -89,7 +90,7 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
         let mounted = true;
         setTeacherLoading(true);
         setTeacherError(null);
-        EducatorService.fetchTeacherCompleteDetails(educator.teacher_id).then((res) => {
+        EducatorService.fetchTeacherCompleteDetails(teacher.teacher_id).then((res) => {
             if (!mounted) return;
             if (res.error === false || res.error === "false") {
                 setFormData(prev => {
@@ -124,7 +125,7 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
             setTeacherLoading(false);
         });
         return () => { mounted = false; };
-    }, [schools, schoolsLoaded, educator.teacher_id]);
+    }, [schools, schoolsLoaded, teacher.teacher_id]);
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>

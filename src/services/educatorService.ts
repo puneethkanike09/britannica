@@ -1,17 +1,19 @@
 import { apiClient } from "../utils/apiClient";
-import { Teacher } from "../types/admin";
+import { Teacher, FetchTeachersResponse } from "../types/admin/educator-management";
 
 export class EducatorService {
-    static async fetchTeachers(): Promise<{ error: boolean | string; teachers?: Teacher[]; token?: string; message?: string }> {
+    static async fetchTeachers(): Promise<FetchTeachersResponse> {
         try {
             const response = await apiClient.get(
                 "/teacher"
             );
-            return response;
+            return response as FetchTeachersResponse;
         } catch (error) {
             console.error("Error fetching teachers:", error);
             return {
                 error: true,
+                teachers: [],
+                token: "",
                 message: error instanceof Error ? error.message : "Unknown error",
             };
         }

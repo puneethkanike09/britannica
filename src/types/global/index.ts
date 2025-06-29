@@ -6,7 +6,6 @@ export interface LoaderProps {
 
 export interface ProtectedRouteProps {
     children: React.ReactNode;
-    requiredRole?: "admin" | "educator";
     redirectTo?: string;
 }
 

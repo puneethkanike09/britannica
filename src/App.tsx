@@ -66,9 +66,8 @@ function App() {
           <Route path="/educator-register" element={<EducatorRegistration />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
-          {/* <Route path="/" element={<AdminLogin />} />a */}
 
-          {/* Admin routes with persistent layout */}
+          {/* Admin routes */}
           <Route
             element={
               <ProtectedRoute redirectTo="/admin-login">
@@ -88,7 +87,7 @@ function App() {
             <Route path="/report" element={<Report />} />
           </Route>
 
-          {/* Educator routes with persistent layout */}
+          {/* Educator routes */}
           <Route
             element={
               <ProtectedRoute redirectTo="/educator-login">

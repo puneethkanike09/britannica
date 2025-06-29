@@ -49,16 +49,6 @@ class RequestQueue {
 
 const requestQueue = new RequestQueue();
 
-const handle401Error = (endpoint: string): void => {
-    TokenService.clearToken();
-    // Redirect based on endpoint
-    if (endpoint.includes('/school') || endpoint.includes('/teacher')) {
-        window.location.href = '/admin-login';
-    } else {
-        window.location.href = '/educator-login';
-    }
-};
-
 export const apiClient = {
     async post<D = unknown>(
         endpoint: string,
@@ -94,10 +84,10 @@ export const apiClient = {
                 }
 
                 if (response.status === 401) {
-                    handle401Error(endpoint);
+                    TokenService.clearToken();
                     return {
                         error: true,
-                        message: "Authentication failed. Redirecting to login.",
+                        message: "Authentication failed",
                     } as ApiResponse;
                 }
 
@@ -151,10 +141,10 @@ export const apiClient = {
                 }
 
                 if (response.status === 401) {
-                    handle401Error(endpoint);
+                    TokenService.clearToken();
                     return {
                         error: true,
-                        message: "Authentication failed. Redirecting to login.",
+                        message: "Authentication failed",
                     } as ApiResponse;
                 }
 
@@ -208,10 +198,10 @@ export const apiClient = {
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        handle401Error(endpoint);
+                        TokenService.clearToken();
                         return {
                             error: true,
-                            message: "Authentication failed. Redirecting to login.",
+                            message: "Authentication failed",
                         } as ApiResponse;
                     }
 
@@ -280,10 +270,10 @@ export const apiClient = {
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        handle401Error(endpoint);
+                        TokenService.clearToken();
                         return {
                             error: true,
-                            message: "Authentication failed. Redirecting to login.",
+                            message: "Authentication failed",
                         } as ApiResponse;
                     }
 

@@ -8,7 +8,7 @@ import ViewIcon from "../../../assets/dashboard/Admin/school-management/view.svg
 import EditIcon from "../../../assets/dashboard/Admin/school-management/edit.svg";
 // import DeleteIcon from "../../../assets/dashboard/Admin/school-management/delete.svg";
 import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add-school.svg";
-import { School } from "../../../types/admin";
+import { School } from "../../../types/admin/school-management";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
 

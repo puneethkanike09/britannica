@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
-import { SchoolActionModalProps } from "../../../../types/admin";
+import { SchoolActionModalProps } from "../../../../types/admin/school-management";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -204,28 +204,25 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         e.preventDefault();
         if (validateForm()) {
             setIsSubmitting(true);
-            toast.promise(
-                (async () => {
-                    const { SchoolService } = await import('../../../../services/schoolService');
-                    const response = await SchoolService.updateSchool(formData);
-                    if (response.error === false || response.error === "false") {
-                        setIsSubmitting(false);
-                        if (onSchoolUpdated) {
-                            onSchoolUpdated();
-                        }
-                        handleClose();
-                        return response.message || 'School updated successfully';
-                    } else {
-                        setIsSubmitting(false);
-                        throw new Error(response.message || 'Failed to update school');
+            try {
+                const { SchoolService } = await import('../../../../services/schoolService');
+                const response = await SchoolService.updateSchool(formData);
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'School updated successfully');
+                    if (onSchoolUpdated) {
+                        onSchoolUpdated();
                     }
-                })(),
-                {
-                    loading: 'Updating school...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to update school',
+                    handleClose();
+                } else {
+                    toast.error(response.message || 'Failed to update school');
                 }
-            );
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to update school';
+                toast.error(errMsg);
+                console.error('Update school error:', error);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

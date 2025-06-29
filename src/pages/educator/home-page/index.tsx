@@ -114,7 +114,8 @@ const EducatorDashboard = () => {
             setIsSubmitting(true);
             setShowResults(false);
             setIsLoadingFiles(true);
-            const fetchFiles = async () => {
+            
+            try {
                 const token = '';
                 const res = await EducatorDashboardService.fetchPblFiles({
                     token,
@@ -122,6 +123,7 @@ const EducatorDashboard = () => {
                     theme_id: selectedTheme,
                     user_access_type_id: selectedType,
                 });
+                
                 if (res.error === false || res.error === 'false') {
                     const files = (res.pbl_file || []).map((file: {
                         pbl_id: string | number;
@@ -135,26 +137,16 @@ const EducatorDashboard = () => {
                     }));
                     setPdfProjects(files);
                     setShowResults(true);
-                    if (files.length === 0) {
-                        throw new Error('No files found with this filter');
-                    }
-                    return 'Files loaded successfully!';
                 } else {
                     setPdfProjects([]);
-                    throw new Error(res.message || 'No files found');
+                    toast.error(res.message || 'No files found');
                 }
-            };
-            toast.promise(
-                fetchFiles(),
-                {
-                    loading: 'Loading files...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to load files',
-                }
-            ).finally(() => {
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : 'Failed to load files');
+            } finally {
                 setIsSubmitting(false);
                 setIsLoadingFiles(false);
-            });
+            }
         }
     };
 

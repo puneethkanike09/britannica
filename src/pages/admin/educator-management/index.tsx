@@ -9,7 +9,7 @@ import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.s
 // import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/educatorService';
-import { Teacher } from '../../../types/admin';
+import { Teacher } from '../../../types/admin/educator-management';
 import Loader from '../../../components/common/Loader';
 import toast from 'react-hot-toast';
 
@@ -261,12 +261,12 @@ const EducatorManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} onEducatorAdded={handleEducatorAdded} />}
+            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} onTeacherAdded={handleEducatorAdded} />}
             {showEditModal && selectedEducator && (
-                <EditEducatorModal onClose={closeEditEducatorModal} educator={selectedEducator} onEducatorUpdated={handleEducatorUpdated} />
+                <EditEducatorModal onClose={closeEditEducatorModal} teacher={selectedEducator} onTeacherUpdated={handleEducatorUpdated} />
             )}
             {showViewModal && selectedEducator && (
-                <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
+                <ViewEducatorModal onClose={closeViewEducatorModal} teacher={selectedEducator} />
             )}
             {/* {showDeleteModal && selectedEducator && (
                 <DeleteEducatorModal onClose={closeDeleteEducatorModal} educator={selectedEducator} />

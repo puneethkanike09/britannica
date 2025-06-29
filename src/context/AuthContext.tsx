@@ -2,8 +2,6 @@ import { useState, useEffect, ReactNode } from "react";
 import { AuthService } from "../services/authService";
 import { AuthContext } from "./AuthContextInstance";
 
-
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
@@ -28,11 +26,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            await AuthService.logout();
+            const response = await AuthService.logout();
+            setIsAuthenticated(false);
+            return response;
         } catch (error) {
             console.error("Logout error:", error);
-        } finally {
             setIsAuthenticated(false);
+            throw error;
         }
     };
 

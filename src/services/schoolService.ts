@@ -1,5 +1,5 @@
 import { apiClient } from "../utils/apiClient";
-import { FetchSchoolsResponse, School } from "../types/admin";
+import { FetchSchoolsResponse, School } from "../types/admin/school-management";
 
 
 

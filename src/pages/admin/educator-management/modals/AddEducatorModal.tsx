@@ -3,14 +3,22 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
-import { AddEducatorModalProps, School, Educator } from "../../../../types/admin";
+import { AddTeacherModalProps } from "../../../../types/admin/educator-management";
+import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
-export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducatorModalProps) {
-    const [formData, setFormData] = useState<Omit<Educator, 'id'>>({
+export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacherModalProps) {
+    const [formData, setFormData] = useState<{
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        loginId: string;
+        schoolId?: number;
+    }>({
         firstName: '',
         lastName: '',
         email: '',
@@ -163,32 +171,29 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
     const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            toast.promise(
-                (async () => {
-                    const response = await EducatorService.addTeacher({
-                        school_id: formData.schoolId!,
-                        first_name: formData.firstName,
-                        last_name: formData.lastName,
-                        mobile_no: formData.phone,
-                        email_id: formData.email,
-                        login_id: formData.loginId,
-                    });
-                    if (response.error === false || response.error === "false") {
-                        setIsSubmitting(false);
-                        if (onEducatorAdded) onEducatorAdded();
-                        handleClose();
-                        return response.message || 'Educator added successfully!';
-                    } else {
-                        setIsSubmitting(false);
-                        throw new Error(response.message || 'Failed to add educator');
-                    }
-                })(),
-                {
-                    loading: 'Adding educator...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to add educator',
+            try {
+                const response = await EducatorService.addTeacher({
+                    school_id: formData.schoolId!,
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
+                    mobile_no: formData.phone,
+                    email_id: formData.email,
+                    login_id: formData.loginId,
+                });
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Educator added successfully!');
+                    if (onTeacherAdded) onTeacherAdded();
+                    handleClose();
+                } else {
+                    toast.error(response.message || 'Failed to add educator');
                 }
-            );
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to add educator';
+                toast.error(errMsg);
+                console.error('Add educator error:', error);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

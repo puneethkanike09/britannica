@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SchoolActionModalProps } from "../../../../types/admin";
+import { SchoolActionModalProps } from "../../../../types/admin/school-management";
 import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from "../../../../components/common/Loader";
