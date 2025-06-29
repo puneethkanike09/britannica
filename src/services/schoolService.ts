@@ -6,7 +6,7 @@ import { FetchSchoolsResponse, School } from "../types/admin";
 export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {
         try {
-            const response = await apiClient.get<FetchSchoolsResponse>("/school/all");
+            const response = await apiClient.get("/school/all");
             return response as FetchSchoolsResponse;
         } catch (error) {
             console.error("Error fetching schools:", error);
@@ -31,10 +31,7 @@ export class SchoolService {
         pincode?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string }>(
-                "/school/create",
-                schoolData
-            );
+            const response = await apiClient.post("/school/create", schoolData);
             return response;
         } catch (error) {
             console.error("Error adding school:", error);
@@ -58,10 +55,7 @@ export class SchoolService {
         pincode?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string }>(
-                "/school/update",
-                schoolData
-            );
+            const response = await apiClient.post("/school/update", schoolData);
             return response;
         } catch (error) {
             console.error("Error updating school:", error);
@@ -74,9 +68,7 @@ export class SchoolService {
 
     static async fetchSchoolById(school_id: string | number): Promise<{ error: boolean | string; school?: School; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get<{ error: boolean | string; school?: School; token?: string; message?: string }>(
-                `/school/${school_id}`
-            );
+            const response = await apiClient.get(`/school/${school_id}`);
             return response;
         } catch (error) {
             console.error("Error fetching school detail:", error);
@@ -95,12 +87,7 @@ export class SchoolService {
     }> {
 
         try {
-            const response = await apiClient.get<{
-                error: boolean | string;
-                schools?: Pick<School, 'school_id' | 'school_name'>[];
-                token?: string;
-                message?: string;
-            }>("/school");
+            const response = await apiClient.get("/school");
 
             return response;
         } catch (error) {

@@ -70,7 +70,7 @@ const CreatePassword = () => {
         };
 
         // Make the API call with the token in the headers (not the Authorization token)
-        const response = await apiClient.post<{ error: boolean; message: string }>(
+        const response = await apiClient.post(
             "/auth/password",
             payload,
             false, // Do not include the Authorization token

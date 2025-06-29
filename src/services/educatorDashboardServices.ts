@@ -11,7 +11,7 @@ import {
 export class EducatorDashboardService {
     static async fetchGrades(): Promise<FetchGradesResponse> {
         try {
-            const response = await apiClient.get<FetchGradesResponse>(
+            const response = await apiClient.get(
                 "/grade"
             );
             // The API response already has the correct format, return it directly
@@ -27,7 +27,7 @@ export class EducatorDashboardService {
 
     static async fetchThemes(): Promise<FetchThemesResponse> {
         try {
-            const response = await apiClient.get<FetchThemesResponse>(
+            const response = await apiClient.get(
                 "/theme"
             );
             // The API response already has the correct format, return it directly
@@ -43,7 +43,7 @@ export class EducatorDashboardService {
 
     static async fetchUserAccessTypes(): Promise<FetchUserAccessTypesResponse> {
         try {
-            const response = await apiClient.get<FetchUserAccessTypesResponse>(
+            const response = await apiClient.get(
                 "/user_access_type"
             );
             // The API response already has the correct format, return it directly
@@ -59,7 +59,7 @@ export class EducatorDashboardService {
 
     static async fetchPblFiles(payload: FetchPblFilesPayload): Promise<FetchPblFilesResponse> {
         try {
-            const response = await apiClient.post<FetchPblFilesResponse>(
+            const response = await apiClient.post(
                 "/file",
                 payload
             );

@@ -4,7 +4,7 @@ import { Teacher } from "../types/admin";
 export class EducatorService {
     static async fetchTeachers(): Promise<{ error: boolean | string; teachers?: Teacher[]; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get<{ error: boolean | string; teachers?: Teacher[]; token?: string; message?: string }>(
+            const response = await apiClient.get(
                 "/teacher"
             );
             return response;
@@ -37,7 +37,7 @@ export class EducatorService {
                     { role: { role_id: 2 } }
                 ]
             };
-            const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string; password_link?: string }, typeof payload>(
+            const response = await apiClient.post(
                 "/teacher/create",
                 payload
             );
@@ -61,7 +61,7 @@ export class EducatorService {
         user_id?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post<{ error: boolean | string; token?: string; message?: string }, typeof teacherData>(
+            const response = await apiClient.post(
                 "/teacher/update",
                 teacherData
             );
@@ -77,7 +77,7 @@ export class EducatorService {
 
     static async fetchTeacherById(teacher_id: string | number): Promise<{ error: boolean | string; teacher?: Teacher; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get<{ error: boolean | string; teacher?: Teacher; token?: string; message?: string }>(
+            const response = await apiClient.get(
                 `/teacher/${teacher_id}`
             );
             return response;
@@ -110,25 +110,9 @@ export class EducatorService {
         message?: string;
     }> {
         try {
-            const response = await apiClient.get<{
-                error: boolean | string;
-                teacher?: {
-                    teacher_id: string | number;
-                    first_name: string;
-                    last_name: string;
-                    mobile_no: string;
-                    email_id: string;
-                    login_id: string;
-                    school_name: string;
-                    status?: string;
-                    created_user?: string | number;
-                    created_ts?: string;
-                    last_updated_user?: string | number;
-                    last_updated_ts?: string;
-                };
-                token?: string;
-                message?: string;
-            }>(`/teacher/info/${teacher_id}`);
+            const response = await apiClient.get(
+                `/teacher/info/${teacher_id}`
+            );
             return response;
         } catch (error) {
             console.error("Error fetching teacher complete details:", error);

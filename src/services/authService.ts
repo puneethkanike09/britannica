@@ -6,9 +6,9 @@ export class AuthService {
     static async login(
         credentials: { login_id: string; password: string },
         endpoint: "/auth/admin-login" | "/auth/teacher-login"
-    ): Promise<ApiResponse<{ token: string }>> {
+    ): Promise<ApiResponse> {
         try {
-            const response = await apiClient.post<{ token: string }>(endpoint, credentials, false);
+            const response = await apiClient.post(endpoint, credentials, false);
             if (response.error === false || response.error === "false") {
                 if (response.token) {
                     TokenService.updateToken(response.token);

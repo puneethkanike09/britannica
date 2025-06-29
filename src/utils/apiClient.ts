@@ -60,12 +60,12 @@ const handle401Error = (endpoint: string): void => {
 };
 
 export const apiClient = {
-    async post<T, D = unknown>(
+    async post<D = unknown>(
         endpoint: string,
         data: D,
         includeToken: boolean = true,
         customHeaders: Record<string, string> = {}
-    ): Promise<ApiResponse<T>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -98,7 +98,7 @@ export const apiClient = {
                     return {
                         error: true,
                         message: "Authentication failed. Redirecting to login.",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
                 if (!response.ok) {
@@ -108,25 +108,24 @@ export const apiClient = {
                     return {
                         error: true,
                         message: result.message || "Request failed",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
-                // Return the API response directly as it already has the correct format
-                return result as ApiResponse<T>;
+                return result as ApiResponse;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
                     error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                } as ApiResponse<T>;
+                } as ApiResponse;
             }
         });
     },
 
-    async get<T>(
+    async get(
         endpoint: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<T>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -156,7 +155,7 @@ export const apiClient = {
                     return {
                         error: true,
                         message: "Authentication failed. Redirecting to login.",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
                 if (!response.ok) {
@@ -166,17 +165,17 @@ export const apiClient = {
                     return {
                         error: true,
                         message: result.message || "Request failed",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
                 // Return the API response directly as it already has the correct format
-                return result as ApiResponse<T>;
+                return result as ApiResponse;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
                     error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                } as ApiResponse<T>;
+                } as ApiResponse;
             }
         });
     },
@@ -184,7 +183,7 @@ export const apiClient = {
     async getFileViewUrl(
         filePath: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<string>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -213,7 +212,7 @@ export const apiClient = {
                         return {
                             error: true,
                             message: "Authentication failed. Redirecting to login.",
-                        };
+                        } as ApiResponse;
                     }
 
                     const contentType = response.headers.get("Content-Type") || "";
@@ -234,7 +233,7 @@ export const apiClient = {
                     return {
                         error: true,
                         message: errorMessage,
-                    };
+                    } as ApiResponse;
                 }
 
                 const result = await response.text();
@@ -242,13 +241,13 @@ export const apiClient = {
                     error: false,
                     data: result,
                     message: "File view URL retrieved successfully",
-                };
+                } as ApiResponse;
             } catch (error: unknown) {
                 console.error(`Error in GET file/view?filePath=${filePath}:`, error);
                 return {
                     error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                };
+                } as ApiResponse;
             }
         });
     },
@@ -256,7 +255,7 @@ export const apiClient = {
     async getFileDownloadUrl(
         filePath: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<string>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -285,7 +284,7 @@ export const apiClient = {
                         return {
                             error: true,
                             message: "Authentication failed. Redirecting to login.",
-                        };
+                        } as ApiResponse;
                     }
 
                     const contentType = response.headers.get("Content-Type") || "";
@@ -306,7 +305,7 @@ export const apiClient = {
                     return {
                         error: true,
                         message: errorMessage,
-                    };
+                    } as ApiResponse;
                 }
 
                 const result = await response.text();
@@ -314,13 +313,13 @@ export const apiClient = {
                     error: false,
                     data: result,
                     message: "File download URL retrieved successfully",
-                };
+                } as ApiResponse;
             } catch (error: unknown) {
                 console.error(`Error in GET file/download?filePath=${filePath}:`, error);
                 return {
                     error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                };
+                } as ApiResponse;
             }
         });
     },
