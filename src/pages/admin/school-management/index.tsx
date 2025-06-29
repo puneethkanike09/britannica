@@ -11,6 +11,7 @@ import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add
 import { School } from "../../../types/admin/school-management";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
+import { SchoolService } from "../../../services/schoolService";
 
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,26 +26,25 @@ const SchoolManagement: React.FC = () => {
     const itemsPerPage = 6;
 
     // Fetch schools on mount and when needed
-    const loadSchools = async () => {
+    const fetchSchools = async () => {
         setIsLoading(true);
         try {
-            const { SchoolService } = await import("../../../services/schoolService");
             const response = await SchoolService.fetchSchools();
             if (response.error === false || response.error === "false") {
                 setSchools(response.schools || []);
             } else {
-                toast.error(response.message || "Failed to load schools");
+                toast.error(response.message || 'Failed to fetch schools');
             }
         } catch (error) {
-            console.error("Error fetching schools:", error);
-            toast.error("Error loading schools");
+            toast.error('Failed to fetch schools');
+            console.error('Fetch schools error:', error);
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        loadSchools();
+        fetchSchools();
     }, []);
 
     // Calculate total pages
@@ -122,12 +122,12 @@ const SchoolManagement: React.FC = () => {
 
     // Callback for after school is added or updated
     const handleSchoolAdded = () => {
-        loadSchools();
+        fetchSchools();
         closeAddSchoolModal();
     };
 
     const handleSchoolUpdated = () => {
-        loadSchools();
+        fetchSchools();
         closeEditSchoolModal();
     };
 

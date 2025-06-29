@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { X, Loader2 } from "lucide-react";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
+import { SchoolService } from "../../../../services/schoolService";
 
 export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: SchoolActionModalProps) {
     const [formData, setFormData] = useState({
@@ -205,7 +206,6 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         if (validateForm()) {
             setIsSubmitting(true);
             try {
-                const { SchoolService } = await import('../../../../services/schoolService');
                 const response = await SchoolService.updateSchool(formData);
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || 'School updated successfully');

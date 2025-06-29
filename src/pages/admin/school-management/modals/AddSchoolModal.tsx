@@ -7,6 +7,7 @@ import { AddSchoolModalProps } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
+import { SchoolService } from "../../../../services/schoolService";
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{
@@ -208,7 +209,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         if (validateForm()) {
             setIsSubmitting(true);
             try {
-                const response = await import('../../../../services/schoolService').then(m => m.SchoolService.addSchool(formData));
+                const response = await SchoolService.addSchool(formData);
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || 'School added successfully!');
                     if (onSchoolAdded) onSchoolAdded();

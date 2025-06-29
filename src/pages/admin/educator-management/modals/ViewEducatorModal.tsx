@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
 import Loader from "../../../../components/common/Loader";
+import { SchoolService } from "../../../../services/schoolService";
 
 export default function ViewEducatorModal({ onClose, teacher }: TeacherActionModalProps) {
     const [formData, setFormData] = useState({
@@ -59,24 +60,22 @@ export default function ViewEducatorModal({ onClose, teacher }: TeacherActionMod
         let mounted = true;
         setIsSchoolsLoading(true);
 
-        import('../../../../services/schoolService').then(({ SchoolService }) => {
-            SchoolService.fetchSchoolsForDropdown().then((res) => {
-                if (mounted) {
-                    if (res && !res.error) {
-                        setSchools(res.schools || []);
-                    } else {
-                        setSchools([]);
-                        toast.error('Failed to load schools');
-                    }
-                    setIsSchoolsLoading(false);
-                }
-            }).catch(() => {
-                if (mounted) {
+        SchoolService.fetchSchoolsForDropdown().then((res) => {
+            if (mounted) {
+                if (res && !res.error) {
+                    setSchools(res.schools || []);
+                } else {
                     setSchools([]);
-                    setIsSchoolsLoading(false);
                     toast.error('Failed to load schools');
                 }
-            });
+                setIsSchoolsLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setSchools([]);
+                setIsSchoolsLoading(false);
+                toast.error('Failed to load schools');
+            }
         });
 
         return () => { mounted = false; };
