@@ -2,8 +2,6 @@ import {
     FetchGradesResponse,
     FetchThemesResponse,
     FetchUserAccessTypesResponse,
-    FetchPblFilesPayload,
-    FetchPblFilesResponse,
 } from '../../types/educator';
 import { apiClient } from '../../utils/apiClient';
 
@@ -47,16 +45,5 @@ export class PblFileServices {
         }
     }
 
-    static async fetchPblFiles(payload: FetchPblFilesPayload): Promise<FetchPblFilesResponse> {
-        try {
-            const response = await apiClient.post("/file", payload);
-            return response;
-        } catch (error) {
-            console.error("Error fetching PBL files:", error);
-            return {
-                error: true,
-                message: error instanceof Error ? error.message : "Unknown error",
-            };
-        }
-    }
+
 } 
