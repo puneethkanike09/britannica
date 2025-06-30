@@ -49,23 +49,13 @@ class RequestQueue {
 
 const requestQueue = new RequestQueue();
 
-const handle401Error = (endpoint: string): void => {
-    TokenService.clearToken();
-    // Redirect based on endpoint
-    if (endpoint.includes('/school') || endpoint.includes('/teacher')) {
-        window.location.href = '/admin-login';
-    } else {
-        window.location.href = '/educator-login';
-    }
-};
-
 export const apiClient = {
-    async post<T, D = unknown>(
+    async post<D = unknown>(
         endpoint: string,
         data: D,
         includeToken: boolean = true,
         customHeaders: Record<string, string> = {}
-    ): Promise<ApiResponse<T>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -93,43 +83,36 @@ export const apiClient = {
                     TokenService.updateToken(result.token);
                 }
 
-                if (response.status === 401) {
-                    handle401Error(endpoint);
-                    return {
-                        success: false,
-                        message: "Authentication failed. Redirecting to login.",
-                    } as ApiResponse<T>;
-                }
 
                 if (!response.ok) {
-                    if (response.status === 403) {
+                    if (response.status === 401 || response.status === 403) {
                         TokenService.clearToken();
+                        return {
+                            error: true,
+                            message: "Authentication failed. Please login again.",
+                        } as ApiResponse;
                     }
                     return {
-                        success: false,
+                        error: true,
                         message: result.message || "Request failed",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
-                return {
-                    success: true,
-                    data: result,
-                    message: result.message,
-                } as ApiResponse<T>;
+                return result as ApiResponse;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                } as ApiResponse<T>;
+                } as ApiResponse;
             }
         });
     },
 
-    async get<T>(
+    async get(
         endpoint: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<T>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -154,35 +137,28 @@ export const apiClient = {
                     TokenService.updateToken(result.token);
                 }
 
-                if (response.status === 401) {
-                    handle401Error(endpoint);
-                    return {
-                        success: false,
-                        message: "Authentication failed. Redirecting to login.",
-                    } as ApiResponse<T>;
-                }
 
                 if (!response.ok) {
-                    if (response.status === 403) {
+                    if (response.status === 401 || response.status === 403) {
                         TokenService.clearToken();
+                        return {
+                            error: true,
+                            message: "Authentication failed. Please login again.",
+                        } as ApiResponse;
                     }
                     return {
-                        success: false,
+                        error: true,
                         message: result.message || "Request failed",
-                    } as ApiResponse<T>;
+                    } as ApiResponse;
                 }
 
-                return {
-                    success: true,
-                    data: result,
-                    message: result.message,
-                } as ApiResponse<T>;
+                return result as ApiResponse;
             } catch (error: unknown) {
                 console.error("Error in request:", error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                } as ApiResponse<T>;
+                } as ApiResponse;
             }
         });
     },
@@ -190,7 +166,7 @@ export const apiClient = {
     async getFileViewUrl(
         filePath: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<string>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -215,11 +191,11 @@ export const apiClient = {
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        handle401Error(endpoint);
+                        TokenService.clearToken();
                         return {
-                            success: false,
-                            message: "Authentication failed. Redirecting to login.",
-                        };
+                            error: true,
+                            message: "Authentication failed, redirecting to login page",
+                        } as ApiResponse;
                     }
 
                     const contentType = response.headers.get("Content-Type") || "";
@@ -238,23 +214,23 @@ export const apiClient = {
                     }
 
                     return {
-                        success: false,
+                        error: true,
                         message: errorMessage,
-                    };
+                    } as ApiResponse;
                 }
 
                 const result = await response.text();
                 return {
-                    success: true,
+                    error: false,
                     data: result,
                     message: "File view URL retrieved successfully",
-                };
+                } as ApiResponse;
             } catch (error: unknown) {
                 console.error(`Error in GET file/view?filePath=${filePath}:`, error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                };
+                } as ApiResponse;
             }
         });
     },
@@ -262,7 +238,7 @@ export const apiClient = {
     async getFileDownloadUrl(
         filePath: string,
         includeToken: boolean = true
-    ): Promise<ApiResponse<string>> {
+    ): Promise<ApiResponse> {
         return requestQueue.enqueue(async () => {
             try {
                 const headers: HeadersInit = {
@@ -287,11 +263,11 @@ export const apiClient = {
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        handle401Error(endpoint);
+                        TokenService.clearToken();
                         return {
-                            success: false,
-                            message: "Authentication failed. Redirecting to login.",
-                        };
+                            error: true,
+                            message: "Authentication failed, redirecting to login page",
+                        } as ApiResponse;
                     }
 
                     const contentType = response.headers.get("Content-Type") || "";
@@ -310,23 +286,23 @@ export const apiClient = {
                     }
 
                     return {
-                        success: false,
+                        error: true,
                         message: errorMessage,
-                    };
+                    } as ApiResponse;
                 }
 
                 const result = await response.text();
                 return {
-                    success: true,
+                    error: false,
                     data: result,
                     message: "File download URL retrieved successfully",
-                };
+                } as ApiResponse;
             } catch (error: unknown) {
                 console.error(`Error in GET file/download?filePath=${filePath}:`, error);
                 return {
-                    success: false,
+                    error: true,
                     message: error instanceof Error ? error.message : "Unknown error",
-                };
+                } as ApiResponse;
             }
         });
     },

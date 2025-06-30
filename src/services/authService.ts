@@ -6,40 +6,35 @@ export class AuthService {
     static async login(
         credentials: { login_id: string; password: string },
         endpoint: "/auth/admin-login" | "/auth/teacher-login"
-    ): Promise<ApiResponse<{ token: string }>> {
+    ): Promise<ApiResponse> {
         try {
-            const response = await apiClient.post<{ token: string }>(endpoint, credentials, false);
-            if (response.success && response.data?.token) {
-                TokenService.updateToken(response.data.token);
-                return {
-                    success: true,
-                    data: { token: response.data.token },
-                    message: response.message,
-                };
+            const response = await apiClient.post(endpoint, credentials, false);
+            if (response.error === false || response.error === "false") {
+                if (response.token) {
+                    TokenService.updateToken(response.token);
+                }
+                return response;
             }
-            return {
-                success: false,
-                message: response.message,
-            };
+            return response;
         } catch (error) {
             console.error("Login error:", error);
             return {
-                success: false,
+                error: true,
                 message: error instanceof Error ? error.message : "Login failed",
             };
         }
     }
 
-    static async logout(): Promise<{ success: boolean; message?: string }> {
+    static async logout(): Promise<{ error: boolean | string; message?: string }> {
         try {
             const response = await apiClient.post("/auth/logout", {}, true);
             TokenService.clearToken();
-            return { success: response.success, message: response.message };
+            return { error: response.error, message: response.message };
         } catch (error) {
             console.error("Logout API error:", error);
             TokenService.clearToken();
             return {
-                success: false,
+                error: true,
                 message: error instanceof Error ? error.message : "Logout failed",
             };
         }

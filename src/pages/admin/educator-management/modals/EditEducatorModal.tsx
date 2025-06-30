@@ -3,22 +3,24 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import toast from "react-hot-toast";
-import { EducatorActionModalProps, School } from "../../../../types/admin";
+import { TeacherActionModalProps } from "../../../../types/admin/educator-management";
+import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { EducatorService } from '../../../../services/educatorService';
+import { SchoolService } from '../../../../services/schoolService';
 import Loader from "../../../../components/common/Loader";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
-export default function EditEducatorModal({ onClose, educator, onEducatorUpdated }: EducatorActionModalProps) {
+export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }: TeacherActionModalProps) {
     const [formData, setFormData] = useState({
-        teacher_id: educator.teacher_id,
-        firstName: educator.teacher_name.split(' ')[0] || '',
-        lastName: educator.teacher_name.split(' ').slice(1).join(' ') || '',
-        email: educator.email || '',
-        phone: educator.phone || '',
-        loginId: educator.teacher_login || '',
-        schoolId: educator.schoolId || undefined,
+        teacher_id: teacher.teacher_id,
+        firstName: teacher.teacher_name.split(' ')[0] || '',
+        lastName: teacher.teacher_name.split(' ').slice(1).join(' ') || '',
+        email: teacher.email || '',
+        phone: teacher.phone || '',
+        loginId: teacher.teacher_login || '',
+        schoolId: teacher.schoolId || undefined,
     });
     const [errors, setErrors] = useState({
         firstName: '',
@@ -69,24 +71,22 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
         let mounted = true;
         setIsSchoolsLoading(true);
 
-        import('../../../../services/schoolService').then(({ SchoolService }) => {
-            SchoolService.fetchSchoolsForDropdown().then((res) => {
-                if (mounted) {
-                    if (res && !res.error) {
-                        setSchools(res.schools || []);
-                    } else {
-                        setSchools([]);
-                        toast.error('Failed to load schools');
-                    }
-                    setIsSchoolsLoading(false);
-                }
-            }).catch(() => {
-                if (mounted) {
+        SchoolService.fetchSchoolsForDropdown().then((res) => {
+            if (mounted) {
+                if (res && !res.error) {
+                    setSchools(res.schools || []);
+                } else {
                     setSchools([]);
-                    setIsSchoolsLoading(false);
                     toast.error('Failed to load schools');
                 }
-            });
+                setIsSchoolsLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setSchools([]);
+                setIsSchoolsLoading(false);
+                toast.error('Failed to load schools');
+            }
         });
 
         return () => { mounted = false; };
@@ -100,7 +100,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
         let mounted = true;
         setTeacherLoading(true);
         setTeacherError(null);
-        EducatorService.fetchTeacherCompleteDetails(educator.teacher_id).then((res) => {
+        EducatorService.fetchTeacherCompleteDetails(teacher.teacher_id).then((res) => {
             if (!mounted) return;
             if (res.error === false || res.error === "false") {
                 setFormData(prev => {
@@ -130,7 +130,7 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
             setTeacherLoading(false);
         });
         return () => { mounted = false; };
-    }, [schools, schoolsLoaded, educator.teacher_id]);
+    }, [schools, schoolsLoaded, teacher.teacher_id]);
 
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
@@ -234,33 +234,30 @@ export default function EditEducatorModal({ onClose, educator, onEducatorUpdated
     const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            toast.promise(
-                (async () => {
-                    const response = await EducatorService.updateTeacher({
-                        teacher_id: formData.teacher_id,
-                        login_id: formData.loginId,
-                        email_id: formData.email,
-                        mobile_no: formData.phone,
-                        first_name: formData.firstName,
-                        last_name: formData.lastName,
-                        user_id: formData.teacher_id,
-                    });
-                    if (response.error === false || response.error === "false") {
-                        setIsSubmitting(false);
-                        if (onEducatorUpdated) onEducatorUpdated();
-                        handleClose();
-                        return response.message || 'Educator updated successfully!';
-                    } else {
-                        setIsSubmitting(false);
-                        throw new Error(response.message || 'Failed to update educator');
-                    }
-                })(),
-                {
-                    loading: 'Updating educator...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to update educator',
+            try {
+                const response = await EducatorService.updateTeacher({
+                    teacher_id: formData.teacher_id,
+                    login_id: formData.loginId,
+                    email_id: formData.email,
+                    mobile_no: formData.phone,
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
+                    user_id: formData.teacher_id,
+                });
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Educator updated successfully!');
+                    if (onTeacherUpdated) onTeacherUpdated();
+                    handleClose();
+                } else {
+                    toast.error(response.message || 'Failed to update educator');
                 }
-            );
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to update educator';
+                toast.error(errMsg);
+                console.error('Update educator error:', error);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

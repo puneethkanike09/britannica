@@ -1,8 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 import { AuthService } from "../services/authService";
 import { AuthContext } from "./AuthContextInstance";
-
-
+import { TokenService } from "../services/tokenService";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,9 +16,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         initializeAuth();
     }, []);
 
+    // Listen for token changes
+    useEffect(() => {
+        const handleTokenChange = () => {
+            const isAuth = AuthService.isAuthenticated();
+            setIsAuthenticated(isAuth);
+        };
+
+        // Add listener for token updates
+        const cleanup = TokenService.addTokenUpdateListener(handleTokenChange);
+
+        // Initial check
+        handleTokenChange();
+
+        return cleanup;
+    }, []);
+
     const login = async (login_id: string, password: string, endpoint: "/auth/admin-login" | "/auth/teacher-login") => {
         const response = await AuthService.login({ login_id, password }, endpoint);
-        if (response.success && response.data) {
+        if (response.error === false || response.error === "false") {
             setIsAuthenticated(true);
         } else {
             throw new Error(response.message || "Login failed");
@@ -28,11 +43,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            await AuthService.logout();
+            const response = await AuthService.logout();
+            setIsAuthenticated(false);
+            return response;
         } catch (error) {
             console.error("Logout error:", error);
-        } finally {
             setIsAuthenticated(false);
+            throw error;
         }
     };
 

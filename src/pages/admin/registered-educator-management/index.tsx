@@ -8,6 +8,7 @@ import Loader from "../../../components/common/Loader";
 import BulkActionToolbar from "./components/BulkActionToolbar";
 import BulkApproveModal from "./modals/BulkApproveModal";
 import BulkRejectModal from "./modals/BulkRejectModal";
+import toast from "react-hot-toast";
 
 interface Educator {
     educator_id: string;
@@ -131,14 +132,15 @@ const RegisteredEducatorList: React.FC = () => {
         setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
         setShowApproveModal(false);
         setSelectedEducator(null);
+        toast.success("Educator approved successfully");
     };
 
     // Handle individual reject
     const handleRejectEducator = (educator_id: string) => {
-        // console.log(`Rejected educator ${educator_id} with reason: ${reason}`);
         setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
         setShowRejectModal(false);
         setSelectedEducator(null);
+        toast.success("Educator rejected successfully");
     };
 
     // Handle bulk approve complete
@@ -146,14 +148,15 @@ const RegisteredEducatorList: React.FC = () => {
         setEducators(educators.filter(edu => !approvedIds.includes(edu.educator_id)));
         setSelectedEducators(new Set());
         setShowBulkApproveModal(false);
+        toast.success("Selected educators approved successfully");
     };
 
     // Handle bulk reject complete
     const handleBulkRejectComplete = (rejectedIds: string[]) => {
-        // console.log(`Bulk rejected educators with reason: ${reason}`);
         setEducators(educators.filter(edu => !rejectedIds.includes(edu.educator_id)));
         setSelectedEducators(new Set());
         setShowBulkRejectModal(false);
+        toast.success("Selected educators rejected successfully");
     };
 
     // Close modals
@@ -175,14 +178,12 @@ const RegisteredEducatorList: React.FC = () => {
     // Generate page numbers with ellipsis
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
-
         if (totalPages <= 4) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
             pageNumbers.push(1);
-
             if (currentPage <= 2) {
                 pageNumbers.push(2, 3, "...");
             } else if (currentPage >= totalPages - 1) {
@@ -190,10 +191,8 @@ const RegisteredEducatorList: React.FC = () => {
             } else {
                 pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
             }
-
             pageNumbers.push(totalPages);
         }
-
         return pageNumbers;
     };
 
@@ -217,17 +216,17 @@ const RegisteredEducatorList: React.FC = () => {
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[900px]">
+                    <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-15" />
-                            <col className="w-48" />
-                            <col className="w-48" />
-                            <col className="w-48" />
-                            <col className="w-96" />
+                            <col className="w-[5%] min-w-[60px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[20%] min-w-[160px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white">
+                                <th className="px-8 py-4 text-center border-r-1 border-white">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={handleSelectAll}
@@ -271,10 +270,7 @@ const RegisteredEducatorList: React.FC = () => {
                                     return (
                                         <tr
                                             key={educator.educator_id}
-                                            className={`
-                                                ${index % 2 === 1 ? "bg-sky-50" : "bg-white"}
-                                                ${isSelected ? "!font-bold" : ""}
-                                            `}
+                                            className={`${index % 2 === 1 ? "bg-third" : "bg-white"} ${isSelected ? "!font-bold" : ""}`}
                                         >
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center justify-center">
@@ -400,7 +396,6 @@ const RegisteredEducatorList: React.FC = () => {
                     onBulkApprove={handleBulkApproveComplete}
                 />
             )}
-
             {showBulkRejectModal && (
                 <BulkRejectModal
                     onClose={() => setShowBulkRejectModal(false)}

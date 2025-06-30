@@ -3,10 +3,11 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
-import { AddSchoolModalProps } from "../../../../types/admin";
+import { AddSchoolModalProps } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
+import { SchoolService } from "../../../../services/schoolService";
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{
@@ -207,25 +208,22 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
     const handleAddSchool = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            toast.promise(
-                (async () => {
-                    const response = await import('../../../../services/schoolService').then(m => m.SchoolService.addSchool(formData));
-                    if (response.error === false || response.error === "false") {
-                        setIsSubmitting(false);
-                        if (onSchoolAdded) onSchoolAdded();
-                        handleClose();
-                        return response.message || 'School added successfully!';
-                    } else {
-                        setIsSubmitting(false);
-                        throw new Error(response.message || 'Failed to add school');
-                    }
-                })(),
-                {
-                    loading: 'Adding school...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to add school',
+            try {
+                const response = await SchoolService.addSchool(formData);
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'School added successfully!');
+                    if (onSchoolAdded) onSchoolAdded();
+                    handleClose();
+                } else {
+                    toast.error(response.message || 'Failed to add school');
                 }
-            );
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to add school';
+                toast.error(errMsg);
+                console.error('Add school error:', error);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

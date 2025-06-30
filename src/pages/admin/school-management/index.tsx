@@ -8,9 +8,10 @@ import ViewIcon from "../../../assets/dashboard/Admin/school-management/view.svg
 import EditIcon from "../../../assets/dashboard/Admin/school-management/edit.svg";
 // import DeleteIcon from "../../../assets/dashboard/Admin/school-management/delete.svg";
 import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add-school.svg";
-import { School } from "../../../types/admin";
+import { School } from "../../../types/admin/school-management";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
+import { SchoolService } from "../../../services/schoolService";
 
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,26 +26,25 @@ const SchoolManagement: React.FC = () => {
     const itemsPerPage = 6;
 
     // Fetch schools on mount and when needed
-    const loadSchools = async () => {
+    const fetchSchools = async () => {
         setIsLoading(true);
         try {
-            const { SchoolService } = await import("../../../services/schoolService");
             const response = await SchoolService.fetchSchools();
             if (response.error === false || response.error === "false") {
                 setSchools(response.schools || []);
             } else {
-                toast.error(response.message || "Failed to load schools");
+                toast.error(response.message || 'Failed to fetch schools');
             }
         } catch (error) {
-            console.error("Error fetching schools:", error);
-            toast.error("Error loading schools");
+            toast.error('Failed to fetch schools');
+            console.error('Fetch schools error:', error);
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        loadSchools();
+        fetchSchools();
     }, []);
 
     // Calculate total pages
@@ -78,14 +78,12 @@ const SchoolManagement: React.FC = () => {
     // Generate page numbers with ellipsis
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
-
         if (totalPages <= 4) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
             pageNumbers.push(1);
-
             if (currentPage <= 2) {
                 pageNumbers.push(2, 3, "...");
             } else if (currentPage >= totalPages - 1) {
@@ -93,23 +91,13 @@ const SchoolManagement: React.FC = () => {
             } else {
                 pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
             }
-
             pageNumbers.push(totalPages);
         }
-
         return pageNumbers;
     };
 
     const closeAddSchoolModal = () => {
         setShowAddModal(false);
-    };
-
-    // Callback for after school is added or updated
-    const handleSchoolAdded = () => {
-        loadSchools();
-    };
-    const handleSchoolUpdated = () => {
-        loadSchools();
     };
 
     const closeEditSchoolModal = () => {
@@ -132,6 +120,17 @@ const SchoolManagement: React.FC = () => {
     //     setSelectedSchool(null);
     // };
 
+    // Callback for after school is added or updated
+    const handleSchoolAdded = () => {
+        fetchSchools();
+        closeAddSchoolModal();
+    };
+
+    const handleSchoolUpdated = () => {
+        fetchSchools();
+        closeEditSchoolModal();
+    };
+
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
@@ -139,8 +138,7 @@ const SchoolManagement: React.FC = () => {
                 <button
                     onClick={openAddSchoolModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                        }`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add School</span>
@@ -149,12 +147,12 @@ const SchoolManagement: React.FC = () => {
 
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[800px]">
+                    <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-48" />
-                            <col className="w-64" />
-                            <col className="w-48" />
-                            <col className="w-80" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
@@ -186,7 +184,7 @@ const SchoolManagement: React.FC = () => {
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{school.school_email}</div>
                                         </td>
-                                        <td className="px-8 py-4">
+                                        <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{school.school_mobile_no}</div>
                                         </td>
                                         <td className="px-8 py-4">
@@ -194,6 +192,7 @@ const SchoolManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => openViewSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">View</span>
@@ -201,6 +200,7 @@ const SchoolManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => openEditSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
@@ -208,6 +208,7 @@ const SchoolManagement: React.FC = () => {
                                                 {/* <button
                                                     onClick={() => openDeleteSchoolModal(school)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
@@ -226,9 +227,8 @@ const SchoolManagement: React.FC = () => {
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"
-                                    }`}
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -243,7 +243,7 @@ const SchoolManagement: React.FC = () => {
                                             ? "text-textColor hover:bg-third"
                                             : "text-darkGray"
                                         }`}
-                                    disabled={typeof number !== "number"}
+                                    disabled={typeof number !== "number" || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -251,11 +251,8 @@ const SchoolManagement: React.FC = () => {
 
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages
-                                    ? "text-gray cursor-not-allowed"
-                                    : "text-textColor cursor-pointer hover:bg-third"
-                                    }`}
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>

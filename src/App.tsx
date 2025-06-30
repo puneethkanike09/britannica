@@ -13,7 +13,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
 import CreatePassword from "./pages/CreatePassword";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import EducatorProtectedRoute from "./components/EducatorProtectedRoute";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import GradeManagement from "./pages/admin/grade-management";
@@ -66,14 +67,13 @@ function App() {
           <Route path="/educator-register" element={<EducatorRegistration />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
-          {/* <Route path="/" element={<AdminLogin />} />a */}
 
-          {/* Admin routes with persistent layout */}
+          {/* Admin routes */}
           <Route
             element={
-              <ProtectedRoute redirectTo="/admin-login">
+              <AdminProtectedRoute>
                 <AdminLayout />
-              </ProtectedRoute>
+              </AdminProtectedRoute>
             }
           >
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -88,12 +88,12 @@ function App() {
             <Route path="/report" element={<Report />} />
           </Route>
 
-          {/* Educator routes with persistent layout */}
+          {/* Educator routes */}
           <Route
             element={
-              <ProtectedRoute redirectTo="/educator-login">
+              <EducatorProtectedRoute>
                 <EducatorLayout />
-              </ProtectedRoute>
+              </EducatorProtectedRoute>
             }
           >
             <Route path="/educator-dashboard" element={<EducatorDashboard />} />

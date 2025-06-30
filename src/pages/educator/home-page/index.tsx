@@ -47,8 +47,8 @@ const EducatorDashboard = () => {
                     toast.error(gradesRes.message || 'Failed to load grades');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load grades');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load grades');
             });
 
         // Fetch themes
@@ -60,8 +60,8 @@ const EducatorDashboard = () => {
                     toast.error(themesRes.message || 'Failed to load themes');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load themes');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load themes');
             });
 
         // Fetch types
@@ -73,8 +73,8 @@ const EducatorDashboard = () => {
                     toast.error(typesRes.message || 'Failed to load types');
                 }
             })
-            .catch(() => {
-                toast.error('Failed to load types');
+            .catch((err) => {
+                toast.error(err?.message || 'Failed to load types');
             })
             .finally(() => {
                 setIsSubmittingDropdowns(false);
@@ -114,7 +114,8 @@ const EducatorDashboard = () => {
             setIsSubmitting(true);
             setShowResults(false);
             setIsLoadingFiles(true);
-            const fetchFiles = async () => {
+            
+            try {
                 const token = '';
                 const res = await EducatorDashboardService.fetchPblFiles({
                     token,
@@ -122,6 +123,7 @@ const EducatorDashboard = () => {
                     theme_id: selectedTheme,
                     user_access_type_id: selectedType,
                 });
+                
                 if (res.error === false || res.error === 'false') {
                     const files = (res.pbl_file || []).map((file: {
                         pbl_id: string | number;
@@ -135,26 +137,16 @@ const EducatorDashboard = () => {
                     }));
                     setPdfProjects(files);
                     setShowResults(true);
-                    if (files.length === 0) {
-                        throw new Error('No files found with this filter');
-                    }
-                    return 'Files loaded successfully!';
                 } else {
                     setPdfProjects([]);
-                    throw new Error(res.message || 'No files found');
+                    toast.error(res.message || 'No files found');
                 }
-            };
-            toast.promise(
-                fetchFiles(),
-                {
-                    loading: 'Loading files...',
-                    success: (msg) => msg,
-                    error: (err) => err.message || 'Failed to load files',
-                }
-            ).finally(() => {
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : 'Failed to load files');
+            } finally {
                 setIsSubmitting(false);
                 setIsLoadingFiles(false);
-            });
+            }
         }
     };
 
@@ -167,7 +159,7 @@ const EducatorDashboard = () => {
         setViewLoadingId(pblId);
         try {
             const viewResponse = await apiClient.getFileViewUrl(project.file);
-            if (viewResponse.success && viewResponse.data) {
+            if (viewResponse.error === false || viewResponse.error === 'false') {
                 window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
             } else {
                 throw new Error(viewResponse.message || 'Failed to get view URL');
@@ -188,7 +180,7 @@ const EducatorDashboard = () => {
         setDownloadLoadingId(pblId);
         try {
             const downloadResponse = await apiClient.getFileDownloadUrl(project.file);
-            if (downloadResponse.success && downloadResponse.data) {
+            if (downloadResponse.error === false || downloadResponse.error === 'false') {
                 const response = await fetch(downloadResponse.data, { credentials: 'omit' });
                 if (!response.ok) throw new Error('Failed to fetch file for download');
                 const blob = await response.blob();

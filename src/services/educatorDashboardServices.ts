@@ -11,17 +11,11 @@ import {
 export class EducatorDashboardService {
     static async fetchGrades(): Promise<FetchGradesResponse> {
         try {
-            const response = await apiClient.get<FetchGradesResponse>(
+            const response = await apiClient.get(
                 "/grade"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching grades:", error);
             return {
@@ -33,17 +27,11 @@ export class EducatorDashboardService {
 
     static async fetchThemes(): Promise<FetchThemesResponse> {
         try {
-            const response = await apiClient.get<FetchThemesResponse>(
+            const response = await apiClient.get(
                 "/theme"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching themes:", error);
             return {
@@ -55,17 +43,11 @@ export class EducatorDashboardService {
 
     static async fetchUserAccessTypes(): Promise<FetchUserAccessTypesResponse> {
         try {
-            const response = await apiClient.get<FetchUserAccessTypesResponse>(
+            const response = await apiClient.get(
                 "/user_access_type"
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching user access types:", error);
             return {
@@ -77,18 +59,12 @@ export class EducatorDashboardService {
 
     static async fetchPblFiles(payload: FetchPblFilesPayload): Promise<FetchPblFilesResponse> {
         try {
-            const response = await apiClient.post<FetchPblFilesResponse>(
+            const response = await apiClient.post(
                 "/file",
                 payload
             );
-            if (response.data) {
-                return response.data;
-            } else {
-                return {
-                    error: true,
-                    message: response.message || "Unknown error",
-                };
-            }
+            // The API response already has the correct format, return it directly
+            return response;
         } catch (error) {
             console.error("Error fetching PBL files:", error);
             return {

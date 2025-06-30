@@ -1,9 +1,10 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SchoolActionModalProps } from "../../../../types/admin";
+import { SchoolActionModalProps } from "../../../../types/admin/school-management";
 import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from "../../../../components/common/Loader";
+import { SchoolService } from "../../../../services/schoolService";
 
 export default function ViewSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
@@ -12,22 +13,26 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let mounted = true;
         setLoading(true);
-        setError(null);
-        import('../../../../services/schoolService').then(({ SchoolService }) => {
-            SchoolService.fetchSchoolById(school.school_id)
-                .then((res) => {
-                    if (res.error === false || res.error === "false") {
-                        setSchoolDetails(res.school!);
-                    } else {
-                        setError(res.message || "Failed to fetch school details");
-                    }
-                })
-                .catch((err) => {
-                    setError(err.message || "Failed to fetch school details");
-                })
-                .finally(() => setLoading(false));
+
+        SchoolService.fetchSchoolById(school.school_id).then((res) => {
+            if (mounted) {
+                if (res && !res.error) {
+                    setSchoolDetails(res.school || null);
+                } else {
+                    setError(res.message || 'Failed to load school details');
+                }
+                setLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setError('Failed to load school details');
+                setLoading(false);
+            }
         });
+
+        return () => { mounted = false; };
     }, [school.school_id]);
 
     const handleClose = () => {

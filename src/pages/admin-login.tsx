@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import loginImage from "../assets/loginImage.png";
-import { Loader2, X, LogIn } from "lucide-react"; // Added LogIn import
+import { Loader2, X, LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
-import { AuthService } from "../services/authService";
 
 const AdminLogin = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, isAuthenticated } = useAuth();
     const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +26,13 @@ const AdminLogin = () => {
     });
     const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
     const [isSuccessVisible, setIsSuccessVisible] = useState(false);
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/admin-dashboard");
+        }
+    }, [isAuthenticated, navigate]);
 
     const validateForm = () => {
         const newErrors = { loginId: "", password: "" };
@@ -62,17 +68,13 @@ const AdminLogin = () => {
         if (!validateForm()) return;
         setIsSubmitting(true);
         try {
-            await toast.promise(
-                login(loginId, password, "/auth/admin-login"),
-                {
-                    loading: "Logging in...",
-                    success: () => {
-                        navigate("/admin-dashboard");
-                        return "Login successful!";
-                    },
-                    error: (err: { message?: string }) => err?.message || "Login failed",
-                }
-            );
+            await login(loginId, password, "/auth/admin-login");
+            toast.success("Login successful!");
+            navigate("/admin-dashboard");
+        } catch (error) {
+            const errMsg = (error as { message?: string })?.message || "Login failed";
+            toast.error(errMsg);
+            console.error('Login error:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -108,11 +110,6 @@ const AdminLogin = () => {
         );
     };
 
-    // const handleOpenForgotPassword = () => {
-    //     setShowForgotPasswordModal(true);
-    //     setIsForgotPasswordVisible(true);
-    // };
-
     const handleCloseForgotPassword = () => {
         setIsForgotPasswordVisible(false);
     };
@@ -145,12 +142,6 @@ const AdminLogin = () => {
             }
         }
     };
-
-    useEffect(() => {
-        if (AuthService.isAuthenticated()) {
-            navigate("/admin-dashboard");
-        }
-    }, [navigate]);
 
     useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
@@ -241,17 +232,6 @@ const AdminLogin = () => {
                             )}
                         </div>
 
-                        {/* <div className="text-right mb-5">
-                            <button
-                                type="button"
-                                onClick={handleOpenForgotPassword}
-                                className="text-textColor hover:underline cursor-pointer"
-                                disabled={isSubmitting}
-                            >
-                                Forgot Password?
-                            </button>
-                        </div> */}
-
                         <div className="flex justify-start mt-10 w-full">
                             <button
                                 type="submit"
@@ -262,7 +242,7 @@ const AdminLogin = () => {
                                     <Loader2 className="animate-spin" />
                                 ) : (
                                     <>
-                                        <LogIn className="font-black" size={18} /> {/* Added LogIn icon */}
+                                        <LogIn className="font-black" size={18} />
                                         <span className="font-bold">Admin Login</span>
                                     </>
                                 )}

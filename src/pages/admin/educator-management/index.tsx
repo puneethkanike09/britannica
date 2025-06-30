@@ -9,7 +9,7 @@ import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.s
 // import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/educatorService';
-import { Teacher } from '../../../types/admin';
+import { Teacher } from '../../../types/admin/educator-management';
 import Loader from '../../../components/common/Loader';
 import toast from 'react-hot-toast';
 
@@ -46,6 +46,7 @@ const EducatorManagement: React.FC = () => {
     useEffect(() => {
         loadTeachers();
     }, []);
+
     // Calculate total pages
     const totalPages = Math.ceil(teachers.length / itemsPerPage);
 
@@ -77,14 +78,12 @@ const EducatorManagement: React.FC = () => {
     // Generate page numbers with ellipsis
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
-
         if (totalPages <= 4) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
             pageNumbers.push(1);
-
             if (currentPage <= 2) {
                 pageNumbers.push(2, 3, '...');
             } else if (currentPage >= totalPages - 1) {
@@ -92,10 +91,8 @@ const EducatorManagement: React.FC = () => {
             } else {
                 pageNumbers.push('...', currentPage - 1, currentPage, currentPage + 1, '...');
             }
-
             pageNumbers.push(totalPages);
         }
-
         return pageNumbers;
     };
 
@@ -126,9 +123,12 @@ const EducatorManagement: React.FC = () => {
     // Callbacks for after educator is added/updated
     const handleEducatorAdded = () => {
         loadTeachers();
+        closeAddEducatorModal();
     };
+
     const handleEducatorUpdated = () => {
         loadTeachers();
+        closeEditEducatorModal();
     };
 
     return (
@@ -138,21 +138,21 @@ const EducatorManagement: React.FC = () => {
                 <button
                     onClick={openAddEducatorModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                    <img src={AddEducatorIcon} alt="Add Educator" className="h-5 w-5" />
+                    <img src={AddEducatorIcon} alt="Add Educator" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add Educator</span>
                 </button>
             </div>
+
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
-                    <table className="w-full table-fixed min-w-[800px]">
+                    <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-48" />
-                            <col className="w-48" />
-                            <col className="w-48" />
-                            <col className="w-78" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[25%] min-w-[200px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
@@ -177,7 +177,7 @@ const EducatorManagement: React.FC = () => {
                                 </tr>
                             ) : (
                                 currentItems.map((teacher, index) => (
-                                    <tr key={teacher.teacher_id} className={index % 2 === 1 ? "bg-sky-50" : "bg-white"}>
+                                    <tr key={teacher.teacher_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{teacher.teacher_name}</div>
                                         </td>
@@ -237,7 +237,12 @@ const EducatorManagement: React.FC = () => {
                                 <button
                                     key={index}
                                     onClick={() => typeof number === 'number' && paginate(number)}
-                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage ? 'bg-secondary text-white' : typeof number === 'number' ? 'text-textColor hover:bg-third' : 'text-darkGray'}`}
+                                    className={`px-[10px] py-1 rounded cursor-pointer ${number === currentPage
+                                        ? 'bg-secondary text-white'
+                                        : typeof number === 'number'
+                                            ? 'text-textColor hover:bg-third'
+                                            : 'text-darkGray'
+                                        }`}
                                     disabled={typeof number !== 'number' || isLoading}
                                 >
                                     {number}
@@ -256,12 +261,12 @@ const EducatorManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} onEducatorAdded={handleEducatorAdded} />}
+            {showAddModal && <AddEducatorModal onClose={closeAddEducatorModal} onTeacherAdded={handleEducatorAdded} />}
             {showEditModal && selectedEducator && (
-                <EditEducatorModal onClose={closeEditEducatorModal} educator={selectedEducator} onEducatorUpdated={handleEducatorUpdated} />
+                <EditEducatorModal onClose={closeEditEducatorModal} teacher={selectedEducator} onTeacherUpdated={handleEducatorUpdated} />
             )}
             {showViewModal && selectedEducator && (
-                <ViewEducatorModal onClose={closeViewEducatorModal} educator={selectedEducator} />
+                <ViewEducatorModal onClose={closeViewEducatorModal} teacher={selectedEducator} />
             )}
             {/* {showDeleteModal && selectedEducator && (
                 <DeleteEducatorModal onClose={closeDeleteEducatorModal} educator={selectedEducator} />

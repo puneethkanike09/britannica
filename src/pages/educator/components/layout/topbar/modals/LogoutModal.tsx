@@ -4,15 +4,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
-import { AuthService } from "../../../../../../services/authService";
+import { useAuth } from "../../../../../../hooks/useAuth";
 import { LogoutModalProps } from "../../../../../../types/global";
-
-
 
 export default function LogoutModal({ onClose }: LogoutModalProps) {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const handleClose = () => {
         if (isLoggingOut) return;
@@ -46,25 +45,19 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
     const handleLogout = async () => {
         setIsLoggingOut(true);
         try {
-            const response = await AuthService.logout();
-            await toast.promise(
-                Promise.resolve(response),
-                {
-                    loading: 'Logging out...',
-                    success: (res: { message?: string }) => res.message || 'Logged out successfully!',
-                    error: (err: { message?: string }) => err?.message || 'Logout failed',
-                }
-            );
+            const response = await logout();
+            toast.success(response.message || 'Logged out successfully!');
             handleClose();
             navigate('/educator-login', { replace: true });
         } catch (error) {
             const errMsg = (error as { message?: string })?.message || 'Logout failed';
-            await toast.error(errMsg);
+            toast.error(errMsg);
             console.error('Logout error:', error);
         } finally {
             setIsLoggingOut(false);
         }
     };
+
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
@@ -98,7 +91,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                         </div>
 
                         {/* Content */}
-                        <div className="px-8 py-6">
+                        <div className="flex-1 overflow-y-auto px-8 py-6">
                             <p className="text-textColor mb-6">
                                 Are you sure you want to logout?
                             </p>
