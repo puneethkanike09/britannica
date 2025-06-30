@@ -37,7 +37,7 @@ const Loader: React.FC<LoaderProps> = ({ message }) => {
                     }
                 `}
             </style>
-            <div className="flex flex-col items-center space-y-4">
+            <div className="flex flex-col items-center space-y-4" role="status" aria-label="Loading">
                 <div className="loader"></div>
                 {message && <p className="text-textColor font-medium">{message}</p>}
             </div>

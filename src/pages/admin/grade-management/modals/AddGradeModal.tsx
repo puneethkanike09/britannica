@@ -135,8 +135,8 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
                     <motion.div
                         className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
-                        initial="hidden"
-                        animate="visible"
+                        initial="hidden"    
+                        animate="visible"   
                         exit="exit"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -193,7 +193,7 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
                                     <button
                                         type="button"
                                         onClick={handleAddGrade}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? (
