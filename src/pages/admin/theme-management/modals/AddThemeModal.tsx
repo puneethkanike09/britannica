@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { ThemeService } from "../../../../services/admin/themeService";
 
 interface AddThemeModalProps {
     onClose: () => void;
@@ -93,25 +94,29 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
         return isValid;
     };
 
-    const handleAddTheme = () => {
+    const handleAddTheme = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation without API
-            setTimeout(() => {
-                try {
+            try {
+                const response = await ThemeService.createTheme({
+                    theme_name: formData.name.trim(),
+                    description: formData.description.trim(),
+                });
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Theme added successfully!');
                     onThemeAdded({
                         name: formData.name.trim(),
-                        description: formData.description.trim()
+                        description: formData.description.trim(),
                     });
-                    toast.success('Theme added successfully!');
-                    setIsSubmitting(false);
                     handleClose();
-                } catch (error) {
-                    console.log(error);
-                    toast.error('Failed to add theme');
-                    setIsSubmitting(false);
+                } else {
+                    toast.error(response.message || 'Failed to add theme');
                 }
-            }, 1000); // Simulate delay
+            } catch (error) {
+                toast.error('Failed to add theme');
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

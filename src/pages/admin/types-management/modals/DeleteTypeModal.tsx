@@ -6,8 +6,8 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface DeleteTypeModalProps {
     onClose: () => void;
-    type: { type_id: string; name: string; description: string };
-    onTypeDeleted: (type_id: string) => void;
+    type: { name: string; description: string; user_access_type_id: string };
+    onTypeDeleted: (user_access_type_id: string) => void;
 }
 
 export default function DeleteTypeModal({ onClose, type, onTypeDeleted }: DeleteTypeModalProps) {
@@ -37,7 +37,7 @@ export default function DeleteTypeModal({ onClose, type, onTypeDeleted }: Delete
         // Simulate async operation without API
         setTimeout(() => {
             try {
-                onTypeDeleted(type.type_id);
+                onTypeDeleted(type.user_access_type_id);
                 toast.success('Type deleted successfully!');
                 setIsDeleting(false);
                 handleClose();

@@ -6,13 +6,13 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface EditTypeModalProps {
     onClose: () => void;
-    type: { type_id: string; name: string; description: string };
-    onTypeUpdated: (type: { type_id: string; name: string; description: string }) => void;
+    type: { name: string; description: string; user_access_type_id: string };
+    onTypeUpdated: (type: { name: string; description: string; user_access_type_id: string }) => void;
 }
 
 export default function EditTypeModal({ onClose, type, onTypeUpdated }: EditTypeModalProps) {
     const [formData, setFormData] = useState({
-        type_id: type.type_id,
+        user_access_type_id: type.user_access_type_id,
         name: type.name,
         description: type.description || '',
     });
@@ -99,9 +99,9 @@ export default function EditTypeModal({ onClose, type, onTypeUpdated }: EditType
             setTimeout(() => {
                 try {
                     onTypeUpdated({
-                        type_id: formData.type_id,
+                        user_access_type_id: formData.user_access_type_id,
                         name: formData.name.trim(),
-                        description: formData.description.trim()
+                        description: formData.description.trim(),
                     });
                     toast.success('Type updated successfully!');
                     setIsSubmitting(false);

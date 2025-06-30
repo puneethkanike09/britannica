@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { TypeService } from "../../../../services/admin/typeService";
 
 interface AddTypeModalProps {
     onClose: () => void;
@@ -93,25 +94,29 @@ export default function AddTypeModal({ onClose, onTypeAdded }: AddTypeModalProps
         return isValid;
     };
 
-    const handleAddType = () => {
+    const handleAddType = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation without API
-            setTimeout(() => {
-                try {
+            try {
+                const response = await TypeService.createType({
+                    user_access_type_name: formData.name.trim(),
+                    description: formData.description.trim(),
+                });
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Type added successfully!');
                     onTypeAdded({
                         name: formData.name.trim(),
-                        description: formData.description.trim()
+                        description: formData.description.trim(),
                     });
-                    toast.success('Type added successfully!');
-                    setIsSubmitting(false);
                     handleClose();
-                } catch (error) {
-                    console.log(error);
-                    toast.error('Failed to add type');
-                    setIsSubmitting(false);
+                } else {
+                    toast.error(response.message || 'Failed to add type');
                 }
-            }, 1000); // Simulate delay
+            } catch (error) {
+                toast.error('Failed to add type');
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

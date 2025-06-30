@@ -12,7 +12,7 @@ import ViewTypeModal from "./modals/ViewTypeModal";
 import DeleteTypeModal from "./modals/DeleteTypeModal";
 
 interface Type {
-    type_id: string;
+    user_access_type_id: string;
     name: string;
     description: string;
 }
@@ -31,7 +31,7 @@ const TypesManagement: React.FC = () => {
 
     // Dummy data for types
     const dummyTypes: Type[] = Array.from({ length: 12 }, (_, i) => ({
-        type_id: `type-${i + 1}`,
+        user_access_type_id: `type-${i + 1}`,
         name: `Type ${i + 1}`,
         description: `Description for Type ${i + 1} characteristics and details.`,
     }));
@@ -129,7 +129,7 @@ const TypesManagement: React.FC = () => {
 
     // Callback for after type is added
     const handleTypeAdded = (newType: { name: string; description: string }) => {
-        const typeWithId = { ...newType, type_id: `type-${types.length + 1}` };
+        const typeWithId = { ...newType, user_access_type_id: `type-${types.length + 1}` };
         setTypes([...types, typeWithId]);
         toast.success("Type added successfully");
         closeAddTypeModal();
@@ -137,14 +137,14 @@ const TypesManagement: React.FC = () => {
 
     // Callback for after type is updated
     const handleTypeUpdated = (updatedType: Type) => {
-        setTypes(types.map((type) => (type.type_id === updatedType.type_id ? updatedType : type)));
+        setTypes(types.map((type) => (type.user_access_type_id === updatedType.user_access_type_id ? updatedType : type)));
         toast.success("Type updated successfully");
         closeEditTypeModal();
     };
 
     // Callback for after type is deleted
-    const handleTypeDeleted = (type_id: string) => {
-        setTypes(types.filter((type) => type.type_id !== type_id));
+    const handleTypeDeleted = (user_access_type_id: string) => {
+        setTypes(types.filter((type) => type.user_access_type_id !== user_access_type_id));
         toast.success("Type deleted successfully");
         closeDeleteTypeModal();
     };
@@ -193,7 +193,7 @@ const TypesManagement: React.FC = () => {
                                 </tr>
                             ) : (
                                 currentItems.map((type, index) => (
-                                    <tr key={type.type_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                    <tr key={type.user_access_type_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{type.name}</div>
                                         </td>

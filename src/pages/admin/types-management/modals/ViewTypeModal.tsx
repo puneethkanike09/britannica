@@ -5,7 +5,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 
 interface ViewTypeModalProps {
     onClose: () => void;
-    type: { type_id: string; name: string; description: string };
+    type: { name: string; description: string; user_access_type_id: string };
 }
 
 export default function ViewTypeModal({ onClose, type }: ViewTypeModalProps) {
