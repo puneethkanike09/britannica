@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { EducatorDashboardService } from "../../../../services/educatorDashboardServices";
+import { PblFileServices } from "../../../../services/admin/pblFileServices";
 import Select from "../components/common/Select";
 
 interface AddPblFileModalProps {
@@ -42,7 +42,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
     useEffect(() => {
         setIsSubmittingDropdowns(true);
 
-        EducatorDashboardService.fetchGrades()
+        PblFileServices.fetchGrades()
             .then((gradesRes) => {
                 if ('grade' in gradesRes && (gradesRes.error === false || gradesRes.error === 'false')) {
                     setGradeOptions((gradesRes.grade ?? []).map((g: { grade_id: string; grade_name: string }) => ({ value: g.grade_id, label: g.grade_name })));
@@ -54,7 +54,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                 toast.error('Failed to load grades');
             });
 
-        EducatorDashboardService.fetchThemes()
+        PblFileServices.fetchThemes()
             .then((themesRes) => {
                 if ('theme' in themesRes && (themesRes.error === false || themesRes.error === 'false')) {
                     setThemeOptions((themesRes.theme ?? []).map((t: { theme_id: string; theme_name: string }) => ({ value: t.theme_id, label: t.theme_name })));
@@ -66,7 +66,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                 toast.error('Failed to load themes');
             });
 
-        EducatorDashboardService.fetchUserAccessTypes()
+        PblFileServices.fetchUserAccessTypes()
             .then((typesRes) => {
                 if ('user_access_type' in typesRes && (typesRes.error === false || typesRes.error === 'false')) {
                     setTypeOptions((typesRes.user_access_type ?? []).map((t: { user_access_type_id: string; user_access_type_name: string }) => ({ value: t.user_access_type_id, label: t.user_access_type_name })));

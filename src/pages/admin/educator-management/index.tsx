@@ -8,7 +8,7 @@ import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.s
 // import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
 // import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
-import { EducatorService } from '../../../services/educatorService';
+import { EducatorService } from '../../../services/admin/educatorService';
 import { Teacher } from '../../../types/admin/educator-management';
 import Loader from '../../../components/common/Loader';
 import toast from 'react-hot-toast';

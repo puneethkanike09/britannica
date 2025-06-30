@@ -1,5 +1,6 @@
-import { apiClient } from "../utils/apiClient";
-import { Teacher, FetchTeachersResponse } from "../types/admin/educator-management";
+
+import { Teacher, FetchTeachersResponse } from "../../types/admin/educator-management";
+import { apiClient } from "../../utils/apiClient";
 
 export class EducatorService {
     static async fetchTeachers(): Promise<FetchTeachersResponse> {

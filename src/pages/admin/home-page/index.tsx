@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../../components/common/Loader';
-import { EducatorService } from '../../../services/educatorService';
+import { EducatorService } from '../../../services/admin/educatorService';
 import toast from 'react-hot-toast';
 
 // Import SVG files

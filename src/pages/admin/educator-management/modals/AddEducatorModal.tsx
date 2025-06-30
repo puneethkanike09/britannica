@@ -7,8 +7,8 @@ import { AddTeacherModalProps } from "../../../../types/admin/educator-managemen
 import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { EducatorService } from '../../../../services/educatorService';
-import { SchoolService } from '../../../../services/schoolService';
+import { EducatorService } from '../../../../services/admin/educatorService';
+import { SchoolService } from '../../../../services/admin/schoolService';
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacherModalProps) {

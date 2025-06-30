@@ -4,7 +4,7 @@ import { SchoolActionModalProps } from "../../../../types/admin/school-managemen
 import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from "../../../../components/common/Loader";
-import { SchoolService } from "../../../../services/schoolService";
+import { SchoolService } from "../../../../services/admin/schoolService";
 
 export default function ViewSchoolModal({ onClose, school }: SchoolActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);

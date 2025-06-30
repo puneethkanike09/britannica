@@ -7,7 +7,7 @@ import { AddSchoolModalProps } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
-import { SchoolService } from "../../../../services/schoolService";
+import { SchoolService } from "../../../../services/admin/schoolService";
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{

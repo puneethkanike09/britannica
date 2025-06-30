@@ -5,9 +5,9 @@ import { TeacherActionModalProps } from "../../../../types/admin/educator-manage
 import { School } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { EducatorService } from '../../../../services/educatorService';
+import { EducatorService } from '../../../../services/admin/educatorService';
 import Loader from "../../../../components/common/Loader";
-import { SchoolService } from "../../../../services/schoolService";
+import { SchoolService } from "../../../../services/admin/schoolService";
 
 export default function ViewEducatorModal({ onClose, teacher }: TeacherActionModalProps) {
     const [formData, setFormData] = useState({

@@ -1,7 +1,5 @@
-import { apiClient } from "../utils/apiClient";
-import { FetchSchoolsResponse, School } from "../types/admin/school-management";
-
-
+import { FetchSchoolsResponse, School } from "../../types/admin/school-management";
+import { apiClient } from "../../utils/apiClient";
 
 export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {
@@ -85,10 +83,8 @@ export class SchoolService {
         token?: string;
         message?: string;
     }> {
-
         try {
             const response = await apiClient.get("/school");
-
             return response;
         } catch (error) {
             console.error("Error fetching schools for dropdown:", error);
@@ -98,5 +94,4 @@ export class SchoolService {
             };
         }
     }
-
 }

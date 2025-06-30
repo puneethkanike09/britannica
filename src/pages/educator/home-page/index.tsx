@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { EducatorDashboardService } from '../../../services/educatorDashboardServices';
+import { EducatorDashboardService } from '../../../services/educator/EducatorDashboardService';
 import { apiClient } from '../../../utils/apiClient';
 import Select from '../components/common/Select';
 import DocumentCard from '../components/common/PdfCards';

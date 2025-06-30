@@ -1,14 +1,11 @@
-import { apiClient } from "../utils/apiClient";
-import { TokenService } from "./tokenService";
-import { ApiResponse } from "../types/global";
+import { TokenService } from "../tokenService";
+import { ApiResponse } from "../../types/global";
+import { apiClient } from "../../utils/apiClient";
 
-export class AuthService {
-    static async login(
-        credentials: { login_id: string; password: string },
-        endpoint: "/auth/admin-login" | "/auth/teacher-login"
-    ): Promise<ApiResponse> {
+export class AdminAuthService {
+    static async login(credentials: { login_id: string; password: string }): Promise<ApiResponse> {
         try {
-            const response = await apiClient.post(endpoint, credentials, false);
+            const response = await apiClient.post("/auth/admin-login", credentials, false);
             if (response.error === false || response.error === "false") {
                 if (response.token) {
                     TokenService.updateToken(response.token);
@@ -17,7 +14,7 @@ export class AuthService {
             }
             return response;
         } catch (error) {
-            console.error("Login error:", error);
+            console.error("Admin Login error:", error);
             return {
                 error: true,
                 message: error instanceof Error ? error.message : "Login failed",
@@ -43,4 +40,4 @@ export class AuthService {
     static isAuthenticated(): boolean {
         return TokenService.hasValidToken();
     }
-}
+} 

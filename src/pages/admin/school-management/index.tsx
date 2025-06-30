@@ -11,7 +11,7 @@ import AddSchoolIcon from "../../../assets/dashboard/Admin/school-management/add
 import { School } from "../../../types/admin/school-management";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
-import { SchoolService } from "../../../services/schoolService";
+import { SchoolService } from "../../../services/admin/schoolService";
 
 const SchoolManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);

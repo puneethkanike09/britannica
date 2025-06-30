@@ -1,20 +1,16 @@
-import { apiClient } from "../utils/apiClient";
 import {
     FetchGradesResponse,
     FetchThemesResponse,
     FetchUserAccessTypesResponse,
     FetchPblFilesPayload,
     FetchPblFilesResponse,
-
-} from '../types/educator';
+} from '../../types/educator';
+import { apiClient } from '../../utils/apiClient';
 
 export class EducatorDashboardService {
     static async fetchGrades(): Promise<FetchGradesResponse> {
         try {
-            const response = await apiClient.get(
-                "/grade"
-            );
-            // The API response already has the correct format, return it directly
+            const response = await apiClient.get("/grade");
             return response;
         } catch (error) {
             console.error("Error fetching grades:", error);
@@ -27,10 +23,7 @@ export class EducatorDashboardService {
 
     static async fetchThemes(): Promise<FetchThemesResponse> {
         try {
-            const response = await apiClient.get(
-                "/theme"
-            );
-            // The API response already has the correct format, return it directly
+            const response = await apiClient.get("/theme");
             return response;
         } catch (error) {
             console.error("Error fetching themes:", error);
@@ -43,10 +36,7 @@ export class EducatorDashboardService {
 
     static async fetchUserAccessTypes(): Promise<FetchUserAccessTypesResponse> {
         try {
-            const response = await apiClient.get(
-                "/user_access_type"
-            );
-            // The API response already has the correct format, return it directly
+            const response = await apiClient.get("/user_access_type");
             return response;
         } catch (error) {
             console.error("Error fetching user access types:", error);
@@ -59,11 +49,7 @@ export class EducatorDashboardService {
 
     static async fetchPblFiles(payload: FetchPblFilesPayload): Promise<FetchPblFilesResponse> {
         try {
-            const response = await apiClient.post(
-                "/file",
-                payload
-            );
-            // The API response already has the correct format, return it directly
+            const response = await apiClient.post("/file", payload);
             return response;
         } catch (error) {
             console.error("Error fetching PBL files:", error);
@@ -73,4 +59,4 @@ export class EducatorDashboardService {
             };
         }
     }
-}
+} 

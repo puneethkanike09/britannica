@@ -1,5 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
-import { AuthService } from "../services/authService";
+import { AdminAuthService } from "../services/admin/adminAuthService";
+import { EducatorAuthService } from "../services/educator/educatorAuthService";
 import { AuthContext } from "./AuthContextInstance";
 import { TokenService } from "../services/tokenService";
 
@@ -9,7 +10,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const isAuth = AuthService.isAuthenticated();
+            // Default to admin check, or you can add logic to check which one
+            const isAuth = AdminAuthService.isAuthenticated() || EducatorAuthService.isAuthenticated();
             setIsAuthenticated(isAuth);
             setIsInitialized(true);
         };
@@ -19,7 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Listen for token changes
     useEffect(() => {
         const handleTokenChange = () => {
-            const isAuth = AuthService.isAuthenticated();
+            const isAuth = AdminAuthService.isAuthenticated() || EducatorAuthService.isAuthenticated();
             setIsAuthenticated(isAuth);
         };
 
@@ -33,7 +35,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const login = async (login_id: string, password: string, endpoint: "/auth/admin-login" | "/auth/teacher-login") => {
-        const response = await AuthService.login({ login_id, password }, endpoint);
+        let response;
+        if (endpoint === "/auth/admin-login") {
+            response = await AdminAuthService.login({ login_id, password });
+        } else {
+            response = await EducatorAuthService.login({ login_id, password });
+        }
         if (response.error === false || response.error === "false") {
             setIsAuthenticated(true);
         } else {
@@ -43,9 +50,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            const response = await AuthService.logout();
+            // Try both logouts for safety
+            await AdminAuthService.logout();
+            await EducatorAuthService.logout();
             setIsAuthenticated(false);
-            return response;
+            return { error: false };
         } catch (error) {
             console.error("Logout error:", error);
             setIsAuthenticated(false);
