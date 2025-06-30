@@ -49,12 +49,6 @@ export interface PdfProject {
 }
 
 
-export interface PdfRendererProps {
-    file: string | File | null;
-    onClose: () => void;
-    initialPage?: number;
-    className?: string;
-}
 
 export interface Grade {
     grade_id: string;

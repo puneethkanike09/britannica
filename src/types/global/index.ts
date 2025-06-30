@@ -4,15 +4,7 @@ export interface LoaderProps {
     message?: string;
 }
 
-export interface ProtectedRouteProps {
-    children: React.ReactNode;
-    redirectTo?: string;
-}
 
-export interface AuthResponse {
-    token: string;
-    message: string;
-}
 
 // Simple API response format that matches the actual API structure
 export interface ApiResponse {
