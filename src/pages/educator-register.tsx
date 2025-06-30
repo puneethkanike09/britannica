@@ -367,7 +367,7 @@ const EducatorRegistration = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
                                             <label className="block text-textColor text-base mb-2">
-                                                School Code<span className="text-red">*</span>
+                                                School UDISE Code<span className="text-red">*</span>
                                             </label>
                                             <input
                                                 type="text"
