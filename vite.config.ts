@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react'; // Add React plugin
 import tailwindcss from '@tailwindcss/vite';
+import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -39,5 +40,14 @@ export default defineConfig({
         }
       }
     }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['tests/setup.ts'],
+    exclude: [...configDefaults.exclude, 'dist', 'node_modules'],
+    coverage: {
+      reporter: ['text', 'lcov'],
+    },
   },
 });

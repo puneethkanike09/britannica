@@ -310,18 +310,18 @@ const EducatorDashboard = () => {
                             {pdfProjects.length === 0 ? (
                                 <div className="text-center text-lg text-red-500 font-semibold py-8">No files found with this filter.</div>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center w-full px-4">
-                                    {pdfProjects.map((project) => (
-                                        <DocumentCard
-                                            key={project.id}
-                                            title={project.title}
-                                            onView={() => handleView(project.id)}
-                                            onDownload={() => handleDownload(project.id, project.title)}
-                                            viewLoading={viewLoadingId === project.id}
-                                            downloadLoading={downloadLoadingId === project.id}
-                                        />
-                                    ))}
-                                </div>
+                               <div className="flex flex-wrap gap-6 justify-center w-full px-4">
+    {pdfProjects.map((project) => (
+        <DocumentCard
+            key={project.id}
+            title={project.title}
+            onView={() => handleView(project.id)}
+            onDownload={() => handleDownload(project.id, project.title)}
+            viewLoading={viewLoadingId === project.id}
+            downloadLoading={downloadLoadingId === project.id}
+        />
+    ))}
+</div>
                             )}
                         </div>
                     )}

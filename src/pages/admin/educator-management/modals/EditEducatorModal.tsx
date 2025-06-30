@@ -285,6 +285,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-secondary">Edit Educator</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
@@ -302,10 +303,11 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="firstName" className="block text-textColor text-base mb-2">
                                                 First Name<span className="text-red">*</span>
                                             </label>
                                             <input
+                                                id="firstName"
                                                 type="text"
                                                 name="firstName"
                                                 value={formData.firstName}
@@ -317,10 +319,11 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                             {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
                                         </div>
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="lastName" className="block text-textColor text-base mb-2">
                                                 Last Name
                                             </label>
                                             <input
+                                                id="lastName"
                                                 type="text"
                                                 name="lastName"
                                                 value={formData.lastName}
@@ -334,10 +337,11 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="email" className="block text-textColor text-base mb-2">
                                                 Email Address<span className="text-red">*</span>
                                             </label>
                                             <input
+                                                id="email"
                                                 type="email"
                                                 name="email"
                                                 value={formData.email}
@@ -349,7 +353,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                             {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
                                         </div>
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="phone" className="block text-textColor text-base mb-2">
                                                 Phone Number
                                             </label>
                                             <PhoneInput
@@ -367,10 +371,11 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="loginId" className="block text-textColor text-base mb-2">
                                                 Login ID<span className="text-red">*</span>
                                             </label>
                                             <input
+                                                id="loginId"
                                                 type="text"
                                                 name="loginId"
                                                 value={formData.loginId}
@@ -382,10 +387,11 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                             {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
                                         </div>
                                         <div className="mb-3 relative">
-                                            <label className="block text-textColor text-base mb-2">
+                                            <label htmlFor="schoolId" className="block text-textColor text-base mb-2">
                                                 School<span className="text-red">*</span>
                                             </label>
                                             <select
+                                                id="schoolId"
                                                 name="schoolId"
                                                 value={formData.schoolId ? String(formData.schoolId) : ''}
                                                 onChange={handleInputChange}
@@ -413,7 +419,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                             {isSubmitting ? (
                                                 <Loader2 className="animate-spin" />
                                             ) : (
-                                                'Save'
+                                                'Edit Educator'
                                             )}
                                         </button>
                                     </div>

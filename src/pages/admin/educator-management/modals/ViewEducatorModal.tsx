@@ -150,6 +150,7 @@ export default function ViewEducatorModal({ onClose, teacher }: TeacherActionMod
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-secondary">Educator Details</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className="text-textColor hover:text-hover cursor-pointer"
                             >

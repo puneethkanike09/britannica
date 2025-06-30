@@ -67,6 +67,7 @@ export default function DeletePblFileModal({ onClose, file, onFileDeleted }: Del
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-textColor">Delete PBL File</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                 disabled={isDeleting}
