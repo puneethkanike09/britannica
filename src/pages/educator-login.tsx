@@ -68,17 +68,13 @@ const EducatorLogin = () => {
         if (!validateForm()) return;
         setIsSubmitting(true);
         try {
-            await toast.promise(
-                login(loginId, password, "/auth/teacher-login"),
-                {
-                    loading: "Logging in...",
-                    success: () => {
-                        navigate("/educator-dashboard");
-                        return "Login successful!";
-                    },
-                    error: (err: { message?: string }) => err?.message || "Login failed",
-                }
-            );
+            await login(loginId, password, "/auth/teacher-login");
+            toast.success("Login successful!");
+            navigate("/educator-dashboard");
+        } catch (error) {
+            const errMsg = (error as { message?: string })?.message || "Login failed";
+            toast.error(errMsg);
+            console.error('Login error:', error);
         } finally {
             setIsSubmitting(false);
         }
