@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
-import { useAuth } from "../../../../../../hooks/useAuth";
+import { useAuthStore } from "../../../../../../store/authStore";
 import { LogoutModalProps } from "../../../../../../types/global";
 
 export default function LogoutModal({ onClose }: LogoutModalProps) {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const logout = useAuthStore((state) => state.logout);
 
     const handleClose = () => {
         if (isLoggingOut) return;

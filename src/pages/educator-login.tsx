@@ -5,11 +5,12 @@ import loginImage from "../assets/loginImage.png";
 import { Loader2, X, LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
-import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../store/authStore";
 
 const EducatorLogin = () => {
     const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();
+    const login = useAuthStore((state) => state.login);
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);

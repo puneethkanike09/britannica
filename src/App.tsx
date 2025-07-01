@@ -12,7 +12,6 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import NotFoundPage from "./pages/NotFoundPage";
 import EducatorLayout from "./pages/educator/EducatorLayout";
 import CreatePassword from "./pages/CreatePassword";
-import { AuthProvider } from "./context/AuthContext";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import EducatorProtectedRoute from "./components/EducatorProtectedRoute";
 import { useEffect } from "react";
@@ -43,68 +42,66 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              padding: "16px",
-              color: "white",
-              backgroundColor: "#141E8C",
-            },
-            ariaProps: {
-              role: "status",
-              "aria-live": "polite",
-            },
-          }}
-        />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<EducatorLogin />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/educator-login" element={<EducatorLogin />} />
-          <Route path="/educator-register" element={<EducatorRegistration />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/create-password" element={<CreatePassword />} />
+    <BrowserRouter>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            padding: "16px",
+            color: "white",
+            backgroundColor: "#141E8C",
+          },
+          ariaProps: {
+            role: "status",
+            "aria-live": "polite",
+          },
+        }}
+      />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<EducatorLogin />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/educator-login" element={<EducatorLogin />} />
+        <Route path="/educator-register" element={<EducatorRegistration />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/create-password" element={<CreatePassword />} />
 
-          {/* Admin routes */}
-          <Route
-            element={
-              <AdminProtectedRoute>
-                <AdminLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/school-management" element={<SchoolManagement />} />
-            <Route path="/educator-management" element={<EducatorManagement />} />
-            <Route path="/registered-educator-management" element={<RegisteredEducatorManagement />} />
-            <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
-            <Route path="/master-data/grade" element={<GradeManagement />} />
-            <Route path="/master-data/theme" element={<ThemeManagement />} />
-            <Route path="/master-data/types" element={<TypesManagement />} />
-            <Route path="/pbl-files" element={<PblFileManagement />} />
-            <Route path="/report" element={<Report />} />
-          </Route>
+        {/* Admin routes */}
+        <Route
+          element={
+            <AdminProtectedRoute>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/school-management" element={<SchoolManagement />} />
+          <Route path="/educator-management" element={<EducatorManagement />} />
+          <Route path="/registered-educator-management" element={<RegisteredEducatorManagement />} />
+          <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
+          <Route path="/master-data/grade" element={<GradeManagement />} />
+          <Route path="/master-data/theme" element={<ThemeManagement />} />
+          <Route path="/master-data/types" element={<TypesManagement />} />
+          <Route path="/pbl-files" element={<PblFileManagement />} />
+          <Route path="/report" element={<Report />} />
+        </Route>
 
-          {/* Educator routes */}
-          <Route
-            element={
-              <EducatorProtectedRoute>
-                <EducatorLayout />
-              </EducatorProtectedRoute>
-            }
-          >
-            <Route path="/educator-dashboard" element={<EducatorDashboard />} />
-          </Route>
+        {/* Educator routes */}
+        <Route
+          element={
+            <EducatorProtectedRoute>
+              <EducatorLayout />
+            </EducatorProtectedRoute>
+          }
+        >
+          <Route path="/educator-dashboard" element={<EducatorDashboard />} />
+        </Route>
 
-          {/* Catch-all route for 404 - Page Not Found */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        {/* Catch-all route for 404 - Page Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,21 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import EducatorProtectedRoute from './EducatorProtectedRoute';
-import * as useAuthModule from '../hooks/useAuth';
 import { MemoryRouter } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import { vi } from 'vitest';
 
-// Helper to mock useAuth
-const mockUseAuth = (auth: Partial<ReturnType<typeof useAuthModule.useAuth>>) => {
-  vi.spyOn(useAuthModule, 'useAuth').mockReturnValue(auth as any);
+// Helper to set Zustand auth state
+const setAuthState = (auth: Partial<ReturnType<typeof useAuthStore.getState>>) => {
+  useAuthStore.setState(auth);
 };
 
 describe('EducatorProtectedRoute', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    useAuthStore.setState({ isInitialized: false, isAuthenticated: false });
   });
 
   it('shows loading when not initialized', () => {
-    mockUseAuth({ isInitialized: false, isAuthenticated: false });
+    setAuthState({ isInitialized: false, isAuthenticated: false });
     render(
       <MemoryRouter>
         <EducatorProtectedRoute>child</EducatorProtectedRoute>
@@ -25,7 +26,7 @@ describe('EducatorProtectedRoute', () => {
   });
 
   it('redirects to /educator-login if not authenticated', () => {
-    mockUseAuth({ isInitialized: true, isAuthenticated: false });
+    setAuthState({ isInitialized: true, isAuthenticated: false });
     render(
       <MemoryRouter initialEntries={["/educator"]}>
         <EducatorProtectedRoute>child</EducatorProtectedRoute>
@@ -36,7 +37,7 @@ describe('EducatorProtectedRoute', () => {
   });
 
   it('renders children if authenticated and initialized', () => {
-    mockUseAuth({ isInitialized: true, isAuthenticated: true });
+    setAuthState({ isInitialized: true, isAuthenticated: true });
     render(
       <MemoryRouter>
         <EducatorProtectedRoute>child</EducatorProtectedRoute>
