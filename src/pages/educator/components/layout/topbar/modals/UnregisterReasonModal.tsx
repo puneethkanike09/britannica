@@ -104,6 +104,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                 disabled={isSubmitting}
+                                aria-label="close"
                             >
                                 <X className="h-7 w-7" />
                             </button>

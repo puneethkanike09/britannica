@@ -2,10 +2,18 @@ import React from 'react';
 import ViewIcon from '../../../../assets/dashboard/Educator/home-page/view.svg';
 import DownloadIcon from '../../../../assets/dashboard/Educator/home-page/download.svg';
 import { DocumentCardWithLoadingProps } from '../../../../types/educator';
+import { motion } from "framer-motion";
+import { modalVariants } from '../../../../config/constants/Animations/modalAnimation';
 
 const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading }) => {
     return (
-        <div className="w-full max-w-xs rounded-lg bg-white overflow-hidden group">
+        <motion.div
+            className="w-full max-w-xs rounded-lg bg-white overflow-hidden group"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+        >
             <div className="relative pb-4 px-6 pt-6 bg-secondary">
                 <div className="absolute top-0 right-4">
                     <p className="bg-red text-white text-xs font-bold px-4 py-1">
@@ -44,7 +52,7 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
                     </button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

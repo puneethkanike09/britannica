@@ -21,7 +21,7 @@ describe('AdminProtectedRoute', () => {
         <AdminProtectedRoute>child</AdminProtectedRoute>
       </MemoryRouter>
     );
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Authenticating...')).toBeInTheDocument();
   });
 
   it('redirects to /admin-login if not authenticated', () => {

@@ -1,5 +1,6 @@
 import { useAuth } from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
+import Loader from "./common/Loader";
 
 const AdminProtectedRoute = ({
     children,
@@ -9,7 +10,7 @@ const AdminProtectedRoute = ({
     const { isAuthenticated, isInitialized } = useAuth();
 
     if (!isInitialized) {
-        return <div>Loading...</div>;
+        return <Loader message="Authenticating..." />;
     }
 
     if (!isAuthenticated) {

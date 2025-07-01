@@ -21,7 +21,7 @@ describe('EducatorProtectedRoute', () => {
         <EducatorProtectedRoute>child</EducatorProtectedRoute>
       </MemoryRouter>
     );
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Authenticating...')).toBeInTheDocument();
   });
 
   it('redirects to /educator-login if not authenticated', () => {

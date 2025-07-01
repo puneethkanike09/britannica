@@ -85,6 +85,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isLoggingOut}
+                                aria-label="close"
                             >
                                 <X className="h-7 w-7" />
                             </button>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -90,68 +90,68 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >export default function ScrollingBanner() {<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >    const quote = "The aim of education should be to teach us rather how to think, than what to think. – James Beattie";</span>
-<span class="cstat-no" title="statement not covered" >    const marqueeItems = Array(3).fill(quote);</span>
+<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">export default function ScrollingBanner() {
+    const quote = "The aim of education should be to teach us rather how to think, than what to think. – James Beattie";
+    const marqueeItems = Array(3).fill(quote);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="w-full"&gt;</span>
+    return (
+        &lt;div className="w-full"&gt;
             {/* Top scrolling section */}
-<span class="cstat-no" title="statement not covered" >            &lt;div className="bg-primary text-white py-6 md:py-10 overflow-hidden relative"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;div className="flex animate-marquee"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    {marqueeItems.map((item, index) =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;div</span>
-<span class="cstat-no" title="statement not covered" >                            key={index}</span>
-<span class="cstat-no" title="statement not covered" >                            className="flex-shrink-0 px-44 md:px-52 font-bold text-lg md:text-xl whitespace-nowrap"</span>
+            &lt;div className="bg-primary text-white py-6 md:py-10 overflow-hidden relative"&gt;
+                &lt;div className="flex animate-marquee"&gt;
+                    {marqueeItems.map((item, index) =&gt; (
+                        &lt;div
+                            key={index}
+                            className="flex-shrink-0 px-44 md:px-52 font-bold text-lg md:text-xl whitespace-nowrap"
                         &gt;
-<span class="cstat-no" title="statement not covered" >                            {item}</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    ))}</span>
-<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
+                            {item}
+                        &lt;/div&gt;
+                    ))}
+                &lt;/div&gt;
+            &lt;/div&gt;
 &nbsp;
             {/* Bottom static section */}
-<span class="cstat-no" title="statement not covered" >            &lt;div className="bg-gray-100 text-textColor py-6 md:py-10 text-center px-4"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;h2 className="text-lg md:text-xl font-semibold"&gt;Real Problems. Real Teams. Real Impact&lt;/h2&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
+            &lt;div className="bg-gray-100 text-textColor py-6 md:py-10 text-center px-4"&gt;
+                &lt;h2 className="text-lg md:text-xl font-semibold"&gt;Real Problems. Real Teams. Real Impact&lt;/h2&gt;
+            &lt;/div&gt;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
+        &lt;/div&gt;
     );
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-30T12:37:28.939Z
+                at 2025-07-01T08:02:13.027Z
             </div>
         <script src="../../../../../../prettify.js"></script>
         <script>
