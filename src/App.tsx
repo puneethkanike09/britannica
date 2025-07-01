@@ -62,6 +62,7 @@ function App() {
         />
         <Routes>
           {/* Public routes */}
+          <Route path="/" element={<EducatorLogin />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/educator-login" element={<EducatorLogin />} />
           <Route path="/educator-register" element={<EducatorRegistration />} />
