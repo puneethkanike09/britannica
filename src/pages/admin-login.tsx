@@ -167,10 +167,10 @@ const AdminLogin = () => {
             <div className="flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
                 <div className="max-w-lg w-full">
                     <h1 className="text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
-                        Welcome to Britannica
+                        Access to 
                     </h1>
                     <h2 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
-                        Education Sites
+                         Britannica Build
                     </h2>
                     <form onSubmit={handleLogin}>
                         <div className="mb-5">

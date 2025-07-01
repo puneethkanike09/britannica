@@ -33,7 +33,7 @@ const Select: React.FC<SelectProps> = ({
     };
 
     return (
-        <div className="relative w-full sm:w-[250px] custom-select-dropdown">
+        <div className="relative w-full sm:w-[750px] custom-select-dropdown">
             <button
                 ref={buttonRef}
                 onClick={onToggle}

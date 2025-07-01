@@ -21,7 +21,7 @@ export default function BritannicaHeroSection() {
             {/* Content */}
             <div className="relative z-10 container mx-auto px-4 sm:px-10 lg:px-12">
                 <div className="text-center mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-3 sm:mb-4 md:mb-6">Britannica build</h1>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-3 sm:mb-4 md:mb-6">Britannica Build</h1>
                     <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-yellow-400 font-bold">
                         Learn by Doing, Grow by Exploring
                     </p>
