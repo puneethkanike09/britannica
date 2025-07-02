@@ -1,8 +1,9 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, ListRestart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
+import GenerateIcon from '../../../assets/dashboard/Admin/report/generate.svg';
 import toast from 'react-hot-toast';
 import Loader from '../../../components/common/Loader';
 import { ActivityLog } from '../../../types/admin';
@@ -268,7 +269,7 @@ export default function Report() {
                     disabled={isLoading}
                     className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                    <ListRestart className="h-5 w-5" />
+                    <img src={GenerateIcon} alt="Generate" className="h-5 w-5" />
                     <span className="hidden md:inline font-bold">Generate</span>
                 </button>
             </div>

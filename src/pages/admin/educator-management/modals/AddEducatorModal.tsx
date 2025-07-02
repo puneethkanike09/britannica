@@ -132,10 +132,11 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
         if (!formData.email.trim()) {
             newErrors.email = 'Email address is required';
             isValid = false;
-        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
-            isValid = false;
-        }
+        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|net|org|io|in)$/.test(formData.email)) {
+    newErrors.email = 'Please enter a valid lowercase email address with a proper domain';
+    isValid = false;
+}
+
 
         // Mobile: optional, but validate if provided using libphonenumber-js
         if (formData.phone.trim()) {

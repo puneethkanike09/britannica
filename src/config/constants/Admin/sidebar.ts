@@ -1,6 +1,8 @@
 import HomeIcon from '../../../assets/dashboard/Admin/sidebar/home.svg';
 import SchoolIcon from '../../../assets/dashboard/Admin/sidebar/school-management.svg';
 import EducatorIcon from '../../../assets/dashboard/Admin/sidebar/educator-management.svg';
+import RegisteredEducator from '../../../assets/dashboard/Admin/sidebar/registered-educator.svg';
+import UnRegisteredEducator from '../../../assets/dashboard/Admin/sidebar/unregistered-educator.svg';
 import MasterDataIcon from '../../../assets/dashboard/Admin/sidebar/masterData.svg'; // Add this icon
 import PblFilesIcon from '../../../assets/dashboard/Admin/sidebar/pblFiles.svg'; // Add this icon
 import ReportIcon from '../../../assets/dashboard/Admin/sidebar/report.svg';
@@ -28,13 +30,13 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     },
     {
         to: "/registered-educator-management",
-        icon: EducatorIcon,
+        icon: RegisteredEducator,
         alt: "Registered Educator",
         label: "Registered Educator"
     },
     {
         to: "/unregistered-educator-management",
-        icon: EducatorIcon,
+        icon: UnRegisteredEducator,
         alt: "Unregistered Educator",
         label: "Unregistered Educator"
     },

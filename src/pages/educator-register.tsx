@@ -304,7 +304,7 @@ const EducatorRegistration = () => {
                     <div className="max-w-[835px] w-full">
                         <div className="bg-white px-8 py-6 flex justify-between items-center">
                             <h1 className="text-textColor text-4xl font-bold mb-1 text-center sm:text-left">
-                                Register with Britannica Education Sites
+                                Register with Britannica Build
                             </h1>
                         </div>
                         <div className="mb-8 px-8 max-w-md mx-auto py-6">
