@@ -313,7 +313,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 value={formData.firstName}
                                                 onChange={handleInputChange}
                                                 placeholder="Enter First Name"
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.firstName && <p className="text-red text-sm mt-1">{errors.firstName}</p>}
@@ -329,7 +329,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 value={formData.lastName}
                                                 onChange={handleInputChange}
                                                 placeholder="Enter Last Name"
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting}
                                             />
                                         </div>
@@ -347,7 +347,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 value={formData.email}
                                                 onChange={handleInputChange}
                                                 placeholder="Enter Email Address"
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.email && <p className="text-red text-sm mt-1">{errors.email}</p>}
@@ -362,7 +362,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 value={formData.phone}
                                                 onChange={handlePhoneNumberChange}
                                                 placeholder="Enter Phone Number"
-                                                className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                className={`phone-input-container ${errors.phone ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.phone && <p className="text-red text-sm mt-1">{errors.phone}</p>}
@@ -381,7 +381,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 value={formData.loginId}
                                                 onChange={handleInputChange}
                                                 placeholder="Enter Login ID"
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.loginId && <p className="text-red text-sm mt-1">{errors.loginId}</p>}
@@ -395,7 +395,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                                 name="schoolId"
                                                 value={formData.schoolId ? String(formData.schoolId) : ''}
                                                 onChange={handleInputChange}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting || isSchoolsLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder appearance-none ${errors.schoolId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting || isSchoolsLoading ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                                 disabled={isSubmitting || isSchoolsLoading}
                                             >
                                                 <option value="">{isSchoolsLoading ? 'Loading schools...' : 'Select School'}</option>

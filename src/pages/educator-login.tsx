@@ -191,8 +191,7 @@ const EducatorLogin = () => {
                                     if (errors.loginId)
                                         setErrors((prev) => ({ ...prev, loginId: "" }));
                                 }}
-                                className={`p-4 py-3 w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? "border-red" : "border-inputPlaceholder"
-                                    } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                className={`p-4 py-3 w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.loginId ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                 disabled={isSubmitting}
                             />
                             {errors.loginId && (
@@ -217,8 +216,7 @@ const EducatorLogin = () => {
                                     if (errors.password)
                                         setErrors((prev) => ({ ...prev, password: "" }));
                                 }}
-                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.password ? "border-red" : "border-inputPlaceholder"
-                                    } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.password ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                 disabled={isSubmitting}
                             />
                             <button
@@ -313,8 +311,7 @@ const EducatorLogin = () => {
                                                 if (forgotPasswordErrors.email)
                                                     setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
                                             }}
-                                            className={`w-full p-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${forgotPasswordErrors.email ? "border-red" : "border-inputPlaceholder"
-                                                } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                            className={`w-full p-3 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${forgotPasswordErrors.email ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                             placeholder="Enter your registered email"
                                             disabled={isSubmitting}
                                         />

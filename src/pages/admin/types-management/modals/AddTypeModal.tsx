@@ -166,7 +166,7 @@ export default function AddTypeModal({ onClose, onTypeAdded }: AddTypeModalProps
                                         onChange={handleInputChange}
                                         placeholder="Enter Type name"
                                         maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                         disabled={isSubmitting}
                                     />
                                     {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
@@ -183,7 +183,7 @@ export default function AddTypeModal({ onClose, onTypeAdded }: AddTypeModalProps
                                         placeholder="Enter Type Description"
                                         maxLength={200}
                                         rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                         disabled={isSubmitting}
                                     />
                                     {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}

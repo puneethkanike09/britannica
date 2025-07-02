@@ -237,7 +237,7 @@ export default function Report() {
                             onChange={handleFromDateChange}
                             placeholderText="From Date"
                             dateFormat="MM/dd/yyyy"
-                            className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
+                            className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
                             disabled={isLoading}
                         />
                         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -254,7 +254,7 @@ export default function Report() {
                             onChange={handleToDateChange}
                             placeholderText="To Date"
                             dateFormat="MM/dd/yyyy"
-                            className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
+                            className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
                             disabled={isLoading}
                         />
                         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">

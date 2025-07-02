@@ -409,7 +409,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                             onChange={(e) => handleInputChange('name', e.target.value)}
                                             placeholder="Enter File name"
                                             maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
@@ -425,7 +425,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                             placeholder="Enter File Description"
                                             maxLength={200}
                                             rows={1}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}

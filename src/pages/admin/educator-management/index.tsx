@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import AddEducatorModal from './modals/AddEducatorModal';
 import EditEducatorModal from './modals/EditEducatorModal';
 import ViewEducatorModal from './modals/ViewEducatorModal';
@@ -138,11 +138,31 @@ const EducatorManagement: React.FC = () => {
                 <button
                     onClick={openAddEducatorModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg  flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                     <img src={AddEducatorIcon} alt="Add Educator" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add Educator</span>
                 </button>
+            </div>
+
+            {/* Search Box UI */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+                <div className="flex w-full md:max-w-md gap-2">
+                    <input
+                        type="text"
+                        placeholder="Search here"
+                        className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    />
+                    <button
+                        type="button"
+                        className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        disabled={isLoading}
+                    >
+                        <Search className="h-5 w-5" />
+                        <span className="hidden md:inline font-bold">Search</span>
+                    </button>
+                </div>
             </div>
 
             <div className="flex flex-col">

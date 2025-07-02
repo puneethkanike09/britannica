@@ -117,7 +117,7 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
                                         placeholder="Provide a reason for rejecting the educator's registration"
                                         maxLength={200}
                                         rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""} focus:outline-none focus:border-primary`}
                                         disabled={isSubmitting}
                                     />
                                     {error && <p className="text-red text-sm mt-1">{error}</p>}

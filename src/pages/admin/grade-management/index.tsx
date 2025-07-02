@@ -163,6 +163,26 @@ const GradeManagement: React.FC = () => {
                 </button>
             </div>
 
+            {/* Search Box UI */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+                <div className="flex w-full md:max-w-md gap-2">
+                    <input
+                        type="text"
+                        placeholder="Search here"
+                        className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    />
+                    <button
+                        type="button"
+                        className="bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2"
+                        disabled={isLoading}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                        <span className="hidden md:inline font-bold">Search</span>
+                    </button>
+                </div>
+            </div>
+
             <div className="flex flex-col">
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">

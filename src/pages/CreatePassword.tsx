@@ -146,7 +146,7 @@ const CreatePassword = () => {
                                     if (errors.newPassword)
                                         setErrors((prev) => ({ ...prev, newPassword: "" }));
                                 }}
-                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.newPassword ? "border-red" : "border-inputPlaceholder"
+                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.newPassword ? "border-red" : "border-inputPlaceholder"
                                     } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                 disabled={isSubmitting}
                             />
@@ -179,7 +179,7 @@ const CreatePassword = () => {
                                     if (errors.confirmPassword)
                                         setErrors((prev) => ({ ...prev, confirmPassword: "" }));
                                 }}
-                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.confirmPassword ? "border-red" : "border-inputPlaceholder"
+                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.confirmPassword ? "border-red" : "border-inputPlaceholder"
                                     } ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                 disabled={isSubmitting}
                             />

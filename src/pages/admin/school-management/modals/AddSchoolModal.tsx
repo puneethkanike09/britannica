@@ -274,7 +274,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter School Name"
                                             maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.school_name && <p className="text-red text-sm mt-1">{errors.school_name}</p>}
@@ -290,7 +290,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter Email Address"
                                             maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.school_email && <p className="text-red text-sm mt-1">{errors.school_email}</p>}
@@ -308,7 +308,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             value={formData.school_mobile_no}
                                             onChange={handlePhoneNumberChange}
                                             placeholder="Enter Phone Number"
-                                            className={`phone-input-container ${errors.school_mobile_no ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`phone-input-container ${errors.school_mobile_no ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
@@ -324,7 +324,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 1"
                                             maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.address_line1 && <p className="text-red text-sm mt-1">{errors.address_line1}</p>}
@@ -343,7 +343,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter Address Line 2"
                                             maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                     </div>
@@ -358,7 +358,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter City"
                                             maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
@@ -376,7 +376,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter State"
                                             maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
@@ -392,7 +392,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter Country"
                                             maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
@@ -410,7 +410,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                             onChange={handleInputChange}
                                             placeholder="Enter Pincode"
                                             maxLength={10}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
                                         {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}

@@ -98,7 +98,7 @@ body {
 
 
 .phone-input-container .PhoneInputInput {
-  @apply w-full p-3 border  rounded-lg text-base bg-inputBg border-inputBorder placeholder:bg-inputPlaceholder;
+  @apply w-full p-3 border  rounded-lg text-base bg-inputBg border-inputBorder placeholder:bg-inputPlaceholder focus:outline-none focus:border-primary;
 }
 
 

@@ -376,7 +376,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter School Code"
                                                 maxLength={30}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.schoolCode && (
@@ -394,7 +394,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter School Name"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.schoolName ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.schoolName ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.schoolName && (
@@ -432,7 +432,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Email Address"
                                                 maxLength={100}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.emailAddress ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.emailAddress ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.emailAddress && (
@@ -453,7 +453,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Address Line 1"
                                                 maxLength={100}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.addressLine1 ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.addressLine1 ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.addressLine1 && (
@@ -471,7 +471,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Address Line 2"
                                                 maxLength={100}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
                                                 disabled={isSubmitting}
                                             />
                                         </div>
@@ -489,7 +489,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter City"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.city ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
@@ -505,7 +505,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter State"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.state ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
@@ -524,7 +524,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Country"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.country ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
@@ -540,7 +540,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleSchoolInputChange}
                                                 placeholder="Enter Pincode"
                                                 maxLength={10}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.pincode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
@@ -571,7 +571,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleEducatorInputChange}
                                                 placeholder="Enter First Name"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.firstName ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.firstName ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.firstName && (
@@ -589,7 +589,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleEducatorInputChange}
                                                 placeholder="Enter Last Name"
                                                 maxLength={50}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${isSubmitting ? "cursor-not-allowed opacity-50" : "border-inputPlaceholder"}`}
                                                 disabled={isSubmitting}
                                             />
                                         </div>
@@ -624,7 +624,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleEducatorInputChange}
                                                 placeholder="Enter Educator Email"
                                                 maxLength={100}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.educatorEmail ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.educatorEmail ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.educatorEmail && (
@@ -645,7 +645,7 @@ const EducatorRegistration = () => {
                                                 onChange={handleEducatorInputChange}
                                                 placeholder="Enter Login ID"
                                                 maxLength={30}
-                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.loginId ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
                                             {errors.loginId && (
