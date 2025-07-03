@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+
+import React, { useRef } from 'react';
 import ArrowIcon from '../../../../assets/dashboard/Educator/home-page/arrow.svg';
 import { SelectProps } from '../../../../types/educator';
 import { Loader2 } from 'lucide-react';
@@ -15,7 +16,6 @@ const Select: React.FC<SelectProps> = ({
     onErrorClear,
     isSubmittingDropdowns = false,
 }) => {
-    const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(undefined);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const handleOptionSelect = (optionValue: string) => {
@@ -25,38 +25,16 @@ const Select: React.FC<SelectProps> = ({
         }
     };
 
-    // Calculate required width based on content
-    useEffect(() => {
-        if (isOpen && buttonRef.current && options.length > 0) {
-            const buttonWidth = buttonRef.current.offsetWidth;
-
-            // Find the longest option text
-            const longestOption = options.reduce((longest, current) =>
-                current.label.length > longest.label.length ? current : longest
-            );
-
-            // Create a temporary element to measure text width
-            const tempElement = document.createElement('div');
-            tempElement.style.visibility = 'hidden';
-            tempElement.style.position = 'absolute';
-            tempElement.style.fontSize = '1.25rem'; // text-xl
-            tempElement.style.fontWeight = 'bold';
-            tempElement.style.padding = '0 1rem'; // px-4
-            tempElement.style.whiteSpace = 'nowrap';
-            tempElement.textContent = longestOption.label;
-
-            document.body.appendChild(tempElement);
-            const textWidth = tempElement.offsetWidth + 32; // Add some padding
-            document.body.removeChild(tempElement);
-
-            // Use the larger of button width or required text width
-            const requiredWidth = Math.max(buttonWidth, textWidth);
-            setDropdownWidth(requiredWidth);
+    // Calculate dropdown position immediately when rendering
+    const getDropdownTop = () => {
+        if (buttonRef.current) {
+            return buttonRef.current.offsetHeight + 4; // 4px gap (mt-1)
         }
-    }, [isOpen, options]);
+        return 54; // fallback height (50px + 4px gap)
+    };
 
     return (
-        <div className="relative w-full sm:w-[250px] custom-select-dropdown">
+        <div className="relative w-full sm:w-[750px] custom-select-dropdown">
             <button
                 ref={buttonRef}
                 onClick={onToggle}
@@ -67,7 +45,7 @@ const Select: React.FC<SelectProps> = ({
                 role="combobox"
                 disabled={isSubmitting}
             >
-                <p className="break-all pr-2 flex-1">
+                <p className="break-words pr-2 flex-1 leading-tight">
                     {isSubmittingDropdowns ? (
                         <Loader2 className="animate-spin inline-block" />
                     ) : null}
@@ -81,10 +59,9 @@ const Select: React.FC<SelectProps> = ({
             </button>
             {isOpen && (
                 <div
-                    className="absolute bg-white border border-white rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto top-[50px] mt-1 scrollbar-thin scrollbar-thumb-lightGray scrollbar-track-lightGray"
+                    className="absolute bg-white border border-white rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-lightGray scrollbar-track-lightGray w-full min-w-full"
                     style={{
-                        width: dropdownWidth ? `${dropdownWidth}px` : '100%',
-                        minWidth: '100%'
+                        top: `${getDropdownTop()}px`
                     }}
                     role="listbox"
                 >
@@ -95,7 +72,7 @@ const Select: React.FC<SelectProps> = ({
                             <button
                                 key={option.value}
                                 onClick={() => handleOptionSelect(option.value)}
-                                className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-gray/10 text-textColor cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis ${value === option.value ? 'bg-gray/10' : ''
+                                className={`w-full px-4 text-xl font-bold py-2 text-left hover:bg-primary/10 text-textColor cursor-pointer break-words leading-tight ${value === option.value ? 'bg-gray/10' : ''
                                     }`}
                                 role="option"
                                 aria-selected={value === option.value}

@@ -1,22 +1,31 @@
+
 import React from 'react';
 import ViewIcon from '../../../../assets/dashboard/Educator/home-page/view.svg';
 import DownloadIcon from '../../../../assets/dashboard/Educator/home-page/download.svg';
 import { DocumentCardWithLoadingProps } from '../../../../types/educator';
+import { motion } from "framer-motion";
+import { modalVariants } from '../../../../config/constants/Animations/modalAnimation';
 
 const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading }) => {
     return (
-        <div className="w-full max-w-xs rounded-lg bg-white group">
-            <div className="relative pb-4 px-6 pt-6">
+        <motion.div
+            className="w-full max-w-xs rounded-lg bg-white overflow-hidden group"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+        >
+            <div className="relative pb-4 px-6 pt-6 bg-secondary">
                 <div className="absolute top-0 right-4">
                     <p className="bg-red text-white text-xs font-bold px-4 py-1">
                         PDF
                     </p>
                 </div>
-                <h3 className="text-2xl font-black text-secondary leading-tight min-h-[6.5rem] flex items-center">
+                <h3 className="text-2xl font-black text-white leading-tight min-h-[6.5rem] flex items-center">
                     {title}
                 </h3>
             </div>
-            <div className="pt-0 px-6 pb-6">
+            <div className="py-4 px-6 bg-white">
                 <div className="flex gap-3">
                     <button
                         onClick={onView}
@@ -44,8 +53,10 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
                     </button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
 export default DocumentCard;
+
+
