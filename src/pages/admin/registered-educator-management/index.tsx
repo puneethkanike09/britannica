@@ -209,7 +209,7 @@ const RegisteredEducatorList: React.FC = () => {
                 <div className="flex w-full md:max-w-md gap-2">
                     <input
                         type="text"
-                        placeholder="Search here"
+                        placeholder="Enter keyword to search"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
                     />
