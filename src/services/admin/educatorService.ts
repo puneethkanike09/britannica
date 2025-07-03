@@ -76,7 +76,7 @@ export class EducatorService {
         user_id?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post(
+            const response = await apiClient.put(
                 "/teacher/update",
                 teacherData
             );

@@ -94,7 +94,7 @@ export class SchoolService {
 
     static async fetchSchoolsForDropdown(): Promise<{
         error: boolean | string;
-        schools?: Pick<School, 'school_id' | 'school_name'>[];
+        school?: Pick<School, 'school_id' | 'school_name'>[];
         token?: string;
         message?: string;
     }> {

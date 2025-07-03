@@ -306,4 +306,62 @@ export const apiClient = {
             }
         });
     },
+
+    async put<D = unknown>(
+        endpoint: string,
+        data: D,
+        includeToken: boolean = true,
+        customHeaders: Record<string, string> = {}
+    ): Promise<ApiResponse> {
+        return requestQueue.enqueue(async () => {
+            try {
+                const headers: HeadersInit = {
+                    "Content-Type": "application/json",
+                    "API-KEY": API_KEY,
+                    ...customHeaders,
+                };
+
+                if (includeToken) {
+                    const token = TokenService.getToken();
+                    if (token) {
+                        headers["Authorization"] = `Bearer ${token}`;
+                    }
+                }
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (result.token) {
+                    TokenService.updateToken(result.token);
+                }
+
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        TokenService.clearToken();
+                        return {
+                            error: true,
+                            message: "Authentication failed. Please login again.",
+                        } as ApiResponse;
+                    }
+                    return {
+                        error: true,
+                        message: result.message || "Request failed",
+                    } as ApiResponse;
+                }
+
+                return result as ApiResponse;
+            } catch (error: unknown) {
+                console.error("Error in PUT request:", error);
+                return {
+                    error: true,
+                    message: error instanceof Error ? error.message : "Unknown error",
+                } as ApiResponse;
+            }
+        });
+    },
 };

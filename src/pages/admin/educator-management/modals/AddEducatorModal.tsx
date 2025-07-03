@@ -206,7 +206,7 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
         SchoolService.fetchSchoolsForDropdown().then((res) => {
             if (mounted) {
                 if (res && !res.error) {
-                    setSchools(res.schools || []);
+                    setSchools(res.school || []);
                 } else {
                     setSchools([]);
                     toast.error(res.message || 'Failed to load schools');

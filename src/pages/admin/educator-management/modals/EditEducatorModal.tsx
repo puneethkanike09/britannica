@@ -74,8 +74,8 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
         SchoolService.fetchSchoolsForDropdown().then((res) => {
             if (mounted) {
                 if (res && !res.error) {
-                    setSchools(res.schools || []);
-                } else {
+                    setSchools(res.school || []);
+                }else {
                     setSchools([]);
                     toast.error('Failed to load schools');
                 }
