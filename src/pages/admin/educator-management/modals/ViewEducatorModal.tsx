@@ -63,7 +63,7 @@ export default function ViewEducatorModal({ onClose, teacher }: TeacherActionMod
         SchoolService.fetchSchoolsForDropdown().then((res) => {
             if (mounted) {
                 if (res && !res.error) {
-                    setSchools(res.schools || []);
+                    setSchools(res.school || []);
                 } else {
                     setSchools([]);
                     toast.error('Failed to load schools');
