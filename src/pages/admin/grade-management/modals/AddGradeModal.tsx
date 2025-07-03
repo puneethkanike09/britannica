@@ -4,23 +4,19 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { GradeService } from "../../../../services/admin/gradeService";
-
-interface AddGradeModalProps {
-    onClose: () => void;
-    onGradeAdded: (grade: { name: string; description: string }) => void;
-}
+import { AddGradeModalProps } from "../../../../types/admin/grade-management";
 
 export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalProps) {
     const [formData, setFormData] = useState<{
-        name: string;
+        grade_name: string;
         description: string;
     }>({
-        name: '',
+        grade_name: '',
         description: '',
     });
 
     const [errors, setErrors] = useState({
-        name: '',
+        grade_name: '',
         description: ''
     });
 
@@ -57,7 +53,7 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
-            case 'name':
+            case 'grade_name':
                 // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
@@ -70,17 +66,17 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
 
     const validateForm = () => {
         const newErrors = {
-            name: '',
+            grade_name: '',
             description: ''
         };
         let isValid = true;
 
-        // name: mandatory, min 2, max 50
-        if (!formData.name.trim()) {
-            newErrors.name = 'Grade name is required';
+        // grade_name: mandatory, min 2, max 50
+        if (!formData.grade_name.trim()) {
+            newErrors.grade_name = 'Grade name is required';
             isValid = false;
-        } else if (formData.name.length < 2 || formData.name.length > 50) {
-            newErrors.name = 'name must be 2-50 characters';
+        } else if (formData.grade_name.length < 2 || formData.grade_name.length > 50) {
+            newErrors.grade_name = 'Grade name must be 2-50 characters';
             isValid = false;
         }
 
@@ -99,15 +95,12 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
             setIsSubmitting(true);
             try {
                 const response = await GradeService.createGrade({
-                    grade_name: formData.name.trim(),
+                    grade_name: formData.grade_name.trim(),
                     description: formData.description.trim(),
                 });
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || 'Grade added successfully!');
-                    onGradeAdded({
-                        name: formData.name.trim(),
-                        description: formData.description.trim(),
-                    });
+                    if (onGradeAdded) onGradeAdded();
                     handleClose();
                 } else {
                     toast.error(response.message || 'Failed to add grade');
@@ -161,15 +154,15 @@ export default function AddGradeModal({ onClose, onGradeAdded }: AddGradeModalPr
                                     </label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        value={formData.name}
+                                        name="grade_name"
+                                        value={formData.grade_name}
                                         onChange={handleInputChange}
                                         placeholder="Enter Grade name"
                                         maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.grade_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                         disabled={isSubmitting}
                                     />
-                                    {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
+                                    {errors.grade_name && <p className="text-red text-sm mt-1">{errors.grade_name}</p>}
                                 </div>
 
                                 <div className="mb-3 relative">

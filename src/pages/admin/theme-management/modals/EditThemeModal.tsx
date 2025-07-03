@@ -1,29 +1,26 @@
 import { X, Loader2 } from "lucide-react";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { ThemeService } from "../../../../services/admin/themeService";
+import { ThemeActionModalProps } from "../../../../types/admin/theme-management";
+import Loader from "../../../../components/common/Loader";
 
-interface EditThemeModalProps {
-    onClose: () => void;
-    theme: { theme_id: string; name: string; description: string };
-    onThemeUpdated: (theme: { theme_id: string; name: string; description: string }) => void;
-}
-
-export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditThemeModalProps) {
+export default function EditThemeModal({ onClose, theme, onThemeUpdated }: ThemeActionModalProps) {
     const [formData, setFormData] = useState({
         theme_id: theme.theme_id,
-        name: theme.name,
+        theme_name: theme.theme_name,
         description: theme.description || '',
     });
-
     const [errors, setErrors] = useState({
-        name: '',
+        theme_name: '',
         description: ''
     });
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
@@ -43,19 +40,34 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
-        setFormData(prev => ({ ...prev, [name]: newValue }));
-        if (errors[name as keyof typeof errors]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
-    };
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        ThemeService.fetchThemeById(theme.theme_id).then((res) => {
+            if (!mounted) return;
+            if ((res.error === false || res.error === "false") && res.theme) {
+                setFormData({
+                    theme_id: res.theme.theme_id,
+                    theme_name: res.theme.theme_name,
+                    description: res.theme.description || '',
+                });
+                setError(null);
+            } else {
+                setError(res.message || 'Failed to load theme details');
+            }
+            setLoading(false);
+        }).catch((err) => {
+            if (!mounted) return;
+            setError(err.message || 'Failed to load theme details');
+            setLoading(false);
+        });
+        return () => { mounted = false; };
+    }, [theme.theme_id]);
 
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
-            case 'name':
+            case 'theme_name':
                 // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
@@ -66,19 +78,28 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
         }
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        const newValue = restrictInput(name, value);
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+        if (errors[name as keyof typeof errors]) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+    };
+
     const validateForm = () => {
         const newErrors = {
-            name: '',
+            theme_name: '',
             description: ''
         };
         let isValid = true;
 
-        // name: mandatory, min 2, max 50
-        if (!formData.name.trim()) {
-            newErrors.name = 'Theme name is required';
+        // theme_name: mandatory, min 2, max 50
+        if (!formData.theme_name.trim()) {
+            newErrors.theme_name = 'Theme name is required';
             isValid = false;
-        } else if (formData.name.length < 2 || formData.name.length > 50) {
-            newErrors.name = 'name must be 2-50 characters';
+        } else if (formData.theme_name.length < 2 || formData.theme_name.length > 50) {
+            newErrors.theme_name = 'Theme name must be 2-50 characters';
             isValid = false;
         }
 
@@ -92,26 +113,27 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
         return isValid;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation without API
-            setTimeout(() => {
-                try {
-                    onThemeUpdated({
-                        theme_id: formData.theme_id,
-                        name: formData.name.trim(),
-                        description: formData.description.trim()
-                    });
-                    toast.success('Theme updated successfully!');
-                    setIsSubmitting(false);
+            try {
+                const response = await ThemeService.updateTheme(formData);
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Theme updated successfully');
+                    if (onThemeUpdated) {
+                        onThemeUpdated();
+                    }
                     handleClose();
-                } catch (error) {
-                    console.log(error);
-                    toast.error('Failed to update theme');
-                    setIsSubmitting(false);
+                } else {
+                    toast.error(response.message || 'Failed to update theme');
                 }
-            }, 1000); // Simulate delay
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to update theme';
+                toast.error(errMsg);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -139,6 +161,7 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-secondary">Edit Theme</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isSubmitting}
@@ -149,56 +172,62 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: EditT
 
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="space-y-6">
-                                <div className="mb-3 relative">
-                                    <label className="block text-textColor text-base mb-2">
-                                        Theme Name<span className="text-red">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter Theme name"
-                                        maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
-                                </div>
+                            {loading ? (
+                                <Loader message="Loading Theme Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
+                                            Theme Name<span className="text-red">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="theme_name"
+                                            value={formData.theme_name}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Theme name"
+                                            maxLength={50}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.theme_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.theme_name && <p className="text-red text-sm mt-1">{errors.theme_name}</p>}
+                                    </div>
 
-                                <div className="mb-3 relative">
-                                    <label className="block text-textColor text-base mb-2">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter Theme Description"
-                                        maxLength={200}
-                                        rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
-                                </div>
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
+                                            Description
+                                        </label>
+                                        <textarea
+                                            name="description"
+                                            value={formData.description}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Theme Description"
+                                            maxLength={200}
+                                            rows={4}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
+                                    </div>
 
-                                <div className="mt-12">
-                                    <button
-                                        type="button"
-                                        onClick={handleSubmit}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? (
-                                            <Loader2 className="animate-spin" />
-                                        ) : (
-                                            <span className="font-bold">Save</span>
-                                        )}
-                                    </button>
+                                    <div className="mt-12">
+                                        <button
+                                            type="submit"
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            disabled={isSubmitting}
+                                            onClick={handleSubmit}
+                                        >
+                                            {isSubmitting ? (
+                                                <Loader2 className="animate-spin" />
+                                            ) : (
+                                                <span className="font-bold">Save</span>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>

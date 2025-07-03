@@ -3,14 +3,10 @@ import toast from "react-hot-toast";
 import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { ThemeActionModalProps } from "../../../../types/admin/theme-management";
+import { ThemeService } from "../../../../services/admin/themeService";
 
-interface DeleteThemeModalProps {
-    onClose: () => void;
-    theme: { theme_id: string; name: string; description: string };
-    onThemeDeleted: (theme_id: string) => void;
-}
-
-export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: DeleteThemeModalProps) {
+export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: ThemeActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
@@ -32,21 +28,22 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setIsDeleting(true);
-        // Simulate async operation without API
-        setTimeout(() => {
-            try {
-                onThemeDeleted(theme.theme_id);
+        try {
+            const response = await ThemeService.deleteTheme(theme.theme_id);
+            if (response.error === false || response.error === "false") {
                 toast.success('Theme deleted successfully!');
-                setIsDeleting(false);
+                if (onThemeDeleted) onThemeDeleted();
                 handleClose();
-            } catch (error) {
-                console.log(error);
-                toast.error('Failed to delete theme');
-                setIsDeleting(false);
+            } else {
+                toast.error(response.message || 'Failed to delete theme');
             }
-        }, 1000); // Simulate delay
+        } catch (error) {
+            toast.error('Failed to delete theme');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -73,6 +70,7 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-textColor">Delete Theme</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isDeleting}
@@ -84,7 +82,7 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: Del
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete the theme <span className="font-bold">{theme.name}</span>?
+                                Are you sure you want to delete the theme <span className="font-bold">{theme.theme_name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">

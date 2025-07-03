@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import AddThemeModal from "./modals/AddThemeModal";
 import EditThemeModal from "./modals/EditThemeModal";
 import ViewThemeModal from "./modals/ViewThemeModal";
@@ -10,12 +10,8 @@ import DeleteIcon from "../../../assets/dashboard/Admin/theme-management/delete.
 import AddThemeIcon from "../../../assets/dashboard/Admin/theme-management/add-theme.svg";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
-
-interface Theme {
-    theme_id: string;
-    name: string;
-    description: string;
-}
+import { Theme } from "../../../types/admin/theme-management";
+import { ThemeService } from "../../../services/admin/themeService";
 
 const ThemeManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,70 +22,78 @@ const ThemeManagement: React.FC = () => {
     const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [themes, setThemes] = useState<Theme[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const [searchText, setSearchText] = useState("");
+    const [appliedSearchText, setAppliedSearchText] = useState("");
 
-    const itemsPerPage = 6;
-
-    // Dummy data for themes
-    const dummyThemes: Theme[] = Array.from({ length: 12 }, (_, i) => ({
-        theme_id: `theme-${i + 1}`,
-        name: `Theme ${i + 1}`,
-        description: `Description for Theme ${i + 1} content and structure.`,
-    }));
-
-    // Load dummy themes on mount
-    useEffect(() => {
+    // Fetch themes on mount and when needed
+    const fetchThemes = async (page = currentPage, size = pageSize, search = searchText) => {
         setIsLoading(true);
-        setTimeout(() => {
-            setThemes(dummyThemes);
+        try {
+            const response = await ThemeService.fetchThemes({ page, size, search });
+            if (response.error === false || response.error === "false") {
+                setThemes(response.theme || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalElements(response.totalElements || 0);
+                setPageSize(response.pageSize || size);
+            } else {
+                toast.error(response.message || 'Failed to fetch themes');
+            }
+        } catch (error) {
+            toast.error('Failed to fetch themes');
+            console.error('Fetch themes error:', error);
+        } finally {
             setIsLoading(false);
-        }, 1000); // Simulate loading
-    }, []);
+        }
+    };
 
-    // Calculate total pages
-    const totalPages = Math.ceil(themes.length / itemsPerPage);
+    useEffect(() => {
+        fetchThemes(currentPage, pageSize, appliedSearchText);
+    }, [currentPage, pageSize, appliedSearchText]);
 
-    // Get current items
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = themes.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = themes;
 
-    // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Open Add Theme Modal
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
+    };
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
     const openAddThemeModal = () => {
         setShowAddModal(true);
     };
-
-    // Open Edit Theme Modal
     const openEditThemeModal = (theme: Theme) => {
         setSelectedTheme(theme);
         setShowEditModal(true);
     };
-
-    // Open View Theme Modal
     const openViewThemeModal = (theme: Theme) => {
         setSelectedTheme(theme);
         setShowViewModal(true);
     };
-
-    // Open Delete Theme Modal
     const openDeleteThemeModal = (theme: Theme) => {
         setSelectedTheme(theme);
         setShowDeleteModal(true);
     };
 
-    // Generate page numbers with ellipsis
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
-
         if (totalPages <= 4) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
             pageNumbers.push(1);
-
             if (currentPage <= 2) {
                 pageNumbers.push(2, 3, "...");
             } else if (currentPage >= totalPages - 1) {
@@ -97,66 +101,48 @@ const ThemeManagement: React.FC = () => {
             } else {
                 pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
             }
-
             pageNumbers.push(totalPages);
         }
-
         return pageNumbers;
     };
 
-    // Close Add Theme Modal
     const closeAddThemeModal = () => {
         setShowAddModal(false);
     };
-
-    // Close Edit Theme Modal
     const closeEditThemeModal = () => {
         setShowEditModal(false);
         setSelectedTheme(null);
     };
-
-    // Close View Theme Modal
     const closeViewThemeModal = () => {
         setShowViewModal(false);
         setSelectedTheme(null);
     };
-
-    // Close Delete Theme Modal
     const closeDeleteThemeModal = () => {
         setShowDeleteModal(false);
         setSelectedTheme(null);
     };
 
-    // Callback for after theme is added
-    const handleThemeAdded = (newTheme: { name: string; description: string }) => {
-        const themeWithId = { ...newTheme, theme_id: `theme-${themes.length + 1}` };
-        setThemes([...themes, themeWithId]);
-        toast.success("Theme added successfully");
+    const handleThemeAdded = () => {
+        fetchThemes();
         closeAddThemeModal();
     };
-
-    // Callback for after theme is updated
-    const handleThemeUpdated = (updatedTheme: Theme) => {
-        setThemes(themes.map((theme) => (theme.theme_id === updatedTheme.theme_id ? updatedTheme : theme)));
-        toast.success("Theme updated successfully");
+    const handleThemeUpdated = () => {
+        fetchThemes();
         closeEditThemeModal();
     };
-
-    // Callback for after theme is deleted
-    const handleThemeDeleted = (theme_id: string) => {
-        setThemes(themes.filter((theme) => theme.theme_id !== theme_id));
-        toast.success("Theme deleted successfully");
+    const handleThemeDeleted = () => {
+        fetchThemes();
         closeDeleteThemeModal();
     };
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">Theme List</h1>
+                <h1 className="text-3xl font-bold text-secondary">Theme List ( {totalElements} )</h1>
                 <button
                     onClick={openAddThemeModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddThemeIcon} alt="Add Theme" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add Theme</span>
@@ -165,21 +151,38 @@ const ThemeManagement: React.FC = () => {
 
             {/* Search Box UI */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
-                <div className="flex w-full md:max-w-md gap-2">
+                <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Enter keyword to search"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
+                        value={searchText}
+                        onChange={handleSearchChange}
                     />
                     <button
-                        type="button"
-                        className="bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2"
+                        type="submit"
+                        className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isLoading}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                        <Search className="h-5 w-5" />
                         <span className="hidden md:inline font-bold">Search</span>
                     </button>
+                </form>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <label htmlFor="pageSize" className="text-base text-textColor">Rows per page:</label>
+                    <select
+                        id="pageSize"
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="p-2 border text-textColor rounded-lg text-base bg-inputBg border-inputBorder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
                 </div>
             </div>
 
@@ -187,13 +190,13 @@ const ThemeManagement: React.FC = () => {
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[50%] min-w-[300px]" />
-                            <col className="w-[30%] min-w-[240px]" />
+                            <col className="w-[40%] min-w-[200px]" />
+                            <col className="w-[40%] min-w-[200px]" />
+                            <col className="w-[20%] min-w-[200px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Theme Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Description</th>
                                 <th className="px-8 py-4 text-left font-black">Actions</th>
                             </tr>
@@ -215,7 +218,7 @@ const ThemeManagement: React.FC = () => {
                                 currentItems.map((theme, index) => (
                                     <tr key={theme.theme_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{theme.name}</div>
+                                            <div className="text-textColor">{theme.theme_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{theme.description}</div>
@@ -225,6 +228,7 @@ const ThemeManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => openViewThemeModal(theme)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={ViewIcon} alt="View" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">View</span>
@@ -232,6 +236,7 @@ const ThemeManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => openEditThemeModal(theme)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
@@ -239,6 +244,7 @@ const ThemeManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => openDeleteThemeModal(theme)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
@@ -257,8 +263,8 @@ const ThemeManagement: React.FC = () => {
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -273,7 +279,7 @@ const ThemeManagement: React.FC = () => {
                                             ? "text-textColor hover:bg-third"
                                             : "text-darkGray"
                                         }`}
-                                    disabled={typeof number !== "number"}
+                                    disabled={typeof number !== "number" || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -281,8 +287,8 @@ const ThemeManagement: React.FC = () => {
 
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>

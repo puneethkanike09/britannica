@@ -19,7 +19,6 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import GradeManagement from "./pages/admin/grade-management";
 import ThemeManagement from "./pages/admin/theme-management";
-import TypesManagement from "./pages/admin/types-management";
 import PblFileManagement from "./pages/admin/pbl-files-management";
 import RegisteredEducatorManagement from "./pages/admin/registered-educator-management";
 import UnregisteredEducatorManagement from "./pages/admin/unregistered-educator-management";
@@ -84,7 +83,6 @@ function App() {
             <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
             <Route path="/master-data/grade" element={<GradeManagement />} />
             <Route path="/master-data/theme" element={<ThemeManagement />} />
-            <Route path="/master-data/types" element={<TypesManagement />} />
             <Route path="/pbl-files" element={<PblFileManagement />} />
             <Route path="/report" element={<Report />} />
           </Route>

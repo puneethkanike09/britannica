@@ -4,23 +4,19 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { ThemeService } from "../../../../services/admin/themeService";
-
-interface AddThemeModalProps {
-    onClose: () => void;
-    onThemeAdded: (theme: { name: string; description: string }) => void;
-}
+import { AddThemeModalProps } from "../../../../types/admin/theme-management";
 
 export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalProps) {
     const [formData, setFormData] = useState<{
-        name: string;
+        theme_name: string;
         description: string;
     }>({
-        name: '',
+        theme_name: '',
         description: '',
     });
 
     const [errors, setErrors] = useState({
-        name: '',
+        theme_name: '',
         description: ''
     });
 
@@ -57,7 +53,7 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
-            case 'name':
+            case 'theme_name':
                 // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
@@ -70,17 +66,17 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
 
     const validateForm = () => {
         const newErrors = {
-            name: '',
+            theme_name: '',
             description: ''
         };
         let isValid = true;
 
-        // name: mandatory, min 2, max 50
-        if (!formData.name.trim()) {
-            newErrors.name = 'Theme name is required';
+        // theme_name: mandatory, min 2, max 50
+        if (!formData.theme_name.trim()) {
+            newErrors.theme_name = 'Theme name is required';
             isValid = false;
-        } else if (formData.name.length < 2 || formData.name.length > 50) {
-            newErrors.name = 'name must be 2-50 characters';
+        } else if (formData.theme_name.length < 2 || formData.theme_name.length > 50) {
+            newErrors.theme_name = 'Theme name must be 2-50 characters';
             isValid = false;
         }
 
@@ -99,15 +95,12 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
             setIsSubmitting(true);
             try {
                 const response = await ThemeService.createTheme({
-                    theme_name: formData.name.trim(),
+                    theme_name: formData.theme_name.trim(),
                     description: formData.description.trim(),
                 });
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || 'Theme added successfully!');
-                    onThemeAdded({
-                        name: formData.name.trim(),
-                        description: formData.description.trim(),
-                    });
+                    if (onThemeAdded) onThemeAdded();
                     handleClose();
                 } else {
                     toast.error(response.message || 'Failed to add theme');
@@ -161,15 +154,15 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
                                     </label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        value={formData.name}
+                                        name="theme_name"
+                                        value={formData.theme_name}
                                         onChange={handleInputChange}
                                         placeholder="Enter Theme name"
                                         maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.theme_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                         disabled={isSubmitting}
                                     />
-                                    {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
+                                    {errors.theme_name && <p className="text-red text-sm mt-1">{errors.theme_name}</p>}
                                 </div>
 
                                 <div className="mb-3 relative">

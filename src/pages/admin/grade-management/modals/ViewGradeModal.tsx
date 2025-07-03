@@ -1,15 +1,37 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import Loader from "../../../../components/common/Loader";
+import { GradeActionModalProps } from "../../../../types/admin/grade-management";
+import { GradeService } from "../../../../services/admin/gradeService";
 
-interface ViewGradeModalProps {
-    onClose: () => void;
-    grade: { grade_id: string; name: string; description: string };
-}
-
-export default function ViewGradeModal({ onClose, grade }: ViewGradeModalProps) {
+export default function ViewGradeModal({ onClose, grade }: GradeActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [gradeDetails, setGradeDetails] = useState<typeof grade | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        GradeService.fetchGradeById(grade.grade_id).then((res) => {
+            if (mounted) {
+                if ((res.error === false || res.error === "false") && res.grade) {
+                    setGradeDetails(res.grade || null);
+                } else {
+                    setError(res.message || 'Failed to load grade details');
+                }
+                setLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setError('Failed to load grade details');
+                setLoading(false);
+            }
+        });
+        return () => { mounted = false; };
+    }, [grade.grade_id]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -26,6 +48,16 @@ export default function ViewGradeModal({ onClose, grade }: ViewGradeModalProps) 
             handleClose();
         }
     };
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                handleClose();
+            }
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, []);
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
@@ -60,22 +92,28 @@ export default function ViewGradeModal({ onClose, grade }: ViewGradeModalProps) 
                         </div>
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
-                                {/* First Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Grade Name</div>
-                                        <div className="text-primary font-medium break-all">{grade.name || '-'}</div>
+                            {loading ? (
+                                <Loader message="Loading Grade Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : gradeDetails ? (
+                                <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                    {/* First Row */}
+                                    <div className="grid grid-cols-1">
+                                        <div className="p-6 border-b border-lightGray">
+                                            <div className="text-textColor mb-2">Grade Name</div>
+                                            <div className="text-primary font-medium break-all">{gradeDetails.grade_name || '-'}</div>
+                                        </div>
+                                    </div>
+                                    {/* Second Row */}
+                                    <div className="grid grid-cols-1">
+                                        <div className="p-6">
+                                            <div className="text-textColor mb-2">Description</div>
+                                            <div className="text-primary font-medium break-all">{gradeDetails.description || '-'}</div>
+                                        </div>
                                     </div>
                                 </div>
-                                {/* Second Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6">
-                                        <div className="text-textColor mb-2">Description</div>
-                                        <div className="text-primary font-medium break-all">{grade.description || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
+                            ) : null}
                         </div>
                     </motion.div>
                 </motion.div>

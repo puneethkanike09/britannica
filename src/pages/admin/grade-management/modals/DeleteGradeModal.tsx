@@ -3,14 +3,10 @@ import toast from "react-hot-toast";
 import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { GradeActionModalProps } from "../../../../types/admin/grade-management";
+import { GradeService } from "../../../../services/admin/gradeService";
 
-interface DeleteGradeModalProps {
-    onClose: () => void;
-    grade: { grade_id: string; name: string; description: string };
-    onGradeDeleted: (grade_id: string) => void;
-}
-
-export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: DeleteGradeModalProps) {
+export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: GradeActionModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
@@ -32,21 +28,22 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Del
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setIsDeleting(true);
-        // Simulate async operation without API
-        setTimeout(() => {
-            try {
-                onGradeDeleted(grade.grade_id);
+        try {
+            const response = await GradeService.deleteGrade(grade.grade_id);
+            if (response.error === false || response.error === "false") {
                 toast.success('Grade deleted successfully!');
-                setIsDeleting(false);
+                if (onGradeDeleted) onGradeDeleted();
                 handleClose();
-            } catch (error) {
-                console.log(error)
-                toast.error('Failed to delete grade');
-                setIsDeleting(false);
+            } else {
+                toast.error(response.message || 'Failed to delete grade');
             }
-        }, 1000); // Simulate delay
+        } catch (error) {
+            toast.error('Failed to delete grade');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -85,7 +82,7 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Del
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete the grade <span className="font-bold">{grade.name}</span>?
+                                Are you sure you want to delete the grade <span className="font-bold">{grade.grade_name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">

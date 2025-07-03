@@ -1,15 +1,37 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import Loader from "../../../../components/common/Loader";
+import { ThemeActionModalProps } from "../../../../types/admin/theme-management";
+import { ThemeService } from "../../../../services/admin/themeService";
 
-interface ViewThemeModalProps {
-    onClose: () => void;
-    theme: { theme_id: string; name: string; description: string };
-}
-
-export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) {
+export default function ViewThemeModal({ onClose, theme }: ThemeActionModalProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [themeDetails, setThemeDetails] = useState<typeof theme | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        ThemeService.fetchThemeById(theme.theme_id).then((res) => {
+            if (mounted) {
+                if ((res.error === false || res.error === "false") && res.theme) {
+                    setThemeDetails(res.theme || null);
+                } else {
+                    setError(res.message || 'Failed to load theme details');
+                }
+                setLoading(false);
+            }
+        }).catch(() => {
+            if (mounted) {
+                setError('Failed to load theme details');
+                setLoading(false);
+            }
+        });
+        return () => { mounted = false; };
+    }, [theme.theme_id]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -26,6 +48,16 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
             handleClose();
         }
     };
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                handleClose();
+            }
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, []);
 
     return (
         <AnimatePresence onExitComplete={handleAnimationComplete}>
@@ -51,6 +83,7 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-secondary">Theme Details</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className="text-textColor hover:text-hover cursor-pointer"
                             >
@@ -59,22 +92,28 @@ export default function ViewThemeModal({ onClose, theme }: ViewThemeModalProps) 
                         </div>
                         {/* Scrollable Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
-                                {/* First Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6 border-b border-lightGray">
-                                        <div className="text-textColor mb-2">Theme Name</div>
-                                        <div className="text-primary font-medium break-all">{theme.name || '-'}</div>
+                            {loading ? (
+                                <Loader message="Loading Theme Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : themeDetails ? (
+                                <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
+                                    {/* First Row */}
+                                    <div className="grid grid-cols-1">
+                                        <div className="p-6 border-b border-lightGray">
+                                            <div className="text-textColor mb-2">Theme Name</div>
+                                            <div className="text-primary font-medium break-all">{themeDetails.theme_name || '-'}</div>
+                                        </div>
+                                    </div>
+                                    {/* Second Row */}
+                                    <div className="grid grid-cols-1">
+                                        <div className="p-6">
+                                            <div className="text-textColor mb-2">Description</div>
+                                            <div className="text-primary font-medium break-all">{themeDetails.description || '-'}</div>
+                                        </div>
                                     </div>
                                 </div>
-                                {/* Second Row */}
-                                <div className="grid grid-cols-1">
-                                    <div className="p-6">
-                                        <div className="text-textColor mb-2">Description</div>
-                                        <div className="text-primary font-medium break-all">{theme.description || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
+                            ) : null}
                         </div>
                     </motion.div>
                 </motion.div>

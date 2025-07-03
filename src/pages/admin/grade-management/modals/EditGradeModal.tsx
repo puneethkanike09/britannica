@@ -1,29 +1,26 @@
 import { X, Loader2 } from "lucide-react";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { GradeService } from "../../../../services/admin/gradeService";
+import { GradeActionModalProps } from "../../../../types/admin/grade-management";
+import Loader from "../../../../components/common/Loader";
 
-interface EditGradeModalProps {
-    onClose: () => void;
-    grade: { grade_id: string; name: string; description: string };
-    onGradeUpdated: (grade: { grade_id: string; name: string; description: string }) => void;
-}
-
-export default function EditGradeModal({ onClose, grade, onGradeUpdated }: EditGradeModalProps) {
+export default function EditGradeModal({ onClose, grade, onGradeUpdated }: GradeActionModalProps) {
     const [formData, setFormData] = useState({
         grade_id: grade.grade_id,
-        name: grade.name,
+        grade_name: grade.grade_name,
         description: grade.description || '',
     });
-
     const [errors, setErrors] = useState({
-        name: '',
+        grade_name: '',
         description: ''
     });
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
@@ -43,19 +40,34 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: EditG
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
-        setFormData(prev => ({ ...prev, [name]: newValue }));
-        if (errors[name as keyof typeof errors]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
-    };
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        GradeService.fetchGradeById(grade.grade_id).then((res) => {
+            if (!mounted) return;
+            if ((res.error === false || res.error === "false") && res.grade) {
+                setFormData({
+                    grade_id: res.grade.grade_id,
+                    grade_name: res.grade.grade_name,
+                    description: res.grade.description || '',
+                });
+                setError(null);
+            } else {
+                setError(res.message || 'Failed to load grade details');
+            }
+            setLoading(false);
+        }).catch((err) => {
+            if (!mounted) return;
+            setError(err.message || 'Failed to load grade details');
+            setLoading(false);
+        });
+        return () => { mounted = false; };
+    }, [grade.grade_id]);
 
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
-            case 'name':
+            case 'grade_name':
                 // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
@@ -66,19 +78,28 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: EditG
         }
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        const newValue = restrictInput(name, value);
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+        if (errors[name as keyof typeof errors]) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+    };
+
     const validateForm = () => {
         const newErrors = {
-            name: '',
+            grade_name: '',
             description: ''
         };
         let isValid = true;
 
-        // name: mandatory, min 2, max 50
-        if (!formData.name.trim()) {
-            newErrors.name = 'Grade name is required';
+        // grade_name: mandatory, min 2, max 50
+        if (!formData.grade_name.trim()) {
+            newErrors.grade_name = 'Grade name is required';
             isValid = false;
-        } else if (formData.name.length < 2 || formData.name.length > 50) {
-            newErrors.name = 'name must be 2-50 characters';
+        } else if (formData.grade_name.length < 2 || formData.grade_name.length > 50) {
+            newErrors.grade_name = 'Grade name must be 2-50 characters';
             isValid = false;
         }
 
@@ -92,26 +113,27 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: EditG
         return isValid;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation without API
-            setTimeout(() => {
-                try {
-                    onGradeUpdated({
-                        grade_id: formData.grade_id,
-                        name: formData.name.trim(),
-                        description: formData.description.trim()
-                    });
-                    toast.success('Grade updated successfully!');
-                    setIsSubmitting(false);
+            try {
+                const response = await GradeService.updateGrade(formData);
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || 'Grade updated successfully');
+                    if (onGradeUpdated) {
+                        onGradeUpdated();
+                    }
                     handleClose();
-                } catch (error) {
-                    console.log(error);
-                    toast.error('Failed to update grade');
-                    setIsSubmitting(false);
+                } else {
+                    toast.error(response.message || 'Failed to update grade');
                 }
-            }, 1000); // Simulate delay
+            } catch (error) {
+                const errMsg = (error as { message?: string })?.message || 'Failed to update grade';
+                toast.error(errMsg);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -150,56 +172,62 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: EditG
 
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="space-y-6">
-                                <div className="mb-3 relative">
-                                    <label className="block text-textColor text-base mb-2">
-                                        Grade Name<span className="text-red">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter Grade name"
-                                        maxLength={50}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {errors.name && <p className="text-red text-sm mt-1">{errors.name}</p>}
-                                </div>
+                            {loading ? (
+                                <Loader message="Loading Grade Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
+                                            Grade Name<span className="text-red">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="grade_name"
+                                            value={formData.grade_name}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Grade name"
+                                            maxLength={50}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.grade_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.grade_name && <p className="text-red text-sm mt-1">{errors.grade_name}</p>}
+                                    </div>
 
-                                <div className="mb-3 relative">
-                                    <label className="block text-textColor text-base mb-2">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter Grade Description"
-                                        maxLength={200}
-                                        rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
-                                </div>
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
+                                            Description
+                                        </label>
+                                        <textarea
+                                            name="description"
+                                            value={formData.description}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter Grade Description"
+                                            maxLength={200}
+                                            rows={4}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.description ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
+                                    </div>
 
-                                <div className="mt-12">
-                                    <button
-                                        type="button"
-                                        onClick={handleSubmit}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? (
-                                            <Loader2 className="animate-spin" />
-                                        ) : (
-                                            <span className="font-bold">Save</span>
-                                        )}
-                                    </button>
+                                    <div className="mt-12">
+                                        <button
+                                            type="submit"
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            disabled={isSubmitting}
+                                            onClick={handleSubmit}
+                                        >
+                                            {isSubmitting ? (
+                                                <Loader2 className="animate-spin" />
+                                            ) : (
+                                                <span className="font-bold">Save</span>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>
