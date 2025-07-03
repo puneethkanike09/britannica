@@ -102,44 +102,51 @@ export default function ViewSchoolModal({ onClose, school }: SchoolActionModalPr
                                     {/* First Row */}
                                     <div className="grid grid-cols-1 md:grid-cols-3">
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">School Code</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.school_code || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">School Name</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.school_name || '-'}</div>
                                         </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
                                             <div className="text-textColor mb-2">Email Address</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.school_email || '-'}</div>
-                                        </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0">
-                                            <div className="text-textColor mb-2">Phone Number</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.school_mobile_no || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Second Row */}
                                     <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">Phone Number</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.school_mobile_no || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">Address Line 1</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.address_line1 || '-'}</div>
                                         </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
                                             <div className="text-textColor mb-2">Address Line 2</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.address_line2 || '-'}</div>
-                                        </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0">
-                                            <div className="text-textColor mb-2">City</div>
-                                            <div className="text-primary font-medium break-all">{schoolDetails.city || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Third Row */}
                                     <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="text-textColor mb-2">City</div>
+                                            <div className="text-primary font-medium break-all">{schoolDetails.city || '-'}</div>
+                                        </div>
+                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">State</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.state || '-'}</div>
                                         </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                        <div className="p-6 border-b border-lightGray md:border-b-0">
                                             <div className="text-textColor mb-2">Country</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.country || '-'}</div>
                                         </div>
-                                        <div className="p-6 border-b border-lightGray md:border-b-0">
+                                    </div>
+                                    {/* Fourth Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
+                                        <div className="p-6 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">Pincode</div>
                                             <div className="text-primary font-medium break-all">{schoolDetails.pincode || '-'}</div>
                                         </div>

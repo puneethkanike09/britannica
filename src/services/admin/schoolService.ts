@@ -5,19 +5,33 @@ export class SchoolService {
     static async fetchSchools(): Promise<FetchSchoolsResponse> {
         try {
             const response = await apiClient.get("/school/all");
-            return response as FetchSchoolsResponse;
+            return {
+                error: response.error,
+                school: response.school || [],
+                token: response.token || "",
+                message: response.message,
+                totalPages: response.totalPages,
+                totalElements: response.totalElements,
+                currentPage: response.currentPage,
+                pageSize: response.pageSize,
+            };
         } catch (error) {
             console.error("Error fetching schools:", error);
             return {
                 error: true,
-                schools: [],
+                school: [],
                 token: "",
                 message: error instanceof Error ? error.message : "Unknown error",
+                totalPages: 0,
+                totalElements: 0,
+                currentPage: 0,
+                pageSize: 0,
             };
         }
     }
 
     static async addSchool(schoolData: {
+        school_code: string;
         school_name: string;
         school_email: string;
         school_mobile_no: string;
@@ -42,6 +56,7 @@ export class SchoolService {
 
     static async updateSchool(schoolData: {
         school_id: string | number;
+        school_code: string;
         school_name: string;
         school_email: string;
         school_mobile_no: string;

@@ -11,6 +11,7 @@ import { SchoolService } from "../../../../services/admin/schoolService";
 
 export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{
+        school_code: string;
         school_name: string;
         school_email: string;
         school_mobile_no: string;
@@ -21,6 +22,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         country: string;
         pincode: string;
     }>({
+        school_code: '',
         school_name: '',
         school_email: '',
         school_mobile_no: '',
@@ -33,6 +35,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
     });
 
     const [errors, setErrors] = useState({
+        school_code: '',
         school_name: '',
         school_email: '',
         school_mobile_no: '',
@@ -78,6 +81,9 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
+            case 'school_code':
+                // Allow alphanumeric characters, max 20
+                return value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
             case 'school_name':
             case 'city':
             case 'state':
@@ -119,6 +125,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
 
     const validateForm = () => {
         const newErrors = {
+            school_code: '',
             school_name: '',
             school_email: '',
             school_mobile_no: '',
@@ -129,6 +136,15 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             pincode: ''
         };
         let isValid = true;
+
+        // School code: mandatory, min 2, max 20, alphanumeric
+        if (!formData.school_code.trim()) {
+            newErrors.school_code = 'School code is required';
+            isValid = false;
+        } else if (!/^[a-zA-Z0-9]{2,20}$/.test(formData.school_code.trim())) {
+            newErrors.school_code = 'School code must be 2-20 alphanumeric characters';
+            isValid = false;
+        }
 
         // School name: mandatory, min 2, max 50, only letters/spaces
         if (!formData.school_name.trim()) {
@@ -265,6 +281,22 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
+                                            School Code<span className="text-red">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="school_code"
+                                            value={formData.school_code}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter School Code"
+                                            maxLength={20}
+                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_code ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.school_code && <p className="text-red text-sm mt-1">{errors.school_code}</p>}
+                                    </div>
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
                                             School Name<span className="text-red">*</span>
                                         </label>
                                         <input
@@ -279,6 +311,9 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                         />
                                         {errors.school_name && <p className="text-red text-sm mt-1">{errors.school_name}</p>}
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
                                             Email address

@@ -19,9 +19,13 @@ export interface Teacher {
 
 export interface FetchTeachersResponse {
     error: boolean | string;
-    teachers: Teacher[];
+    teacher: Teacher[];
     token: string;
     message?: string;
+    totalPages?: number;
+    totalElements?: number;
+    currentPage?: number;
+    pageSize?: number;
 }
 
 export interface AddTeacherModalProps {

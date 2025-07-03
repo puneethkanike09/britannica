@@ -1,6 +1,7 @@
 // school management page
 export interface School {
     school_id: string;
+    school_code?: string;
     school_name: string;
     school_email: string;
     school_mobile_no: string;
@@ -19,9 +20,13 @@ export interface School {
 
 export interface FetchSchoolsResponse {
     error: boolean | string;
-    schools: School[];
+    school: School[];
     token: string;
     message?: string;
+    totalPages?: number;
+    totalElements?: number;
+    currentPage?: number;
+    pageSize?: number;
 }
 
 export interface AddSchoolModalProps {

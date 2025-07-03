@@ -1,4 +1,3 @@
-
 import { Teacher, FetchTeachersResponse } from "../../types/admin/educator-management";
 import { apiClient } from "../../utils/apiClient";
 
@@ -8,14 +7,27 @@ export class EducatorService {
             const response = await apiClient.get(
                 "/teacher"
             );
-            return response as FetchTeachersResponse;
+            return {
+                error: response.error,
+                teacher: response.teacher || [],
+                token: response.token || "",
+                message: response.message,
+                totalPages: response.totalPages,
+                totalElements: response.totalElements,
+                currentPage: response.currentPage,
+                pageSize: response.pageSize,
+            };
         } catch (error) {
             console.error("Error fetching teachers:", error);
             return {
                 error: true,
-                teachers: [],
+                teacher: [],
                 token: "",
                 message: error instanceof Error ? error.message : "Unknown error",
+                totalPages: 0,
+                totalElements: 0,
+                currentPage: 0,
+                pageSize: 0,
             };
         }
     }

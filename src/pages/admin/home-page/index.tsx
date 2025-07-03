@@ -19,7 +19,7 @@ const AdminDashboard: React.FC = () => {
                 setIsLoading(true);
                 const response = await EducatorService.fetchTeachers();
                 if (response.error === false || response.error === 'false') {
-                    setEducatorCount(response.teachers ? response.teachers.length : 0);
+                    setEducatorCount(response.totalElements || 0);
                 } else {
                     setEducatorCount(0);
                     toast.error(response.message || "Failed to load educator count");

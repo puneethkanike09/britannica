@@ -22,6 +22,9 @@ const SchoolManagement: React.FC = () => {
     // const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [schools, setSchools] = useState<School[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize, setPageSize] = useState(6); // default to 6 for now
 
     const itemsPerPage = 6;
 
@@ -31,7 +34,10 @@ const SchoolManagement: React.FC = () => {
         try {
             const response = await SchoolService.fetchSchools();
             if (response.error === false || response.error === "false") {
-                setSchools(response.schools || []);
+                setSchools(response.school || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalElements(response.totalElements || 0);
+                setPageSize(response.pageSize || 6);
             } else {
                 toast.error(response.message || 'Failed to fetch schools');
             }
@@ -48,7 +54,7 @@ const SchoolManagement: React.FC = () => {
     }, []);
 
     // Calculate total pages
-    const totalPages = Math.ceil(schools.length / itemsPerPage);
+    // totalPages is now from backend, but fallback to frontend calculation if not present
 
     // Get current items
     const indexOfLastItem = currentPage * itemsPerPage;

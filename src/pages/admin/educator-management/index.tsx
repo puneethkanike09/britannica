@@ -22,6 +22,9 @@ const EducatorManagement: React.FC = () => {
     // const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize, setPageSize] = useState(6); // default to 6 for now
 
     const itemsPerPage = 6;
 
@@ -31,7 +34,10 @@ const EducatorManagement: React.FC = () => {
         try {
             const response = await EducatorService.fetchTeachers();
             if (response.error === false || response.error === "false") {
-                setTeachers(response.teachers || []);
+                setTeachers(response.teacher || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalElements(response.totalElements || 0);
+                setPageSize(response.pageSize || 6);
             } else {
                 toast.error(response.message || "Failed to load educators");
             }
@@ -48,7 +54,8 @@ const EducatorManagement: React.FC = () => {
     }, []);
 
     // Calculate total pages
-    const totalPages = Math.ceil(teachers.length / itemsPerPage);
+    // totalPages is now from backend, but fallback to frontend calculation if not present
+    // const totalPages = Math.ceil(teachers.length / itemsPerPage);
 
     // Get current items
     const indexOfLastItem = currentPage * itemsPerPage;
