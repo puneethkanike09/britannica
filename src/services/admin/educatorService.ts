@@ -2,11 +2,18 @@ import { Teacher, FetchTeachersResponse } from "../../types/admin/educator-manag
 import { apiClient } from "../../utils/apiClient";
 
 export class EducatorService {
-    static async fetchTeachers(): Promise<FetchTeachersResponse> {
+    static async fetchTeachers({
+        page = 1,
+        size = 10,
+        search = ""
+    }: { page?: number; size?: number; search?: string }): Promise<FetchTeachersResponse> {
         try {
-            const response = await apiClient.get(
-                "/teacher"
-            );
+            const params = new URLSearchParams({
+                page: String(Math.max(0, page - 1)),
+                size: String(size),
+                search: search || ""
+            });
+            const response = await apiClient.get(`/teacher?${params.toString()}`);
             return {
                 error: response.error,
                 teacher: response.teacher || [],

@@ -17,7 +17,7 @@ const AdminDashboard: React.FC = () => {
         const fetchEducatorCount = async () => {
             try {
                 setIsLoading(true);
-                const response = await EducatorService.fetchTeachers();
+                const response = await EducatorService.fetchTeachers({});
                 if (response.error === false || response.error === 'false') {
                     setEducatorCount(response.totalElements || 0);
                 } else {

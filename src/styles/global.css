@@ -137,3 +137,8 @@ body {
       white-space: nowrap;
   }
 }
+
+select,
+select option {
+  cursor: pointer;
+}

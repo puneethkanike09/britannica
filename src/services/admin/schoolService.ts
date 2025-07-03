@@ -68,7 +68,7 @@ export class SchoolService {
         pincode?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post("/school/update", schoolData);
+            const response = await apiClient.put("/school/update", schoolData);
             return response;
         } catch (error) {
             console.error("Error updating school:", error);

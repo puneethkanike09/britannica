@@ -8,6 +8,7 @@ import { backdropVariants, modalVariants } from "../../../../config/constants/An
 import { X, Loader2 } from "lucide-react";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 import { SchoolService } from "../../../../services/admin/schoolService";
+import Loader from "../../../../components/common/Loader";
 
 export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: SchoolActionModalProps) {
     const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         school_name: school.school_name,
         school_email: school.school_email,
         school_mobile_no: school.school_mobile_no,
-        address_line1: school.address_line1,
+        address_line1: school.address_line1 || '',
         address_line2: school.address_line2 || '',
         city: school.city || '',
         state: school.state || '',
@@ -37,6 +38,8 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
@@ -65,6 +68,38 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isSubmitting, handleClose]);
+
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        SchoolService.fetchSchoolById(school.school_id).then((res) => {
+            if (!mounted) return;
+            if (res && !res.error && res.school) {
+                setFormData({
+                    school_id: res.school.school_id,
+                    school_code: res.school.school_code || '',
+                    school_name: res.school.school_name,
+                    school_email: res.school.school_email,
+                    school_mobile_no: res.school.school_mobile_no,
+                    address_line1: res.school.address_line1 || '',
+                    address_line2: res.school.address_line2 || '',
+                    city: res.school.city || '',
+                    state: res.school.state || '',
+                    country: res.school.country || '',
+                    pincode: res.school.pincode || '',
+                });
+                setError(null);
+            } else {
+                setError(res.message || 'Failed to load school details');
+            }
+            setLoading(false);
+        }).catch((err) => {
+            if (!mounted) return;
+            setError(err.message || 'Failed to load school details');
+            setLoading(false);
+        });
+        return () => { mounted = false; };
+    }, [school.school_id]);
 
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
@@ -274,193 +309,199 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
                         </div>
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            School Code<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="school_code"
-                                            value={formData.school_code}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter School Code"
-                                            maxLength={20}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_code ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.school_code && <p className="text-red text-sm mt-1">{errors.school_code}</p>}
+                            {loading ? (
+                                <Loader message="Loading School Details..." />
+                            ) : error ? (
+                                <div className="py-12 text-center text-red">{error}</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                School Code<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="school_code"
+                                                value={formData.school_code}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter School Code"
+                                                maxLength={20}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_code ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.school_code && <p className="text-red text-sm mt-1">{errors.school_code}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                School Name<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="school_name"
+                                                value={formData.school_name}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter School Name"
+                                                maxLength={50}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.school_name && <p className="text-red text-sm mt-1">{errors.school_name}</p>}
+                                        </div>
                                     </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            School Name<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="school_name"
-                                            value={formData.school_name}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter School Name"
-                                            maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_name ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                name="school_email"
+                                                value={formData.school_email}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Email Address"
+                                                maxLength={100}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.school_email && <p className="text-red text-sm mt-1">{errors.school_email}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Phone Number
+                                            </label>
+                                            <PhoneInput
+                                                international
+                                                defaultCountry="IN"
+                                                value={formData.school_mobile_no}
+                                                onChange={handlePhoneNumberChange}
+                                                placeholder="Enter Phone Number"
+                                                className={`phone-input-container ${errors.school_mobile_no ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Address Line 1<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="address_line1"
+                                                value={formData.address_line1}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Address Line 1"
+                                                maxLength={100}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.address_line1 && <p className="text-red text-sm mt-1">{errors.address_line1}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Address Line 2
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="address_line2"
+                                                value={formData.address_line2}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Address Line 2"
+                                                maxLength={100}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line2 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.address_line2 && <p className="text-red text-sm mt-1">{errors.address_line2}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                City<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter City"
+                                                maxLength={50}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                State<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="state"
+                                                value={formData.state}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter State"
+                                                maxLength={50}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
+                                        </div>
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Country<span className="text-red">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="country"
+                                                value={formData.country}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Country"
+                                                maxLength={50}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="mb-3 relative">
+                                            <label className="block text-textColor text-base mb-2">
+                                                Pincode
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="pincode"
+                                                value={formData.pincode}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter Pincode"
+                                                maxLength={10}
+                                                className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                                disabled={isSubmitting}
+                                            />
+                                            {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="mt-12">
+                                        <button
+                                            type="submit"
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                             disabled={isSubmitting}
-                                        />
-                                        {errors.school_name && <p className="text-red text-sm mt-1">{errors.school_name}</p>}
+                                            onClick={handleSubmit}
+                                        >
+                                            {isSubmitting ? (
+                                                <Loader2 className="animate-spin" />
+                                            ) : (
+                                                'Save'
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Email Address
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="school_email"
-                                            value={formData.school_email}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Email Address"
-                                            maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_email ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.school_email && <p className="text-red text-sm mt-1">{errors.school_email}</p>}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Phone Number
-                                        </label>
-                                        <PhoneInput
-                                            international
-                                            defaultCountry="IN"
-                                            value={formData.school_mobile_no}
-                                            onChange={handlePhoneNumberChange}
-                                            placeholder="Enter Phone Number"
-                                            className={`phone-input-container ${errors.school_mobile_no ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.school_mobile_no && <p className="text-red text-sm mt-1">{errors.school_mobile_no}</p>}
-                                    </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Address Line 1<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address_line1"
-                                            value={formData.address_line1}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Address Line 1"
-                                            maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line1 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.address_line1 && <p className="text-red text-sm mt-1">{errors.address_line1}</p>}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Address Line 2
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address_line2"
-                                            value={formData.address_line2}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Address Line 2"
-                                            maxLength={100}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.address_line2 ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.address_line2 && <p className="text-red text-sm mt-1">{errors.address_line2}</p>}
-                                    </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            City<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="city"
-                                            value={formData.city}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter City"
-                                            maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.city ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.city && <p className="text-red text-sm mt-1">{errors.city}</p>}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            State<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="state"
-                                            value={formData.state}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter State"
-                                            maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.state ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.state && <p className="text-red text-sm mt-1">{errors.state}</p>}
-                                    </div>
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Country<span className="text-red">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="country"
-                                            value={formData.country}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Country"
-                                            maxLength={50}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.country ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.country && <p className="text-red text-sm mt-1">{errors.country}</p>}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="mb-3 relative">
-                                        <label className="block text-textColor text-base mb-2">
-                                            Pincode
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="pincode"
-                                            value={formData.pincode}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Pincode"
-                                            maxLength={10}
-                                            className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.pincode ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.pincode && <p className="text-red text-sm mt-1">{errors.pincode}</p>}
-                                    </div>
-                                </div>
-                                <div className="mt-12">
-                                    <button
-                                        type="submit"
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        disabled={isSubmitting}
-                                        onClick={handleSubmit}
-                                    >
-                                        {isSubmitting ? (
-                                            <Loader2 className="animate-spin" />
-                                        ) : (
-                                            'Save'
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>

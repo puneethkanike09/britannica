@@ -24,20 +24,21 @@ const EducatorManagement: React.FC = () => {
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
-    const [pageSize, setPageSize] = useState(6); // default to 6 for now
+    const [pageSize, setPageSize] = useState(5); // default to 5 for server-side
+    const [searchText, setSearchText] = useState("");
+    const [appliedSearchText, setAppliedSearchText] = useState("");
 
-    const itemsPerPage = 6;
 
     // Fetch teachers from backend
-    const loadTeachers = async () => {
+    const loadTeachers = async (page = currentPage, size = pageSize, search = searchText) => {
         setIsLoading(true);
         try {
-            const response = await EducatorService.fetchTeachers();
+            const response = await EducatorService.fetchTeachers({ page, size, search });
             if (response.error === false || response.error === "false") {
                 setTeachers(response.teacher || []);
                 setTotalPages(response.totalPages || 1);
                 setTotalElements(response.totalElements || 0);
-                setPageSize(response.pageSize || 6);
+                setPageSize(response.pageSize || size);
             } else {
                 toast.error(response.message || "Failed to load educators");
             }
@@ -50,17 +51,11 @@ const EducatorManagement: React.FC = () => {
     };
 
     useEffect(() => {
-        loadTeachers();
-    }, []);
+        loadTeachers(currentPage, pageSize, appliedSearchText);
+    }, [currentPage, pageSize, appliedSearchText]);
 
-    // Calculate total pages
-    // totalPages is now from backend, but fallback to frontend calculation if not present
-    // const totalPages = Math.ceil(teachers.length / itemsPerPage);
-
-    // Get current items
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = teachers.slice(indexOfFirstItem, indexOfLastItem);
+    // Get current items (now just use teachers as server returns paginated data)
+    const currentItems = teachers;
 
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -138,10 +133,26 @@ const EducatorManagement: React.FC = () => {
         closeEditEducatorModal();
     };
 
+    // Search box handler
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
+    };
+
+    // Page size change handler
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">Educator List</h1>
+                <h1 className="text-3xl font-bold text-secondary">Educator List ( {totalElements} )</h1>
                 <button
                     onClick={openAddEducatorModal}
                     disabled={isLoading}
@@ -154,21 +165,38 @@ const EducatorManagement: React.FC = () => {
 
             {/* Search Box UI */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
-                <div className="flex w-full md:max-w-md gap-2">
+                <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Search here"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
+                        value={searchText}
+                        onChange={handleSearchChange}
                     />
                     <button
-                        type="button"
+                        type="submit"
                         className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isLoading}
                     >
                         <Search className="h-5 w-5" />
                         <span className="hidden md:inline font-bold">Search</span>
                     </button>
+                </form>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <label htmlFor="pageSize" className="text-base text-textColor">Rows per page:</label>
+                    <select
+                        id="pageSize"
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="p-2 border text-textColor rounded-lg text-base bg-inputBg border-inputBorder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
                 </div>
             </div>
 
