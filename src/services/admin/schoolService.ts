@@ -2,9 +2,18 @@ import { FetchSchoolsResponse, School } from "../../types/admin/school-managemen
 import { apiClient } from "../../utils/apiClient";
 
 export class SchoolService {
-    static async fetchSchools(): Promise<FetchSchoolsResponse> {
+    static async fetchSchools({
+        page = 1,
+        size = 10,
+        search = ""
+    }: { page?: number; size?: number; search?: string } = {}): Promise<FetchSchoolsResponse> {
         try {
-            const response = await apiClient.get("/school/all");
+            const params = new URLSearchParams({
+                page: String(Math.max(0, page - 1)),
+                size: String(size),
+                search: search || ""
+            });
+            const response = await apiClient.get(`/school/all?${params.toString()}`);
             return {
                 error: response.error,
                 school: response.school || [],

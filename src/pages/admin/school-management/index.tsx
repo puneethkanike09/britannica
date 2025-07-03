@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import AddSchoolModal from "./modals/AddSchoolModal";
 import EditSchoolModal from "./modals/EditSchoolModal";
 import ViewSchoolModal from "./modals/ViewSchoolModal";
@@ -24,20 +24,21 @@ const SchoolManagement: React.FC = () => {
     const [schools, setSchools] = useState<School[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
-    const [pageSize, setPageSize] = useState(6); // default to 6 for now
+    const [pageSize, setPageSize] = useState(5); // default to 5 for server-side
+    const [searchText, setSearchText] = useState("");
+    const [appliedSearchText, setAppliedSearchText] = useState("");
 
-    const itemsPerPage = 6;
 
     // Fetch schools on mount and when needed
-    const fetchSchools = async () => {
+    const fetchSchools = async (page = currentPage, size = pageSize, search = searchText) => {
         setIsLoading(true);
         try {
-            const response = await SchoolService.fetchSchools();
+            const response = await SchoolService.fetchSchools({ page, size, search });
             if (response.error === false || response.error === "false") {
                 setSchools(response.school || []);
                 setTotalPages(response.totalPages || 1);
                 setTotalElements(response.totalElements || 0);
-                setPageSize(response.pageSize || 6);
+                setPageSize(response.pageSize || size);
             } else {
                 toast.error(response.message || 'Failed to fetch schools');
             }
@@ -50,19 +51,29 @@ const SchoolManagement: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchSchools();
-    }, []);
+        fetchSchools(currentPage, pageSize, appliedSearchText);
+    }, [currentPage, pageSize, appliedSearchText]);
 
-    // Calculate total pages
-    // totalPages is now from backend, but fallback to frontend calculation if not present
-
-    // Get current items
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = schools.slice(indexOfFirstItem, indexOfLastItem);
+    // Get current items (now just use schools as server returns paginated data)
+    const currentItems = schools;
 
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    // Search box handler
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
+    };
+    // Page size change handler
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+    };
 
     // Open Add School Modal
     const openAddSchoolModal = () => {
@@ -140,11 +151,11 @@ const SchoolManagement: React.FC = () => {
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">School List</h1>
+                <h1 className="text-3xl font-bold text-secondary">School List ( {totalElements} )</h1>
                 <button
                     onClick={openAddSchoolModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddSchoolIcon} alt="Add School" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add School</span>
@@ -153,21 +164,38 @@ const SchoolManagement: React.FC = () => {
 
             {/* Search Box UI */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
-                <div className="flex w-full md:max-w-md gap-2">
+                <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Search here"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
+                        value={searchText}
+                        onChange={handleSearchChange}
                     />
                     <button
-                        type="button"
+                        type="submit"
                         className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isLoading}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                        <Search className="h-5 w-5" />
                         <span className="hidden md:inline font-bold">Search</span>
                     </button>
+                </form>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <label htmlFor="pageSize" className="text-base text-textColor">Rows per page:</label>
+                    <select
+                        id="pageSize"
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="p-2 border text-textColor rounded-lg text-base bg-inputBg border-inputBorder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
                 </div>
             </div>
 
