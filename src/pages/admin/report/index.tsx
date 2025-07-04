@@ -11,7 +11,7 @@ import { ReportService } from '../../../services/admin/reportService';
 
 const ReportManagement: React.FC = () => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
-    const [toDate, setToDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(new Date()); // Auto-filled with system date
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -162,10 +162,6 @@ const ReportManagement: React.FC = () => {
             newErrors.toDate = 'To Date is required';
             isValid = false;
         }
-        if (fromDate && toDate && toDate < fromDate) {
-            newErrors.toDate = 'To Date cannot be earlier than From Date';
-            isValid = false;
-        }
         
         setErrors(newErrors);
         return isValid;
@@ -231,10 +227,11 @@ const ReportManagement: React.FC = () => {
                                 <DatePicker
                                     selected={fromDate}
                                     onChange={handleFromDateChange}
-                                    placeholderText="From Date"
+                                    placeholderText="Start Date"
                                     dateFormat="dd/MM/yyyy" 
                                     className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
                                     disabled={isLoading}
+                                    maxDate={toDate ?? undefined} // Disable dates after end date
                                 />
                             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                 <Calendar className="w-5 h-5 text-inputPlaceholder" />
@@ -248,10 +245,11 @@ const ReportManagement: React.FC = () => {
                                 <DatePicker
                                     selected={toDate}
                                     onChange={handleToDateChange}
-                                    placeholderText="To Date"
+                                    placeholderText="End Date"
                                     dateFormat="dd/MM/yyyy"  
                                     className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
                                     disabled={isLoading}
+                                    minDate={fromDate ?? undefined} // Disable dates before start date
                                 />
                             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                 <Calendar className="w-5 h-5 text-inputPlaceholder" />
@@ -291,17 +289,17 @@ const ReportManagement: React.FC = () => {
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-[22%] min-w-[250px]" />
-                            <col className="w-[38%] min-w-[400px]" />
                             <col className="w-[18%] min-w-[200px]" />
                             <col className="w-[21%] min-w-[240px]" />
+                            <col className="w-[38%] min-w-[400px]" />
+                            <col className="w-[22%] min-w-[250px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Activity Time Stamp</th>
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Activity</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">User Name</th>
-                                <th className="px-8 py-4 text-left font-black">School Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">Activity</th>
+                                <th className="px-8 py-4 text-left font-black">Activity Time Stamp</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -330,16 +328,16 @@ const ReportManagement: React.FC = () => {
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{formatActivityTimestamp(log.activityTs)}</div>
+                                            <div className="text-textColor">{log.firstName} {log.lastName}</div>
+                                        </td>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{log.schoolName}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{log.description}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.firstName} {log.lastName}</div>
-                                        </td>
-                                        <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.schoolName}</div>
+                                            <div className="text-textColor">{formatActivityTimestamp(log.activityTs)}</div>
                                         </td>
                                     </tr>
                                 ))
