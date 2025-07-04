@@ -23,6 +23,7 @@ import PblFileManagement from "./pages/admin/pbl-files-management";
 import RegisteredEducatorManagement from "./pages/admin/registered-educator-management";
 import UnregisteredEducatorManagement from "./pages/admin/unregistered-educator-management";
 import EducatorRegistration from "./pages/educator-register";
+import UserAccessTypeManagement from "./pages/admin/user-access-type-management";
 
 function App() {
   useEffect(() => {
@@ -83,6 +84,7 @@ function App() {
             <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
             <Route path="/master-data/grade" element={<GradeManagement />} />
             <Route path="/master-data/theme" element={<ThemeManagement />} />
+            <Route path="/master-data/type" element={<UserAccessTypeManagement />} />
             <Route path="/pbl-files" element={<PblFileManagement />} />
             <Route path="/report" element={<Report />} />
           </Route>

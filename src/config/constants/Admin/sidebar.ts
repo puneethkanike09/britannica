@@ -56,7 +56,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
                 label: "Theme"
             },
             {
-                to: "/master-data/types",
+                to: "/master-data/type",
                 label: "Types"
             }
         ]
