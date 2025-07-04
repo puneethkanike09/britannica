@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { apiClient } from "../utils/apiClient";
 
+const getRawQueryParam = (param: string): string | null => {
+    const params = window.location.search.substring(1).split('&');
+    for (const p of params) {
+        const [key, value] = p.split('=');
+        if (key === param) return value;
+    }
+    return null;
+};
+
 const CreatePassword = () => {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get("token");
+    const token = getRawQueryParam("token");
 
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
