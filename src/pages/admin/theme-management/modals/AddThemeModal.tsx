@@ -1,12 +1,16 @@
 import { X, Loader2 } from "lucide-react";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { ThemeService } from "../../../../services/admin/themeService";
-import { AddThemeModalProps } from "../../../../types/admin/theme-management";
 
-export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalProps) {
+interface AddThemeModalProps {
+    onClose: () => void;
+    onAdded?: () => void;
+}
+
+export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) {
     const [formData, setFormData] = useState<{
         theme_name: string;
         description: string;
@@ -23,22 +27,26 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isSubmitting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isSubmitting]);
+
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
     }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isSubmitting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -99,11 +107,11 @@ export default function AddThemeModal({ onClose, onThemeAdded }: AddThemeModalPr
                     description: formData.description.trim(),
                 });
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'Theme added successfully!');
-                    if (onThemeAdded) onThemeAdded();
+                    toast.success(response.message ?? 'Theme added successfully!');
+                    if (onAdded) onAdded();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to add theme');
+                    toast.error(response.message ?? 'Failed to add theme');
                 }
             } catch (error) {
                 toast.error('Failed to add theme');

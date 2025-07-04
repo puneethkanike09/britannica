@@ -113,7 +113,7 @@ const PblFileManagement: React.FC = () => {
         closeEditPblFileModal();
     };
 
-    const handleFileDeleted = (file_id: string) => {
+    const handlePblFileDeleted = (file_id: string) => {
         setFiles(files.filter((file) => file.file_id !== file_id));
         toast.success("File deleted successfully");
         closeDeletePblFileModal();
@@ -274,7 +274,9 @@ const PblFileManagement: React.FC = () => {
             {showAddModal && <AddPblFileModal onClose={closeAddPblFileModal} onFileAdded={handleFileAdded} />}
             {showEditModal && selectedFile && <EditPblFileModal onClose={closeEditPblFileModal} file={selectedFile} onFileUpdated={handleFileUpdated} />}
             {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />}
-            {showDeleteModal && selectedFile && <DeletePblFileModal onClose={closeDeletePblFileModal} file={selectedFile} onFileDeleted={handleFileDeleted} />}
+            {showDeleteModal && selectedFile && (
+                <DeletePblFileModal onClose={closeDeletePblFileModal} file={selectedFile} onDeleted={handlePblFileDeleted} />
+            )}
         </div>
     );
 };

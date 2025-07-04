@@ -1,14 +1,28 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { GradeActionModalProps } from "../../../../types/admin/grade-management";
+import { Grade } from "../../../../types/admin/grade-management";
 import { GradeService } from "../../../../services/admin/gradeService";
 
-export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: GradeActionModalProps) {
+interface GradeDeleteModalProps {
+    onClose: () => void;
+    grade: Grade;
+    onDeleted?: () => void;
+}
+
+export default function DeleteGradeModal({ onClose, grade, onDeleted }: GradeDeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isDeleting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isDeleting]);
 
     const handleClose = () => {
         if (isDeleting) return;
@@ -16,16 +30,12 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Gra
     };
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isDeleting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     const handleDelete = async () => {
@@ -33,11 +43,11 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Gra
         try {
             const response = await GradeService.deleteGrade(grade.grade_id);
             if (response.error === false || response.error === "false") {
-                toast.success( response.message || 'Grade deleted successfully!');
-                if (onGradeDeleted) onGradeDeleted();
+                toast.success(response.message ?? 'Grade deleted successfully!');
+                if (onDeleted) onDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete grade');
+                toast.error(response.message ?? 'Failed to delete grade');
             }
         } catch (error) {
             toast.error('Failed to delete grade');
@@ -78,13 +88,11 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Gra
                                 <X className="h-7 w-7" />
                             </button>
                         </div>
-
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
                                 Are you sure you want to delete the grade <span className="font-bold">{grade.grade_name}</span>?
                             </p>
-
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}

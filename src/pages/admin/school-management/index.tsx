@@ -320,7 +320,7 @@ const SchoolManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddSchoolModal onClose={closeAddSchoolModal} onSchoolAdded={handleSchoolAdded} />}
+            {showAddModal && <AddSchoolModal onClose={closeAddSchoolModal} onAdded={handleSchoolAdded} />}
             {showEditModal && selectedSchool && (
                 <EditSchoolModal onClose={closeEditSchoolModal} school={selectedSchool} onSchoolUpdated={handleSchoolUpdated} />
             )}
@@ -328,7 +328,7 @@ const SchoolManagement: React.FC = () => {
                 <ViewSchoolModal onClose={closeViewSchoolModal} school={selectedSchool} />
             )}
             {showDeleteModal && selectedSchool && (
-                <DeleteSchoolModal onClose={closeDeleteSchoolModal} school={selectedSchool} onSchoolDeleted={handleSchoolDeleted} />
+                <DeleteSchoolModal onClose={closeDeleteSchoolModal} school={selectedSchool} onDeleted={handleSchoolDeleted} />
             )}
         </div>
     );

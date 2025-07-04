@@ -1,18 +1,26 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 
 interface DeletePblFileModalProps {
     onClose: () => void;
     file: { file_id: string; name: string; description: string; grade: string; theme: string; type: string; file: File | null };
-    onFileDeleted: (file_id: string) => void;
+    onDeleted?: (file_id: string) => void;
 }
 
-export default function DeletePblFileModal({ onClose, file, onFileDeleted }: DeletePblFileModalProps) {
+export default function DeletePblFileModal({ onClose, file, onDeleted }: DeletePblFileModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isDeleting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isDeleting]);
 
     const handleClose = () => {
         if (isDeleting) return;
@@ -32,7 +40,7 @@ export default function DeletePblFileModal({ onClose, file, onFileDeleted }: Del
         setIsDeleting(true);
         setTimeout(() => {
             try {
-                onFileDeleted(file.file_id);
+                if (onDeleted) onDeleted(file.file_id);
                 toast.success("File deleted successfully!");
                 setIsDeleting(false);
                 handleClose();

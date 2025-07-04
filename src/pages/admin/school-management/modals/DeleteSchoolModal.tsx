@@ -1,14 +1,28 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { SchoolDeleteModalProps } from "../../../../types/admin/school-management";
+import { School } from "../../../../types/admin/school-management";
 import { SchoolService } from "../../../../services/admin/schoolService";
 
-export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: SchoolDeleteModalProps) {
+interface SchoolDeleteModalProps {
+    onClose: () => void;
+    school: School;
+    onDeleted?: () => void;
+}
+
+export default function DeleteSchoolModal({ onClose, school, onDeleted }: SchoolDeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isDeleting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isDeleting]);
 
     const handleClose = () => {
         if (isDeleting) return;
@@ -16,16 +30,12 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
     };
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isDeleting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     const handleDelete = async () => {
@@ -34,10 +44,10 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
             const response = await SchoolService.deleteSchool(school.school_id);
             if (response.error === false || response.error === "false") {
                 toast.success(response.message ?? 'School deleted successfully!');
-                if (onSchoolDeleted) onSchoolDeleted();
+                if (onDeleted) onDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete school');
+                toast.error(response.message ?? 'Failed to delete school');
             }
         } catch (error) {
             toast.error('Failed to delete school');

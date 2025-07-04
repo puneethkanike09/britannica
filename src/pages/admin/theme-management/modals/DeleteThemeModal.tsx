@@ -1,14 +1,28 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { ThemeActionModalProps } from "../../../../types/admin/theme-management";
+import { Theme } from "../../../../types/admin/theme-management";
 import { ThemeService } from "../../../../services/admin/themeService";
 
-export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: ThemeActionModalProps) {
+interface ThemeDeleteModalProps {
+    onClose: () => void;
+    theme: Theme;
+    onDeleted?: () => void;
+}
+
+export default function DeleteThemeModal({ onClose, theme, onDeleted }: ThemeDeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isDeleting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isDeleting]);
 
     const handleClose = () => {
         if (isDeleting) return;
@@ -16,16 +30,12 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: The
     };
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isDeleting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     const handleDelete = async () => {
@@ -33,11 +43,11 @@ export default function DeleteThemeModal({ onClose, theme, onThemeDeleted }: The
         try {
             const response = await ThemeService.deleteTheme(theme.theme_id);
             if (response.error === false || response.error === "false") {
-                toast.success('Theme deleted successfully!');
-                if (onThemeDeleted) onThemeDeleted();
+                toast.success(response.message ?? 'Theme deleted successfully!');
+                if (onDeleted) onDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete theme');
+                toast.error(response.message ?? 'Failed to delete theme');
             }
         } catch (error) {
             toast.error('Failed to delete theme');

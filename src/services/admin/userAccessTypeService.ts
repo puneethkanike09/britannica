@@ -44,8 +44,7 @@ export class UserAccessTypeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post("/user_access_type/create", userAccessTypeData);
-            return response;
+            return await apiClient.post("/user_access_type/create", userAccessTypeData);
         } catch (error) {
             console.error("Error creating user access type:", error);
             return {
@@ -61,8 +60,7 @@ export class UserAccessTypeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put("/user_access_type/update", userAccessTypeData);
-            return response;
+            return await apiClient.put("/user_access_type/update", userAccessTypeData);
         } catch (error) {
             console.error("Error updating user access type:", error);
             return {
@@ -74,8 +72,7 @@ export class UserAccessTypeService {
 
     static async fetchUserAccessTypeById(user_access_type_id: string | number): Promise<{ error: boolean | string; user_access_type?: UserAccessType; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get(`/user_access_type/${user_access_type_id}`);
-            return response;
+            return await apiClient.get(`/user_access_type/${user_access_type_id}`);
         } catch (error) {
             console.error("Error fetching user access type detail:", error);
             return {
@@ -85,10 +82,9 @@ export class UserAccessTypeService {
         }
     }
 
-    static async deleteUserAccessType(user_access_type_id: string | number): Promise<{ error: boolean | string; message?: string }> {
+    static async deleteUserAccessType(user_access_type_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(`/user_access_type/delete/${user_access_type_id}`, {});
-            return response;
+            return await apiClient.put(`/user_access_type/delete/${user_access_type_id}`, {});
         } catch (error) {
             console.error("Error deleting user access type:", error);
             return {

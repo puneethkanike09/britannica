@@ -6,7 +6,7 @@ export class EducatorService {
         page = 1,
         size = 10,
         search = ""
-    }: { page?: number; size?: number; search?: string }): Promise<FetchTeachersResponse> {
+    }: { page?: number; size?: number; search?: string } = {}): Promise<FetchTeachersResponse> {
         try {
             const params = new URLSearchParams({
                 page: String(Math.max(0, page - 1)),
@@ -46,7 +46,7 @@ export class EducatorService {
         mobile_no: string;
         email_id: string;
         login_id: string;
-    }): Promise<{ error: boolean | string; token?: string; message?: string; password_link?: string }> {
+    }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
             const payload = {
                 school: { school_id: teacherData.school_id },
@@ -83,11 +83,10 @@ export class EducatorService {
         user_id?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(
+            return await apiClient.put(
                 "/teacher/update",
                 teacherData
             );
-            return response;
         } catch (error) {
             console.error("Error updating teacher:", error);
             return {
@@ -99,10 +98,9 @@ export class EducatorService {
 
     static async fetchTeacherById(teacher_id: string | number): Promise<{ error: boolean | string; teacher?: Teacher; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get(
+            return await apiClient.get(
                 `/teacher/${teacher_id}`
             );
-            return response;
         } catch (error) {
             console.error("Error fetching teacher detail:", error);
             return {
@@ -132,10 +130,9 @@ export class EducatorService {
         message?: string;
     }> {
         try {
-            const response = await apiClient.get(
+            return await apiClient.get(
                 `/teacher/info/${teacher_id}`
             );
-            return response;
         } catch (error) {
             console.error("Error fetching teacher complete details:", error);
             return {
@@ -147,11 +144,10 @@ export class EducatorService {
 
     static async deleteTeacher(teacher_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(
+            return await apiClient.put(
                 `/teacher/delete/${teacher_id}`,
                 {}
             );
-            return response;
         } catch (error) {
             console.error("Error deleting teacher:", error);
             return {

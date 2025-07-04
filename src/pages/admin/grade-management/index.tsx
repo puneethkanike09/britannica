@@ -297,13 +297,13 @@ const GradeManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddGradeModal onClose={closeAddGradeModal} onGradeAdded={handleGradeAdded} />}
+            {showAddModal && <AddGradeModal onClose={closeAddGradeModal} onAdded={handleGradeAdded} />}
             {showEditModal && selectedGrade && (
-                <EditGradeModal onClose={closeEditGradeModal} grade={selectedGrade} onGradeUpdated={handleGradeUpdated} />
+                <EditGradeModal onClose={closeEditGradeModal} grade={selectedGrade} onUpdated={handleGradeUpdated} />
             )}
             {showViewModal && selectedGrade && <ViewGradeModal onClose={closeViewGradeModal} grade={selectedGrade} />}
             {showDeleteModal && selectedGrade && (
-                <DeleteGradeModal onClose={closeDeleteGradeModal} grade={selectedGrade} onGradeDeleted={handleGradeDeleted} />
+                <DeleteGradeModal onClose={closeDeleteGradeModal} grade={selectedGrade} onDeleted={handleGradeDeleted} />
             )}
         </div>
     );

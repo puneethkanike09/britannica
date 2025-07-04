@@ -297,13 +297,13 @@ const ThemeManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddThemeModal onClose={closeAddThemeModal} onThemeAdded={handleThemeAdded} />}
+            {showAddModal && <AddThemeModal onClose={closeAddThemeModal} onAdded={handleThemeAdded} />}
             {showEditModal && selectedTheme && (
-                <EditThemeModal onClose={closeEditThemeModal} theme={selectedTheme} onThemeUpdated={handleThemeUpdated} />
+                <EditThemeModal onClose={closeEditThemeModal} theme={selectedTheme} onUpdated={handleThemeUpdated} />
             )}
             {showViewModal && selectedTheme && <ViewThemeModal onClose={closeViewThemeModal} theme={selectedTheme} />}
             {showDeleteModal && selectedTheme && (
-                <DeleteThemeModal onClose={closeDeleteThemeModal} theme={selectedTheme} onThemeDeleted={handleThemeDeleted} />
+                <DeleteThemeModal onClose={closeDeleteThemeModal} theme={selectedTheme} onDeleted={handleThemeDeleted} />
             )}
         </div>
     );

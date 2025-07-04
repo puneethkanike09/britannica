@@ -44,8 +44,7 @@ export class GradeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post("/grade/create", gradeData);
-            return response;
+            return await apiClient.post("/grade/create", gradeData);
         } catch (error) {
             console.error("Error creating grade:", error);
             return {
@@ -61,8 +60,7 @@ export class GradeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put("/grade/update", gradeData);
-            return response;
+            return await apiClient.put("/grade/update", gradeData);
         } catch (error) {
             console.error("Error updating grade:", error);
             return {
@@ -74,8 +72,7 @@ export class GradeService {
 
     static async fetchGradeById(grade_id: string | number): Promise<{ error: boolean | string; grade?: Grade; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get(`/grade/${grade_id}`);
-            return response;
+            return await apiClient.get(`/grade/${grade_id}`);
         } catch (error) {
             console.error("Error fetching grade detail:", error);
             return {
@@ -85,10 +82,9 @@ export class GradeService {
         }
     }
 
-    static async deleteGrade(grade_id: string | number): Promise<{ error: boolean | string; message?: string }> {
+    static async deleteGrade(grade_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(`/grade/delete/${grade_id}`, {});
-            return response;
+            return await apiClient.put(`/grade/delete/${grade_id}`, {});
         } catch (error) {
             console.error("Error deleting grade:", error);
             return {

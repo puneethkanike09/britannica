@@ -44,8 +44,7 @@ export class ThemeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post("/theme/create", themeData);
-            return response;
+            return await apiClient.post("/theme/create", themeData);
         } catch (error) {
             console.error("Error creating theme:", error);
             return {
@@ -61,8 +60,7 @@ export class ThemeService {
         description: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put("/theme/update", themeData);
-            return response;
+            return await apiClient.put("/theme/update", themeData);
         } catch (error) {
             console.error("Error updating theme:", error);
             return {
@@ -74,8 +72,7 @@ export class ThemeService {
 
     static async fetchThemeById(theme_id: string | number): Promise<{ error: boolean | string; theme?: Theme; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get(`/theme/${theme_id}`);
-            return response;
+            return await apiClient.get(`/theme/${theme_id}`);
         } catch (error) {
             console.error("Error fetching theme detail:", error);
             return {
@@ -85,10 +82,9 @@ export class ThemeService {
         }
     }
 
-    static async deleteTheme(theme_id: string | number): Promise<{ error: boolean | string; message?: string }> {
+    static async deleteTheme(theme_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(`/theme/delete/${theme_id}`, {});
-            return response;
+            return await apiClient.put(`/theme/delete/${theme_id}`, {});
         } catch (error) {
             console.error("Error deleting theme:", error);
             return {

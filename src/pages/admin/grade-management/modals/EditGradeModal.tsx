@@ -4,10 +4,16 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { GradeService } from "../../../../services/admin/gradeService";
-import { GradeActionModalProps } from "../../../../types/admin/grade-management";
 import Loader from "../../../../components/common/Loader";
+import { Grade } from "../../../../types/admin/grade-management";
 
-export default function EditGradeModal({ onClose, grade, onGradeUpdated }: GradeActionModalProps) {
+interface EditGradeModalProps {
+    onClose: () => void;
+    grade: Grade;
+    onUpdated?: () => void;
+}
+
+export default function EditGradeModal({ onClose, grade, onUpdated }: EditGradeModalProps) {
     const [formData, setFormData] = useState({
         grade_id: grade.grade_id,
         grade_name: grade.grade_name,
@@ -22,22 +28,26 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: Grade
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isSubmitting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isSubmitting]);
+
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
     }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isSubmitting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     useEffect(() => {
@@ -120,13 +130,11 @@ export default function EditGradeModal({ onClose, grade, onGradeUpdated }: Grade
             try {
                 const response = await GradeService.updateGrade(formData);
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'Grade updated successfully');
-                    if (onGradeUpdated) {
-                        onGradeUpdated();
-                    }
+                    toast.success(response.message ?? 'Grade updated successfully!');
+                    if (onUpdated) onUpdated();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to update grade');
+                    toast.error(response.message ?? 'Failed to update grade');
                 }
             } catch (error) {
                 const errMsg = (error as { message?: string })?.message || 'Failed to update grade';

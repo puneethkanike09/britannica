@@ -52,8 +52,7 @@ export class SchoolService {
         pincode?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.post("/school/create", schoolData);
-            return response;
+            return await apiClient.post("/school/create", schoolData);
         } catch (error) {
             console.error("Error adding school:", error);
             return {
@@ -77,8 +76,7 @@ export class SchoolService {
         pincode?: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put("/school/update", schoolData);
-            return response;
+            return await apiClient.put("/school/update", schoolData);
         } catch (error) {
             console.error("Error updating school:", error);
             return {
@@ -90,8 +88,7 @@ export class SchoolService {
 
     static async fetchSchoolById(school_id: string | number): Promise<{ error: boolean | string; school?: School; token?: string; message?: string }> {
         try {
-            const response = await apiClient.get(`/school/${school_id}`);
-            return response;
+            return await apiClient.get(`/school/${school_id}`);
         } catch (error) {
             console.error("Error fetching school detail:", error);
             return {
@@ -108,8 +105,7 @@ export class SchoolService {
         message?: string;
     }> {
         try {
-            const response = await apiClient.get("/school");
-            return response;
+            return await apiClient.get("/school");
         } catch (error) {
             console.error("Error fetching schools for dropdown:", error);
             return {
@@ -121,11 +117,10 @@ export class SchoolService {
 
     static async deleteSchool(school_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            const response = await apiClient.put(
+            return await apiClient.put(
                 `/school/delete/${school_id}`,
                 {}
             );
-            return response;
         } catch (error) {
             console.error("Error deleting school:", error);
             return {

@@ -3,13 +3,17 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useState, useEffect, useCallback } from 'react';
 import toast from "react-hot-toast";
-import { AddSchoolModalProps } from "../../../../types/admin/school-management";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
 import { SchoolService } from "../../../../services/admin/schoolService";
 
-export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModalProps) {
+interface AddSchoolModalProps {
+    onClose: () => void;
+    onAdded?: () => void;
+}
+
+export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps) {
     const [formData, setFormData] = useState<{
         school_code: string;
         school_name: string;
@@ -49,34 +53,27 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isSubmitting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isSubmitting]);
+
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
     }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isSubmitting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
-
-    useEffect(() => {
-        const handleEscKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && !isSubmitting) {
-                handleClose();
-            }
-        };
-
-        document.addEventListener('keydown', handleEscKey);
-        return () => document.removeEventListener('keydown', handleEscKey);
-    }, [isSubmitting, handleClose]);
 
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
@@ -211,8 +208,8 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
             isValid = false;
         }
 
-        // Pincode: optional, but validate if provided
-        if (formData.pincode.trim() && !/^\d{4,10}$/.test(formData.pincode)) {
+        // Pincode: optional, but if provided, must be 4-10 digits
+        if (formData.pincode.trim() && (formData.pincode.length < 4 || formData.pincode.length > 10)) {
             newErrors.pincode = 'Pincode must be 4-10 digits';
             isValid = false;
         }
@@ -225,18 +222,18 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
         if (validateForm()) {
             setIsSubmitting(true);
             try {
-                const response = await SchoolService.addSchool(formData);
+                const response = await SchoolService.addSchool({
+                    ...formData,
+                });
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'School added successfully!');
-                    if (onSchoolAdded) onSchoolAdded();
+                    toast.success(response.message ?? 'School added successfully!');
+                    if (onAdded) onAdded();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to add school');
+                    toast.error(response.message ?? 'Failed to add school');
                 }
             } catch (error) {
-                const errMsg = (error as { message?: string })?.message || 'Failed to add school';
-                toast.error(errMsg);
-                console.error('Add school error:', error);
+                toast.error('Failed to add school');
             } finally {
                 setIsSubmitting(false);
             }
@@ -256,7 +253,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                     transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
-                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
@@ -456,7 +453,7 @@ export default function AddSchoolModal({ onClose, onSchoolAdded }: AddSchoolModa
                                     <button
                                         type="button"
                                         onClick={handleAddSchool}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? (

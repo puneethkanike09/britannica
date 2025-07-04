@@ -4,10 +4,16 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { ThemeService } from "../../../../services/admin/themeService";
-import { ThemeActionModalProps } from "../../../../types/admin/theme-management";
 import Loader from "../../../../components/common/Loader";
+import { Theme } from "../../../../types/admin/theme-management";
 
-export default function EditThemeModal({ onClose, theme, onThemeUpdated }: ThemeActionModalProps) {
+interface EditThemeModalProps {
+    onClose: () => void;
+    theme: Theme;
+    onUpdated?: () => void;
+}
+
+export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeModalProps) {
     const [formData, setFormData] = useState({
         theme_id: theme.theme_id,
         theme_name: theme.theme_name,
@@ -22,22 +28,26 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: Theme
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isSubmitting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isSubmitting]);
+
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
     }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isSubmitting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     useEffect(() => {
@@ -120,13 +130,11 @@ export default function EditThemeModal({ onClose, theme, onThemeUpdated }: Theme
             try {
                 const response = await ThemeService.updateTheme(formData);
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'Theme updated successfully');
-                    if (onThemeUpdated) {
-                        onThemeUpdated();
-                    }
+                    toast.success(response.message ?? 'Theme updated successfully!');
+                    if (onUpdated) onUpdated();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to update theme');
+                    toast.error(response.message ?? 'Failed to update theme');
                 }
             } catch (error) {
                 const errMsg = (error as { message?: string })?.message || 'Failed to update theme';

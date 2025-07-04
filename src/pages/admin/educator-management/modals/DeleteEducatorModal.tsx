@@ -1,14 +1,28 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { TeacherDeleteModalProps } from "../../../../types/admin/educator-management";
+import { Teacher } from "../../../../types/admin/educator-management";
 import { EducatorService } from "../../../../services/admin/educatorService";
 
-export default function DeleteEducatorModal({ onClose, teacher, onTeacherDeleted }: TeacherDeleteModalProps) {
+interface EducatorDeleteModalProps {
+    onClose: () => void;
+    teacher: Teacher;
+    onDeleted?: () => void;
+}
+
+export default function DeleteEducatorModal({ onClose, teacher, onDeleted }: EducatorDeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleEscKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isDeleting) handleClose();
+        };
+        document.addEventListener('keydown', handleEscKey);
+        return () => document.removeEventListener('keydown', handleEscKey);
+    }, [isDeleting]);
 
     const handleClose = () => {
         if (isDeleting) return;
@@ -16,16 +30,12 @@ export default function DeleteEducatorModal({ onClose, teacher, onTeacherDeleted
     };
 
     const handleAnimationComplete = () => {
-        if (!isVisible) {
-            onClose();
-        }
+        if (!isVisible) onClose();
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isDeleting) return;
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+        if (e.target === e.currentTarget) handleClose();
     };
 
     const handleDelete = async () => {
@@ -33,11 +43,11 @@ export default function DeleteEducatorModal({ onClose, teacher, onTeacherDeleted
         try {
             const response = await EducatorService.deleteTeacher(teacher.teacher_id);
             if (response.error === false || response.error === "false") {
-                toast.success(response.message || 'Educator deleted successfully');
-                if (onTeacherDeleted) onTeacherDeleted();
+                toast.success(response.message ?? 'Educator deleted successfully!');
+                if (onDeleted) onDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete educator');
+                toast.error(response.message ?? 'Failed to delete educator');
             }
         } catch (error) {
             toast.error('Failed to delete educator');
@@ -78,13 +88,11 @@ export default function DeleteEducatorModal({ onClose, teacher, onTeacherDeleted
                                 <X className="h-7 w-7" />
                             </button>
                         </div>
-
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
                                 Are you sure you want to delete the educator <span className="font-bold">{teacher.teacher_name}</span>?
                             </p>
-
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}

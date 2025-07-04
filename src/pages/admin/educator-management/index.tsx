@@ -330,7 +330,7 @@ const EducatorManagement: React.FC = () => {
                 <ViewEducatorModal onClose={closeViewEducatorModal} teacher={selectedEducator} />
             )}
             {showDeleteModal && selectedEducator && (
-                <DeleteEducatorModal onClose={closeDeleteEducatorModal} teacher={selectedEducator} onTeacherDeleted={handleTeacherDeleted} />
+                <DeleteEducatorModal onClose={closeDeleteEducatorModal} teacher={selectedEducator} onDeleted={handleTeacherDeleted} />
             )}
         </div>
     );
