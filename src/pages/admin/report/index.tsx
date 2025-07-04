@@ -34,6 +34,25 @@ const ReportManagement: React.FC = () => {
         return `${year}-${month}-${day}`;
     };
 
+    // Format activity timestamp from "2025-07-04 11:07:15.916404+05:30" to "28-May-2025 10:30 PM"
+    const formatActivityTimestamp = (timestamp: string) => {
+        try {
+            const date = new Date(timestamp);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            const time = date.toLocaleString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            return `${day}-${month}-${year} ${time}`;
+        } catch (error) {
+            console.error('Error formatting timestamp:', error);
+            return timestamp; // Return original if formatting fails
+        }
+    };
+
     // Fetch reports from API
     const fetchReports = async (page = currentPage, size = pageSize) => {
         if (!fromDate || !toDate) return;
@@ -209,14 +228,14 @@ const ReportManagement: React.FC = () => {
                 <div className="flex flex-col lg:flex-row gap-4 items-start">
                     <div className="relative w-full sm:w-auto flex flex-col gap-1">
                         <div className="relative">
-                            <DatePicker
-                                selected={fromDate}
-                                onChange={handleFromDateChange}
-                                placeholderText="From Date"
-                                dateFormat="MM/dd/yyyy"
-                                className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
-                                disabled={isLoading}
-                            />
+                                <DatePicker
+                                    selected={fromDate}
+                                    onChange={handleFromDateChange}
+                                    placeholderText="From Date"
+                                    dateFormat="dd/MM/yyyy" 
+                                    className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.fromDate ? 'border-red' : 'border-inputBorder'}`}
+                                    disabled={isLoading}
+                                />
                             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                 <Calendar className="w-5 h-5 text-inputPlaceholder" />
                             </div>
@@ -226,14 +245,14 @@ const ReportManagement: React.FC = () => {
 
                     <div className="relative w-full sm:w-auto flex flex-col gap-1">
                         <div className="relative">
-                            <DatePicker
-                                selected={toDate}
-                                onChange={handleToDateChange}
-                                placeholderText="To Date"
-                                dateFormat="MM/dd/yyyy"
-                                className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
-                                disabled={isLoading}
-                            />
+                                <DatePicker
+                                    selected={toDate}
+                                    onChange={handleToDateChange}
+                                    placeholderText="To Date"
+                                    dateFormat="dd/MM/yyyy"  
+                                    className={`w-full pl-12 pr-4 py-3 border rounded-lg text-base bg-inputBg placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.toDate ? 'border-red' : 'border-inputBorder'}`}
+                                    disabled={isLoading}
+                                />
                             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                 <Calendar className="w-5 h-5 text-inputPlaceholder" />
                             </div>
@@ -311,7 +330,7 @@ const ReportManagement: React.FC = () => {
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{log.activityTs}</div>
+                                            <div className="text-textColor">{formatActivityTimestamp(log.activityTs)}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{log.description}</div>
