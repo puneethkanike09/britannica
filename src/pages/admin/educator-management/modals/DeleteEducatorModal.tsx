@@ -1,12 +1,12 @@
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-import { SchoolDeleteModalProps } from "../../../../types/admin/school-management";
-import { SchoolService } from "../../../../services/admin/schoolService";
+import { TeacherDeleteModalProps } from "../../../../types/admin/educator-management";
+import { EducatorService } from "../../../../services/admin/educatorService";
 
-export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: SchoolDeleteModalProps) {
+export default function DeleteEducatorModal({ onClose, teacher, onTeacherDeleted }: TeacherDeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
@@ -31,16 +31,16 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
-            const response = await SchoolService.deleteSchool(school.school_id);
+            const response = await EducatorService.deleteTeacher(teacher.teacher_id);
             if (response.error === false || response.error === "false") {
-                toast.success(response.message ?? 'School deleted successfully!');
-                if (onSchoolDeleted) onSchoolDeleted();
+                toast.success(response.message || 'Educator deleted successfully');
+                if (onTeacherDeleted) onTeacherDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete school');
+                toast.error(response.message || 'Failed to delete educator');
             }
         } catch (error) {
-            toast.error('Failed to delete school');
+            toast.error('Failed to delete educator');
         } finally {
             setIsDeleting(false);
         }
@@ -50,7 +50,7 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
         <AnimatePresence onExitComplete={handleAnimationComplete}>
             {isVisible && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40  backdrop-blur-xs z-90 flex items-center justify-center px-4"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-90 flex items-center justify-center px-4"
                     onClick={handleBackdropClick}
                     variants={backdropVariants}
                     initial="hidden"
@@ -68,8 +68,9 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
                     >
                         {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
-                            <h2 className="text-3xl font-bold text-secondary">Delete School</h2>
+                            <h2 className="text-3xl font-bold text-textColor">Delete Educator</h2>
                             <button
+                                aria-label="Close"
                                 onClick={handleClose}
                                 className={`text-textColor hover:text-hover ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                 disabled={isDeleting}
@@ -81,7 +82,7 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to delete school <span className="font-bold text-darkGray">{school.school_name}</span>? This action cannot be undone.
+                                Are you sure you want to delete the educator <span className="font-bold">{teacher.teacher_name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">
@@ -110,4 +111,4 @@ export default function DeleteSchoolModal({ onClose, school, onSchoolDeleted }: 
             )}
         </AnimatePresence>
     );
-}
+} 

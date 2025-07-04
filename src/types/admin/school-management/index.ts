@@ -38,4 +38,10 @@ export interface SchoolActionModalProps {
     onClose: () => void;
     school: School;
     onSchoolUpdated?: () => void;
+}
+
+export interface SchoolDeleteModalProps {
+    onClose: () => void;
+    school: School;
+    onSchoolDeleted?: () => void;
 } 

@@ -33,7 +33,7 @@ export default function DeleteGradeModal({ onClose, grade, onGradeDeleted }: Gra
         try {
             const response = await GradeService.deleteGrade(grade.grade_id);
             if (response.error === false || response.error === "false") {
-                toast.success('Grade deleted successfully!');
+                toast.success( response.message || 'Grade deleted successfully!');
                 if (onGradeDeleted) onGradeDeleted();
                 handleClose();
             } else {

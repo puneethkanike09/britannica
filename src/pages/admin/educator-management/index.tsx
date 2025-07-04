@@ -5,8 +5,8 @@ import EditEducatorModal from './modals/EditEducatorModal';
 import ViewEducatorModal from './modals/ViewEducatorModal';
 import ViewIcon from '../../../assets/dashboard/Admin/educator-management/view.svg';
 import EditIcon from '../../../assets/dashboard/Admin/educator-management/edit.svg';
-// import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
-// import DeleteEducatorModal from './modals/DeleteEducatorModal';
+import DeleteIcon from '../../../assets/dashboard/Admin/educator-management/delete.svg';
+import DeleteEducatorModal from './modals/DeleteEducatorModal';
 import AddEducatorIcon from '../../../assets/dashboard/Admin/educator-management/add-educator.svg';
 import { EducatorService } from '../../../services/admin/educatorService';
 import { Teacher } from '../../../types/admin/educator-management';
@@ -19,7 +19,7 @@ const EducatorManagement: React.FC = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<Teacher | null>(null);
-    // const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [totalPages, setTotalPages] = useState(1);
@@ -77,6 +77,49 @@ const EducatorManagement: React.FC = () => {
         setShowViewModal(true);
     };
 
+    // Open Delete Educator Modal
+    const openDeleteEducatorModal = (educator: Teacher) => {
+        setSelectedEducator(educator);
+        setShowDeleteModal(true);
+    };
+
+    const closeDeleteEducatorModal = () => {
+        setShowDeleteModal(false);
+        setSelectedEducator(null);
+    };
+
+    // Callbacks for after educator is added/updated
+    const handleEducatorAdded = () => {
+        loadTeachers();
+        closeAddEducatorModal();
+    };
+
+    const handleEducatorUpdated = () => {
+        loadTeachers();
+        closeEditEducatorModal();
+    };
+
+    const handleTeacherDeleted = () => {
+        loadTeachers();
+        closeDeleteEducatorModal();
+    };
+
+    // Search box handler
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
+    };
+
+    // Page size change handler
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
     // Generate page numbers with ellipsis
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
@@ -110,43 +153,6 @@ const EducatorManagement: React.FC = () => {
     const closeViewEducatorModal = () => {
         setShowViewModal(false);
         setSelectedEducator(null);
-    };
-
-    // const openDeleteEducatorModal = (educator: Teacher) => {
-    //     setSelectedEducator(educator);
-    //     setShowDeleteModal(true);
-    // };
-
-    // const closeDeleteEducatorModal = () => {
-    //     setShowDeleteModal(false);
-    //     setSelectedEducator(null);
-    // };
-
-    // Callbacks for after educator is added/updated
-    const handleEducatorAdded = () => {
-        loadTeachers();
-        closeAddEducatorModal();
-    };
-
-    const handleEducatorUpdated = () => {
-        loadTeachers();
-        closeEditEducatorModal();
-    };
-
-    // Search box handler
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(e.target.value);
-    };
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        setCurrentPage(1);
-        setAppliedSearchText(searchText);
-    };
-
-    // Page size change handler
-    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setPageSize(Number(e.target.value));
-        setCurrentPage(1);
     };
 
     return (
@@ -260,14 +266,14 @@ const EducatorManagement: React.FC = () => {
                                                     <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
-                                                {/* <button
+                                                <button
                                                     onClick={() => openDeleteEducatorModal(teacher)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
                                                     <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
-                                                </button> */}
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -323,9 +329,9 @@ const EducatorManagement: React.FC = () => {
             {showViewModal && selectedEducator && (
                 <ViewEducatorModal onClose={closeViewEducatorModal} teacher={selectedEducator} />
             )}
-            {/* {showDeleteModal && selectedEducator && (
-                <DeleteEducatorModal onClose={closeDeleteEducatorModal} educator={selectedEducator} />
-            )} */}
+            {showDeleteModal && selectedEducator && (
+                <DeleteEducatorModal onClose={closeDeleteEducatorModal} teacher={selectedEducator} onTeacherDeleted={handleTeacherDeleted} />
+            )}
         </div>
     );
 };

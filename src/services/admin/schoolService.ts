@@ -118,4 +118,20 @@ export class SchoolService {
             };
         }
     }
+
+    static async deleteSchool(school_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
+        try {
+            const response = await apiClient.put(
+                `/school/delete/${school_id}`,
+                {}
+            );
+            return response;
+        } catch (error) {
+            console.error("Error deleting school:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unknown error",
+            };
+        }
+    }
 }

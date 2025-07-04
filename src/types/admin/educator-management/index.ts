@@ -37,4 +37,10 @@ export interface TeacherActionModalProps {
     onClose: () => void;
     teacher: Teacher;
     onTeacherUpdated?: () => void;
+}
+
+export interface TeacherDeleteModalProps {
+    onClose: () => void;
+    teacher: Teacher;
+    onTeacherDeleted?: () => void;
 } 

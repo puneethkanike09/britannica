@@ -144,4 +144,20 @@ export class EducatorService {
             };
         }
     }
+
+    static async deleteTeacher(teacher_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
+        try {
+            const response = await apiClient.put(
+                `/teacher/delete/${teacher_id}`,
+                {}
+            );
+            return response;
+        } catch (error) {
+            console.error("Error deleting teacher:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unknown error",
+            };
+        }
+    }
 }
