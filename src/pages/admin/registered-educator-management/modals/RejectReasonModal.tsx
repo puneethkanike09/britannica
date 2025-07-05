@@ -3,11 +3,13 @@ import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { RegisteredEducator } from "../../../../types/admin/registered-educator-management";
+import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface RejectReasonModalProps {
     onClose: () => void;
-    educator: { educator_id: string; name: string };
-    onEducatorRejected: (educator_id: string, reason: string) => void;
+    educator: RegisteredEducator;
+    onEducatorRejected: (login_id: string, remarks: string) => void;
 }
 
 export default function RejectReasonModal({ onClose, educator, onEducatorRejected }: RejectReasonModalProps) {
@@ -50,21 +52,25 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
         return true;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            setTimeout(() => {
-                try {
-                    onEducatorRejected(educator.educator_id, reason.trim());
-                    toast.success(`${educator.name}'s registration has been rejected`);
+            try {
+                const response = await RegisteredEducatorService.rejectEducator(educator.login_id, reason.trim());
+                if (response.error === false || response.error === "false") {
+                    onEducatorRejected(educator.login_id, reason.trim());
+                    toast.success(response.message || `${educator.user_name}'s registration has been rejected`);
                     setIsSubmitting(false);
                     handleClose();
-                } catch (error) {
-                    console.error(error);
-                    toast.error("Failed to reject educator");
+                } else {
+                    toast.error(response.message || "Failed to reject educator");
                     setIsSubmitting(false);
                 }
-            }, 1000); // Simulate async operation
+            } catch (error) {
+                console.error(error);
+                toast.error("Failed to reject educator");
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -103,7 +109,7 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to reject the registration of <span className="font-bold">{educator.name}</span>?
+                                Are you sure you want to reject the registration of <span className="font-bold">{educator.user_name}</span>?
                             </p>
                             <div className="space-y-6">
                                 <div className="mb-3 relative">

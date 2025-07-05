@@ -3,17 +3,12 @@ import { X, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { backdropVariants, modalVariants } from '../../../../config/constants/Animations/modalAnimation';
-
-interface Educator {
-    educator_id: string;
-    name: string;
-    school_name: string;
-    login_id: string;
-}
+import { RegisteredEducator } from '../../../../types/admin/registered-educator-management';
+import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface BulkApproveModalProps {
     onClose: () => void;
-    educators: Educator[];
+    educators: RegisteredEducator[];
     onBulkApprove: (approvedIds: string[]) => void;
 }
 
@@ -43,21 +38,25 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
         }
     };
 
-    const handleApprove = () => {
+    const handleApprove = async () => {
         setIsApproving(true);
-        setTimeout(() => {
-            try {
-                const approvedIds = educators.map(edu => edu.educator_id);
+        try {
+            const approvedIds = educators.map(edu => edu.login_id);
+            const response = await RegisteredEducatorService.bulkApproveEducators(approvedIds);
+            if (response.error === false || response.error === "false") {
                 onBulkApprove(approvedIds);
-                toast.success(`Approved ${educators.length} educator${educators.length !== 1 ? 's' : ''} successfully!`);
+                toast.success(response.message || `Approved ${educators.length} educator${educators.length !== 1 ? 's' : ''} successfully!`);
                 setIsApproving(false);
                 handleClose();
-            } catch (error) {
-                console.error(error);
-                toast.error('Failed to approve educators');
+            } else {
+                toast.error(response.message || 'Failed to approve educators');
                 setIsApproving(false);
             }
-        }, 1000);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to approve educators');
+            setIsApproving(false);
+        }
     };
 
     return (
@@ -103,10 +102,10 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                                 <div className="flex flex-wrap gap-2">
                                     {educators.map((educator) => (
                                         <div
-                                            key={educator.educator_id}
+                                            key={educator.login_id}
                                             className="px-4 py-2 bg-white border border-primary text-textColor rounded-lg text-sm font-medium whitespace-nowrap hover:bg-primary/10 "
                                         >
-                                            {educator.name}
+                                            {educator.user_name}
                                         </div>
                                     ))}
                                 </div>

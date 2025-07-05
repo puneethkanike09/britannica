@@ -3,40 +3,27 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import Loader from "../../../../components/common/Loader";
-
-interface Educator {
-    educator_id: string;
-    name: string;
-    school_name: string;
-    login_id: string;
-    email?: string;
-    phone?: string;
-    address_line_1?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    pincode?: string;
-}
+import { RegisteredEducator } from "../../../../types/admin/registered-educator-management";
 
 interface EducatorActionModalProps {
     onClose: () => void;
-    educator: Educator;
+    educator: RegisteredEducator;
 }
 
 export default function ViewEducatorModal({ onClose, educator }: EducatorActionModalProps) {
     const [formData, setFormData] = useState({
-        educator_id: educator.educator_id,
-        firstName: educator.name.split(' ')[0] || '',
-        lastName: educator.name.split(' ').slice(1).join(' ') || '',
-        email: educator.email || educator.login_id || '',
-        phone: educator.phone || '',
+        login_id: educator.login_id,
+        firstName: educator.user_name.split(' ')[0] || '',
+        lastName: educator.user_name.split(' ').slice(1).join(' ') || '',
+        email: educator.login_id || '',
+        phone: '',
         loginId: educator.login_id || '',
         schoolName: educator.school_name || '',
-        addressLine1: educator.address_line_1 || '',
-        city: educator.city || '',
-        state: educator.state || '',
-        country: educator.country || '',
-        pincode: educator.pincode || '',
+        addressLine1: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: '',
     });
     const [isVisible, setIsVisible] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -75,18 +62,18 @@ export default function ViewEducatorModal({ onClose, educator }: EducatorActionM
         setIsLoading(true);
         setTimeout(() => {
             setFormData({
-                educator_id: educator.educator_id,
-                firstName: educator.name.split(' ')[0] || '',
-                lastName: educator.name.split(' ').slice(1).join(' ') || '',
-                email: educator.email || educator.login_id || '',
-                phone: educator.phone || '',
+                login_id: educator.login_id,
+                firstName: educator.user_name.split(' ')[0] || '',
+                lastName: educator.user_name.split(' ').slice(1).join(' ') || '',
+                email: educator.login_id || '',
+                phone: '',
                 loginId: educator.login_id || '',
                 schoolName: educator.school_name || '',
-                addressLine1: educator.address_line_1 || '',
-                city: educator.city || '',
-                state: educator.state || '',
-                country: educator.country || '',
-                pincode: educator.pincode || '',
+                addressLine1: '',
+                city: '',
+                state: '',
+                country: '',
+                pincode: '',
             });
             setIsLoading(false);
         }, 1000); // Simulate loading

@@ -3,11 +3,13 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { RegisteredEducator } from "../../../../types/admin/registered-educator-management";
+import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface ApproveEducatorModalProps {
     onClose: () => void;
-    educator: { educator_id: string; name: string };
-    onEducatorApproved: (educator_id: string) => void;
+    educator: RegisteredEducator;
+    onEducatorApproved: (login_id: string) => void;
 }
 
 export default function ApproveEducatorModal({ onClose, educator, onEducatorApproved }: ApproveEducatorModalProps) {
@@ -32,20 +34,24 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
         }
     };
 
-    const handleApprove = () => {
+    const handleApprove = async () => {
         setIsApproving(true);
-        setTimeout(() => {
-            try {
-                onEducatorApproved(educator.educator_id);
-                toast.success(`${educator.name} has been approved successfully!`);
+        try {
+            const response = await RegisteredEducatorService.approveEducator(educator.login_id);
+            if (response.error === false || response.error === "false") {
+                onEducatorApproved(educator.login_id);
+                toast.success(response.message || `${educator.user_name} has been approved successfully!`);
                 setIsApproving(false);
                 handleClose();
-            } catch (error) {
-                console.error(error);
-                toast.error("Failed to approve educator");
+            } else {
+                toast.error(response.message || "Failed to approve educator");
                 setIsApproving(false);
             }
-        }, 1000); // Simulate async operation
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to approve educator");
+            setIsApproving(false);
+        }
     };
 
     return (
@@ -83,7 +89,7 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
                         {/* Content */}
                         <div className="px-8 py-6">
                             <p className="text-textColor mb-6">
-                                Are you sure you want to approve the registration of <span className="font-bold">{educator.name}</span>?
+                                Are you sure you want to approve the registration of <span className="font-bold">{educator.user_name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">
