@@ -102,3 +102,57 @@ export interface FetchPblFilesResponse {
     }>;
     message?: string;
 }
+
+// Educator types
+export interface EducatorRegistrationData {
+    user_account: {
+        first_name: string;
+        last_name: string;
+        login_id: string;
+        mobile_no: string;
+        email_id: string;
+        user_roles: Array<{
+            role: {
+                role_id: number;
+            };
+        }>;
+    };
+    school: {
+        school_code: string;
+        school_name: string;
+        school_email: string;
+        school_mobile_no: string;
+        address_line1: string;
+        address_line2: string;
+        city: string;
+        state: string;
+        country: string;
+        pincode: string;
+    };
+}
+
+export interface EducatorRegistrationResponse {
+    error: boolean | string;
+    message?: string;
+    token?: string;
+}
+
+export interface EducatorRegistrationFormData {
+    // School data
+    schoolName: string;
+    emailAddress: string;
+    phoneNumber: string;
+    schoolCode: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    // Educator data
+    firstName: string;
+    lastName: string;
+    educatorEmail: string;
+    educatorPhone: string;
+    loginId: string;
+}

@@ -8,6 +8,8 @@ import "react-phone-number-input/style.css";
 import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
 import loginImage from "../assets/loginImage.png";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
+import { EducatorRegistrationService } from "../services/educator/educatorRegistrationService";
+import { EducatorRegistrationFormData } from "../types/educator";
 
 interface SchoolFormData {
     schoolName: string;
@@ -276,24 +278,28 @@ const EducatorRegistration = () => {
         if (!validateStep2()) return;
 
         setIsSubmitting(true);
-        toast.promise(
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve("Registration successful!");
-                    setShowSuccessModal(true);
-                    setIsSuccessVisible(true);
-                }, 2000);
-            }),
-            {
-                loading: "Registering...",
-                success: () => {
-                    return "Registered successfully!";
-                },
-                error: "Registration failed. Please try again.",
+        try {
+            // Combine school and educator data
+            const formData: EducatorRegistrationFormData = {
+                ...schoolData,
+                ...educatorData
+            };
+
+            const response = await EducatorRegistrationService.registerEducator(formData);
+            
+            if (response.error === false || response.error === "false") {
+                toast.success(response.message || "Registration successful!");
+                setShowSuccessModal(true);
+                setIsSuccessVisible(true);
+            } else {
+                toast.error(response.message || "Registration failed. Please try again.");
             }
-        ).finally(() => {
+        } catch (error) {
+            toast.error("Registration failed. Please try again.");
+            console.error("Registration error:", error);
+        } finally {
             setIsSubmitting(false);
-        });
+        }
     };
 
     return (
@@ -669,7 +675,10 @@ const EducatorRegistration = () => {
                                             disabled={isSubmitting}
                                         >
                                             {isSubmitting ? (
-                                                <Loader2 className="animate-spin" />
+                                                <>
+                                                    <Loader2 className="animate-spin" />
+                                                    <span className="font-bold">Registering...</span>
+                                                </>
                                             ) : (
                                                 <span className="font-bold">Register</span>
                                             )}
@@ -710,7 +719,7 @@ const EducatorRegistration = () => {
                         >
                             <div className="flex-1 px-8 py-6 text-center">
                                 <p className="text-textColor text-lg mb-8">
-                                    Your request has been sent to the Admin. You will receive a notification once it is approved.
+                                    Registration successful! Your account has been created and is pending admin approval. You will receive a notification once it is approved.
                                 </p>
                                 <button
                                     type="button"
