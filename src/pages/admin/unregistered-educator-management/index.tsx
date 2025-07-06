@@ -1,104 +1,66 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, CheckSquare, Square, Check } from "lucide-react";
-import ViewIcon from "../../../assets/dashboard/Admin/registered-educator-management/view.svg";
-import UnregisterIcon from "../../../assets/dashboard/Admin/unregistered-educator-management/delete.svg";
+import { ChevronLeft, ChevronRight, Check, X, CheckSquare, Square, Search } from "lucide-react";
+import ViewIcon from '../../../assets/dashboard/Admin/unregistered-educator-management/view.svg';
+import ViewUnregisteredModal from "./modals/ViewUnregisteredModal";
+import UnregisterEducatorModal from "./modals/UnregisterEducatorModal";
+import BulkUnregisterModal from "./modals/BulkUnregisterModal";
 import Loader from "../../../components/common/Loader";
 import BulkActionToolbar from "./components/BulkActionToolbar";
-import ViewUnregisteredModal from "./modals/ViewUnregisteredModal";
 import toast from "react-hot-toast";
-import BulkUnregisterModal from "./modals/BulkUnregisterModal";
-import UnregisterEducatorModal from "./modals/UnregisterEducatorModal";
-
-interface Educator {
-    educator_id: string;
-    name: string;
-    school_name: string;
-    login_id: string;
-    email?: string;
-    phone?: string;
-    address_line_1?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    pincode?: string;
-}
+import { UnregisteredEducatorService } from "../../../services/admin/unregisteredEducatorService";
+import { UnregisteredEducator } from "../../../types/admin/unregistered-educator-management";
 
 const UnregisteredEducatorList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const [educators, setEducators] = useState<Educator[]>([]);
+    const [educators, setEducators] = useState<UnregisteredEducator[]>([]);
     const [selectedEducators, setSelectedEducators] = useState<Set<string>>(new Set());
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const [searchText, setSearchText] = useState("");
+    const [appliedSearchText, setAppliedSearchText] = useState("");
 
     // Modal states
     const [showViewModal, setShowViewModal] = useState(false);
     const [showUnregisterModal, setShowUnregisterModal] = useState(false);
     const [showBulkUnregisterModal, setShowBulkUnregisterModal] = useState(false);
-    const [selectedEducator, setSelectedEducator] = useState<Educator | null>(null);
+    const [selectedEducator, setSelectedEducator] = useState<UnregisteredEducator | null>(null);
 
-    const itemsPerPage = 6;
-
-    // Dummy data for educators
-    const dummyEducators: Educator[] = Array.from({ length: 15 }, (_, i) => ({
-        educator_id: `educator-${i + 1}`,
-        name: `${[
-            "Amitha",
-            "Sagar",
-            "Vidya",
-            "Puneeth",
-            "Rajesh",
-            "Priya",
-            "Suresh Kumar Gowda",
-            "Kavya",
-            "Ravi",
-            "Deepa",
-            "Arun",
-            "Sneha",
-            "Kiran",
-            "Meera",
-            "Vinay",
-        ][i] || `Educator ${i + 1}`
-            }`,
-        school_name: `${[
-            "Horizon Valley School",
-            "Lumina School",
-            "Spark Bridge Academy",
-            "Prism Path School",
-            "Golden Heights Academy",
-        ][i % 5]
-            }`,
-        login_id: `${["Amitha123", "Sagar123", "vidya123", "Puneeth123"][i] || `educator${i + 1}`}`,
-        email: `educator${i + 1}@school.com`,
-        phone: i === 0 ? "9740969649" : "",
-        address_line_1: i === 0 ? "Bangalore, Karnataka" : "",
-        city: i === 0 ? "Bangalore" : "",
-        state: i === 0 ? "Karnataka" : "",
-        country: i === 0 ? "India" : "",
-        pincode: i === 0 ? "573468" : "",
-    }));
-
-    // Load dummy educators on mount
-    useEffect(() => {
+    // Fetch unregistered educators from backend
+    const loadUnregisteredEducators = async (page = currentPage, size = pageSize, search = searchText) => {
         setIsLoading(true);
-        setTimeout(() => {
-            setEducators(dummyEducators);
+        try {
+            const response = await UnregisteredEducatorService.fetchUnregisteredEducators({ page, size, search });
+            if (response.error === false || response.error === "false") {
+                setEducators(response.teachers || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalElements(response.totalElements || 0);
+                setPageSize(response.pageSize || size);
+            } else {
+                toast.error(response.message || "Failed to load unregistered educators");
+            }
+        } catch (error) {
+            console.error("Error fetching unregistered educators:", error);
+            toast.error("Error loading unregistered educators");
+        } finally {
             setIsLoading(false);
-        }, 1000);
-    }, []);
+        }
+    };
 
-    // Calculate total pages
-    const totalPages = Math.ceil(educators.length / itemsPerPage);
+    useEffect(() => {
+        loadUnregisteredEducators(currentPage, pageSize, appliedSearchText);
+    }, [currentPage, pageSize, appliedSearchText]);
 
-    // Get current items
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = educators.slice(indexOfFirstItem, indexOfLastItem);
+    // Get current items (now just use educators as server returns paginated data)
+    const currentItems = educators;
 
     // Selection handlers
     const handleSelectAll = () => {
         if (selectedEducators.size === currentItems.length) {
             setSelectedEducators(new Set());
         } else {
-            setSelectedEducators(new Set(currentItems.map((edu) => edu.educator_id)));
+            setSelectedEducators(new Set(currentItems.map(edu => edu.login_id)));
         }
     };
 
@@ -123,13 +85,29 @@ const UnregisteredEducatorList: React.FC = () => {
     // Change page
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    // Search box handler
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
+    };
+
+    // Page size change handler
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
     // Single educator actions
-    const openViewEducatorModal = (educator: Educator) => {
+    const openViewEducatorModal = (educator: UnregisteredEducator) => {
         setSelectedEducator(educator);
         setShowViewModal(true);
     };
 
-    const openUnregisterEducatorModal = (educator: Educator) => {
+    const openUnregisterEducatorModal = (educator: UnregisteredEducator) => {
         setSelectedEducator(educator);
         setShowUnregisterModal(true);
     };
@@ -140,19 +118,43 @@ const UnregisteredEducatorList: React.FC = () => {
     };
 
     // Handle individual unregister
-    const handleUnregisterEducator = (educator_id: string) => {
-        setEducators(educators.filter((edu) => edu.educator_id !== educator_id));
-        setShowUnregisterModal(false);
-        setSelectedEducator(null);
-        toast.success("Educator unregistered successfully");
+    const handleUnregisterEducator = async (login_id: string) => {
+        try {
+            const response = await UnregisteredEducatorService.unregisterEducator(login_id);
+            if (response.error === false || response.error === "false") {
+                setEducators(educators.filter((edu) => edu.login_id !== login_id));
+                setShowUnregisterModal(false);
+                setSelectedEducator(null);
+                toast.success(response.message || "Educator unregistered successfully");
+                // Reload the list to get updated data
+                loadUnregisteredEducators();
+            } else {
+                toast.error(response.message || "Failed to unregister educator");
+            }
+        } catch (error) {
+            console.error("Error unregistering educator:", error);
+            toast.error("Failed to unregister educator");
+        }
     };
 
     // Handle bulk unregister complete
-    const handleBulkUnregisterComplete = (unregisteredIds: string[]) => {
-        setEducators(educators.filter((edu) => !unregisteredIds.includes(edu.educator_id)));
-        setSelectedEducators(new Set());
-        setShowBulkUnregisterModal(false);
-        toast.success(`Unregistered ${unregisteredIds.length} educator${unregisteredIds.length !== 1 ? "s" : ""} successfully`);
+    const handleBulkUnregisterComplete = async (unregisteredIds: string[]) => {
+        try {
+            const response = await UnregisteredEducatorService.bulkUnregisterEducators(unregisteredIds);
+            if (response.error === false || response.error === "false") {
+                setEducators(educators.filter(edu => !unregisteredIds.includes(edu.login_id)));
+                setSelectedEducators(new Set());
+                setShowBulkUnregisterModal(false);
+                toast.success(response.message || "Selected educators unregistered successfully");
+                // Reload the list to get updated data
+                loadUnregisteredEducators();
+            } else {
+                toast.error(response.message || "Failed to unregister educators");
+            }
+        } catch (error) {
+            console.error("Error bulk unregistering educators:", error);
+            toast.error("Failed to unregister educators");
+        }
     };
 
     // Close modals
@@ -187,31 +189,48 @@ const UnregisteredEducatorList: React.FC = () => {
         return pageNumbers;
     };
 
-    const selectedEducatorsList = educators.filter((edu) => selectedEducators.has(edu.educator_id));
+    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.login_id));
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">Unregistered Educator List</h1>
+                <h1 className="text-3xl font-bold text-secondary">Unregistered Educator List ( {totalElements} )</h1>
             </div>
 
             {/* Search Box UI */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
-                <div className="flex w-full md:max-w-md gap-2">
+                <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Enter keyword to search"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
+                        value={searchText}
+                        onChange={handleSearchChange}
                     />
                     <button
-                        type="button"
+                        type="submit"
                         className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isLoading}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                        <Search className="h-5 w-5" />
                         <span className="hidden md:inline font-bold">Search</span>
                     </button>
+                </form>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <label htmlFor="pageSize" className="text-base text-textColor">Rows per page:</label>
+                    <select
+                        id="pageSize"
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="p-2 border text-textColor rounded-lg text-base bg-inputBg border-inputBorder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
                 </div>
             </div>
 
@@ -276,16 +295,16 @@ const UnregisteredEducatorList: React.FC = () => {
                                 </tr>
                             ) : (
                                 currentItems.map((educator, index) => {
-                                    const isSelected = selectedEducators.has(educator.educator_id);
+                                    const isSelected = selectedEducators.has(educator.login_id);
                                     return (
                                         <tr
-                                            key={educator.educator_id}
+                                            key={educator.login_id}
                                             className={`${index % 2 === 1 ? "bg-third" : "bg-white"} ${isSelected ? "!font-bold" : ""}`}
                                         >
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center justify-center">
                                                     <button
-                                                        onClick={() => handleSelectEducator(educator.educator_id)}
+                                                        onClick={() => handleSelectEducator(educator.login_id)}
                                                         className="text-textColor hover:text-primary transition-colors cursor-pointer"
                                                         disabled={isLoading}
                                                     >
@@ -298,7 +317,7 @@ const UnregisteredEducatorList: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-4 break-all">
-                                                <div className="text-textColor">{educator.name}</div>
+                                                <div className="text-textColor">{educator.user_name}</div>
                                             </td>
                                             <td className="px-8 py-4 break-all">
                                                 <div className="text-textColor">{educator.school_name}</div>
@@ -318,10 +337,10 @@ const UnregisteredEducatorList: React.FC = () => {
                                                     </button>
                                                     <button
                                                         onClick={() => openUnregisterEducatorModal(educator)}
-                                                        className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[110px] justify-center"
+                                                        className="bg-white border border-primary cursor-pointer text-textColor hover:bg-gray/10 px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                         disabled={isLoading}
                                                     >
-                                                        <img src={UnregisterIcon} alt="Unregister" className="h-4 w-4" />
+                                                        <X className="h-4 w-4" />
                                                         <span className="hidden md:inline font-bold">Unregister</span>
                                                     </button>
                                                 </div>

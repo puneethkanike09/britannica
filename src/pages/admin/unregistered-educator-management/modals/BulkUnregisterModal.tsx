@@ -3,17 +3,11 @@ import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
-
-interface Educator {
-    educator_id: string;
-    name: string;
-    school_name: string;
-    login_id: string;
-}
+import { UnregisteredEducator } from "../../../../types/admin/unregistered-educator-management";
 
 interface BulkUnregisterModalProps {
     onClose: () => void;
-    educators: Educator[];
+    educators: UnregisteredEducator[];
     onBulkUnregister: (unregisteredIds: string[]) => void;
 }
 
@@ -47,9 +41,8 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
         setIsUnregistering(true);
         setTimeout(() => {
             try {
-                const unregisteredIds = educators.map((edu) => edu.educator_id);
+                const unregisteredIds = educators.map((edu) => edu.login_id);
                 onBulkUnregister(unregisteredIds);
-                toast.success(`Unregistered ${educators.length} educator${educators.length !== 1 ? "s" : ""} successfully!`);
                 setIsUnregistering(false);
                 handleClose();
             } catch (error) {
@@ -103,10 +96,10 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
                                 <div className="flex flex-wrap gap-2">
                                     {educators.map((educator) => (
                                         <div
-                                            key={educator.educator_id}
+                                            key={educator.login_id}
                                             className="px-4 py-2 bg-white border border-primary text-textColor rounded-lg text-sm font-medium whitespace-nowrap hover:bg-primary/10"
                                         >
-                                            {educator.name}
+                                            {educator.user_name}
                                         </div>
                                     ))}
                                 </div>
@@ -122,7 +115,7 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
                                 </button>
                                 <button
                                     onClick={handleUnregister}
-                                    className={`bg-red text-white px-8 py-3 font-bold rounded-lg hover:bg-red/80 flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isUnregistering}
                                 >
                                     {isUnregistering ? (

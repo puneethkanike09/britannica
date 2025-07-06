@@ -3,11 +3,12 @@ import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { UnregisteredEducator } from "../../../../types/admin/unregistered-educator-management";
 
 interface UnregisterEducatorModalProps {
     onClose: () => void;
-    educator: { educator_id: string; name: string };
-    onEducatorUnregistered: (educator_id: string) => void;
+    educator: UnregisteredEducator;
+    onEducatorUnregistered: (login_id: string) => void;
 }
 
 const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
@@ -40,8 +41,7 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
         setIsUnregistering(true);
         setTimeout(() => {
             try {
-                onEducatorUnregistered(educator.educator_id);
-                toast.success(`${educator.name} has been unregistered successfully!`);
+                onEducatorUnregistered(educator.login_id);
                 setIsUnregistering(false);
                 handleClose();
             } catch (error) {
@@ -65,7 +65,7 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
                     transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
-                        className="bg-white rounded-lg w-full max-w-[500px] overflow-hidden flex flex-col sm:px-10 py-4"
+                        className="bg-white rounded-lg w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
@@ -84,10 +84,10 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
                             </button>
                         </div>
 
-                        {/* Content */}
-                        <div className="px-8 py-6">
+                        {/* Scrollable Content */}
+                        <div className="flex-1 overflow-y-auto px-8 py-6">
                             <p className="text-textColor text-base mb-6">
-                                Are you sure you want to unregister <span className="font-bold">{educator.name}</span>?
+                                Are you sure you want to unregister <span className="font-bold">{educator.user_name}</span>?
                             </p>
 
                             <div className="flex justify-start gap-4">
@@ -100,7 +100,7 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
                                 </button>
                                 <button
                                     onClick={handleUnregister}
-                                    className={`bg-red text-white px-8 py-3 font-bold rounded-lg hover:bg-red/80 flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isUnregistering}
                                 >
                                     {isUnregistering ? (
