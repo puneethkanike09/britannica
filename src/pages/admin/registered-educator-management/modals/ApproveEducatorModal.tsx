@@ -1,23 +1,21 @@
 import { X, Loader2 } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { RegisteredEducator } from "../../../../types/admin/registered-educator-management";
-import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface ApproveEducatorModalProps {
     onClose: () => void;
     educator: RegisteredEducator;
-    onEducatorApproved: (login_id: string) => void;
+    onConfirm: () => void;
+    isLoading?: boolean;
 }
 
-export default function ApproveEducatorModal({ onClose, educator, onEducatorApproved }: ApproveEducatorModalProps) {
-    const [isApproving, setIsApproving] = useState(false);
+export default function ApproveEducatorModal({ onClose, educator, onConfirm, isLoading }: ApproveEducatorModalProps) {
     const [isVisible, setIsVisible] = useState(true);
 
     const handleClose = () => {
-        if (isApproving) return;
+        if (isLoading) return;
         setIsVisible(false);
     };
 
@@ -28,29 +26,9 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isApproving) return;
+        if (isLoading) return;
         if (e.target === e.currentTarget) {
             handleClose();
-        }
-    };
-
-    const handleApprove = async () => {
-        setIsApproving(true);
-        try {
-            const response = await RegisteredEducatorService.approveEducator(educator.login_id);
-            if (response.error === false || response.error === "false") {
-                onEducatorApproved(educator.login_id);
-                toast.success(response.message || `${educator.user_name} has been approved successfully!`);
-                setIsApproving(false);
-                handleClose();
-            } else {
-                toast.error(response.message || "Failed to approve educator");
-                setIsApproving(false);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to approve educator");
-            setIsApproving(false);
         }
     };
 
@@ -79,8 +57,8 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
                             <h2 className="text-3xl font-bold text-textColor">Approve Educator</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isApproving ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                disabled={isApproving}
+                                className={`text-textColor hover:text-hover ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                disabled={isLoading}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -95,17 +73,17 @@ export default function ApproveEducatorModal({ onClose, educator, onEducatorAppr
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isApproving ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                    disabled={isApproving}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isLoading}
                                 >
                                     No, Cancel
                                 </button>
                                 <button
-                                    onClick={handleApprove}
-                                    className={`px-8 py-3 font-bold rounded-lg bg-primary text-white hover:bg-hover flex items-center justify-center gap-2 ${isApproving ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                    disabled={isApproving}
+                                    onClick={onConfirm}
+                                    className={`px-8 py-3 font-bold rounded-lg bg-primary text-white hover:bg-hover flex items-center justify-center gap-2 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isLoading}
                                 >
-                                    {isApproving ? <Loader2 className="animate-spin" /> : "Yes, Approve"}
+                                    {isLoading ? <Loader2 className="animate-spin" /> : "Yes, Approve"}
                                 </button>
                             </div>
                         </div>

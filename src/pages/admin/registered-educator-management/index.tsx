@@ -16,7 +16,7 @@ const RegisteredEducatorList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [educators, setEducators] = useState<RegisteredEducator[]>([]);
-    const [selectedEducators, setSelectedEducators] = useState<Set<string>>(new Set());
+    const [selectedEducators, setSelectedEducators] = useState<Set<number>>(new Set());
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
     const [pageSize, setPageSize] = useState(5);
@@ -30,6 +30,10 @@ const RegisteredEducatorList: React.FC = () => {
     const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
     const [showBulkRejectModal, setShowBulkRejectModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<RegisteredEducator | null>(null);
+    const [approveLoading, setApproveLoading] = useState(false);
+    const [rejectLoading, setRejectLoading] = useState(false);
+    const [bulkApproveLoading, setBulkApproveLoading] = useState(false);
+    const [bulkRejectLoading, setBulkRejectLoading] = useState(false);
 
     // Fetch registered educators from backend
     const loadRegisteredEducators = async (page = currentPage, size = pageSize, search = searchText) => {
@@ -64,11 +68,11 @@ const RegisteredEducatorList: React.FC = () => {
         if (selectedEducators.size === currentItems.length) {
             setSelectedEducators(new Set());
         } else {
-            setSelectedEducators(new Set(currentItems.map(edu => edu.login_id)));
+            setSelectedEducators(new Set(currentItems.map(edu => edu.user_id)));
         }
     };
 
-    const handleSelectEducator = (educatorId: string) => {
+    const handleSelectEducator = (educatorId: number) => {
         const newSelected = new Set(selectedEducators);
         if (newSelected.has(educatorId)) {
             newSelected.delete(educatorId);
@@ -131,15 +135,16 @@ const RegisteredEducatorList: React.FC = () => {
     };
 
     // Handle individual approve
-    const handleApproveEducator = async (login_id: string) => {
+    const handleApproveEducator = async () => {
+        if (!selectedEducator) return;
+        setApproveLoading(true);
         try {
-            const response = await RegisteredEducatorService.approveEducator(login_id);
+            const response = await RegisteredEducatorService.approveEducator(selectedEducator.user_id);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter((edu) => edu.login_id !== login_id));
+                setEducators(educators.filter((edu) => edu.user_id !== selectedEducator.user_id));
+                toast.success(response.message ?? "Educator approved successfully!");
                 setShowApproveModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message ?? "Educator approved successfully!");
-                // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
                 toast.error(response.message ?? "Failed to approve educator");
@@ -147,19 +152,22 @@ const RegisteredEducatorList: React.FC = () => {
         } catch (error) {
             console.error("Error approving educator:", error);
             toast.error("Failed to approve educator");
+        } finally {
+            setApproveLoading(false);
         }
     };
 
     // Handle individual reject
-    const handleRejectEducator = async (login_id: string, remarks: string) => {
+    const handleRejectEducator = async (remarks: string) => {
+        if (!selectedEducator) return;
+        setRejectLoading(true);
         try {
-            const response = await RegisteredEducatorService.rejectEducator(login_id, remarks);
+            const response = await RegisteredEducatorService.rejectEducator(selectedEducator.user_id, remarks);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter((edu) => edu.login_id !== login_id));
+                setEducators(educators.filter((edu) => edu.user_id !== selectedEducator.user_id));
+                toast.success(response.message ?? "Educator rejected successfully!");
                 setShowRejectModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message ?? "Educator rejected successfully!");
-                // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
                 toast.error(response.message ?? "Failed to reject educator");
@@ -167,19 +175,22 @@ const RegisteredEducatorList: React.FC = () => {
         } catch (error) {
             console.error("Error rejecting educator:", error);
             toast.error("Failed to reject educator");
+        } finally {
+            setRejectLoading(false);
         }
     };
 
     // Handle bulk approve complete
-    const handleBulkApproveComplete = async (approvedIds: string[]) => {
+    const handleBulkApproveComplete = async () => {
+        setBulkApproveLoading(true);
         try {
+            const approvedIds = selectedEducatorsList.map(edu => edu.user_id);
             const response = await RegisteredEducatorService.bulkApproveEducators(approvedIds);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter(edu => !approvedIds.includes(edu.login_id)));
+                setEducators(educators.filter(edu => !approvedIds.includes(edu.user_id)));
                 setSelectedEducators(new Set());
-                setShowBulkApproveModal(false);
                 toast.success(response.message ?? "Selected educators approved successfully!");
-                // Reload the list to get updated data
+                setShowBulkApproveModal(false);
                 loadRegisteredEducators();
             } else {
                 toast.error(response.message ?? "Failed to approve educators");
@@ -187,19 +198,22 @@ const RegisteredEducatorList: React.FC = () => {
         } catch (error) {
             console.error("Error bulk approving educators:", error);
             toast.error("Failed to approve educators");
+        } finally {
+            setBulkApproveLoading(false);
         }
     };
 
     // Handle bulk reject complete
-    const handleBulkRejectComplete = async (rejectedIds: string[], remarks: string) => {
+    const handleBulkRejectComplete = async (remarks: string) => {
+        setBulkRejectLoading(true);
         try {
+            const rejectedIds = selectedEducatorsList.map(edu => edu.user_id);
             const response = await RegisteredEducatorService.bulkRejectEducators(rejectedIds, remarks);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter(edu => !rejectedIds.includes(edu.login_id)));
+                setEducators(educators.filter(edu => !rejectedIds.includes(edu.user_id)));
                 setSelectedEducators(new Set());
-                setShowBulkRejectModal(false);
                 toast.success(response.message ?? "Selected educators rejected successfully!");
-                // Reload the list to get updated data
+                setShowBulkRejectModal(false);
                 loadRegisteredEducators();
             } else {
                 toast.error(response.message ?? "Failed to reject educators");
@@ -207,6 +221,8 @@ const RegisteredEducatorList: React.FC = () => {
         } catch (error) {
             console.error("Error bulk rejecting educators:", error);
             toast.error("Failed to reject educators");
+        } finally {
+            setBulkRejectLoading(false);
         }
     };
 
@@ -247,7 +263,7 @@ const RegisteredEducatorList: React.FC = () => {
         return pageNumbers;
     };
 
-    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.login_id));
+    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.user_id));
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
@@ -354,16 +370,16 @@ const RegisteredEducatorList: React.FC = () => {
                                 </tr>
                             ) : (
                                 currentItems.map((educator, index) => {
-                                    const isSelected = selectedEducators.has(educator.login_id);
+                                    const isSelected = selectedEducators.has(educator.user_id);
                                     return (
                                         <tr
-                                            key={educator.login_id}
+                                            key={educator.user_id}
                                             className={`${index % 2 === 1 ? "bg-third" : "bg-white"} ${isSelected ? "!font-bold" : ""}`}
                                         >
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center justify-center">
                                                     <button
-                                                        onClick={() => handleSelectEducator(educator.login_id)}
+                                                        onClick={() => handleSelectEducator(educator.user_id)}
                                                         className="text-textColor hover:text-primary transition-colors cursor-pointer"
                                                         disabled={isLoading}
                                                     >
@@ -467,28 +483,32 @@ const RegisteredEducatorList: React.FC = () => {
                 <ApproveEducatorModal
                     onClose={closeApproveEducatorModal}
                     educator={selectedEducator}
-                    onEducatorApproved={handleApproveEducator}
+                    onConfirm={handleApproveEducator}
+                    isLoading={approveLoading}
                 />
             )}
             {showRejectModal && selectedEducator && (
                 <RejectReasonModal
                     onClose={closeRejectEducatorModal}
                     educator={selectedEducator}
-                    onEducatorRejected={handleRejectEducator}
+                    onConfirm={handleRejectEducator}
+                    isLoading={rejectLoading}
                 />
             )}
             {showBulkApproveModal && (
                 <BulkApproveModal
                     onClose={() => setShowBulkApproveModal(false)}
                     educators={selectedEducatorsList}
-                    onBulkApprove={handleBulkApproveComplete}
+                    onConfirm={handleBulkApproveComplete}
+                    isLoading={bulkApproveLoading}
                 />
             )}
             {showBulkRejectModal && (
                 <BulkRejectModal
                     onClose={() => setShowBulkRejectModal(false)}
                     educators={selectedEducatorsList}
-                    onBulkReject={handleBulkRejectComplete}
+                    onConfirm={handleBulkRejectComplete}
+                    isLoading={bulkRejectLoading}
                 />
             )}
         </div>

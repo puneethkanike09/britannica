@@ -1,27 +1,25 @@
 import { X, Loader2 } from "lucide-react";
 import { useState, useCallback } from "react";
-import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { RegisteredEducator } from "../../../../types/admin/registered-educator-management";
-import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface RejectReasonModalProps {
     onClose: () => void;
     educator: RegisteredEducator;
-    onEducatorRejected: (login_id: string, remarks: string) => void;
+    onConfirm: (remarks: string) => void;
+    isLoading?: boolean;
 }
 
-export default function RejectReasonModal({ onClose, educator, onEducatorRejected }: RejectReasonModalProps) {
+export default function RejectReasonModal({ onClose, educator, onConfirm, isLoading }: RejectReasonModalProps) {
     const [reason, setReason] = useState("");
     const [error, setError] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
     const handleClose = useCallback(() => {
-        if (isSubmitting) return;
+        if (isLoading) return;
         setIsVisible(false);
-    }, [isSubmitting]);
+    }, [isLoading]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -30,7 +28,7 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isSubmitting) return;
+        if (isLoading) return;
         if (e.target === e.currentTarget) {
             handleClose();
         }
@@ -52,25 +50,9 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
         return true;
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (validateForm()) {
-            setIsSubmitting(true);
-            try {
-                const response = await RegisteredEducatorService.rejectEducator(educator.login_id, reason.trim());
-                if (response.error === false || response.error === "false") {
-                    onEducatorRejected(educator.login_id, reason.trim());
-                    toast.success(response.message || `${educator.user_name}'s registration has been rejected`);
-                    setIsSubmitting(false);
-                    handleClose();
-                } else {
-                    toast.error(response.message || "Failed to reject educator");
-                    setIsSubmitting(false);
-                }
-            } catch (error) {
-                console.error(error);
-                toast.error("Failed to reject educator");
-                setIsSubmitting(false);
-            }
+            onConfirm(reason.trim());
         }
     };
 
@@ -99,8 +81,8 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
                             <h2 className="text-3xl font-bold text-secondary">Reject Educator</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                disabled={isSubmitting}
+                                className={`text-textColor hover:text-hover ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                disabled={isLoading}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -123,8 +105,8 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
                                         placeholder="Provide a reason for rejecting the educator's registration"
                                         maxLength={200}
                                         rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""} focus:outline-none focus:border-primary`}
-                                        disabled={isSubmitting}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? "border-red" : "border-inputPlaceholder"} ${isLoading ? "cursor-not-allowed opacity-50" : ""} focus:outline-none focus:border-primary`}
+                                        disabled={isLoading}
                                     />
                                     {error && <p className="text-red text-sm mt-1">{error}</p>}
                                 </div>
@@ -133,10 +115,10 @@ export default function RejectReasonModal({ onClose, educator, onEducatorRejecte
                                     <button
                                         type="button"
                                         onClick={handleSubmit}
-                                        className={`bg-red text-white px-8 py-3 font-bold rounded-lg  hover:bg-red/80 flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                        disabled={isSubmitting}
+                                        className={`bg-red text-white px-8 py-3 font-bold rounded-lg  hover:bg-red/80 flex items-center gap-2 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                        disabled={isLoading}
                                     >
-                                        {isSubmitting ? (
+                                        {isLoading ? (
                                             <Loader2 className="animate-spin" />
                                         ) : (
                                             <span className="font-bold">Submit</span>

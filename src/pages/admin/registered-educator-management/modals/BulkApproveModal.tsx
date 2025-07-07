@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { backdropVariants, modalVariants } from '../../../../config/constants/Animations/modalAnimation';
 import { RegisteredEducator } from '../../../../types/admin/registered-educator-management';
-import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface BulkApproveModalProps {
     onClose: () => void;
     educators: RegisteredEducator[];
-    onBulkApprove: (approvedIds: string[]) => void;
+    onConfirm: () => void;
+    isLoading?: boolean;
 }
 
 const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
     onClose,
     educators,
-    onBulkApprove,
+    onConfirm,
+    isLoading,
 }) => {
-    const [isApproving, setIsApproving] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
     const handleClose = () => {
-        if (isApproving) return;
+        if (isLoading) return;
         setIsVisible(false);
     };
 
@@ -32,30 +31,9 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isApproving) return;
+        if (isLoading) return;
         if (e.target === e.currentTarget) {
             handleClose();
-        }
-    };
-
-    const handleApprove = async () => {
-        setIsApproving(true);
-        try {
-            const approvedIds = educators.map(edu => edu.login_id);
-            const response = await RegisteredEducatorService.bulkApproveEducators(approvedIds);
-            if (response.error === false || response.error === "false") {
-                onBulkApprove(approvedIds);
-                toast.success(response.message || `Approved ${educators.length} educator${educators.length !== 1 ? 's' : ''} successfully!`);
-                setIsApproving(false);
-                handleClose();
-            } else {
-                toast.error(response.message || 'Failed to approve educators');
-                setIsApproving(false);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to approve educators');
-            setIsApproving(false);
         }
     };
 
@@ -84,8 +62,8 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                             <h2 className="text-3xl font-bold text-secondary">Approve Educators</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isApproving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                disabled={isApproving}
+                                className={`text-textColor hover:text-hover ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                disabled={isLoading}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -102,7 +80,7 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                                 <div className="flex flex-wrap gap-2">
                                     {educators.map((educator) => (
                                         <div
-                                            key={educator.login_id}
+                                            key={educator.user_id}
                                             className="px-4 py-2 bg-white border border-primary text-textColor rounded-lg text-sm font-medium whitespace-nowrap hover:bg-primary/10 "
                                         >
                                             {educator.user_name}
@@ -114,19 +92,19 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                             <div className="flex justify-start gap-4 mt-12">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isApproving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                                         }`}
-                                    disabled={isApproving}
+                                    disabled={isLoading}
                                 >
                                     No, Cancel
                                 </button>
                                 <button
-                                    onClick={handleApprove}
-                                    className={`px-8 py-3 font-bold rounded-lg bg-primary text-white hover:bg-hover flex items-center justify-center gap-2 ${isApproving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                    onClick={onConfirm}
+                                    className={`px-8 py-3 font-bold rounded-lg bg-primary text-white hover:bg-hover flex items-center justify-center gap-2 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                                         }`}
-                                    disabled={isApproving}
+                                    disabled={isLoading}
                                 >
-                                    {isApproving ? (
+                                    {isLoading ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
                                         <span className="font-bold">Yes, Approve All</span>

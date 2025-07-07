@@ -39,9 +39,9 @@ export class RegisteredEducatorService {
         }
     }
 
-    static async approveEducator(id: string | number): Promise<ActionResponse> {
+    static async approveEducator(user_id: string | number): Promise<ActionResponse> {
         try {
-            return await apiClient.put(`/teacher/approve/${id}`, {});
+            return await apiClient.put(`/teacher/approve/${user_id}`, {});
 
         } catch (error) {
             console.error("Error approving educator:", error);
@@ -52,9 +52,9 @@ export class RegisteredEducatorService {
         }
     }
 
-    static async bulkApproveEducators(ids: (string | number)[]): Promise<ActionResponse> {
+    static async bulkApproveEducators(user_ids: (string | number)[]): Promise<ActionResponse> {
         try {
-            return await apiClient.put("/teacher/approve-all", { ids });
+            return await apiClient.put("/teacher/approve-all", { ids: user_ids });
         } catch (error) {
             console.error("Error bulk approving educators:", error);
             return {
@@ -64,10 +64,10 @@ export class RegisteredEducatorService {
         }
     }
 
-    static async rejectEducator(userId: string | number, remarks: string): Promise<ActionResponse> {
+    static async rejectEducator(user_id: string | number, remarks: string): Promise<ActionResponse> {
         try {
             return await apiClient.put("/teacher/reject", {
-                user_id: userId,
+                user_id: user_id,
                 remarks: remarks
             });
 
@@ -80,10 +80,10 @@ export class RegisteredEducatorService {
         }
     }
 
-    static async bulkRejectEducators(ids: (string | number)[], remarks: string): Promise<ActionResponse> {
+    static async bulkRejectEducators(user_ids: (string | number)[], remarks: string): Promise<ActionResponse> {
         try {
             return await apiClient.put("/teacher/reject-all", {
-                ids: ids,
+                ids: user_ids,
                 remarks: remarks
             });
 

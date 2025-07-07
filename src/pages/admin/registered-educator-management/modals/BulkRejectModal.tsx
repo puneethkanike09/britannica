@@ -1,31 +1,30 @@
 import React, { useState, useCallback } from 'react';
 import { X, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { backdropVariants, modalVariants } from '../../../../config/constants/Animations/modalAnimation';
 import { RegisteredEducator } from '../../../../types/admin/registered-educator-management';
-import { RegisteredEducatorService } from '../../../../services/admin/registeredEducatorService';
 
 interface BulkRejectModalProps {
     onClose: () => void;
     educators: RegisteredEducator[];
-    onBulkReject: (rejectedIds: string[], remarks: string) => void;
+    onConfirm: (remarks: string) => void;
+    isLoading?: boolean;
 }
 
 const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
     onClose,
     educators,
-    onBulkReject,
+    onConfirm,
+    isLoading,
 }) => {
     const [reason, setReason] = useState('');
     const [error, setError] = useState('');
-    const [isRejecting, setIsRejecting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
     const handleClose = useCallback(() => {
-        if (isRejecting) return;
+        if (isLoading) return;
         setIsVisible(false);
-    }, [isRejecting]);
+    }, [isLoading]);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -34,7 +33,7 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isRejecting) return;
+        if (isLoading) return;
         if (e.target === e.currentTarget) {
             handleClose();
         }
@@ -56,27 +55,9 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
         return true;
     };
 
-    const handleReject = async () => {
+    const handleReject = () => {
         if (!validateForm()) return;
-
-        setIsRejecting(true);
-        try {
-            const rejectedIds = educators.map(edu => edu.login_id);
-            const response = await RegisteredEducatorService.bulkRejectEducators(rejectedIds, reason.trim());
-            if (response.error === false || response.error === "false") {
-                onBulkReject(rejectedIds, reason.trim());
-                toast.success(response.message || `Rejected ${educators.length} educator${educators.length !== 1 ? 's' : ''} successfully!`);
-                setIsRejecting(false);
-                handleClose();
-            } else {
-                toast.error(response.message || 'Failed to reject educators');
-                setIsRejecting(false);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to reject educators');
-            setIsRejecting(false);
-        }
+        onConfirm(reason.trim());
     };
 
     return (
@@ -104,8 +85,8 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                             <h2 className="text-3xl font-bold text-secondary">Reject Educators</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isRejecting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                disabled={isRejecting}
+                                className={`text-textColor hover:text-hover ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                disabled={isLoading}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -122,7 +103,7 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                                 <div className="flex flex-wrap gap-2">
                                     {educators.map((educator) => (
                                         <div
-                                            key={educator.login_id}
+                                            key={educator.user_id}
                                             className="px-4 py-2 bg-white border border-primary text-textColor rounded-lg text-sm font-medium whitespace-nowrap hover:bg-primary/10 "
                                         >
                                             {educator.user_name}
@@ -142,8 +123,8 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                                         placeholder="Provide a reason for rejecting the educators' registrations"
                                         maxLength={200}
                                         rows={4}
-                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? 'border-red' : 'border-inputBorder'} ${isRejecting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
-                                        disabled={isRejecting}
+                                        className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${error ? 'border-red' : 'border-inputBorder'} ${isLoading ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                        disabled={isLoading}
                                     />
                                     {error && <p className="text-red text-sm mt-1">{error}</p>}
                                 </div>
@@ -151,19 +132,19 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                                 <div className="flex justify-start gap-4 mt-12">
                                     <button
                                         onClick={handleClose}
-                                        className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isRejecting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                        className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                                             }`}
-                                        disabled={isRejecting}
+                                        disabled={isLoading}
                                     >
                                         No, Cancel
                                     </button>
                                     <button
                                         onClick={handleReject}
-                                        className={`bg-red text-white px-8 py-3 font-bold rounded-lg hover:bg-red/80 flex items-center gap-2 ${isRejecting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                        className={`bg-red text-white px-8 py-3 font-bold rounded-lg hover:bg-red/80 flex items-center gap-2 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                                             }`}
-                                        disabled={isRejecting}
+                                        disabled={isLoading}
                                     >
-                                        {isRejecting ? (
+                                        {isLoading ? (
                                             <Loader2 className="h-5 w-5 animate-spin" />
                                         ) : (
                                             <span className="font-bold">Yes, Reject All</span>
