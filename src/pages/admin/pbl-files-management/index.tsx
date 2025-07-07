@@ -126,7 +126,7 @@ const PblFileManagement: React.FC = () => {
                 <button
                     onClick={openAddPblFileModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg  flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddPblFileIcon} alt="Add PBL File" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add PBL File</span>

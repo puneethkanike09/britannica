@@ -8,7 +8,7 @@ import { apiClient } from '../../utils/apiClient';
 export class PblFileServices {
     static async fetchGrades(): Promise<FetchGradesResponse> {
         try {
-            const response = await apiClient.get("/grade");
+            const response = await apiClient.get("/grade/list");
             return response;
         } catch (error) {
             console.error("Error fetching grades:", error);
@@ -21,7 +21,7 @@ export class PblFileServices {
 
     static async fetchThemes(): Promise<FetchThemesResponse> {
         try {
-            const response = await apiClient.get("/theme");
+            const response = await apiClient.get("/theme/list");
             return response;
         } catch (error) {
             console.error("Error fetching themes:", error);
@@ -34,7 +34,7 @@ export class PblFileServices {
 
     static async fetchUserAccessTypes(): Promise<FetchUserAccessTypesResponse> {
         try {
-            const response = await apiClient.get("/user_access_type");
+            const response = await apiClient.get("/user_access_type/list");
             return response;
         } catch (error) {
             console.error("Error fetching user access types:", error);
