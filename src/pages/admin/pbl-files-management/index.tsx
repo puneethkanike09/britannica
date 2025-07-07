@@ -1,132 +1,145 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import ViewIcon from "../../../assets/dashboard/Admin/pbl-file-management/view.svg";
-import EditIcon from "../../../assets/dashboard/Admin/pbl-file-management/edit.svg";
-import DeleteIcon from "../../../assets/dashboard/Admin/pbl-file-management/delete.svg";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+// import ViewIcon from "../../../assets/dashboard/Admin/pbl-file-management/view.svg";
+// import EditIcon from "../../../assets/dashboard/Admin/pbl-file-management/edit.svg";
+// import DeleteIcon from "../../../assets/dashboard/Admin/pbl-file-management/delete.svg";
 import AddPblFileIcon from "../../../assets/dashboard/Admin/pbl-file-management/add-pbl-file.svg";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
-import AddPblFileModal from "./modals/AddPblFileModal";
-import EditPblFileModal from "./modals/EditPblFileModal";
-import ViewPblFileModal from "./modals/ViewPblFileModal";
-import DeletePblFileModal from "./modals/DeletePblFileModal";
+import { PblFile } from "../../../types/admin/pbl-files-management";
+import { PblFileServices } from "../../../services/admin/pblFileServices";
+// import AddPblFileModal from "./modals/AddPblFileModal";
+// import EditPblFileModal from "./modals/EditPblFileModal";
+// import ViewPblFileModal from "./modals/ViewPblFileModal";
+// import DeletePblFileModal from "./modals/DeletePblFileModal";
 
-interface PblFile {
-    file_id: string;
-    name: string;
-    description: string;
-    grade: string;
-    theme: string;
-    type: string;
-    file: File | null;
-}
 
 const PblFileManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showViewModal, setShowViewModal] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<PblFile | null>(null);
+    // const [showAddModal, setShowAddModal] = useState(false);
+    // const [showEditModal, setShowEditModal] = useState(false);
+    // const [showViewModal, setShowViewModal] = useState(false);
+    // const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // const [selectedFile, setSelectedFile] = useState<PblFile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [files, setFiles] = useState<PblFile[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const [searchText, setSearchText] = useState("");
+    const [appliedSearchText, setAppliedSearchText] = useState("");
 
-    const itemsPerPage = 6;
-
-    const dummyFiles: PblFile[] = Array.from({ length: 12 }, (_, i) => ({
-        file_id: `file-${i + 1}`,
-        name: `File ${i + 1}`,
-        description: `Description for File ${i + 1} details.`,
-        grade: `Grade ${i % 3 + 1}`,
-        theme: `Theme ${i % 4 + 1}`,
-        type: `Type ${i % 2 + 1}`,
-        file: null,
-    }));
+    // Fetch PBL files on mount and when needed
+    const fetchPblFiles = async (page = currentPage, size = pageSize, search = searchText) => {
+        setIsLoading(true);
+        try {
+            const response = await PblFileServices.fetchPblFiles({ page, size, search });
+            if (response.error === false || response.error === "false") {
+                setFiles(response.pbl_files || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalElements(response.totalItems || 0);
+                setPageSize(response.pageSize || size);
+            } else {
+                toast.error(response.message || 'Failed to fetch PBL files');
+            }
+        } catch (error) {
+            toast.error('Failed to fetch PBL files');
+            console.error('Fetch PBL files error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        setIsLoading(true);
-        setTimeout(() => {
-            setFiles(dummyFiles);
-            setIsLoading(false);
-        }, 1000);
-    }, []);
+        fetchPblFiles(currentPage, pageSize, appliedSearchText);
+    }, [currentPage, pageSize, appliedSearchText]);
 
-    const totalPages = Math.ceil(files.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = files.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = files;
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    const openAddPblFileModal = () => setShowAddModal(true);
-    const openEditPblFileModal = (file: PblFile) => {
-        setSelectedFile(file);
-        setShowEditModal(true);
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
     };
-    const openViewPblFileModal = (file: PblFile) => {
-        setSelectedFile(file);
-        setShowViewModal(true);
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setAppliedSearchText(searchText);
     };
-    const openDeletePblFileModal = (file: PblFile) => {
-        setSelectedFile(file);
-        setShowDeleteModal(true);
+    const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
     };
+
+    // const openAddPblFileModal = () => setShowAddModal(true);
+    // const openEditPblFileModal = (file: PblFile) => {
+    //     setSelectedFile(file);
+    //     setShowEditModal(true);
+    // };
+    // const openViewPblFileModal = (file: PblFile) => {
+    //     setSelectedFile(file);
+    //     setShowViewModal(true);
+    // };
+    // const openDeletePblFileModal = (file: PblFile) => {
+    //     setSelectedFile(file);
+    //     setShowDeleteModal(true);
+    // };
 
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
         if (totalPages <= 4) {
-            for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
         } else {
             pageNumbers.push(1);
-            if (currentPage <= 2) pageNumbers.push(2, 3, "...");
-            else if (currentPage >= totalPages - 1) pageNumbers.push("...", totalPages - 2, totalPages - 1);
-            else pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
+            if (currentPage <= 2) {
+                pageNumbers.push(2, 3, "...");
+            } else if (currentPage >= totalPages - 1) {
+                pageNumbers.push("...", totalPages - 2, totalPages - 1);
+            } else {
+                pageNumbers.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
+            }
             pageNumbers.push(totalPages);
         }
         return pageNumbers;
     };
 
-    const closeAddPblFileModal = () => setShowAddModal(false);
-    const closeEditPblFileModal = () => {
-        setShowEditModal(false);
-        setSelectedFile(null);
-    };
-    const closeViewPblFileModal = () => {
-        setShowViewModal(false);
-        setSelectedFile(null);
-    };
-    const closeDeletePblFileModal = () => {
-        setShowDeleteModal(false);
-        setSelectedFile(null);
-    };
+    // const closeAddPblFileModal = () => setShowAddModal(false);
+    // const closeEditPblFileModal = () => {
+    //     setShowEditModal(false);
+    //     setSelectedFile(null);
+    // };
+    // const closeViewPblFileModal = () => {
+    //     setShowViewModal(false);
+    //     setSelectedFile(null);
+    // };
+    // const closeDeletePblFileModal = () => {
+    //     setShowDeleteModal(false);
+    //     setSelectedFile(null);
+    // };
 
-    const handleFileAdded = (newFile: { name: string; description: string; grade: string; theme: string; type: string; file: File }) => {
-        const fileWithId = { ...newFile, file_id: `file-${files.length + 1}` };
-        setFiles([...files, fileWithId]);
-        toast.success("File added successfully");
-        closeAddPblFileModal();
-    };
-
-    const handleFileUpdated = (updatedFile: PblFile) => {
-        setFiles(files.map((file) => (file.file_id === updatedFile.file_id ? updatedFile : file)));
-        toast.success("File updated successfully");
-        closeEditPblFileModal();
-    };
-
-    const handlePblFileDeleted = (file_id: string) => {
-        setFiles(files.filter((file) => file.file_id !== file_id));
-        toast.success("File deleted successfully");
-        closeDeletePblFileModal();
-    };
+    // const handleFileAdded = () => {
+    //     fetchPblFiles();
+    //     closeAddPblFileModal();
+    // };
+    // const handleFileUpdated = () => {
+    //     fetchPblFiles();
+    //     closeEditPblFileModal();
+    // };
+    // const handlePblFileDeleted = () => {
+    //     fetchPblFiles();
+    //     closeDeletePblFileModal();
+    // };
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-secondary">PBL File List</h1>
+                <h1 className="text-3xl font-bold text-secondary">PBL File List ( {totalElements} )</h1>
                 <button
-                    onClick={openAddPblFileModal}
+                    // onClick={openAddPblFileModal}
                     disabled={isLoading}
-                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg  flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                     <img src={AddPblFileIcon} alt="Add PBL File" className="h-6 w-6" />
                     <span className="hidden md:inline font-bold">Add PBL File</span>
@@ -135,21 +148,38 @@ const PblFileManagement: React.FC = () => {
 
             {/* Search Box UI */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
-                <div className="flex w-full md:max-w-md gap-2">
+                <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Enter keyword to search"
                         className="p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary"
                         disabled={isLoading}
+                        value={searchText}
+                        onChange={handleSearchChange}
                     />
                     <button
-                        type="button"
-                        className="bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2"
+                        type="submit"
+                        className={`bg-primary hover:bg-hover text-white px-6 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isLoading}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                        <Search className="h-5 w-5" />
                         <span className="hidden md:inline font-bold">Search</span>
                     </button>
+                </form>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <label htmlFor="pageSize" className="text-base text-textColor">Rows per page:</label>
+                    <select
+                        id="pageSize"
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="p-2 border text-textColor rounded-lg text-base bg-inputBg border-inputBorder focus:outline-none focus:border-primary"
+                        disabled={isLoading}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
                 </div>
             </div>
 
@@ -160,8 +190,8 @@ const PblFileManagement: React.FC = () => {
                             <col className="w-[20%] min-w-[160px]" />
                             <col className="w-[15%] min-w-[120px]" />
                             <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[20%] min-w-[160px]" />
                             <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[20%] min-w-[160px]" />
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
@@ -176,51 +206,54 @@ const PblFileManagement: React.FC = () => {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="px-8 py-16">
-                                        <Loader message="Loading file data..." />
+                                        <Loader message="Loading PBL file data..." />
                                     </td>
                                 </tr>
                             ) : files.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="px-8 py-16 text-center text-textColor">
-                                        No files found.
+                                        No PBL files found.
                                     </td>
                                 </tr>
                             ) : (
                                 currentItems.map((file, index) => (
-                                    <tr key={file.file_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                    <tr key={file.pbl_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{file.name}</div>
+                                            <div className="text-textColor">{file.pbl_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{file.grade}</div>
+                                            <div className="text-textColor">{file.grade_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{file.theme}</div>
+                                            <div className="text-textColor">{file.theme_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{file.type}</div>
+                                            <div className="text-textColor">{file.user_access_type_name}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
-                                                    onClick={() => openViewPblFileModal(file)}
+                                                    // onClick={() => openViewPblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
-                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
+                                                    {/* <img src={ViewIcon} alt="View" className="h-4 w-4" /> */}
                                                     <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => openEditPblFileModal(file)}
+                                                    // onClick={() => openEditPblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
-                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
+                                                    {/* <img src={EditIcon} alt="Edit" className="h-4 w-4" /> */}
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => openDeletePblFileModal(file)}
+                                                    // onClick={() => openDeletePblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
+                                                    disabled={isLoading}
                                                 >
-                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
+                                                    {/* <img src={DeleteIcon} alt="Delete" className="h-4 w-4" /> */}
                                                     <span className="hidden md:inline font-bold">Delete</span>
                                                 </button>
                                             </div>
@@ -237,8 +270,8 @@ const PblFileManagement: React.FC = () => {
                         <nav className="flex items-center space-x-1">
                             <button
                                 onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`p-2 rounded ${currentPage === 1 ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === 1 || isLoading}
+                                className={`p-2 rounded ${currentPage === 1 || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -253,7 +286,7 @@ const PblFileManagement: React.FC = () => {
                                             ? "text-textColor hover:bg-third"
                                             : "text-darkGray"
                                         }`}
-                                    disabled={typeof number !== "number"}
+                                    disabled={typeof number !== "number" || isLoading}
                                 >
                                     {number}
                                 </button>
@@ -261,8 +294,8 @@ const PblFileManagement: React.FC = () => {
 
                             <button
                                 onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`p-2 rounded ${currentPage === totalPages ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
+                                disabled={currentPage === totalPages || isLoading}
+                                className={`p-2 rounded ${currentPage === totalPages || isLoading ? "text-gray cursor-not-allowed" : "text-textColor cursor-pointer hover:bg-third"}`}
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>
@@ -271,12 +304,12 @@ const PblFileManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddPblFileModal onClose={closeAddPblFileModal} onFileAdded={handleFileAdded} />}
+            {/* {showAddModal && <AddPblFileModal onClose={closeAddPblFileModal} onFileAdded={handleFileAdded} />}
             {showEditModal && selectedFile && <EditPblFileModal onClose={closeEditPblFileModal} file={selectedFile} onFileUpdated={handleFileUpdated} />}
             {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />}
             {showDeleteModal && selectedFile && (
                 <DeletePblFileModal onClose={closeDeletePblFileModal} file={selectedFile} onDeleted={handlePblFileDeleted} />
-            )}
+            )} */}
         </div>
     );
 };

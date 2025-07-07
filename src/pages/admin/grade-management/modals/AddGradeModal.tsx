@@ -114,6 +114,7 @@ export default function AddGradeModal({ onClose, onAdded }: AddGradeModalProps) 
                     toast.error(response.message ?? 'Failed to add grade');
                 }
             } catch (error) {
+                console.log(error)
                 toast.error('Failed to add grade');
             } finally {
                 setIsSubmitting(false);
@@ -136,8 +137,8 @@ export default function AddGradeModal({ onClose, onAdded }: AddGradeModalProps) 
                     <motion.div
                         className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
-                        initial="hidden"    
-                        animate="visible"   
+                        initial="hidden"
+                        animate="visible"
                         exit="exit"
                         onClick={(e) => e.stopPropagation()}
                     >
