@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-// import ViewIcon from "../../../assets/dashboard/Admin/pbl-file-management/view.svg";
-// import EditIcon from "../../../assets/dashboard/Admin/pbl-file-management/edit.svg";
-// import DeleteIcon from "../../../assets/dashboard/Admin/pbl-file-management/delete.svg";
+import ViewIcon from "../../../assets/dashboard/Admin/pbl-file-management/view.svg";
+import EditIcon from "../../../assets/dashboard/Admin/pbl-file-management/edit.svg";
+import DeleteIcon from "../../../assets/dashboard/Admin/pbl-file-management/delete.svg";
 import AddPblFileIcon from "../../../assets/dashboard/Admin/pbl-file-management/add-pbl-file.svg";
 import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
@@ -237,7 +237,7 @@ const PblFileManagement: React.FC = () => {
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
-                                                    {/* <img src={ViewIcon} alt="View" className="h-4 w-4" /> */}
+                                                    <img src={ViewIcon} alt="View" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
@@ -245,7 +245,7 @@ const PblFileManagement: React.FC = () => {
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
-                                                    {/* <img src={EditIcon} alt="Edit" className="h-4 w-4" /> */}
+                                                    <img src={EditIcon} alt="Edit" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
                                                 <button
@@ -253,7 +253,7 @@ const PblFileManagement: React.FC = () => {
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
-                                                    {/* <img src={DeleteIcon} alt="Delete" className="h-4 w-4" /> */}
+                                                    <img src={DeleteIcon} alt="Delete" className="h-4 w-4" />
                                                     <span className="hidden md:inline font-bold">Delete</span>
                                                 </button>
                                             </div>
