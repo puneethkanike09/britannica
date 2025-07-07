@@ -1,29 +1,27 @@
 import React, { useState, useCallback } from "react";
 import { X, Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { UnregisteredEducator } from "../../../../types/admin/unregistered-educator-management";
-import { UnregisteredEducatorService } from "../../../../services/admin/unregisteredEducatorService";
 
 interface BulkUnregisterModalProps {
     onClose: () => void;
     educators: UnregisteredEducator[];
-    onBulkUnregister: (unregisteredIds: string[]) => void;
+    onConfirm: (unregisteredIds: number[]) => void;
+    isLoading?: boolean;
 }
 
 const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
     onClose,
     educators,
-    onBulkUnregister,
+    onConfirm,
+    isLoading,
 }) => {
-    const [isUnregistering, setIsUnregistering] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
     const handleClose = useCallback(() => {
-        if (isUnregistering) return;
         setIsVisible(false);
-    }, [isUnregistering]);
+    }, []);
 
     const handleAnimationComplete = () => {
         if (!isVisible) {
@@ -32,30 +30,16 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
     };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isUnregistering) return;
         if (e.target === e.currentTarget) {
             handleClose();
         }
     };
 
-    const handleUnregister = async () => {
-        setIsUnregistering(true);
-        try {
-            const unregisteredIds = educators.map((edu) => edu.login_id);
-            const response = await UnregisteredEducatorService.bulkUnregisterEducators(unregisteredIds);
-            if (response.error === false || response.error === "false") {
-                onBulkUnregister(unregisteredIds);
-                toast.success(response.message ?? `${educators.length} educator(s) have been unregistered successfully!`);
-                setIsUnregistering(false);
-                handleClose();
-            } else {
-                toast.error(response.message ?? "Failed to unregister educators");
-                setIsUnregistering(false);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to unregister educators");
-            setIsUnregistering(false);
+    const handleUnregister = () => {
+        if (!isLoading) {
+            const unregisteredIds = educators.map((edu) => edu.user_id);
+            onConfirm(unregisteredIds);
+            handleClose();
         }
     };
 
@@ -84,8 +68,8 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
                             <h2 className="text-3xl font-bold text-secondary">Unregister Educators</h2>
                             <button
                                 onClick={handleClose}
-                                className={`text-textColor hover:text-hover ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                disabled={isUnregistering}
+                                className={`text-textColor hover:text-hover ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                disabled={isLoading}
                             >
                                 <X className="h-7 w-7" />
                             </button>
@@ -114,17 +98,17 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
                             <div className="flex justify-start gap-4 mt-12">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                    disabled={isUnregistering}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isLoading}
                                 >
                                     No, Cancel
                                 </button>
                                 <button
                                     onClick={handleUnregister}
-                                    className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isUnregistering ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                                    disabled={isUnregistering}
+                                    className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    disabled={isLoading}
                                 >
-                                    {isUnregistering ? (
+                                    {isLoading ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
                                         <span className="font-bold">Yes, Unregister All</span>

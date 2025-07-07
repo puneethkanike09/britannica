@@ -14,7 +14,7 @@ const UnregisteredEducatorList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [educators, setEducators] = useState<UnregisteredEducator[]>([]);
-    const [selectedEducators, setSelectedEducators] = useState<Set<string>>(new Set());
+    const [selectedEducators, setSelectedEducators] = useState<Set<number>>(new Set());
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
     const [pageSize, setPageSize] = useState(5);
@@ -26,6 +26,8 @@ const UnregisteredEducatorList: React.FC = () => {
     const [showUnregisterModal, setShowUnregisterModal] = useState(false);
     const [showBulkUnregisterModal, setShowBulkUnregisterModal] = useState(false);
     const [selectedEducator, setSelectedEducator] = useState<UnregisteredEducator | null>(null);
+    const [unregisterLoading, setUnregisterLoading] = useState(false);
+    const [bulkUnregisterLoading, setBulkUnregisterLoading] = useState(false);
 
     // Fetch unregistered educators from backend
     const loadUnregisteredEducators = async (page = currentPage, size = pageSize, search = searchText) => {
@@ -60,11 +62,11 @@ const UnregisteredEducatorList: React.FC = () => {
         if (selectedEducators.size === currentItems.length) {
             setSelectedEducators(new Set());
         } else {
-            setSelectedEducators(new Set(currentItems.map(edu => edu.login_id)));
+            setSelectedEducators(new Set(currentItems.map(edu => edu.user_id)));
         }
     };
 
-    const handleSelectEducator = (educatorId: string) => {
+    const handleSelectEducator = (educatorId: number) => {
         const newSelected = new Set(selectedEducators);
         if (newSelected.has(educatorId)) {
             newSelected.delete(educatorId);
@@ -118,42 +120,45 @@ const UnregisteredEducatorList: React.FC = () => {
     };
 
     // Handle individual unregister
-    const handleUnregisterEducator = async (login_id: string) => {
+    const handleUnregisterEducator = async (user_id: number) => {
+        setUnregisterLoading(true);
         try {
-            const response = await UnregisteredEducatorService.unregisterEducator(login_id);
+            const response = await UnregisteredEducatorService.unregisterEducator(user_id);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter((edu) => edu.login_id !== login_id));
+                toast.success(response.message ?? "Educator unregistered successfully!");
                 setShowUnregisterModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message ?? "Educator unregistered successfully!");
-                // Reload the list to get updated data
-                loadUnregisteredEducators();
+                await loadUnregisteredEducators();
+                setSelectedEducators(new Set());
             } else {
                 toast.error(response.message ?? "Failed to unregister educator");
             }
         } catch (error) {
             console.error("Error unregistering educator:", error);
             toast.error("Failed to unregister educator");
+        } finally {
+            setUnregisterLoading(false);
         }
     };
 
     // Handle bulk unregister complete
-    const handleBulkUnregisterComplete = async (unregisteredIds: string[]) => {
+    const handleBulkUnregisterComplete = async (unregisteredIds: number[]) => {
+        setBulkUnregisterLoading(true);
         try {
             const response = await UnregisteredEducatorService.bulkUnregisterEducators(unregisteredIds);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter(edu => !unregisteredIds.includes(edu.login_id)));
-                setSelectedEducators(new Set());
-                setShowBulkUnregisterModal(false);
                 toast.success(response.message ?? "Selected educators unregistered successfully!");
-                // Reload the list to get updated data
-                loadUnregisteredEducators();
+                setShowBulkUnregisterModal(false);
+                await loadUnregisteredEducators();
+                setSelectedEducators(new Set());
             } else {
                 toast.error(response.message ?? "Failed to unregister educators");
             }
         } catch (error) {
             console.error("Error bulk unregistering educators:", error);
             toast.error("Failed to unregister educators");
+        } finally {
+            setBulkUnregisterLoading(false);
         }
     };
 
@@ -189,7 +194,7 @@ const UnregisteredEducatorList: React.FC = () => {
         return pageNumbers;
     };
 
-    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.login_id));
+    const selectedEducatorsList = educators.filter(edu => selectedEducators.has(edu.user_id));
 
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
@@ -295,16 +300,16 @@ const UnregisteredEducatorList: React.FC = () => {
                                 </tr>
                             ) : (
                                 currentItems.map((educator, index) => {
-                                    const isSelected = selectedEducators.has(educator.login_id);
+                                    const isSelected = selectedEducators.has(educator.user_id);
                                     return (
                                         <tr
-                                            key={educator.login_id}
+                                            key={educator.user_id}
                                             className={`${index % 2 === 1 ? "bg-third" : "bg-white"} ${isSelected ? "!font-bold" : ""}`}
                                         >
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center justify-center">
                                                     <button
-                                                        onClick={() => handleSelectEducator(educator.login_id)}
+                                                        onClick={() => handleSelectEducator(educator.user_id)}
                                                         className="text-textColor hover:text-primary transition-colors cursor-pointer"
                                                         disabled={isLoading}
                                                     >
@@ -400,14 +405,16 @@ const UnregisteredEducatorList: React.FC = () => {
                 <UnregisterEducatorModal
                     onClose={closeUnregisterEducatorModal}
                     educator={selectedEducator}
-                    onEducatorUnregistered={handleUnregisterEducator}
+                    onConfirm={handleUnregisterEducator}
+                    isLoading={unregisterLoading}
                 />
             )}
             {showBulkUnregisterModal && (
                 <BulkUnregisterModal
                     onClose={() => setShowBulkUnregisterModal(false)}
                     educators={selectedEducatorsList}
-                    onBulkUnregister={handleBulkUnregisterComplete}
+                    onConfirm={handleBulkUnregisterComplete}
+                    isLoading={bulkUnregisterLoading}
                 />
             )}
         </div>

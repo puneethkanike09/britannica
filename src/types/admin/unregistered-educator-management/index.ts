@@ -1,5 +1,6 @@
 // unregistered educator management page
 export interface UnregisteredEducator {
+    user_id: number;
     login_id: string;
     school_name: string;
     user_name: string;

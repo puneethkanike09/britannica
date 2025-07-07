@@ -64,4 +64,44 @@ export class UnregisteredEducatorService {
             };
         }
     }
+
+    static async fetchUnregisteredEducatorCompleteDetails(user_id: string | number): Promise<{
+        error: boolean | string;
+        teacher?: {
+            teacher_id: string | number;
+            first_name?: string;
+            last_name?: string;
+            mobile_no?: string;
+            email_id?: string;
+            login_id?: string;
+            school_name?: string;
+            status?: string;
+            created_user?: string | number;
+            created_ts?: string;
+            last_updated_user?: string | number;
+            last_updated_ts?: string;
+            addressLine1?: string;
+            city?: string;
+            state?: string;
+            country?: string;
+            pincode?: string;
+        };
+        token?: string;
+        message?: string;
+    }> {
+        try {
+            const response = await apiClient.get(
+                `/teacher/info/${user_id}`
+            );
+            if (response.teacher) return response;
+            if (response.educator) return { ...response, teacher: response.educator };
+            return response;
+        } catch (error) {
+            console.error("Error fetching unregistered educator complete details:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unknown error",
+            };
+        }
+    }
 } 
