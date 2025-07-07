@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { UnregisteredEducator } from "../../../../types/admin/unregistered-educator-management";
+import { UnregisteredEducatorService } from "../../../../services/admin/unregisteredEducatorService";
 
 interface BulkUnregisterModalProps {
     onClose: () => void;
@@ -37,20 +38,25 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
         }
     };
 
-    const handleUnregister = () => {
+    const handleUnregister = async () => {
         setIsUnregistering(true);
-        setTimeout(() => {
-            try {
-                const unregisteredIds = educators.map((edu) => edu.login_id);
+        try {
+            const unregisteredIds = educators.map((edu) => edu.login_id);
+            const response = await UnregisteredEducatorService.bulkUnregisterEducators(unregisteredIds);
+            if (response.error === false || response.error === "false") {
                 onBulkUnregister(unregisteredIds);
+                toast.success(response.message || `${educators.length} educator(s) have been unregistered successfully!`);
                 setIsUnregistering(false);
                 handleClose();
-            } catch (error) {
-                console.error(error);
-                toast.error("Failed to unregister educators");
+            } else {
+                toast.error(response.message || "Failed to unregister educators");
                 setIsUnregistering(false);
             }
-        }, 1000);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to unregister educators");
+            setIsUnregistering(false);
+        }
     };
 
     return (

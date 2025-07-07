@@ -6,6 +6,7 @@ import { Loader2, X, LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { backdropVariants, modalVariants } from "../config/constants/Animations/modalAnimation";
 import { useAuth } from "../hooks/useAuth";
+import { EducatorAuthService } from "../services/educator/educatorAuthService";
 
 const EducatorLogin = () => {
     const navigate = useNavigate();
@@ -63,6 +64,8 @@ const EducatorLogin = () => {
         return isValid;
     };
 
+
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -80,34 +83,29 @@ const EducatorLogin = () => {
         }
     };
 
-    const handleForgotPasswordSubmit = () => {
+    const handleForgotPasswordSubmit = async () => {
         if (!validateForgotPasswordForm()) return;
         setIsSubmitting(true);
-        toast.promise(
-            new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    if (forgotPasswordEmail) {
-                        resolve("Password reset email sent!");
-                        handleCloseForgotPassword();
-                        setShowSuccessModal(true);
-                        setIsSuccessVisible(true);
-                    } else {
-                        reject(new Error("Failed to send password reset email"));
-                    }
-                }, 2000);
-            }),
-            {
-                loading: "Sending reset link...",
-                success: () => {
-                    setIsSubmitting(false);
-                    return "Password reset link sent successfully!";
-                },
-                error: (err) => {
-                    setIsSubmitting(false);
-                    return `Error: ${err.message}`;
-                },
+        
+        try {
+            const response = await EducatorAuthService.forgotPassword({
+                email_id: forgotPasswordEmail
+            });
+            
+            if (!response.error) {
+                toast.success(response.message || "Password reset link sent successfully!");
+                handleCloseForgotPassword();
+                setShowSuccessModal(true);
+                setIsSuccessVisible(true);
+            } else {
+                toast.error(response.message || "Failed to send password reset link");
             }
-        );
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to send password reset link";
+            toast.error(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleCloseForgotPassword = () => {
@@ -127,7 +125,7 @@ const EducatorLogin = () => {
     const handleSuccessAnimationComplete = () => {
         if (!isSuccessVisible) {
             setShowSuccessModal(false);
-            navigate("/reset-password");
+            // Stay on the same page (educator login)
         }
     };
 
@@ -231,6 +229,21 @@ const EducatorLogin = () => {
                             )}
                         </div>
 
+                         <div className="text-right mb-5">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowForgotPasswordModal(true);
+                                    setIsForgotPasswordVisible(true);
+                                }}
+                                className="text-textColor hover:underline cursor-pointer"
+                                disabled={isSubmitting}
+                            >
+                                Forgot Password?
+                            </button>
+                        </div>
+
+
                         <div className="flex justify-start mt-10 w-full">
                             <button
                                 type="submit"
@@ -326,7 +339,7 @@ const EducatorLogin = () => {
                                         <button
                                             type="button"
                                             onClick={handleForgotPasswordSubmit}
-                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                                                 }`}
                                             disabled={isSubmitting}
                                         >
@@ -372,7 +385,7 @@ const EducatorLogin = () => {
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
-                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer"
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg cursor-pointer"
                                 >
                                     Done
                                 </button>

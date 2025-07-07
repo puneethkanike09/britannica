@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./pages/admin-login";
 import EducatorLogin from "./pages/educator-login";
-import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/admin/home-page";
 import SchoolManagement from "./pages/admin/school-management";
 import EducatorManagement from "./pages/admin/educator-management";
@@ -66,7 +65,6 @@ function App() {
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/educator-login" element={<EducatorLogin />} />
           <Route path="/educator-register" element={<EducatorRegistration />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/create-password" element={<CreatePassword />} />
 
           {/* Admin routes */}

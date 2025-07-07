@@ -67,7 +67,7 @@ export class RegisteredEducatorService {
 
     static async rejectEducator(userId: string | number, remarks: string): Promise<ActionResponse> {
         try {
-            const response = await apiClient.put("/teacher/reject/", {
+            const response = await apiClient.put("/teacher/reject", {
                 user_id: userId,
                 remarks: remarks
             });

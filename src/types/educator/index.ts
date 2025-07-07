@@ -156,3 +156,24 @@ export interface EducatorRegistrationFormData {
     educatorPhone: string;
     loginId: string;
 }
+
+// Forgot password types
+export interface ForgotPasswordRequest {
+    email_id: string;
+}
+
+export interface ForgotPasswordResponse {
+    error: boolean | string;
+    message?: string;
+}
+
+// Reset password types
+export interface ResetPasswordRequest {
+    password: string;
+    confirm_password: string;
+}
+
+export interface ResetPasswordResponse {
+    error: boolean | string;
+    message?: string;
+}

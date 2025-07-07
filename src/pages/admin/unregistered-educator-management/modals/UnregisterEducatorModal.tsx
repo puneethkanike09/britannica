@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { UnregisteredEducator } from "../../../../types/admin/unregistered-educator-management";
+import { UnregisteredEducatorService } from "../../../../services/admin/unregisteredEducatorService";
 
 interface UnregisterEducatorModalProps {
     onClose: () => void;
@@ -37,19 +38,24 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
         }
     };
 
-    const handleUnregister = () => {
+    const handleUnregister = async () => {
         setIsUnregistering(true);
-        setTimeout(() => {
-            try {
+        try {
+            const response = await UnregisteredEducatorService.unregisterEducator(educator.login_id);
+            if (response.error === false || response.error === "false") {
                 onEducatorUnregistered(educator.login_id);
+                toast.success(response.message || `${educator.user_name} has been unregistered successfully!`);
                 setIsUnregistering(false);
                 handleClose();
-            } catch (error) {
-                console.error(error);
-                toast.error("Failed to unregister educator");
+            } else {
+                toast.error(response.message || "Failed to unregister educator");
                 setIsUnregistering(false);
             }
-        }, 1000);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to unregister educator");
+            setIsUnregistering(false);
+        }
     };
 
     return (

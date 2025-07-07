@@ -50,13 +50,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            // Try both logouts for safety
             await AdminAuthService.logout();
-            await EducatorAuthService.logout();
             setIsAuthenticated(false);
             return { error: false };
         } catch (error) {
-            console.error("Logout error:", error);
             setIsAuthenticated(false);
             throw error;
         }
