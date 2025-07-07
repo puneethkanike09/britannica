@@ -191,11 +191,20 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
         return isValid;
     };
 
-    const handleAddFile = () => {
+    const handleAddFile = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            setTimeout(() => {
-                try {
+            try {
+                const response = await PblFileServices.uploadPblFile({
+                    file: formData.file!,
+                    grade_id: formData.grade,
+                    theme_id: formData.theme,
+                    user_access_type_id: formData.type,
+                    title: formData.name.trim(),
+                    desc: formData.description.trim(),
+                });
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || "File uploaded successfully");
                     onFileAdded({
                         name: formData.name.trim(),
                         description: formData.description.trim(),
@@ -204,15 +213,16 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                         type: formData.type,
                         file: formData.file!,
                     });
-                    toast.success("File added successfully!");
-                    setIsSubmitting(false);
                     handleClose();
-                } catch (error) {
-                    console.log(error);
-                    toast.error("Failed to add file");
-                    setIsSubmitting(false);
+                } else {
+                    toast.error(response.message || "Failed to add file");
                 }
-            }, 1000);
+            } catch (error) {
+                console.log(error);
+                toast.error("Failed to add file");
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

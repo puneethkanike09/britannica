@@ -3,11 +3,12 @@ import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
+import { PblFileServices } from "../../../../services/admin/pblFileServices";
 
 interface DeletePblFileModalProps {
     onClose: () => void;
-    file: { file_id: string; name: string; description: string; grade: string; theme: string; type: string; file: File | null };
-    onDeleted?: (file_id: string) => void;
+    file: { file_id: string | number; name: string; description: string; grade: string; theme: string; type: string; file: File | null };
+    onDeleted?: (file_id: string | number) => void;
 }
 
 export default function DeletePblFileModal({ onClose, file, onDeleted }: DeletePblFileModalProps) {
@@ -36,20 +37,23 @@ export default function DeletePblFileModal({ onClose, file, onDeleted }: DeleteP
         if (e.target === e.currentTarget) handleClose();
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setIsDeleting(true);
-        setTimeout(() => {
-            try {
+        try {
+            const response = await PblFileServices.deletePblFile(file.file_id);
+            if (response.error === false || response.error === "false") {
+                toast.success(response.message || "File deleted successfully");
                 if (onDeleted) onDeleted(file.file_id);
-                toast.success("File deleted successfully!");
-                setIsDeleting(false);
                 handleClose();
-            } catch (error) {
-                console.log(error);
-                toast.error("Failed to delete file");
-                setIsDeleting(false);
+            } else {
+                toast.error(response.message || "Failed to delete file");
             }
-        }, 1000);
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to delete file");
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (

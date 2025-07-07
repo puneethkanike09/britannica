@@ -40,7 +40,7 @@ const SchoolManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || 'Failed to fetch schools');
+                toast.error(response.message ?? 'Failed to fetch schools');
             }
         } catch (error) {
             toast.error('Failed to fetch schools');

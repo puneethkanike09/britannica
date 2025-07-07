@@ -37,7 +37,7 @@ const DeleteUserAccessTypeModal: React.FC<UserAccessTypeActionModalProps> = ({ o
                 if (onUserAccessTypeDeleted) onUserAccessTypeDeleted();
                 handleClose();
             } else {
-                toast.error(response.message || 'Failed to delete user access type');
+                toast.error(response.message ?? 'Failed to delete user access type');
             }
         } catch (error) {
             toast.error('Failed to delete user access type');

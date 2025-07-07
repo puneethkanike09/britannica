@@ -99,11 +99,11 @@ const AddUserAccessTypeModal: React.FC<AddUserAccessTypeModalProps> = ({ onClose
                     description: formData.description.trim(),
                 });
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'User access type added successfully!');
+                    toast.success(response.message ?? 'User access type added successfully!');
                     if (onUserAccessTypeAdded) onUserAccessTypeAdded();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to add user access type');
+                    toast.error(response.message ?? 'Failed to add user access type');
                 }
             } catch (error) {
                 toast.error('Failed to add user access type');

@@ -183,11 +183,11 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
                     login_id: formData.loginId,
                 });
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'Educator added successfully!');
+                    toast.success(response.message ?? 'Educator added successfully!');
                     if (onTeacherAdded) onTeacherAdded();
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to add educator');
+                    toast.error(response.message ?? 'Failed to add educator');
                 }
             } catch (error) {
                 const errMsg = (error as { message?: string })?.message || 'Failed to add educator';
@@ -209,7 +209,7 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
                     setSchools(res.school || []);
                 } else {
                     setSchools([]);
-                    toast.error(res.message || 'Failed to load schools');
+                    toast.error(res.message ?? 'Failed to load schools');
                 }
                 setIsSchoolsLoading(false);
             }

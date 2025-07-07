@@ -22,11 +22,11 @@ const AdminDashboard: React.FC = () => {
                     setEducatorCount(response.totalElements || 0);
                 } else {
                     setEducatorCount(0);
-                    toast.error(response.message || "Failed to load educator count");
+                    toast.error(response.message ?? "Failed to load educator count");
                 }
             } catch (error) {
                 console.error("Error fetching educator count:", error);
-                toast.error("Error loading educator count");
+                toast.error("Failed to load educator count");
             } finally {
                 setIsLoading(false);
             }

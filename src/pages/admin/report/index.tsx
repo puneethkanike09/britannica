@@ -76,7 +76,7 @@ const ReportManagement: React.FC = () => {
                 setReports([]);
                 setTotalPages(1);
                 setTotalElements(0);
-                toast.error(response.message || 'Failed to fetch reports');
+                toast.error(response.message ?? 'Failed to fetch reports');
             }
         } catch (error) {
             setReports([]);

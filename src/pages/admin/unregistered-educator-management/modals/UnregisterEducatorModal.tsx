@@ -44,11 +44,11 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
             const response = await UnregisteredEducatorService.unregisterEducator(educator.login_id);
             if (response.error === false || response.error === "false") {
                 onEducatorUnregistered(educator.login_id);
-                toast.success(response.message || `${educator.user_name} has been unregistered successfully!`);
+                toast.success(response.message ?? `${educator.user_name} has been unregistered successfully!`);
                 setIsUnregistering(false);
                 handleClose();
             } else {
-                toast.error(response.message || "Failed to unregister educator");
+                toast.error(response.message ?? "Failed to unregister educator");
                 setIsUnregistering(false);
             }
         } catch (error) {

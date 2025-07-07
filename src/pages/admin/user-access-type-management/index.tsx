@@ -40,7 +40,7 @@ const UserAccessTypeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || 'Failed to fetch user access types');
+                toast.error(response.message ?? 'Failed to fetch user access types');
             }
         } catch (error) {
             toast.error('Failed to fetch user access types');

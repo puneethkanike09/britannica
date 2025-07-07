@@ -38,11 +38,11 @@ const UnregisteredEducatorList: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || "Failed to load unregistered educators");
+                toast.error(response.message ?? "Failed to load unregistered educators");
             }
         } catch (error) {
             console.error("Error fetching unregistered educators:", error);
-            toast.error("Error loading unregistered educators");
+            toast.error("Failed to load unregistered educators");
         } finally {
             setIsLoading(false);
         }
@@ -125,11 +125,11 @@ const UnregisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter((edu) => edu.login_id !== login_id));
                 setShowUnregisterModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message || "Educator unregistered successfully");
+                toast.success(response.message ?? "Educator unregistered successfully!");
                 // Reload the list to get updated data
                 loadUnregisteredEducators();
             } else {
-                toast.error(response.message || "Failed to unregister educator");
+                toast.error(response.message ?? "Failed to unregister educator");
             }
         } catch (error) {
             console.error("Error unregistering educator:", error);
@@ -145,11 +145,11 @@ const UnregisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter(edu => !unregisteredIds.includes(edu.login_id)));
                 setSelectedEducators(new Set());
                 setShowBulkUnregisterModal(false);
-                toast.success(response.message || "Selected educators unregistered successfully");
+                toast.success(response.message ?? "Selected educators unregistered successfully!");
                 // Reload the list to get updated data
                 loadUnregisteredEducators();
             } else {
-                toast.error(response.message || "Failed to unregister educators");
+                toast.error(response.message ?? "Failed to unregister educators");
             }
         } catch (error) {
             console.error("Error bulk unregistering educators:", error);

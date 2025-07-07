@@ -40,11 +40,11 @@ const EducatorManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || "Failed to load educators");
+                toast.error(response.message ?? "Failed to load educators");
             }
         } catch (error) {
             console.error("Error fetching educators:", error);
-            toast.error("Error loading educators");
+            toast.error("Failed to load educators");
         } finally {
             setIsLoading(false);
         }

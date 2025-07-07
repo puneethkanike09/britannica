@@ -42,11 +42,11 @@ const RegisteredEducatorList: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || "Failed to load registered educators");
+                toast.error(response.message ?? "Failed to load registered educators");
             }
         } catch (error) {
             console.error("Error fetching registered educators:", error);
-            toast.error("Error loading registered educators");
+            toast.error("Failed to load registered educators");
         } finally {
             setIsLoading(false);
         }
@@ -138,11 +138,11 @@ const RegisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter((edu) => edu.login_id !== login_id));
                 setShowApproveModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message || "Educator approved successfully");
+                toast.success(response.message ?? "Educator approved successfully!");
                 // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
-                toast.error(response.message || "Failed to approve educator");
+                toast.error(response.message ?? "Failed to approve educator");
             }
         } catch (error) {
             console.error("Error approving educator:", error);
@@ -158,11 +158,11 @@ const RegisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter((edu) => edu.login_id !== login_id));
                 setShowRejectModal(false);
                 setSelectedEducator(null);
-                toast.success(response.message || "Educator rejected successfully");
+                toast.success(response.message ?? "Educator rejected successfully!");
                 // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
-                toast.error(response.message || "Failed to reject educator");
+                toast.error(response.message ?? "Failed to reject educator");
             }
         } catch (error) {
             console.error("Error rejecting educator:", error);
@@ -178,11 +178,11 @@ const RegisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter(edu => !approvedIds.includes(edu.login_id)));
                 setSelectedEducators(new Set());
                 setShowBulkApproveModal(false);
-                toast.success(response.message || "Selected educators approved successfully");
+                toast.success(response.message ?? "Selected educators approved successfully!");
                 // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
-                toast.error(response.message || "Failed to approve educators");
+                toast.error(response.message ?? "Failed to approve educators");
             }
         } catch (error) {
             console.error("Error bulk approving educators:", error);
@@ -198,11 +198,11 @@ const RegisteredEducatorList: React.FC = () => {
                 setEducators(educators.filter(edu => !rejectedIds.includes(edu.login_id)));
                 setSelectedEducators(new Set());
                 setShowBulkRejectModal(false);
-                toast.success(response.message || "Selected educators rejected successfully");
+                toast.success(response.message ?? "Selected educators rejected successfully!");
                 // Reload the list to get updated data
                 loadRegisteredEducators();
             } else {
-                toast.error(response.message || "Failed to reject educators");
+                toast.error(response.message ?? "Failed to reject educators");
             }
         } catch (error) {
             console.error("Error bulk rejecting educators:", error);

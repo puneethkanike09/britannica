@@ -258,13 +258,13 @@ export default function EditSchoolModal({ onClose, school, onSchoolUpdated }: Sc
             try {
                 const response = await SchoolService.updateSchool(formData);
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'School updated successfully');
+                    toast.success(response.message ?? 'School updated successfully!');
                     if (onSchoolUpdated) {
                         onSchoolUpdated();
                     }
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to update school');
+                    toast.error(response.message ?? 'Failed to update school');
                 }
             } catch (error) {
                 const errMsg = (error as { message?: string })?.message || 'Failed to update school';

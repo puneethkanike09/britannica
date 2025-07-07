@@ -59,11 +59,11 @@ export class EducatorService {
                     { role: { role_id: 2 } }
                 ]
             };
-            const response = await apiClient.post(
+            return await apiClient.post(
                 "/teacher/create",
                 payload
             );
-            return response;
+
         } catch (error) {
             console.error("Error adding teacher:", error);
             return {

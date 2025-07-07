@@ -84,5 +84,33 @@ export class PblFileServices {
         }
     }
 
+    static async uploadPblFile({
+        file,
+        grade_id,
+        theme_id,
+        user_access_type_id,
+        title,
+        desc,
+    }: {
+        file: File;
+        grade_id: string;
+        theme_id: string;
+        user_access_type_id: string;
+        title: string;
+        desc: string;
+    }): Promise<any> {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('grade_id', grade_id);
+        formData.append('theme_id', theme_id);
+        formData.append('access_type_id', user_access_type_id);
+        formData.append('title', title);
+        formData.append('desc', desc);
+        return apiClient.postFormData('/file/upload', formData, true);
+    }
+
+    static async deletePblFile(pbl_id: string | number): Promise<any> {
+        return apiClient.delete(`/file/${pbl_id}`);
+    }
 
 } 

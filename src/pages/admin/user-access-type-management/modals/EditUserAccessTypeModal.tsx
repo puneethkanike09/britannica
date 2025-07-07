@@ -123,13 +123,13 @@ const EditUserAccessTypeModal: React.FC<UserAccessTypeActionModalProps> = ({ onC
                     description: formData.description.trim(),
                 });
                 if (response.error === false || response.error === "false") {
-                    toast.success(response.message || 'User access type updated successfully');
+                    toast.success(response.message ?? 'User access type updated successfully!');
                     if (onUserAccessTypeUpdated) {
                         onUserAccessTypeUpdated();
                     }
                     handleClose();
                 } else {
-                    toast.error(response.message || 'Failed to update user access type');
+                    toast.error(response.message ?? 'Failed to update user access type');
                 }
             } catch (error) {
                 const errMsg = (error as { message?: string })?.message || 'Failed to update user access type';

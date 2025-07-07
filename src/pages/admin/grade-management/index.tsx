@@ -39,7 +39,7 @@ const GradeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || 'Failed to fetch grades');
+                toast.error(response.message ?? 'Failed to fetch grades');
             }
         } catch (error) {
             toast.error('Failed to fetch grades');

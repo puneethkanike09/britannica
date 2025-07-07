@@ -8,19 +8,19 @@ import Loader from "../../../components/common/Loader";
 import toast from "react-hot-toast";
 import { PblFile } from "../../../types/admin/pbl-files-management";
 import { PblFileServices } from "../../../services/admin/pblFileServices";
-// import AddPblFileModal from "./modals/AddPblFileModal";
+import AddPblFileModal from "./modals/AddPblFileModal";
+import DeletePblFileModal from "./modals/DeletePblFileModal";
 // import EditPblFileModal from "./modals/EditPblFileModal";
 // import ViewPblFileModal from "./modals/ViewPblFileModal";
-// import DeletePblFileModal from "./modals/DeletePblFileModal";
 
 
 const PblFileManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    // const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
     // const [showEditModal, setShowEditModal] = useState(false);
     // const [showViewModal, setShowViewModal] = useState(false);
-    // const [showDeleteModal, setShowDeleteModal] = useState(false);
-    // const [selectedFile, setSelectedFile] = useState<PblFile | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<PblFile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [files, setFiles] = useState<PblFile[]>([]);
     const [totalPages, setTotalPages] = useState(1);
@@ -71,7 +71,7 @@ const PblFileManagement: React.FC = () => {
         setCurrentPage(1);
     };
 
-    // const openAddPblFileModal = () => setShowAddModal(true);
+    const openAddPblFileModal = () => setShowAddModal(true);
     // const openEditPblFileModal = (file: PblFile) => {
     //     setSelectedFile(file);
     //     setShowEditModal(true);
@@ -80,10 +80,37 @@ const PblFileManagement: React.FC = () => {
     //     setSelectedFile(file);
     //     setShowViewModal(true);
     // };
-    // const openDeletePblFileModal = (file: PblFile) => {
-    //     setSelectedFile(file);
-    //     setShowDeleteModal(true);
+    const openDeletePblFileModal = (file: PblFile) => {
+        setSelectedFile(file);
+        setShowDeleteModal(true);
+    };
+
+    const closeAddPblFileModal = () => setShowAddModal(false);
+    // const closeEditPblFileModal = () => {
+    //     setShowEditModal(false);
+    //     setSelectedFile(null);
     // };
+    // const closeViewPblFileModal = () => {
+    //     setShowViewModal(false);
+    //     setSelectedFile(null);
+    // };
+    const closeDeletePblFileModal = () => {
+        setShowDeleteModal(false);
+        setSelectedFile(null);
+    };
+
+    const handleFileAdded = () => {
+        fetchPblFiles();
+        closeAddPblFileModal();
+    };
+    // const handleFileUpdated = () => {
+    //     fetchPblFiles();
+    //     closeEditPblFileModal();
+    // };
+    const handlePblFileDeleted = () => {
+        fetchPblFiles();
+        closeDeletePblFileModal();
+    };
 
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
@@ -105,39 +132,12 @@ const PblFileManagement: React.FC = () => {
         return pageNumbers;
     };
 
-    // const closeAddPblFileModal = () => setShowAddModal(false);
-    // const closeEditPblFileModal = () => {
-    //     setShowEditModal(false);
-    //     setSelectedFile(null);
-    // };
-    // const closeViewPblFileModal = () => {
-    //     setShowViewModal(false);
-    //     setSelectedFile(null);
-    // };
-    // const closeDeletePblFileModal = () => {
-    //     setShowDeleteModal(false);
-    //     setSelectedFile(null);
-    // };
-
-    // const handleFileAdded = () => {
-    //     fetchPblFiles();
-    //     closeAddPblFileModal();
-    // };
-    // const handleFileUpdated = () => {
-    //     fetchPblFiles();
-    //     closeEditPblFileModal();
-    // };
-    // const handlePblFileDeleted = () => {
-    //     fetchPblFiles();
-    //     closeDeletePblFileModal();
-    // };
-
     return (
         <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-secondary">PBL File List ( {totalElements} )</h1>
                 <button
-                    // onClick={openAddPblFileModal}
+                    onClick={openAddPblFileModal}
                     disabled={isLoading}
                     className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg flex items-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
@@ -249,7 +249,7 @@ const PblFileManagement: React.FC = () => {
                                                     <span className="hidden md:inline font-bold">Edit</span>
                                                 </button>
                                                 <button
-                                                    // onClick={() => openDeletePblFileModal(file)}
+                                                    onClick={() => openDeletePblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
@@ -304,12 +304,20 @@ const PblFileManagement: React.FC = () => {
                 )}
             </div>
 
-            {/* {showAddModal && <AddPblFileModal onClose={closeAddPblFileModal} onFileAdded={handleFileAdded} />}
-            {showEditModal && selectedFile && <EditPblFileModal onClose={closeEditPblFileModal} file={selectedFile} onFileUpdated={handleFileUpdated} />}
-            {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />}
+            {showAddModal && <AddPblFileModal onClose={closeAddPblFileModal} onFileAdded={handleFileAdded} />}
             {showDeleteModal && selectedFile && (
-                <DeletePblFileModal onClose={closeDeletePblFileModal} file={selectedFile} onDeleted={handlePblFileDeleted} />
-            )} */}
+                <DeletePblFileModal onClose={closeDeletePblFileModal} file={{
+                    file_id: selectedFile.pbl_id,
+                    name: selectedFile.pbl_name,
+                    description: '',
+                    grade: selectedFile.grade_name,
+                    theme: selectedFile.theme_name,
+                    type: selectedFile.user_access_type_name,
+                    file: null
+                }} onDeleted={handlePblFileDeleted} />
+            )}
+            {/* {showEditModal && selectedFile && <EditPblFileModal onClose={closeEditPblFileModal} file={selectedFile} onFileUpdated={handleFileUpdated} />}
+            {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />} */}
         </div>
     );
 };

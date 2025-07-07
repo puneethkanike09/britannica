@@ -45,11 +45,11 @@ const BulkUnregisterModal: React.FC<BulkUnregisterModalProps> = ({
             const response = await UnregisteredEducatorService.bulkUnregisterEducators(unregisteredIds);
             if (response.error === false || response.error === "false") {
                 onBulkUnregister(unregisteredIds);
-                toast.success(response.message || `${educators.length} educator(s) have been unregistered successfully!`);
+                toast.success(response.message ?? `${educators.length} educator(s) have been unregistered successfully!`);
                 setIsUnregistering(false);
                 handleClose();
             } else {
-                toast.error(response.message || "Failed to unregister educators");
+                toast.error(response.message ?? "Failed to unregister educators");
                 setIsUnregistering(false);
             }
         } catch (error) {

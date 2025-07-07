@@ -41,8 +41,8 @@ export class RegisteredEducatorService {
 
     static async approveEducator(id: string | number): Promise<ActionResponse> {
         try {
-            const response = await apiClient.put(`/teacher/approve/${id}`, {});
-            return response;
+            return await apiClient.put(`/teacher/approve/${id}`, {});
+
         } catch (error) {
             console.error("Error approving educator:", error);
             return {
@@ -54,8 +54,7 @@ export class RegisteredEducatorService {
 
     static async bulkApproveEducators(ids: (string | number)[]): Promise<ActionResponse> {
         try {
-            const response = await apiClient.put("/teacher/approve-all", { ids });
-            return response;
+            return await apiClient.put("/teacher/approve-all", { ids });
         } catch (error) {
             console.error("Error bulk approving educators:", error);
             return {
@@ -67,11 +66,11 @@ export class RegisteredEducatorService {
 
     static async rejectEducator(userId: string | number, remarks: string): Promise<ActionResponse> {
         try {
-            const response = await apiClient.put("/teacher/reject", {
+            return await apiClient.put("/teacher/reject", {
                 user_id: userId,
                 remarks: remarks
             });
-            return response;
+
         } catch (error) {
             console.error("Error rejecting educator:", error);
             return {
@@ -83,11 +82,11 @@ export class RegisteredEducatorService {
 
     static async bulkRejectEducators(ids: (string | number)[], remarks: string): Promise<ActionResponse> {
         try {
-            const response = await apiClient.put("/teacher/reject-all", {
+            return await apiClient.put("/teacher/reject-all", {
                 ids: ids,
                 remarks: remarks
             });
-            return response;
+
         } catch (error) {
             console.error("Error bulk rejecting educators:", error);
             return {

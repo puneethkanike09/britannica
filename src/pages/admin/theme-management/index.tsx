@@ -39,7 +39,7 @@ const ThemeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
-                toast.error(response.message || 'Failed to fetch themes');
+                toast.error(response.message ?? 'Failed to fetch themes');
             }
         } catch (error) {
             toast.error('Failed to fetch themes');
