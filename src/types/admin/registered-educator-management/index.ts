@@ -1,9 +1,13 @@
-// registered educator management page
 export interface RegisteredEducator {
     user_id: number;
     login_id: string;
     school_name: string;
     user_name: string;
+    school_id?: number;
+    email?: string;
+    phone?: string;
+    first_name?: string;
+    last_name?: string;
 }
 
 export interface FetchRegisteredEducatorsResponse {
@@ -33,4 +37,4 @@ export interface RegisteredEducatorDeleteModalProps {
     onClose: () => void;
     educator: RegisteredEducator;
     onEducatorDeleted?: () => void;
-} 
+}

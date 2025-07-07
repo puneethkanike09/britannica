@@ -39,10 +39,49 @@ export class RegisteredEducatorService {
         }
     }
 
+    static async fetchRegisteredEducatorCompleteDetails(user_id: string | number): Promise<{
+        error: boolean | string;
+        teacher?: {
+            teacher_id: string | number;
+            first_name?: string;
+            last_name?: string;
+            mobile_no?: string;
+            email_id?: string;
+            login_id?: string;
+            school_name?: string;
+            status?: string;
+            created_user?: string | number;
+            created_ts?: string;
+            last_updated_user?: string | number;
+            last_updated_ts?: string;
+            addressLine1?: string;
+            city?: string;
+            state?: string;
+            country?: string;
+            pincode?: string;
+        };
+        token?: string;
+        message?: string;
+    }> {
+        try {
+            const response = await apiClient.get(
+                `/teacher/info/${user_id}`
+            );
+            if (response.teacher) return response;
+            if (response.educator) return { ...response, teacher: response.educator };
+            return response;
+        } catch (error) {
+            console.error("Error fetching registered educator complete details:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unknown error",
+            };
+        }
+    }
+
     static async approveEducator(user_id: string | number): Promise<ActionResponse> {
         try {
             return await apiClient.put(`/teacher/approve/${user_id}`, {});
-
         } catch (error) {
             console.error("Error approving educator:", error);
             return {
@@ -70,7 +109,6 @@ export class RegisteredEducatorService {
                 user_id: user_id,
                 remarks: remarks
             });
-
         } catch (error) {
             console.error("Error rejecting educator:", error);
             return {
@@ -86,7 +124,6 @@ export class RegisteredEducatorService {
                 ids: user_ids,
                 remarks: remarks
             });
-
         } catch (error) {
             console.error("Error bulk rejecting educators:", error);
             return {
@@ -95,4 +132,4 @@ export class RegisteredEducatorService {
             };
         }
     }
-} 
+}
