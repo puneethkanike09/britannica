@@ -484,4 +484,42 @@ export const apiClient = {
             }
         });
     },
+
+    async fetchPdfBlob(endpoint: string, payload: any): Promise<Blob> {
+        const headers: HeadersInit = {
+            "API-KEY": API_KEY,
+            "Content-Type": "application/json",
+        };
+        const token = TokenService.getToken();
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch PDF");
+        return await response.blob();
+    },
+
+    async fetchPdfBlobGet(endpoint: string, params: Record<string, string>): Promise<Blob> {
+        const headers: HeadersInit = {
+            "API-KEY": API_KEY,
+        };
+        const token = TokenService.getToken();
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        // Build query string
+        const query = new URLSearchParams(params).toString();
+        const url = `${API_BASE_URL}${endpoint}?${query}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers,
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch PDF");
+        return await response.blob();
+    },
 };

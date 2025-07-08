@@ -11,6 +11,7 @@ import BritannicaHeroSection from '../components/common/Header';
 import FlipCards from '../components/common/Footer';
 import ScrollingBanner from '../components/common/Scroller';
 import bgImage from '../../../assets/dashboard/Educator/home-page/bg.jpg'
+import PdfRenderer from '../components/common/PdfRenderer';
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -32,6 +33,8 @@ const EducatorDashboard = () => {
     const [pdfProjects, setPdfProjects] = useState<PdfProject[]>([]);
     const [viewLoadingId, setViewLoadingId] = useState<string | number | null>(null);
     const [downloadLoadingId, setDownloadLoadingId] = useState<string | number | null>(null);
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [showPdf, setShowPdf] = useState(false);
 
     // Fetch dropdown data on mount
     useEffect(() => {
@@ -152,23 +155,28 @@ const EducatorDashboard = () => {
 
     const handleView = async (pblId: string | number) => {
         const project = pdfProjects.find((p) => p.id === pblId);
-        if (!project?.file) {
-            toast.error('File path not found');
+        if (!project) {
+            toast.error('File not found');
             return;
         }
         setViewLoadingId(pblId);
         try {
-            const viewResponse = await apiClient.getFileViewUrl(project.file);
-            if (viewResponse.error === false || viewResponse.error === 'false') {
-                window.open(viewResponse.data, '_blank', 'noopener,noreferrer');
-            } else {
-                throw new Error(viewResponse.message || 'Failed to get view URL');
-            }
+            // Fetch the PDF as a blob using GET
+            const blob = await apiClient.fetchPdfBlobGet('/file/view', { filePath: project.file });
+            const url = URL.createObjectURL(blob);
+            setPdfUrl(url);
+            setShowPdf(true);
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to view file');
         } finally {
             setViewLoadingId(null);
         }
+    };
+
+    const handleClosePdf = () => {
+        if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+        setPdfUrl(null);
+        setShowPdf(false);
     };
 
     const handleDownload = async (pblId: string | number, title: string) => {
@@ -322,6 +330,10 @@ const EducatorDashboard = () => {
         />
     ))}
 </div>
+                            )}
+                            {/* PDF Renderer Modal */}
+                            {showPdf && pdfUrl && (
+                                <PdfRenderer file={pdfUrl} onClose={handleClosePdf} />
                             )}
                         </div>
                     )}
