@@ -42,6 +42,7 @@ export class ThemeService {
     static async createTheme(themeData: {
         theme_name: string;
         description: string;
+        theme_color: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
             return await apiClient.post("/theme/create", themeData);
@@ -58,6 +59,7 @@ export class ThemeService {
         theme_id: string | number;
         theme_name: string;
         description: string;
+        theme_color: string;
     }): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
             return await apiClient.put("/theme/update", themeData);

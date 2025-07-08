@@ -13,6 +13,16 @@ import toast from "react-hot-toast";
 import { Theme } from "../../../types/admin/theme-management";
 import { ThemeService } from "../../../services/admin/themeService";
 
+// Color code mapping for themes
+const THEME_COLORS = [
+    { value: '#38761d' },
+    { value: '#999999' },
+    { value: '#46bdc6' },
+    { value: '#a61c00' },
+    { value: '#6fa8dc' },
+    { value: '#8e7cc3' },
+];
+
 const ThemeManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -297,9 +307,9 @@ const ThemeManagement: React.FC = () => {
                 )}
             </div>
 
-            {showAddModal && <AddThemeModal onClose={closeAddThemeModal} onAdded={handleThemeAdded} />}
+            {showAddModal && <AddThemeModal onClose={closeAddThemeModal} onAdded={handleThemeAdded} themeColors={THEME_COLORS.map(c => ({ label: c.value, value: c.value }))} />}
             {showEditModal && selectedTheme && (
-                <EditThemeModal onClose={closeEditThemeModal} theme={selectedTheme} onUpdated={handleThemeUpdated} />
+                <EditThemeModal onClose={closeEditThemeModal} theme={selectedTheme} onUpdated={handleThemeUpdated} themeColors={THEME_COLORS.map(c => ({ label: c.value, value: c.value }))} />
             )}
             {showViewModal && selectedTheme && <ViewThemeModal onClose={closeViewThemeModal} theme={selectedTheme} />}
             {showDeleteModal && selectedTheme && (

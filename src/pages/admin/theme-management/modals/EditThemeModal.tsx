@@ -1,4 +1,4 @@
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Check } from "lucide-react";
 import { useState, useCallback, useEffect } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,17 +11,20 @@ interface EditThemeModalProps {
     onClose: () => void;
     theme: Theme;
     onUpdated?: () => void;
+    themeColors: { label: string; value: string }[];
 }
 
-export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeModalProps) {
+export default function EditThemeModal({ onClose, theme, onUpdated, themeColors }: EditThemeModalProps) {
     const [formData, setFormData] = useState({
         theme_id: theme.theme_id,
         theme_name: theme.theme_name,
         description: theme.description || '',
+        theme_color: theme.theme_color || '',
     });
     const [errors, setErrors] = useState({
         theme_name: '',
-        description: ''
+        description: '',
+        theme_color: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -60,6 +63,7 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
                     theme_id: res.theme.theme_id,
                     theme_name: res.theme.theme_name,
                     description: res.theme.description || '',
+                    theme_color: res.theme.theme_color || '',
                 });
                 setError(null);
             } else {
@@ -74,14 +78,11 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
         return () => { mounted = false; };
     }, [theme.theme_id]);
 
-    // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
             case 'theme_name':
-                // Only allow letters, numbers, spaces, max 50
                 return value.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50);
             case 'description':
-                // Allow letters, numbers, spaces, comma, dot, hyphen, max 200
                 return value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 200);
             default:
                 return value;
@@ -97,14 +98,22 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
         }
     };
 
+    const handleColorSelect = (colorValue: string) => {
+        if (isSubmitting) return;
+        setFormData(prev => ({ ...prev, theme_color: colorValue }));
+        if (errors.theme_color) {
+            setErrors(prev => ({ ...prev, theme_color: '' }));
+        }
+    };
+
     const validateForm = () => {
         const newErrors = {
             theme_name: '',
-            description: ''
+            description: '',
+            theme_color: '',
         };
         let isValid = true;
 
-        // theme_name: mandatory, min 2, max 50
         if (!formData.theme_name.trim()) {
             newErrors.theme_name = 'Theme name is required';
             isValid = false;
@@ -113,9 +122,13 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
             isValid = false;
         }
 
-        // Description: optional, but validate if provided
         if (formData.description.trim() && formData.description.length > 200) {
             newErrors.description = 'Description must be 200 characters or less';
+            isValid = false;
+        }
+
+        if (!formData.theme_color) {
+            newErrors.theme_color = 'Theme color is required';
             isValid = false;
         }
 
@@ -137,8 +150,7 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
                     toast.error(response.message ?? 'Failed to update theme');
                 }
             } catch (error) {
-                const errMsg = (error as { message?: string })?.message || 'Failed to update theme';
-                toast.error(errMsg);
+                toast.error('Failed to update theme');
             } finally {
                 setIsSubmitting(false);
             }
@@ -165,7 +177,6 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
                         exit="exit"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Sticky Header */}
                         <div className="bg-white px-8 py-6 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-3xl font-bold text-secondary">Edit Theme</h2>
                             <button
@@ -178,7 +189,6 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
                             </button>
                         </div>
 
-                        {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-6">
                             {loading ? (
                                 <Loader message="Loading Theme Details..." />
@@ -220,10 +230,40 @@ export default function EditThemeModal({ onClose, theme, onUpdated }: EditThemeM
                                         {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
                                     </div>
 
+                                    <div className="mb-3 relative">
+                                        <label className="block text-textColor text-base mb-2">
+                                            Theme Color<span className="text-red">*</span>
+                                        </label>
+                                        <div className={`grid grid-cols-6 gap-2 sm:gap-3 p-3 sm:p-4 border rounded-lg bg-inputBg ${errors.theme_color ? 'border-red' : 'border-inputBorder'}`}>
+                                            {themeColors.map((color) => (
+                                                <div
+                                                    key={color.value}
+                                                    onClick={() => handleColorSelect(color.value)}
+                                                    className={`relative w-full aspect-square rounded-lg cursor-pointer hover:scale-110 hover:shadow-lg ${
+                                                        formData.theme_color === color.value 
+                                                            ? 'border-2 border-black scale-110' 
+                                                            : 'border-none'
+                                                    } ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                    style={{ backgroundColor: color.value }}
+                                                    title={color.label}
+                                                >
+                                                    {formData.theme_color === color.value && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <Check 
+                                                                className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-lg" 
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {errors.theme_color && <p className="text-red text-sm mt-1">{errors.theme_color}</p>}
+                                    </div>
+
                                     <div className="mt-12">
                                         <button
                                             type="submit"
-                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                             disabled={isSubmitting}
                                             onClick={handleSubmit}
                                         >

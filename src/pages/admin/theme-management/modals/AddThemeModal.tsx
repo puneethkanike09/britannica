@@ -1,4 +1,4 @@
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Check } from "lucide-react";
 import { useState, useCallback, useEffect } from 'react';
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,20 +8,24 @@ import { ThemeService } from "../../../../services/admin/themeService";
 interface AddThemeModalProps {
     onClose: () => void;
     onAdded?: () => void;
+    themeColors: { label: string; value: string }[];
 }
 
-export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) {
+export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThemeModalProps) {
     const [formData, setFormData] = useState<{
         theme_name: string;
         description: string;
+        theme_color: string;
     }>({
         theme_name: '',
         description: '',
+        theme_color: '',
     });
 
     const [errors, setErrors] = useState({
         theme_name: '',
-        description: ''
+        description: '',
+        theme_color: '',
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +62,14 @@ export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) 
         }
     };
 
+    const handleColorSelect = (colorValue: string) => {
+        if (isSubmitting) return;
+        setFormData(prev => ({ ...prev, theme_color: colorValue }));
+        if (errors.theme_color) {
+            setErrors(prev => ({ ...prev, theme_color: '' }));
+        }
+    };
+
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
@@ -75,7 +87,8 @@ export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) 
     const validateForm = () => {
         const newErrors = {
             theme_name: '',
-            description: ''
+            description: '',
+            theme_color: '',
         };
         let isValid = true;
 
@@ -94,6 +107,12 @@ export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) 
             isValid = false;
         }
 
+        // theme_color: required
+        if (!formData.theme_color) {
+            newErrors.theme_color = 'Theme color is required';
+            isValid = false;
+        }
+
         setErrors(newErrors);
         return isValid;
     };
@@ -105,6 +124,7 @@ export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) 
                 const response = await ThemeService.createTheme({
                     theme_name: formData.theme_name.trim(),
                     description: formData.description.trim(),
+                    theme_color: formData.theme_color,
                 });
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message ?? 'Theme added successfully!');
@@ -190,11 +210,47 @@ export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) 
                                     {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
                                 </div>
 
+
+<div className="mb-3 relative">
+    <label className="block text-textColor text-base mb-2">
+        Theme Color<span className="text-red">*</span>
+    </label>
+    
+    {/* Responsive Color Picker Grid */}
+    <div className={`grid grid-cols-6 gap-2 sm:gap-3 p-3 sm:p-4 border rounded-lg bg-inputBg ${errors.theme_color ? 'border-red' : 'border-inputBorder'}`}>
+        {themeColors.map((color) => (
+            <div
+                key={color.value}
+                onClick={() => handleColorSelect(color.value)}
+                className={`relative w-full aspect-square rounded-lg  cursor-pointer hover:scale-110 hover:shadow-lg ${
+                    formData.theme_color === color.value 
+                        ? 'border-2 border-black scale-110' 
+                        : 'border-none'
+                } ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
+                style={{ backgroundColor: color.value }}
+                title={color.label}
+            >
+                {/* Selected indicator */}
+                {formData.theme_color === color.value && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <Check 
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-lg" 
+                         
+                        />
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+
+    {errors.theme_color && <p className="text-red text-sm mt-1">{errors.theme_color}</p>}
+</div>
+
                                 <div className="mt-12">
                                     <button
                                         type="button"
                                         onClick={handleAddTheme}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? (

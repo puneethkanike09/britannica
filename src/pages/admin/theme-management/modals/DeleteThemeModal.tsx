@@ -94,6 +94,10 @@ export default function DeleteThemeModal({ onClose, theme, onDeleted }: ThemeDel
                             <p className="text-textColor mb-6">
                                 Are you sure you want to delete the theme <span className="font-bold">{theme.theme_name}</span>?
                             </p>
+                            <div className="flex items-center gap-2 mb-4">
+                                <span style={{ backgroundColor: theme.theme_color, width: 24, height: 24, display: 'inline-block', borderRadius: 4, border: '1px solid #ccc' }} />
+                                <span className="text-primary font-medium">{theme.theme_color}</span>
+                            </div>
 
                             <div className="flex justify-start gap-4">
                                 <button

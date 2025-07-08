@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Loader from '../../../components/common/Loader';
 import { EducatorService } from '../../../services/admin/educatorService';
 import toast from 'react-hot-toast';
+import { DashboardService } from '../../../services/admin/dashboardService';
 
 // Import SVG files
 import EducatorsIcon from '../../../assets/dashboard/Admin/home-page/educators.svg';
@@ -12,6 +13,8 @@ import { DashboardCard } from '../../../types/admin';
 const AdminDashboard: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [educatorCount, setEducatorCount] = useState<number>(0);
+    const [loginsCount, setLoginsCount] = useState<number>(0);
+    const [downloadsCount, setDownloadsCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchEducatorCount = async () => {
@@ -34,6 +37,29 @@ const AdminDashboard: React.FC = () => {
         fetchEducatorCount();
     }, []);
 
+    useEffect(() => {
+        const fetchDashboardCounts = async () => {
+            try {
+                setIsLoading(true);
+                const response = await DashboardService.fetchDashboardCounts();
+                if (response.error === false || response.error === 'false') {
+                    setLoginsCount(response.totalLogins || 0);
+                    setDownloadsCount(response.totalDownloads || 0);
+                } else {
+                    setLoginsCount(0);
+                    setDownloadsCount(0);
+                    toast.error(response.message ?? "Failed to load dashboard counts");
+                }
+            } catch (error) {
+                console.error("Error fetching dashboard counts:", error);
+                toast.error("Failed to load dashboard counts");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchDashboardCounts();
+    }, []);
+
     const dashboardCards: DashboardCard[] = [
         {
             id: 'educators',
@@ -47,7 +73,7 @@ const AdminDashboard: React.FC = () => {
         {
             id: 'logins',
             title: 'Total Logins',
-            value: 10,
+            value: loginsCount,
             icon: LoginsIcon,
             alt: 'Logins',
             colorClass: 'text-yellow',
@@ -56,7 +82,7 @@ const AdminDashboard: React.FC = () => {
         {
             id: 'downloads',
             title: 'Total Downloads',
-            value: 6,
+            value: downloadsCount,
             icon: DownloadsIcon,
             alt: 'Downloads',
             colorClass: 'text-orange',
