@@ -8,10 +8,9 @@ import { ThemeService } from "../../../../services/admin/themeService";
 interface AddThemeModalProps {
     onClose: () => void;
     onAdded?: () => void;
-    themeColors: { label: string; value: string }[];
 }
 
-export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThemeModalProps) {
+export default function AddThemeModal({ onClose, onAdded }: AddThemeModalProps) {
     const [formData, setFormData] = useState<{
         theme_name: string;
         description: string;
@@ -62,14 +61,6 @@ export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThem
         }
     };
 
-    const handleColorSelect = (colorValue: string) => {
-        if (isSubmitting) return;
-        setFormData(prev => ({ ...prev, theme_color: colorValue }));
-        if (errors.theme_color) {
-            setErrors(prev => ({ ...prev, theme_color: '' }));
-        }
-    };
-
     // Helper for restricting input
     const restrictInput = (name: string, value: string) => {
         switch (name) {
@@ -79,9 +70,22 @@ export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThem
             case 'description':
                 // Allow letters, numbers, spaces, comma, dot, hyphen, max 200
                 return value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 200);
+            case 'theme_color':
+                // Only allow hex color format (#RRGGBB)
+                let hexValue = value.replace(/[^#0-9a-fA-F]/g, '');
+                if (hexValue.length > 0 && !hexValue.startsWith('#')) {
+                    hexValue = '#' + hexValue;
+                }
+                return hexValue.slice(0, 7);
             default:
                 return value;
         }
+    };
+
+    // Validate hex color format
+    const isValidHexColor = (hex: string) => {
+        const hexRegex = /^#[0-9a-fA-F]{6}$/;
+        return hexRegex.test(hex);
     };
 
     const validateForm = () => {
@@ -107,9 +111,12 @@ export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThem
             isValid = false;
         }
 
-        // theme_color: required
+        // theme_color: required and must be valid hex
         if (!formData.theme_color) {
             newErrors.theme_color = 'Theme color is required';
+            isValid = false;
+        } else if (!isValidHexColor(formData.theme_color)) {
+            newErrors.theme_color = 'Please enter a valid hex color (e.g., #FF5733)';
             isValid = false;
         }
 
@@ -210,41 +217,39 @@ export default function AddThemeModal({ onClose, onAdded, themeColors }: AddThem
                                     {errors.description && <p className="text-red text-sm mt-1">{errors.description}</p>}
                                 </div>
 
-
-<div className="mb-3 relative">
-    <label className="block text-textColor text-base mb-2">
-        Theme Color<span className="text-red">*</span>
-    </label>
-    
-    {/* Responsive Color Picker Grid */}
-    <div className={`grid grid-cols-6 gap-2 sm:gap-3 p-3 sm:p-4 border rounded-lg bg-inputBg ${errors.theme_color ? 'border-red' : 'border-inputBorder'}`}>
-        {themeColors.map((color) => (
-            <div
-                key={color.value}
-                onClick={() => handleColorSelect(color.value)}
-                className={`relative w-full aspect-square rounded-lg  cursor-pointer hover:scale-110 hover:shadow-lg ${
-                    formData.theme_color === color.value 
-                        ? 'border-2 border-black scale-110' 
-                        : 'border-none'
-                } ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
-                style={{ backgroundColor: color.value }}
-                title={color.label}
-            >
-                {/* Selected indicator */}
-                {formData.theme_color === color.value && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <Check 
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-lg" 
-                         
-                        />
-                    </div>
-                )}
-            </div>
-        ))}
-    </div>
-
-    {errors.theme_color && <p className="text-red text-sm mt-1">{errors.theme_color}</p>}
-</div>
+                                <div className="mb-3 relative">
+                                    <label className="block text-textColor text-base mb-2">
+                                        Theme Color<span className="text-red">*</span>
+                                    </label>
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            type="text"
+                                            name="theme_color"
+                                            value={formData.theme_color}
+                                            onChange={handleInputChange}
+                                            placeholder="#FF5733"
+                                            maxLength={7}
+                                            className={`p-4 py-3 text-textColor flex-1 border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.theme_color ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {/* Color Preview */}
+                                        <div className="flex-shrink-0">
+                                            <div 
+                                                className="w-12 h-12 rounded-lg border-1 border-inputBorder    flex items-center justify-center"
+                                                style={{ 
+                                                    backgroundColor: isValidHexColor(formData.theme_color) 
+                                                        ? formData.theme_color 
+                                                        : '#f3f4f6' 
+                                                }}
+                                            >
+                                                {isValidHexColor(formData.theme_color) && (
+                                                    <Check className="w-5 h-5 text-white drop-shadow-lg" />
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {errors.theme_color && <p className="text-red text-sm mt-1">{errors.theme_color}</p>}
+                                </div>
 
                                 <div className="mt-12">
                                     <button
