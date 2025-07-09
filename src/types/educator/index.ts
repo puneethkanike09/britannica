@@ -34,6 +34,8 @@ export interface DocumentCardProps {
     title: string;
     onView: () => void;
     onDownload: () => void;
+    thumbnail?: string; // URL or import for background image
+    color?: string;     // Overlay color code
 }
 
 export interface DocumentCardWithLoadingProps extends DocumentCardProps {
@@ -46,6 +48,8 @@ export interface PdfProject {
     title: string;
     type: string;
     file: string;
+    thumbnail?: string; // URL or import for background image
+    color?: string;     // Overlay color code
 }
 
 

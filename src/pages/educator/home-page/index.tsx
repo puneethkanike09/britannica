@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { EducatorDashboardService } from '../../../services/educator/EducatorDashboardService';
 import { apiClient } from '../../../utils/apiClient';
 import Select from '../components/common/Select';
 import DocumentCard from '../components/common/PdfCards';
@@ -12,6 +11,9 @@ import FlipCards from '../components/common/Footer';
 import ScrollingBanner from '../components/common/Scroller';
 import bgImage from '../../../assets/dashboard/Educator/home-page/bg.jpg'
 import PdfRenderer from '../components/common/PdfRenderer';
+import pdfThumb1 from '../../../assets/dashboard/Educator/home-page/kids.png'; // Example local asset
+import pdfThumb2 from '../../../assets/dashboard/Educator/home-page/kids.png'; // Example local asset
+import { THEME_COLOR_MAP } from '../components/common/PdfCards';
 
 const EducatorDashboard = () => {
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -35,54 +37,43 @@ const EducatorDashboard = () => {
     const [downloadLoadingId, setDownloadLoadingId] = useState<string | number | null>(null);
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [showPdf, setShowPdf] = useState(false);
+    const [currentBgColor, setCurrentBgColor] = useState<string>('');
+
+    const DUMMY_GRADES = [
+        { value: '3', label: 'Grade 4' },
+        { value: '3', label: 'Grade 5' },
+        { value: '3', label: 'Grade 6' },
+        { value: '3', label: 'Grade 7' },
+        { value: '3', label: 'Grade 8' },
+    ];
+    const DUMMY_THEMES = [
+        { value: 'Environment', label: 'Environment' },
+        { value: 'AI and Robotics', label: 'AI and Robotics' },
+        { value: 'Social-Emotional Learning', label: 'Social-Emotional Learning' },
+        { value: 'Cultural Development', label: 'Cultural Development' },
+        { value: 'Entrepreneurship', label: 'Entrepreneurship' },
+        { value: 'Vocational Education', label: 'Vocational Education' },
+    ];
+    const DUMMY_TYPES = [
+        { value: 'ty1', label: 'Demo 1' },
+        { value: 'ty2', label: 'Demo 2' },
+    ];
+
+
+    // Theme to color mapping
+    // THEME_COLOR_MAP is now imported from PdfCards.tsx
 
     // Fetch dropdown data on mount
     useEffect(() => {
         setIsSubmittingDropdowns(true);
         setIsSubmitting(true);
 
-        // Fetch grades
-        EducatorDashboardService.fetchGrades()
-            .then((gradesRes) => {
-                if ('grade' in gradesRes && (gradesRes.error === false || gradesRes.error === 'false')) {
-                    setGradeOptions((gradesRes.grade ?? []).map((g: { grade_id: string; grade_name: string }) => ({ value: g.grade_id, label: g.grade_name })));
-                } else {
-                    toast.error(gradesRes.message || 'Failed to load grades');
-                }
-            })
-            .catch((err) => {
-                toast.error(err?.message || 'Failed to load grades');
-            });
-
-        // Fetch themes
-        EducatorDashboardService.fetchThemes()
-            .then((themesRes) => {
-                if ('theme' in themesRes && (themesRes.error === false || themesRes.error === 'false')) {
-                    setThemeOptions((themesRes.theme ?? []).map((t: { theme_id: string; theme_name: string }) => ({ value: t.theme_id, label: t.theme_name })));
-                } else {
-                    toast.error(themesRes.message || 'Failed to load themes');
-                }
-            })
-            .catch((err) => {
-                toast.error(err?.message || 'Failed to load themes');
-            });
-
-        // Fetch types
-        EducatorDashboardService.fetchUserAccessTypes()
-            .then((typesRes) => {
-                if ('user_access_type' in typesRes && (typesRes.error === false || typesRes.error === 'false')) {
-                    setTypeOptions((typesRes.user_access_type ?? []).map((t: { user_access_type_id: string; user_access_type_name: string }) => ({ value: t.user_access_type_id, label: t.user_access_type_name })));
-                } else {
-                    toast.error(typesRes.message || 'Failed to load types');
-                }
-            })
-            .catch((err) => {
-                toast.error(err?.message || 'Failed to load types');
-            })
-            .finally(() => {
-                setIsSubmittingDropdowns(false);
-                setIsSubmitting(false);
-            });
+        // Remove all API calls and use dummy data
+        setGradeOptions(DUMMY_GRADES);
+        setThemeOptions(DUMMY_THEMES);
+        setTypeOptions(DUMMY_TYPES);
+        setIsSubmittingDropdowns(false);
+        setIsSubmitting(false);
     }, []);
 
     const validateForm = () => {
@@ -117,39 +108,33 @@ const EducatorDashboard = () => {
             setIsSubmitting(true);
             setShowResults(false);
             setIsLoadingFiles(true);
-            
-            try {
-                const token = '';
-                const res = await EducatorDashboardService.fetchPblFiles({
-                    token,
-                    grade_id: selectedGrade,
-                    theme_id: selectedTheme,
-                    user_access_type_id: selectedType,
-                });
-                
-                if (res.error === false || res.error === 'false') {
-                    const files = (res.pbl_file || []).map((file: {
-                        pbl_id: string | number;
-                        pbl_file_path: string;
-                        pbl_name: string;
-                    }) => ({
-                        id: file.pbl_id,
-                        title: file.pbl_name,
+            // Simulate loading
+            setTimeout(() => {
+                const color = THEME_COLOR_MAP[selectedTheme] || '#38761d';
+                setCurrentBgColor(color); // Set the background overlay color
+                const cards = [
+                    {
+                        id: 1,
+                        title: 'Project-Based Learning Guide',
                         type: 'PDF',
-                        file: file.pbl_file_path
-                    }));
-                    setPdfProjects(files);
-                    setShowResults(true);
-                } else {
-                    setPdfProjects([]);
-                    toast.error(res.message || 'No files found');
-                }
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Failed to load files');
-            } finally {
+                        file: '',
+                        thumbnail: pdfThumb1,
+                        color,
+                    },
+                    {
+                        id: 2,
+                        title: 'Design Thinking Journal',
+                        type: 'PDF',
+                        file: '',
+                        thumbnail: pdfThumb2,
+                        color,
+                    },
+                ];
+                setPdfProjects(cards);
+                setShowResults(true);
                 setIsSubmitting(false);
                 setIsLoadingFiles(false);
-            }
+            }, 500);
         }
     };
 
@@ -250,12 +235,26 @@ const EducatorDashboard = () => {
             <BritannicaHeroSection />
             <div
                 className="relative py-28"
-                style={{
-                    backgroundImage: `url(${bgImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
+                style={currentBgColor
+                    ? {
+
+                        backgroundImage: `url(${bgImage})`,
+                        backgroundSize: 'cover',
+                        
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        transition: 'background-color 0.3s',
+                        
+                    }
+                    : {
+                        backgroundImage: `url(${bgImage})`,
+                        backgroundSize: 'cover',
+                        
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        transition: 'background-color 0.3s',
+                    }
+                }
             >
                 <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-[1500px] mx-auto">
                     <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-7xl mb-8">
@@ -327,6 +326,8 @@ const EducatorDashboard = () => {
             onDownload={() => handleDownload(project.id, project.title)}
             viewLoading={viewLoadingId === project.id}
             downloadLoading={downloadLoadingId === project.id}
+            thumbnail={project.thumbnail}
+            color={project.color}
         />
     ))}
 </div>
