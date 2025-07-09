@@ -15,7 +15,12 @@ export const THEME_COLOR_MAP: Record<string, string> = {
     "Vocational Education": "#8e7cc3",
 };
 
-const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading, thumbnail, color }) => {
+// Add reverseOverlay prop to the type
+interface DocumentCardWithLoadingPropsWithReverse extends DocumentCardWithLoadingProps {
+    reverseOverlay?: boolean;
+}
+
+const DocumentCard: React.FC<DocumentCardWithLoadingPropsWithReverse> = ({ title, onView, onDownload, viewLoading, downloadLoading, thumbnail, color, reverseOverlay }) => {
     return (
         <motion.div
             className="w-full max-w-xs rounded-lg overflow-hidden group relative"
@@ -25,8 +30,8 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
             animate="visible"
             exit="exit"
         >
-            {/* Thumbnail overlay only on hover */}
-            {thumbnail && (
+            {/* Overlay logic: if reverseOverlay, show thumbnail by default and color on hover; else, color by default and thumbnail on hover */}
+            {thumbnail && !reverseOverlay && (
                 <div
                     className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{
@@ -35,6 +40,24 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
                         backgroundPosition: 'center',
                     }}
                 />
+            )}
+            {thumbnail && reverseOverlay && (
+                <>
+                    <div
+                        className="absolute inset-0 z-0 opacity-100 group-hover:opacity-0 transition-opacity duration-300"
+                        style={{
+                            backgroundImage: `url(${thumbnail})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}
+                    />
+                    <div
+                        className="absolute inset-0 z-10 opacity-0 group-hover:opacity-80 transition-opacity duration-300"
+                        style={{
+                            backgroundColor: color || '#fff',
+                        }}
+                    />
+                </>
             )}
             <div className="relative pb-4 px-6 pt-6 z-10">
                 <div className="absolute top-0 right-4">

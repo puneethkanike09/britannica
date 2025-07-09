@@ -339,6 +339,31 @@ const EducatorDashboard = () => {
                         </div>
                     )}
 
+                    {/* PDF Results Section (Reversed Overlay) */}
+                    {showResults && (
+                        <div className="w-full mb-8">
+                            {pdfProjects.length === 0 ? (
+                                <div className="text-center text-lg text-red-500 font-semibold py-8">No files found with this filter.</div>
+                            ) : (
+                               <div className="flex flex-wrap gap-6 justify-center w-full px-4">
+    {pdfProjects.map((project) => (
+        <DocumentCard
+            key={project.id + '-reverse'}
+            title={project.title}
+            onView={() => handleView(project.id)}
+            onDownload={() => handleDownload(project.id, project.title)}
+            viewLoading={viewLoadingId === project.id}
+            downloadLoading={downloadLoadingId === project.id}
+            thumbnail={project.thumbnail}
+            color={project.color}
+            reverseOverlay
+        />
+    ))}
+</div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Inspirational Quote Section */}
                     <div className="w-full pt-6 text-center">
                         <p className="text-lg text-textColor font-bold italic leading-relaxed max-w-4xl mx-auto">
