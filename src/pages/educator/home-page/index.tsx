@@ -117,7 +117,7 @@ const EducatorDashboard = () => {
             setIsSubmitting(true);
             setShowResults(false);
             setIsLoadingFiles(true);
-            
+
             try {
                 const token = '';
                 const res = await EducatorDashboardService.fetchPblFiles({
@@ -126,7 +126,7 @@ const EducatorDashboard = () => {
                     theme_id: selectedTheme,
                     user_access_type_id: selectedType,
                 });
-                
+
                 if (res.error === false || res.error === 'false') {
                     const files = (res.pbl_file || []).map((file: {
                         pbl_id: string | number;
@@ -260,18 +260,6 @@ const EducatorDashboard = () => {
                 <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-[1500px] mx-auto">
                     <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-7xl mb-8">
                         <Select
-                            value={selectedGrade}
-                            onValueChange={setSelectedGrade}
-                            placeholder="Grade"
-                            options={gradeOptions}
-                            isOpen={openDropdown === 'grade'}
-                            onToggle={() => handleDropdownToggle('grade')}
-                            error={errors.grade}
-                            isSubmitting={isSubmitting || isLoadingFiles}
-                            isSubmittingDropdowns={isSubmittingDropdowns}
-                            onErrorClear={handleErrorClear}
-                        />
-                        <Select
                             value={selectedTheme}
                             onValueChange={setSelectedTheme}
                             placeholder="Theme"
@@ -279,6 +267,18 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'theme'}
                             onToggle={() => handleDropdownToggle('theme')}
                             error={errors.theme}
+                            isSubmitting={isSubmitting || isLoadingFiles}
+                            isSubmittingDropdowns={isSubmittingDropdowns}
+                            onErrorClear={handleErrorClear}
+                        />
+                        <Select
+                            value={selectedGrade}
+                            onValueChange={setSelectedGrade}
+                            placeholder="Grade"
+                            options={gradeOptions}
+                            isOpen={openDropdown === 'grade'}
+                            onToggle={() => handleDropdownToggle('grade')}
+                            error={errors.grade}
                             isSubmitting={isSubmitting || isLoadingFiles}
                             isSubmittingDropdowns={isSubmittingDropdowns}
                             onErrorClear={handleErrorClear}
@@ -318,18 +318,18 @@ const EducatorDashboard = () => {
                             {pdfProjects.length === 0 ? (
                                 <div className="text-center text-lg text-red-500 font-semibold py-8">No files found with this filter.</div>
                             ) : (
-                               <div className="flex flex-wrap gap-6 justify-center w-full px-4">
-    {pdfProjects.map((project) => (
-        <DocumentCard
-            key={project.id}
-            title={project.title}
-            onView={() => handleView(project.id)}
-            onDownload={() => handleDownload(project.id, project.title)}
-            viewLoading={viewLoadingId === project.id}
-            downloadLoading={downloadLoadingId === project.id}
-        />
-    ))}
-</div>
+                                <div className="flex flex-wrap gap-6 justify-center w-full px-4">
+                                    {pdfProjects.map((project) => (
+                                        <DocumentCard
+                                            key={project.id}
+                                            title={project.title}
+                                            onView={() => handleView(project.id)}
+                                            onDownload={() => handleDownload(project.id, project.title)}
+                                            viewLoading={viewLoadingId === project.id}
+                                            downloadLoading={downloadLoadingId === project.id}
+                                        />
+                                    ))}
+                                </div>
                             )}
                             {/* PDF Renderer Modal */}
                             {showPdf && pdfUrl && (
@@ -340,9 +340,31 @@ const EducatorDashboard = () => {
 
                     {/* Inspirational Quote Section */}
                     <div className="w-full pt-6 text-center">
-                        <p className="text-lg text-textColor font-bold italic leading-relaxed max-w-4xl mx-auto">
+                        <p
+                            className="text-lg text-gray-800 font-bold italic leading-relaxed max-w-4xl mx-auto animate-quote"
+                            style={{
+                                color: '#1F2937', // Rich dark gray for contrast
+                            }}
+                        >
                             "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
                         </p>
+                        <style>
+                            {`
+      @keyframes fadeInScale {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-quote {
+        animation: fadeInScale 1s ease-in-out forwards;
+      }
+    `}
+                        </style>
                     </div>
                 </div>
             </div>

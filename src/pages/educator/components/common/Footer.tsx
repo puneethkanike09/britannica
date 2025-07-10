@@ -1,9 +1,9 @@
-import InvestigationIcon from '../../../../assets/dashboard/Educator/footer/1.svg';
-import AnalysisIcon from '../../../../assets/dashboard/Educator/footer/2.svg';
-import DesignIcon from '../../../../assets/dashboard/Educator/footer/3.svg';
-import SketchIcon from '../../../../assets/dashboard/Educator/footer/4.svg';
-import LaunchIcon from '../../../../assets/dashboard/Educator/footer/5.svg';
-import CreativeIcon from '../../../../assets/dashboard/Educator/footer/6.svg';
+import InvestigationIcon from '../../../../assets/dashboard/Educator/footer/1. Driving Problem.svg';
+import AnalysisIcon from '../../../../assets/dashboard/Educator/footer/6. Focused Investigation.svg';
+import DesignIcon from '../../../../assets/dashboard/Educator/footer/3. Design Your Path.svg';
+import SketchIcon from '../../../../assets/dashboard/Educator/footer/4. Sketch To Structure.svg';
+import LaunchIcon from '../../../../assets/dashboard/Educator/footer/5. Launch and Lead.svg';
+import CreativeIcon from '../../../../assets/dashboard/Educator/footer/Group 1261156796.svg';
 import Image1 from '../../../../assets/dashboard/Educator/footer/1.jpg';
 import Image2 from '../../../../assets/dashboard/Educator/footer/2.jpg';
 import Image3 from '../../../../assets/dashboard/Educator/footer/3.jpg';
@@ -18,10 +18,7 @@ export default function FlipCards() {
             type: "image",
             title: "Driving Problems",
             icon: InvestigationIcon,
-            iconSize: {
-                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
-                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
-            },
+          
             image: Image1,
             backText:
                 "Bridge learning with reality through case studies or real stories.",
@@ -31,10 +28,7 @@ export default function FlipCards() {
             type: "image",
             title: "Focused Investigation",
             icon: AnalysisIcon,
-            iconSize: {
-                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
-                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
-            },
+          
             image: Image2,
             backText:
                 "Research, conduct surveys, and gather relevant data.",
@@ -44,10 +38,7 @@ export default function FlipCards() {
             type: "image",
             title: "Design Your Path",
             icon: DesignIcon,
-            iconSize: {
-                width: { mobile: '40px', tablet: '46px', desktop: '45px' },
-                height: { mobile: '40px', tablet: '46px', desktop: '45px' }
-            },
+         
             image: Image3,
             backText:
                 "Brainstorm, plan, and ideate innovative solutions.",
@@ -57,10 +48,7 @@ export default function FlipCards() {
             type: "image",
             title: "Sketch to Structure",
             icon: SketchIcon,
-            iconSize: {
-                width: { mobile: '46px', tablet: '53px', desktop: '60px' },
-                height: { mobile: '46px', tablet: '53px', desktop: '60px' }
-            },
+           
             image: Image4,
             backText:
                 "Create a working model of your solution.",
@@ -70,10 +58,7 @@ export default function FlipCards() {
             type: "image",
             title: "Launch and Lead",
             icon: LaunchIcon,
-            iconSize: {
-                width: { mobile: '70px', tablet: '80px', desktop: '90px' },
-                height: { mobile: '70px', tablet: '80px', desktop: '90px' }
-            },
+           
             image: Image5,
             backText:
                 "Deploy the solution and run an awareness drive.",
@@ -83,10 +68,7 @@ export default function FlipCards() {
             type: "image",
             title: "Creative Display",
             icon: CreativeIcon,
-            iconSize: {
-                width: { mobile: '48px', tablet: '56px', desktop: '64px' },
-                height: { mobile: '48px', tablet: '56px', desktop: '64px' }
-            },
+           
             image: Image6,
             backText:
                 "Showcase final project to peers, educators, and stakeholders; and take feedback to complete your understanding.",
@@ -118,11 +100,7 @@ export default function FlipCards() {
                                             <img
                                                 src={card.icon}
                                                 alt={card.title}
-                                                className="mb-2 sm:mb-3 md:mb-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18"
-                                                style={{
-                                                    width: `clamp(${card.iconSize.width.mobile}, 4vw, ${card.iconSize.width.desktop})`,
-                                                    height: `clamp(${card.iconSize.height.mobile}, 4vw, ${card.iconSize.height.desktop})`
-                                                }}
+                                                className={`mb-2 sm:mb-3 md:mb-4 ${card.id === 1 ? 'w-14 h-14 sm:w-20 sm:h-20 md:w-22 md:h-22 lg:w-24 lg:h-24' : 'w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18'}`}
                                             />
                                             <h3 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-center px-2 sm:px-3 md:px-4 leading-tight sm:leading-normal">
                                                 {card.title}
