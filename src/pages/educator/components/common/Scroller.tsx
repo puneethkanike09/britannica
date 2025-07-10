@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function ScrollingQuotes() {
-    const quotes = useMemo(() => [
+interface Quote {
+    text: string;
+    author: string;
+}
+
+export default function Scroller() {
+    const quotes = useMemo<Quote[]>(() => [
         {
             text: "I have waited long to shake your hand with this. Peter Pan, prepare to meet thy doom!",
             author: "Captain Hook"
@@ -24,35 +30,61 @@ export default function ScrollingQuotes() {
         }
     ], []);
 
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-    const [fadeClass, setFadeClass] = useState('opacity-100');
-    const [isVisible, setIsVisible] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
+    const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+    const [isVisible, setIsVisible] = useState<boolean>(true);
+    const [progress, setProgress] = useState<number>(0);
     
-    const intervalRef = useRef(null);
-    const autoPlayTimeoutRef = useRef(null);
-    const containerRef = useRef(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
-    // Optimized reading time calculation with better constants
-    const calculateReadingTime = useCallback((text) => {
+    const calculateReadingTime = useCallback((text: string): number => {
         const words = text.split(' ').length;
-        const wordsPerMinute = 200; // Average reading speed
-        const readingTimeMs = Math.max(3000, (words / wordsPerMinute) * 60 * 1000);
-        return Math.min(readingTimeMs, 8000); // Cap at 8 seconds
+        const wordsPerMinute = 150; // Reduced from 200 to 150 to increase reading time
+        const readingTimeMs = Math.max(4000, (words / wordsPerMinute) * 60 * 1000);
+        return Math.min(readingTimeMs, 10000);
     }, []);
 
-    // Optimized quote change with better timing
-    const changeQuote = useCallback((indexOrFunction) => {
-        setFadeClass('opacity-0');
-        setTimeout(() => {
-            setCurrentIndex(prev => 
-                typeof indexOrFunction === 'function' ? indexOrFunction(prev) : indexOrFunction
-            );
-            setFadeClass('opacity-100');
-        }, 150); // Reduced fade time for snappier feel
+    const changeQuote = useCallback((indexOrFunction: number | ((prev: number) => number), direction: 'left' | 'right' = 'right'): void => {
+        setSlideDirection(direction);
+        setCurrentIndex(prev => 
+            typeof indexOrFunction === 'function' ? indexOrFunction(prev) : indexOrFunction
+        );
     }, []);
 
-    // Intersection Observer for performance optimization
+    const resetProgress = useCallback(() => {
+        setProgress(0);
+        if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+            progressIntervalRef.current = null;
+        }
+    }, []);
+
+    const startProgress = useCallback((duration: number) => {
+        resetProgress();
+        
+        if (!isAutoPlaying || !isVisible) return;
+
+        const startTime = Date.now();
+        const updateInterval = 50;
+        
+        progressIntervalRef.current = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const newProgress = Math.min((elapsed / duration) * 100, 100);
+            setProgress(newProgress);
+            
+            if (elapsed >= duration) {
+                setProgress(100);
+                if (progressIntervalRef.current) {
+                    clearInterval(progressIntervalRef.current);
+                    progressIntervalRef.current = null;
+                }
+            }
+        }, updateInterval);
+    }, [isAutoPlaying, isVisible, resetProgress]);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -68,67 +100,67 @@ export default function ScrollingQuotes() {
         return () => observer.disconnect();
     }, []);
 
-    // Auto-scroll with cleanup and visibility optimization
     useEffect(() => {
+        // Clear existing timers
+        if (intervalRef.current) {
+            clearTimeout(intervalRef.current);
+            intervalRef.current = null;
+        }
+        resetProgress();
+
         if (!isAutoPlaying || !isVisible) {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
             return;
         }
 
         const currentQuote = quotes[currentIndex];
         const readingTime = calculateReadingTime(currentQuote.text);
 
-        intervalRef.current = setInterval(() => {
-            changeQuote((prevIndex) =>
+        // Start progress bar immediately
+        startProgress(readingTime);
+
+        // Set up the interval for changing quotes
+        intervalRef.current = setTimeout(() => {
+            changeQuote((prevIndex: number) =>
                 prevIndex === quotes.length - 1 ? 0 : prevIndex + 1
             );
         }, readingTime);
 
         return () => {
             if (intervalRef.current) {
-                clearInterval(intervalRef.current);
+                clearTimeout(intervalRef.current);
                 intervalRef.current = null;
             }
         };
-    }, [isAutoPlaying, isVisible, currentIndex, quotes, calculateReadingTime, changeQuote]);
+    }, [isAutoPlaying, isVisible, currentIndex, quotes, calculateReadingTime, changeQuote, startProgress, resetProgress]);
 
-    // Optimized manual navigation with debouncing
-    const handleManualNavigation = useCallback((newIndex) => {
-        setIsAutoPlaying(false);
-        changeQuote(newIndex);
+    const handleManualNavigation = useCallback((newIndex: number, direction: 'left' | 'right'): void => {
+        resetProgress();
+        changeQuote(newIndex, direction);
         
-        // Clear existing timeout
-        if (autoPlayTimeoutRef.current) {
-            clearTimeout(autoPlayTimeoutRef.current);
-        }
-        
-        // Resume auto-play after 5 seconds
-        autoPlayTimeoutRef.current = setTimeout(() => {
-            setIsAutoPlaying(true);
-        }, 5000);
-    }, [changeQuote]);
+        // Start progress immediately after manual navigation
+        const currentQuote = quotes[newIndex];
+        const readingTime = calculateReadingTime(currentQuote.text);
+        startProgress(readingTime);
+    }, [changeQuote, resetProgress, quotes, calculateReadingTime, startProgress]);
 
-    const goToPrevious = useCallback(() => {
+    const goToPrevious = useCallback((): void => {
         const newIndex = currentIndex === 0 ? quotes.length - 1 : currentIndex - 1;
-        handleManualNavigation(newIndex);
+        handleManualNavigation(newIndex, 'left');
     }, [currentIndex, quotes.length, handleManualNavigation]);
 
-    const goToNext = useCallback(() => {
+    const goToNext = useCallback((): void => {
         const newIndex = currentIndex === quotes.length - 1 ? 0 : currentIndex + 1;
-        handleManualNavigation(newIndex);
+        handleManualNavigation(newIndex, 'right');
     }, [currentIndex, quotes.length, handleManualNavigation]);
 
-    const goToSlide = useCallback((index) => {
+    const goToSlide = useCallback((index: number): void => {
         if (index === currentIndex) return;
-        handleManualNavigation(index);
+        const direction = index > currentIndex ? 'right' : 'left';
+        handleManualNavigation(index, direction);
     }, [currentIndex, handleManualNavigation]);
 
-    // Keyboard navigation
     useEffect(() => {
-        const handleKeyDown = (e) => {
+        const handleKeyDown = (e: KeyboardEvent): void => {
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 goToPrevious();
@@ -145,106 +177,91 @@ export default function ScrollingQuotes() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [goToPrevious, goToNext]);
 
-    // Cleanup timeouts on unmount
     useEffect(() => {
         return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+            if (intervalRef.current) clearTimeout(intervalRef.current);
+            if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
         };
     }, []);
 
-    const ArrowIcon = ({ direction, className }) => (
-        <svg
-            className={className}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-        >
-            <polyline points={direction === 'left' ? "15 18 9 12 15 6" : "9 18 15 12 9 6"} />
-        </svg>
-    );
-
     return (
-        <div className="w-full" ref={containerRef}>
-            {/* Main quotes section */}
-            <div className="bg-fourth py-8 sm:py-12 md:py-16 lg:py-20 relative">
-                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    {/* Navigation arrows */}
-                    <button
-                        onClick={goToPrevious}
-                        className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 z-10 p-1 sm:p-2"
-                        aria-label="Previous quote"
-                        type="button"
-                    >
-                        <ArrowIcon 
-                            direction="left"
-                            className="cursor-pointer text-primary hover:text-primary/80 transition-all duration-200 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20"
-                        />
-                    </button>
+        <div className="w-full flex flex-col bg-fourth " ref={containerRef}>
+            {/* Main carousel section */}
+            <div className="flex-1 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+                <div className="w-full max-w-6xl mx-auto">
 
-                    <button
-                        onClick={goToNext}
-                        className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-10 p-1 sm:p-2"
-                        aria-label="Next quote"
-                        type="button"
-                    >
-                        <ArrowIcon 
-                            direction="right"
-                            className="cursor-pointer text-primary hover:text-primary/80 transition-all duration-200 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20"
-                        />
-                    </button>
-
-                    {/* Quote content */}
-                    <div className="text-center">
-                        <div className={`transition-opacity duration-150 ${fadeClass}`}>
-                            {/* Quote text with inline quote marks */}
-                            <div className="relative max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto">
-                                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-textColor font-light leading-relaxed mb-6 sm:mb-8 italic">
-                                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-primary font-serif leading-none align-top mr-1 sm:mr-2">"</span>
-                                    {quotes[currentIndex].text}
-                                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-primary font-serif leading-none align-top ml-1 sm:ml-2">"</span>
-                                </p>
-                            </div>
-
-                            {/* Author attribution */}
-                            <div className="mt-4 sm:mt-6">
-                                <p className="text-primary font-medium text-base sm:text-lg md:text-xl">
-                                    — {quotes[currentIndex].author}
-                                </p>
+                    {/* Main quote card */}
+                    <div className="relative">
+                        <div 
+                            className="transform transition-all duration-500 ease-out"
+                            key={currentIndex}
+                        >
+                            <div className="bg-white rounded-lg p-8 sm:p-12 md:p-16">
+                                {/* Quote content */}
+                                <div className="space-y-8">
+                                    <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-3xl font-light leading-relaxed tracking-wide text-textColor">
+                                        <span>{quotes[currentIndex].text}</span>
+                                    </blockquote>
+                                    
+                                    <div className="flex items-center justify-between">
+                                        <cite className="text-xl sm:text-2xl font-medium not-italic border-l-4 border-orange pl-6 text-textColor">
+                                            {quotes[currentIndex].author}
+                                        </cite>
+                                        
+                                        {/* Progress indicator */}
+                                        <div className="w-24 h-1 bg-lightGray rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-primary transition-all duration-100 ease-linear rounded-full"
+                                                style={{ width: `${progress}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Dots indicator */}
-                    <div className="flex justify-center mt-6 sm:mt-8 md:mt-10 space-x-1 sm:space-x-2" role="tablist" aria-label="Quote navigation">
+                    {/* Navigation controls */}
+                    <div className="flex justify-center items-center mt-12 space-x-3">
+                        {/* Navigation dots */}
                         {quotes.map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => goToSlide(index)}
-                                className={`transition-all duration-200 rounded-full cursor-pointer ${
+                                className={`transition-all duration-300 ${
                                     index === currentIndex
-                                        ? 'w-6 sm:w-8 h-2 sm:h-3 bg-secondary/80'
-                                        : 'w-2 sm:w-3 h-2 sm:h-3 bg-lightGray hover:bg-primary'
+                                        ? 'w-12 h-3 bg-primary rounded-full'
+                                        : 'w-3 h-3 bg-white rounded-full cursor-pointer hover:bg-primary '
                                 }`}
                                 aria-label={`Go to quote ${index + 1}`}
-                                aria-selected={index === currentIndex}
-                                role="tab"
-                                type="button"
                             />
                         ))}
+                        {/* Left arrow */}
+                        <button
+                            onClick={goToPrevious}
+                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
+                            aria-label="Previous quote"
+                        >
+                            <ChevronLeft className="w-6 h-6 text-textColor hover:text-primary" />
+                        </button>
+                        {/* Right arrow */}
+                        <button
+                            onClick={goToNext}
+                            className="p-2 rounded-full cursor-pointer bg-white  transition-colors duration-200"
+                            aria-label="Next quote"
+                        >
+                            <ChevronRight className="w-6 h-6 text-textColor hover:text-primary" />
+                        </button>
                     </div>
+
                 </div>
             </div>
 
-            {/* Bottom static section */}
-            <div className="bg-secondary text-white py-6 sm:py-6 md:py-6 lg:py-8 text-center px-4 sm:px-6 lg:px-8 border-t border-gray-200">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-2">
-                    Real Problems. Real Teams. Real Impact
-                </h2>
+            {/* Footer section */}
+            <div className=" bg-secondary py-10 text-center">
+                <div className="max-w-4xl mx-auto px-4">
+                    <h3 className="text-xl font-bold tracking-tight text-white">Real Problems. Real Teams. Real Impact</h3>
+                </div>
             </div>
         </div>
     );
