@@ -3,10 +3,10 @@
 import { EducatorNavItem } from "../../../types/educator";
 
 export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
-    {
-        label: 'About us',
-        to: ''
-    },
+    // {
+    //     label: 'About us',
+    //     to: ''
+    // },
     {
         label: 'Resources',
         dropdown: [
