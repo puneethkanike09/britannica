@@ -258,18 +258,6 @@ const EducatorDashboard = () => {
                 <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-[1500px] mx-auto">
                     <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-7xl mb-8">
                         <Select
-                            value={selectedGrade}
-                            onValueChange={setSelectedGrade}
-                            placeholder="Grade"
-                            options={gradeOptions}
-                            isOpen={openDropdown === 'grade'}
-                            onToggle={() => handleDropdownToggle('grade')}
-                            error={errors.grade}
-                            isSubmitting={isSubmitting || isLoadingFiles}
-                            isSubmittingDropdowns={isSubmittingDropdowns}
-                            onErrorClear={handleErrorClear}
-                        />
-                        <Select
                             value={selectedTheme}
                             onValueChange={setSelectedTheme}
                             placeholder="Theme"
@@ -277,6 +265,18 @@ const EducatorDashboard = () => {
                             isOpen={openDropdown === 'theme'}
                             onToggle={() => handleDropdownToggle('theme')}
                             error={errors.theme}
+                            isSubmitting={isSubmitting || isLoadingFiles}
+                            isSubmittingDropdowns={isSubmittingDropdowns}
+                            onErrorClear={handleErrorClear}
+                        />
+                        <Select
+                            value={selectedGrade}
+                            onValueChange={setSelectedGrade}
+                            placeholder="Grade"
+                            options={gradeOptions}
+                            isOpen={openDropdown === 'grade'}
+                            onToggle={() => handleDropdownToggle('grade')}
+                            error={errors.grade}
                             isSubmitting={isSubmitting || isLoadingFiles}
                             isSubmittingDropdowns={isSubmittingDropdowns}
                             onErrorClear={handleErrorClear}
@@ -334,8 +334,8 @@ const EducatorDashboard = () => {
 
                     {/* Inspirational Quote Section */}
                     <div className="w-full pt-6 text-center">
-                        <p className="text-lg text-textColor font-bold italic leading-relaxed max-w-4xl mx-auto">
-                            "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
+                        <p className="text-xl text-textColor font-black leading-relaxed max-w-4xl mx-auto">
+                            "Britannica Build offers Project-Based Learning—an experiential, inquiry-driven framework that engages learners in exploring real-world challenges through collaboration, creativity, and critical thinking."
                         </p>
                     </div>
                 </div>

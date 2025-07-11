@@ -102,38 +102,74 @@ body {
 }
 
 
-@keyframes marquee {
-  0% {
-      transform: translateX(0);
-  }
-  100% {
-      transform: translateX(-33.333%); /* Move by 1/3 since we have 3 copies */
-  }
+
+
+/* Flip Card Animation (Pure CSS) */
+.flip-card {
+  perspective: 1200px;
 }
 
-.animate-marquee {
-  animation: marquee 15s linear infinite;
-  display: flex;
-  width: max-content;
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
 }
 
-.animate-marquee:hover {
-  animation-play-state: paused;
+.flip-card:hover .flip-card-inner,
+.flip-card:focus-within .flip-card-inner {
+  transform: rotateY(180deg);
 }
 
-/* Faster animation on mobile */
-@media (max-width: 768px) {
-  .animate-marquee {
-      animation-duration: 8s;
-  }
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
 }
 
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-      animation: none;
-      transform: translateX(0);
-      overflow-x: auto;
-      white-space: nowrap;
-  }
+.flip-card-back {
+  transform: rotateY(180deg);
 }
+
+
+.shine-text {
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine-text::before {
+            content: "Real Problems. Real Teams. Real Impact";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                transparent 30%,
+                #00a2e3 50%,
+                transparent 70%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 6s linear infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }

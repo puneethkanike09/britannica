@@ -85,10 +85,10 @@ export default function FlipCards() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
                     {cards.map((card) => (
-                        <div key={card.id} className="flip-card h-48 sm:h-52 md:h-56 lg:h-60 group">
-                            <div className="flip-card-inner relative w-full h-full transition-transform duration-700 transform-gpu group-hover:rotate-y-180" style={{ transformStyle: 'preserve-3d' }}>
+                        <div key={card.id} className="flip-card h-48 sm:h-52 md:h-56 lg:h-60">
+                            <div className="flip-card-inner">
                                 {/* Front Side */}
-                                <div className="flip-card-front absolute w-full h-full" style={{ backfaceVisibility: 'hidden' }}>
+                                <div className="flip-card-front">
                                     <div className="relative rounded-xl overflow-hidden h-full">
                                         <div
                                             className="absolute inset-0 bg-cover bg-center"
@@ -110,7 +110,7 @@ export default function FlipCards() {
                                 </div>
 
                                 {/* Back Side */}
-                                <div className="flip-card-back absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                                <div className="flip-card-back">
                                     <div className="bg-fourth rounded-xl p-4 sm:p-6 md:p-8 h-full flex items-center justify-center">
                                         <p className="text-textColor text-center text-sm sm:text-base md:text-lg lg:text-xl font-bold leading-relaxed sm:leading-relaxed md:leading-relaxed">
                                             {card.backText}

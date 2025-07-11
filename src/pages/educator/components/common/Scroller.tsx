@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
 
 interface Quote {
     text: string;
@@ -37,7 +39,7 @@ export default function Scroller() {
 
     const calculateReadingTime = useCallback((text: string): number => {
         const words = text.split(' ').length;
-        const wordsPerMinute = 150; // Reduced from 200 to 150 to increase reading time
+        const wordsPerMinute = 150;
         const readingTimeMs = Math.max(4000, (words / wordsPerMinute) * 60 * 1000);
         return Math.min(readingTimeMs, 10000);
     }, []);
@@ -95,7 +97,6 @@ export default function Scroller() {
     }, []);
 
     useEffect(() => {
-        // Clear existing timers
         if (intervalRef.current) {
             clearTimeout(intervalRef.current);
             intervalRef.current = null;
@@ -109,10 +110,8 @@ export default function Scroller() {
         const currentQuote = quotes[currentIndex];
         const readingTime = calculateReadingTime(currentQuote.text);
 
-        // Start progress bar immediately
         startProgress(readingTime);
 
-        // Set up the interval for changing quotes
         intervalRef.current = setTimeout(() => {
             changeQuote((prevIndex: number) =>
                 prevIndex === quotes.length - 1 ? 0 : prevIndex + 1
@@ -131,7 +130,6 @@ export default function Scroller() {
         resetProgress();
         changeQuote(newIndex);
         
-        // Start progress immediately after manual navigation
         const currentQuote = quotes[newIndex];
         const readingTime = calculateReadingTime(currentQuote.text);
         startProgress(readingTime);
@@ -179,58 +177,61 @@ export default function Scroller() {
     }, []);
 
     return (
-        <div className="w-full flex flex-col bg-fourth " ref={containerRef}>
-            {/* Main carousel section */}
-            <div className="flex-1 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+        <div className="w-full flex flex-col bg-primary " ref={containerRef}>
+            <div className="flex-1 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-6">
                 <div className="w-full max-w-6xl mx-auto">
-
-                    {/* Main quote card */}
                     <div className="relative">
-                        <div 
-                            className="transform transition-all duration-500 ease-out"
-                            key={currentIndex}
-                        >
-                            <div className="bg-white rounded-lg p-8 sm:p-12 md:p-16">
-                                {/* Quote content */}
-                                <div className="space-y-8">
-                                    <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-3xl font-light leading-relaxed tracking-wide text-textColor">
+                        <div className="bg-fourth rounded-lg p-8 sm:p-12 md:p-16">
+                            <div className="space-y-8">
+                                <AnimatePresence mode="wait">
+                                    <motion.blockquote
+                                        key={`${currentIndex}-quote`}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                                        className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light leading-relaxed tracking-wide text-textColor"
+                                    >
                                         <span>{quotes[currentIndex].text}</span>
-                                    </blockquote>
-                                    
-                                    <div className="flex items-center justify-between">
-                                        <cite className="text-xl sm:text-2xl font-medium not-italic border-l-4 border-orange pl-6 text-textColor">
+                                    </motion.blockquote>
+                                </AnimatePresence>
+                                <div className="flex items-center justify-between">
+                                    <AnimatePresence mode="wait">
+                                        <motion.cite
+                                            key={`${currentIndex}-author`}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                                            className="text-xl sm:text-xl font-medium not-italic border-l-4 border-secondary pl-6 text-primary"
+                                        >
                                             {quotes[currentIndex].author}
-                                        </cite>
-                                        
-                                        {/* Progress indicator */}
-                                        <div className="w-24 h-1 bg-lightGray rounded-full overflow-hidden">
-                                            <div 
-                                                className="h-full bg-primary transition-all duration-100 ease-linear rounded-full"
-                                                style={{ width: `${progress}%` }}
-                                            />
-                                        </div>
+                                        </motion.cite>
+                                    </AnimatePresence>
+                                    <div className="w-24 h-1 bg-lightGray rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-secondary transition-all duration-100 ease-linear rounded-full"
+                                            style={{ width: `${progress}%` }}
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Navigation controls */}
                     <div className="flex justify-center items-center mt-12 space-x-3">
-                        {/* Navigation dots */}
                         {quotes.map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => goToSlide(index)}
                                 className={`transition-all duration-300 ${
                                     index === currentIndex
-                                        ? 'w-12 h-3 bg-primary rounded-full'
-                                        : 'w-3 h-3 bg-white rounded-full cursor-pointer hover:bg-primary '
+                                        ? 'w-12 h-3 bg-secondary rounded-full'
+                                        : 'w-3 h-3 bg-white rounded-full cursor-pointer hover:bg-secondary '
                                 }`}
                                 aria-label={`Go to quote ${index + 1}`}
                             />
                         ))}
-                        {/* Left arrow */}
                         <button
                             onClick={goToPrevious}
                             className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
@@ -238,23 +239,28 @@ export default function Scroller() {
                         >
                             <ChevronLeft className="w-6 h-6 text-textColor hover:text-primary" />
                         </button>
-                        {/* Right arrow */}
                         <button
                             onClick={goToNext}
-                            className="p-2 rounded-full cursor-pointer bg-white  transition-colors duration-200"
+                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
                             aria-label="Next quote"
                         >
                             <ChevronRight className="w-6 h-6 text-textColor hover:text-primary" />
                         </button>
                     </div>
-
                 </div>
             </div>
 
-            {/* Footer section */}
-            <div className=" bg-secondary py-10 text-center">
-                <div className="max-w-4xl mx-auto px-4">
-                    <h3 className="text-xl font-bold tracking-tight text-white">Real Problems. Real Teams. Real Impact</h3>
+            <div className="bg-fourth py-6 text-center">
+                <div className="mx-auto px-4 sm:px-6 lg:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0" style={{minHeight: '40px'}}>
+                    <div className="flex-shrink-0 flex items-center justify-center">
+                        <img src={LogoIcon} alt="Britannica Education Logo" className="h-10 w-auto object-contain" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                        <h3 className="shine-text text-xl font-bold tracking-tight text-textColor text-center">Real Problems. Real Teams. Real Impact</h3>
+                    </div>
+                    <div className="hidden sm:flex flex-shrink-0 items-center justify-center" style={{visibility: 'hidden'}}>
+                        <img src={LogoIcon} alt="" className="h-10 w-auto object-contain" />
+                    </div>
                 </div>
             </div>
         </div>
