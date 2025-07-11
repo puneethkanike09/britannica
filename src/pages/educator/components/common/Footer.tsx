@@ -16,7 +16,7 @@ export default function FlipCards() {
         {
             id: 1,
             type: "image",
-            title: "Driving Problems",
+            title: "Driving Problem",
             icon: InvestigationIcon,
           
             image: Image1,
