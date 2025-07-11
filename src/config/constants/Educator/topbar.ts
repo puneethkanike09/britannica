@@ -6,7 +6,7 @@ export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
     // {
     //     label: 'About us',
     //     to: ''
-    // },
+    // },D:\projects\britanica\public\pdfs\PBL Orientation Guide.pdf
     {
         label: 'Resources',
         dropdown: [

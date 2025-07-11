@@ -11,6 +11,7 @@ const Topbar: React.FC = () => {
     const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
     const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
     const resourcesDropdownRef = useRef<HTMLDivElement>(null);
+    const supportDropdownRef = useRef<HTMLDivElement>(null);
     const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
     const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
 
@@ -32,6 +33,24 @@ const Topbar: React.FC = () => {
         };
     }, [isResourcesDropdownOpen]);
 
+    useEffect(() => {
+        if (!isSupportDropdownOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                supportDropdownRef.current &&
+                !supportDropdownRef.current.contains(event.target as Node)
+            ) {
+                setIsSupportDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isSupportDropdownOpen]);
+
     const openLogoutModal = () => setShowLogoutModal(true);
     const closeLogoutModal = () => setShowLogoutModal(false);
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -49,7 +68,7 @@ const Topbar: React.FC = () => {
                 <nav className="hidden md:flex items-center gap-8">
                     {EDUCATOR_NAV_ITEMS.map((item) =>
                         item.dropdown ? (
-                            <div className="relative" ref={item.label === 'Resources' ? resourcesDropdownRef : undefined} key={item.label}>
+                            <div className="relative" ref={item.label === 'Resources' ? resourcesDropdownRef : item.label === 'Support' ? supportDropdownRef : undefined} key={item.label}>
                                 <button
                                     onClick={() => {
                                         if (item.label === 'Resources') {
