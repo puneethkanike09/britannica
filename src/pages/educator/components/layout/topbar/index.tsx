@@ -11,6 +11,8 @@ const Topbar: React.FC = () => {
     const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
     const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
     const resourcesDropdownRef = useRef<HTMLDivElement>(null);
+    const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
+    const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
 
     useEffect(() => {
         if (!isResourcesDropdownOpen) return;
@@ -47,18 +49,33 @@ const Topbar: React.FC = () => {
                 <nav className="hidden md:flex items-center gap-8">
                     {EDUCATOR_NAV_ITEMS.map((item) =>
                         item.dropdown ? (
-                            <div className="relative" ref={resourcesDropdownRef} key={item.label}>
+                            <div className="relative" ref={item.label === 'Resources' ? resourcesDropdownRef : undefined} key={item.label}>
                                 <button
-                                    onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
+                                    onClick={() => {
+                                        if (item.label === 'Resources') {
+                                            setIsResourcesDropdownOpen((prev) => {
+                                                if (!prev) setIsSupportDropdownOpen(false);
+                                                return !prev;
+                                            });
+                                        }
+                                        if (item.label === 'Support') {
+                                            setIsSupportDropdownOpen((prev) => {
+                                                if (!prev) setIsResourcesDropdownOpen(false);
+                                                return !prev;
+                                            });
+                                        }
+                                    }}
                                     className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
                                 >
                                     {item.label}
-                                    <ChevronDown size={16} className={`transition-transform duration-300 ${isResourcesDropdownOpen ? 'rotate-180' : ''}`} />
+                                    <ChevronDown size={16} className={`transition-transform duration-300 ${(item.label === 'Resources' && isResourcesDropdownOpen) || (item.label === 'Support' && isSupportDropdownOpen) ? 'rotate-180' : ''}`} />
                                 </button>
-                                {isResourcesDropdownOpen && (
-                                    <div className="absolute top-full left-0 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2">
-                                        {item.dropdown.map((sub) => (
-                                            sub.isExternal ? (
+                                {(item.label === 'Resources' && isResourcesDropdownOpen) && (
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-white border border-third rounded-lg shadow-lg py-2">
+                                        {item.dropdown.map((sub, idx) =>
+                                            'content' in sub ? (
+                                                <div key={idx} className="px-4 py-3 text-textColor text-sm whitespace-pre-line">{sub.content}</div>
+                                            ) : sub.isExternal ? (
                                                 <a
                                                     href={sub.to}
                                                     key={sub.label}
@@ -77,7 +94,18 @@ const Topbar: React.FC = () => {
                                                     {sub.label}
                                                 </Link>
                                             )
-                                        ))}
+                                        )}
+                                    </div>
+                                )}
+                                {(item.label === 'Support' && isSupportDropdownOpen) && (
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-96 max-w-[90vw] bg-white border border-third rounded-lg shadow-lg py-4 px-6 text-sm text-textColor">
+                                        <div>
+                                            <div className="font-bold mb-1">Technical & Academic Support</div>
+                                            <div className="mb-2">We are committed to providing prompt and effective assistance. If you're experiencing technical issues or product-related queries, please reach out to our support team.</div>
+                                            <div className="mb-1"><span className="font-bold">Email:</span> <a href="mailto:contact@britannica.in" className="text-primary underline">contact@britannica.in</a></div>
+                                            <div className="mb-1"><span className="font-bold">Phone:</span> <a href="tel:+918448569920" className="text-primary underline">+91 8448-569920</a></div>
+                                            <div><span className="font-bold">Availability:</span> Official working hours from 9:00 AM to 6:00 PM (Monday to Friday)</div>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -136,7 +164,12 @@ const Topbar: React.FC = () => {
                         {/* Resources */}
                         <div className="py-3 px-4">
                             <button
-                                onClick={() => setIsMobileResourcesOpen(!isMobileResourcesOpen)}
+                                onClick={() => {
+                                    setIsMobileResourcesOpen((prev) => {
+                                        if (!prev) setIsMobileSupportOpen(false);
+                                        return !prev;
+                                    });
+                                }}
                                 className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
                             >
                                 Resources
@@ -146,8 +179,10 @@ const Topbar: React.FC = () => {
                             {/* Mobile Resources Submenu */}
                             {isMobileResourcesOpen && (
                                 <div className="mt-3 ml-4 space-y-2">
-                                    {EDUCATOR_NAV_ITEMS.find(item => item.label === 'Resources')?.dropdown?.map((sub) => (
-                                        sub.isExternal ? (
+                                    {EDUCATOR_NAV_ITEMS.find(item => item.label === 'Resources')?.dropdown?.map((sub, idx) =>
+                                        'content' in sub ? (
+                                            <div key={idx} className="py-2 px-3 text-textColor text-sm whitespace-pre-line">{sub.content}</div>
+                                        ) : sub.isExternal ? (
                                             <a
                                                 href={sub.to}
                                                 key={sub.label}
@@ -168,19 +203,37 @@ const Topbar: React.FC = () => {
                                                 {sub.label}
                                             </Link>
                                         )
-                                    ))}
+                                    )}
                                 </div>
                             )}
                         </div>
 
                         {/* Support */}
-                        <Link
-                            to=""
-                            className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
-                            onClick={closeMobileMenu}
-                        >
-                            Support
-                        </Link>
+                        <div className="py-3 px-4">
+                            <button
+                                onClick={() => {
+                                    setIsMobileSupportOpen((prev) => {
+                                        if (!prev) setIsMobileResourcesOpen(false);
+                                        return !prev;
+                                    });
+                                }}
+                                className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
+                            >
+                                Support
+                                <ChevronDown size={16} className={`transition-transform duration-300 ${isMobileSupportOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                            {isMobileSupportOpen && (
+                                <div className="mt-3 ml-4 space-y-2 text-sm text-textColor">
+                                    <div>
+                                        <div className="font-bold mb-1">Technical & Academic Support</div>
+                                        <div className="mb-2">We are committed to providing prompt and effective assistance. If you're experiencing technical issues or product-related queries, please reach out to our support team.</div>
+                                        <div className="mb-1"><span className="font-bold">Email:</span> <a href="mailto:contact@britannica.in" className="text-primary underline">contact@britannica.in</a></div>
+                                        <div className="mb-1"><span className="font-bold">Phone:</span> <a href="tel:+918448569920" className="text-primary underline">+91 8448-569920</a></div>
+                                        <div><span className="font-bold">Availability:</span> Official working hours from 9:00 AM to 6:00 PM (Monday to Friday)</div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </nav>
                 </div>
             </header>
