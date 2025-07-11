@@ -125,13 +125,13 @@ const Topbar: React.FC = () => {
                 <div className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                     <nav className="flex flex-col p-6 gap-2">
                         {/* About us */}
-                        <Link
+                        {/* <Link
                             to=""
                             className="py-3 px-4 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300 font-medium"
                             onClick={closeMobileMenu}
                         >
                             About us
-                        </Link>
+                        </Link> */}
 
                         {/* Resources */}
                         <div className="py-3 px-4">
