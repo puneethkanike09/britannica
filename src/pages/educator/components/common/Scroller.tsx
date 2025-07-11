@@ -227,21 +227,21 @@ export default function Scroller() {
                                 className={`transition-all duration-300 ${
                                     index === currentIndex
                                         ? 'w-12 h-3 bg-secondary rounded-full'
-                                        : 'w-3 h-3 bg-white rounded-full cursor-pointer hover:bg-secondary '
+                                        : 'w-3 h-3 bg-fourth rounded-full cursor-pointer hover:bg-secondary '
                                 }`}
                                 aria-label={`Go to quote ${index + 1}`}
                             />
                         ))}
                         <button
                             onClick={goToPrevious}
-                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
+                            className="p-2 rounded-full cursor-pointer bg-fourth transition-colors duration-200"
                             aria-label="Previous quote"
                         >
                             <ChevronLeft className="w-6 h-6 text-textColor hover:text-primary" />
                         </button>
                         <button
                             onClick={goToNext}
-                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
+                            className="p-2 rounded-full cursor-pointer bg-fourth transition-colors duration-200"
                             aria-label="Next quote"
                         >
                             <ChevronRight className="w-6 h-6 text-textColor hover:text-primary" />
