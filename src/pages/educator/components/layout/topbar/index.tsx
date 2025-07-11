@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
-import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo.png';
+import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo2.png';
 import LogoutModal from './modals/LogoutModal';
 import { EDUCATOR_NAV_ITEMS } from '../../../../../config/constants/Educator/topbar';
 
@@ -40,7 +40,7 @@ const Topbar: React.FC = () => {
             <header className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}>
                 {/* Logo */}
                 <Link to="/educator-dashboard" className="flex items-center gap-3 cursor-pointer">
-                    <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] object-cover" />
+                    <img src={LogoIcon} alt="Britannica Education Logo" className="h-[58px] object-cover" />
                 </Link>
 
                 {/* Desktop Navigation */}
