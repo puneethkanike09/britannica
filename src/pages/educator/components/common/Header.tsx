@@ -3,8 +3,8 @@ import BackgroundImage from '../../../../assets/dashboard/Educator/home-page/kid
 import ResearchIcon from '../../../../assets/dashboard/Educator/header/1.png';
 import InterdisciplinaryIcon from '../../../../assets/dashboard/Educator/header/22.svg';
 import SkillsIcon from '../../../../assets/dashboard/Educator/header/33.svg';
-import SgdsIcon from '../../../../assets/dashboard/Educator/header/4.svg';
-import RealWorldIcon from '../../../../assets/dashboard/Educator/header/5.svg';
+import SgdsIcon from '../../../../assets/dashboard/Educator/header/5.png';
+import RealWorldIcon from '../../../../assets/dashboard/Educator/header/4.svg';
 
 export default function BritannicaHeroSection() {
     return (
