@@ -1,9 +1,9 @@
 import BackgroundImage from '../../../../assets/dashboard/Educator/home-page/kids.png';
 // Import the PNG images for icons
-import ResearchIcon from '../../../../assets/dashboard/Educator/header/1.svg';
-import InterdisciplinaryIcon from '../../../../assets/dashboard/Educator/header/2.svg';
-import SkillsIcon from '../../../../assets/dashboard/Educator/header/3.svg';
-import SgdsIcon from '../../../../assets/dashboard/Educator/header/5.png';
+import ResearchIcon from '../../../../assets/dashboard/Educator/header/1.png';
+import InterdisciplinaryIcon from '../../../../assets/dashboard/Educator/header/22.svg';
+import SkillsIcon from '../../../../assets/dashboard/Educator/header/33.svg';
+import SgdsIcon from '../../../../assets/dashboard/Educator/header/4.svg';
 import RealWorldIcon from '../../../../assets/dashboard/Educator/header/5.svg';
 
 export default function BritannicaHeroSection() {
