@@ -112,7 +112,7 @@ export default function FlipCards() {
                                 {/* Back Side */}
                                 <div className="flip-card-back absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
                                     <div className="bg-fourth rounded-xl p-4 sm:p-6 md:p-8 h-full flex items-center justify-center">
-                                        <p className="text-textColor text-center text-sm sm:text-base md:text-lg lg:text-xl font-bold leading-relaxed sm:leading-relaxed md:leading-relaxed">
+                                        <p className="text-textColor text-center text-lg sm:text-lg md:text-xl lg:text-xl font-bold leading-relaxed sm:leading-relaxed md:leading-relaxed">
                                             {card.backText}
                                         </p>
                                     </div>

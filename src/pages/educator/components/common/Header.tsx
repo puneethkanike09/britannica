@@ -29,63 +29,63 @@ export default function BritannicaHeroSection() {
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
-                    <div className="text-center group ">
+                    <div className="text-center group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={ResearchIcon}
                                 alt="Research based learning"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Research based</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">learning</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Research-based</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">learning</h3>
                     </div>
 
-                    <div className="text-center group ">
+                    <div className="text-center group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={InterdisciplinaryIcon}
                                 alt="Interdisciplinary connection"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Interdisciplinary</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">connection</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Interdisciplinary</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">connection</h3>
                     </div>
 
-                    <div className="text-center group ">
+                    <div className="text-center group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={SkillsIcon}
                                 alt="21st century skills"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Focus on 21st</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">century skills</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Focus on</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">21st-century skills</h3>
                     </div>
 
-                    <div className="text-center group ">
+                    <div className="text-center group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={SgdsIcon}
                                 alt="Alignment with SGDs"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Alignment with</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">SGDs</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Alignment with</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">SGDs</h3>
                     </div>
-                    <div className="text-center col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 mx-auto group ">
+                    <div className="text-center col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 mx-auto group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={RealWorldIcon}
                                 alt="Alignment with SGDS"
-                                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Real-world</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">connection</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Real-world</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">connection</h3>
                     </div>
                 </div>
             </div>
