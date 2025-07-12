@@ -340,31 +340,9 @@ const EducatorDashboard = () => {
 
                     {/* Inspirational Quote Section */}
                     <div className="w-full pt-6 text-center">
-                        <p
-                            className="text-lg text-gray-800 font-bold italic leading-relaxed max-w-4xl mx-auto animate-quote"
-                            style={{
-                                color: '#1F2937', // Rich dark gray for contrast
-                            }}
-                        >
-                            "Project-based learning isn't just about building things; it's about building minds. It's where curiosity meets collaboration, and challenges transform into profound understanding."
+                        <p className="text-xl text-textColor font-black leading-relaxed max-w-4xl mx-auto">
+                            "Britannica Build offers Project-Based Learning—an experiential, inquiry-driven framework that engages learners in exploring real-world challenges through collaboration, creativity, and critical thinking."
                         </p>
-                        <style>
-                            {`
-      @keyframes fadeInScale {
-        0% {
-          opacity: 0;
-          transform: scale(0.95);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-      .animate-quote {
-        animation: fadeInScale 1s ease-in-out forwards;
-      }
-    `}
-                        </style>
                     </div>
                 </div>
             </div>
