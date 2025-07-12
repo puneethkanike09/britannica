@@ -105,13 +105,19 @@ const Topbar: React.FC = () => {
                             <div className="relative" ref={item.label === "Resources" ? resourcesDropdownRef : item.label === "Support" ? supportDropdownRef : settingsDropdownRef} key={item.label}>
                                 <button
                                     onClick={() => {
-                                        if (item.label === "Resources") {
-                                            setIsResourcesDropdownOpen(!isResourcesDropdownOpen);
-                                        } else if (item.label === "Support") {
-                                            setIsSupportDropdownOpen(!isSupportDropdownOpen);
-                                        } else {
-                                            setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
-                                        }
+if (item.label === "Resources") {
+    setIsResourcesDropdownOpen(!isResourcesDropdownOpen);
+    setIsSupportDropdownOpen(false);
+    setIsSettingsDropdownOpen(false);
+} else if (item.label === "Support") {
+    setIsSupportDropdownOpen(!isSupportDropdownOpen);
+    setIsResourcesDropdownOpen(false);
+    setIsSettingsDropdownOpen(false);
+} else {
+    setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+    setIsResourcesDropdownOpen(false);
+    setIsSupportDropdownOpen(false);
+}
                                     }}
                                     className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
                                 >
@@ -219,10 +225,16 @@ const Topbar: React.FC = () => {
                                         onClick={() => {
                                             if (item.label === "Resources") {
                                                 setIsMobileResourcesOpen(!isMobileResourcesOpen);
+                                                setIsMobileSupportOpen(false);
+                                                setIsMobileSettingsOpen(false);
                                             } else if (item.label === "Support") {
                                                 setIsMobileSupportOpen(!isMobileSupportOpen);
+                                                setIsMobileResourcesOpen(false);
+                                                setIsMobileSettingsOpen(false);
                                             } else {
                                                 setIsMobileSettingsOpen(!isMobileSettingsOpen);
+                                                setIsMobileResourcesOpen(false);
+                                                setIsMobileSupportOpen(false);
                                             }
                                         }}
                                         className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
