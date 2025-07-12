@@ -12,10 +12,13 @@ const Topbar: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
     const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+    const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
     const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
     const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
+    const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
     const resourcesDropdownRef = useRef<HTMLDivElement>(null);
     const settingsDropdownRef = useRef<HTMLDivElement>(null);
+    const supportDropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!isResourcesDropdownOpen) return;
@@ -53,6 +56,24 @@ const Topbar: React.FC = () => {
         };
     }, [isSettingsDropdownOpen]);
 
+    useEffect(() => {
+        if (!isSupportDropdownOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                supportDropdownRef.current &&
+                !supportDropdownRef.current.contains(event.target as Node)
+            ) {
+                setIsSupportDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSupportDropdownOpen]);
+
     const openLogoutModal = () => setShowLogoutModal(true);
     const closeLogoutModal = () => setShowLogoutModal(false);
 
@@ -81,21 +102,45 @@ const Topbar: React.FC = () => {
                 <nav className="hidden md:flex items-center gap-8">
                     {EDUCATOR_NAV_ITEMS.map((item) =>
                         item.dropdown ? (
-                            <div className="relative" ref={item.label === "Resources" ? resourcesDropdownRef : settingsDropdownRef} key={item.label}>
+                            <div className="relative" ref={item.label === "Resources" ? resourcesDropdownRef : item.label === "Support" ? supportDropdownRef : settingsDropdownRef} key={item.label}>
                                 <button
-                                    onClick={() => item.label === "Resources" ? setIsResourcesDropdownOpen(!isResourcesDropdownOpen) : setIsSettingsDropdownOpen(!isSettingsDropdownOpen)}
+                                    onClick={() => {
+                                        if (item.label === "Resources") {
+                                            setIsResourcesDropdownOpen(!isResourcesDropdownOpen);
+                                        } else if (item.label === "Support") {
+                                            setIsSupportDropdownOpen(!isSupportDropdownOpen);
+                                        } else {
+                                            setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+                                        }
+                                    }}
                                     className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
                                 >
                                     {item.label}
                                     <ChevronDown
                                         size={16}
-                                        className={`transition-transform duration-300 ${item.label === "Resources" ? isResourcesDropdownOpen ? "rotate-180" : "" : isSettingsDropdownOpen ? "rotate-180" : ""}`}
+                                        className={`transition-transform duration-300 ${
+                                            (item.label === "Resources" && isResourcesDropdownOpen) ||
+                                            (item.label === "Support" && isSupportDropdownOpen) ||
+                                            (item.label === "Settings" && isSettingsDropdownOpen)
+                                                ? "rotate-180" : ""
+                                        }`}
                                     />
                                 </button>
-                                {(item.label === "Resources" ? isResourcesDropdownOpen : isSettingsDropdownOpen) && (
-                                    <div className="absolute top-full left-0 mt-8 w-56 bg-white border border-third rounded-lg shadow-lg py-2">
-                                        {item.dropdown.map((sub) =>
-                                            sub.label === "Unregister Account" ? (
+                                {((item.label === "Resources" && isResourcesDropdownOpen) ||
+                                  (item.label === "Support" && isSupportDropdownOpen) ||
+                                  (item.label === "Settings" && isSettingsDropdownOpen)) && (
+                                    <div className={`absolute top-full left-0 mt-8 bg-white border border-third rounded-lg shadow-lg py-2 ${
+                                        item.label === "Support" ? "w-96" : "w-56"
+                                    }`}>
+                                        {item.dropdown.map((sub, index) =>
+                                            sub.content ? (
+                                                <div
+                                                    key={index}
+                                                    className="px-4 py-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
+                                                >
+                                                    {sub.content}
+                                                </div>
+                                            ) : sub.label === "Unregister Account" ? (
                                                 <button
                                                     key={sub.label}
                                                     onClick={() => {
@@ -118,7 +163,7 @@ const Topbar: React.FC = () => {
                                                 </a>
                                             ) : (
                                                 <Link
-                                                    to={sub.to}
+                                                    to={sub.to || ""}
                                                     key={sub.label}
                                                     className="block px-4 py-3 text-textColor hover:bg-third hover:text-primary transition-colors duration-300"
                                                 >
@@ -171,19 +216,41 @@ const Topbar: React.FC = () => {
                             item.dropdown ? (
                                 <div className="py-3 px-4" key={item.label}>
                                     <button
-                                        onClick={() => item.label === "Resources" ? setIsMobileResourcesOpen(!isMobileResourcesOpen) : setIsMobileSettingsOpen(!isMobileSettingsOpen)}
+                                        onClick={() => {
+                                            if (item.label === "Resources") {
+                                                setIsMobileResourcesOpen(!isMobileResourcesOpen);
+                                            } else if (item.label === "Support") {
+                                                setIsMobileSupportOpen(!isMobileSupportOpen);
+                                            } else {
+                                                setIsMobileSettingsOpen(!isMobileSettingsOpen);
+                                            }
+                                        }}
                                         className="flex items-center justify-between w-full text-textColor hover:text-primary font-medium transition-colors duration-300"
                                     >
                                         {item.label}
                                         <ChevronDown
                                             size={16}
-                                            className={`transition-transform duration-300 ${item.label === "Resources" ? isMobileResourcesOpen ? "rotate-180" : "" : isMobileSettingsOpen ? "rotate-180" : ""}`}
+                                            className={`transition-transform duration-300 ${
+                                                (item.label === "Resources" && isMobileResourcesOpen) ||
+                                                (item.label === "Support" && isMobileSupportOpen) ||
+                                                (item.label === "Settings" && isMobileSettingsOpen)
+                                                    ? "rotate-180" : ""
+                                            }`}
                                         />
                                     </button>
-                                    {(item.label === "Resources" ? isMobileResourcesOpen : isMobileSettingsOpen) && (
+                                    {((item.label === "Resources" && isMobileResourcesOpen) ||
+                                      (item.label === "Support" && isMobileSupportOpen) ||
+                                      (item.label === "Settings" && isMobileSettingsOpen)) && (
                                         <div className="mt-3 ml-4 space-y-2">
-                                            {item.dropdown.map((sub) =>
-                                                sub.label === "Unregister Account" ? (
+                                            {item.dropdown.map((sub, index) =>
+                                                sub.content ? (
+                                                    <div
+                                                        key={index}
+                                                        className="py-2 px-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
+                                                    >
+                                                        {sub.content}
+                                                    </div>
+                                                ) : sub.label === "Unregister Account" ? (
                                                     <button
                                                         key={sub.label}
                                                         onClick={() => {
@@ -207,7 +274,7 @@ const Topbar: React.FC = () => {
                                                     </a>
                                                 ) : (
                                                     <Link
-                                                        to={sub.to}
+                                                        to={sub.to || ""}
                                                         key={sub.label}
                                                         className="block py-2 px-3 text-textColor hover:bg-third hover:text-primary rounded-lg transition-colors duration-300"
                                                         onClick={closeMobileMenu}

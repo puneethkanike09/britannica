@@ -3,9 +3,10 @@ export interface EducatorNavItem {
     label: string;
     to?: string;
     dropdown?: Array<{
-        label: string;
-        to: string;
+        label?: string;
+        to?: string;
         isExternal?: boolean; // Add this to handle external links like PDFs
+        content?: string; // Add this to support content-based dropdown items
     }>;
 }
 
