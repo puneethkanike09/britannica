@@ -135,18 +135,27 @@ if (item.label === "Resources") {
                                 {((item.label === "Resources" && isResourcesDropdownOpen) ||
                                   (item.label === "Support" && isSupportDropdownOpen) ||
                                   (item.label === "Settings" && isSettingsDropdownOpen)) && (
-                                    <div className={`absolute top-full left-0 mt-8 bg-white border border-third rounded-lg shadow-lg py-2 ${
-                                        item.label === "Support" ? "w-96" : "w-56"
+                                    <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-third rounded-lg shadow-lg ${
+                                        item.label === "Support" ? "w-96 max-w-[90vw] py-4 px-6 text-sm text-textColor" : "w-56 py-2"
                                     }`}>
-                                        {item.dropdown.map((sub, index) =>
-                                            sub.content ? (
-                                                <div
-                                                    key={index}
-                                                    className="px-4 py-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
-                                                >
-                                                    {sub.content}
-                                                </div>
-                                            ) : sub.label === "Unregister Account" ? (
+                                        {item.label === "Support" ? (
+                                            <div>
+                                                <div className="font-bold mb-1">Technical & Academic Support</div>
+                                                <div className="mb-2">We are committed to providing prompt and effective assistance. If you're experiencing technical issues or product-related queries, please reach out to our support team.</div>
+                                                <div className="mb-1"><span className="font-bold">Email:</span> <a href="mailto:contact@britannica.in" className="text-primary underline">contact@britannica.in</a></div>
+                                                <div className="mb-1"><span className="font-bold">Phone:</span> <a href="tel:+918448569920" className="text-primary underline">+91 8448-569920</a></div>
+                                                <div><span className="font-bold">Availability:</span> Official working hours from 9:00 AM to 6:00 PM (Monday to Friday)</div>
+                                            </div>
+                                        ) : (
+                                            item.dropdown.map((sub, index) =>
+                                                sub.content ? (
+                                                    <div
+                                                        key={index}
+                                                        className="px-4 py-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
+                                                    >
+                                                        {sub.content}
+                                                    </div>
+                                                ) : sub.label === "Unregister Account" ? (
                                                 <button
                                                     key={sub.label}
                                                     onClick={() => {
@@ -175,6 +184,7 @@ if (item.label === "Resources") {
                                                 >
                                                     {sub.label}
                                                 </Link>
+                                                )
                                             )
                                         )}
                                     </div>
@@ -253,16 +263,27 @@ if (item.label === "Resources") {
                                     {((item.label === "Resources" && isMobileResourcesOpen) ||
                                       (item.label === "Support" && isMobileSupportOpen) ||
                                       (item.label === "Settings" && isMobileSettingsOpen)) && (
-                                        <div className="mt-3 ml-4 space-y-2">
-                                            {item.dropdown.map((sub, index) =>
-                                                sub.content ? (
-                                                    <div
-                                                        key={index}
-                                                        className="py-2 px-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
-                                                    >
-                                                        {sub.content}
-                                                    </div>
-                                                ) : sub.label === "Unregister Account" ? (
+                                        <div className={`mt-3 ml-4 space-y-2 ${
+                                            item.label === "Support" ? "text-sm text-textColor" : ""
+                                        }`}>
+                                            {item.label === "Support" ? (
+                                                <div>
+                                                    <div className="font-bold mb-1">Technical & Academic Support</div>
+                                                    <div className="mb-2">We are committed to providing prompt and effective assistance. If you're experiencing technical issues or product-related queries, please reach out to our support team.</div>
+                                                    <div className="mb-1"><span className="font-bold">Email:</span> <a href="mailto:contact@britannica.in" className="text-primary underline">contact@britannica.in</a></div>
+                                                    <div className="mb-1"><span className="font-bold">Phone:</span> <a href="tel:+918448569920" className="text-primary underline">+91 8448-569920</a></div>
+                                                    <div><span className="font-bold">Availability:</span> Official working hours from 9:00 AM to 6:00 PM (Monday to Friday)</div>
+                                                </div>
+                                            ) : (
+                                                item.dropdown.map((sub, index) =>
+                                                    sub.content ? (
+                                                        <div
+                                                            key={index}
+                                                            className="py-2 px-3 text-sm text-textColor whitespace-pre-line leading-relaxed"
+                                                        >
+                                                            {sub.content}
+                                                        </div>
+                                                    ) : sub.label === "Unregister Account" ? (
                                                     <button
                                                         key={sub.label}
                                                         onClick={() => {
@@ -293,6 +314,7 @@ if (item.label === "Resources") {
                                                     >
                                                         {sub.label}
                                                     </Link>
+                                                )
                                                 )
                                             )}
                                         </div>
