@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
-import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo.png';
+import LogoIcon from '../../../../../assets/dashboard/Educator/home-page/logo.svg';
 import LogoutModal from './modals/LogoutModal';
 import { EDUCATOR_NAV_ITEMS } from '../../../../../config/constants/Educator/topbar';
 

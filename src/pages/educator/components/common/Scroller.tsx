@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
+import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo1.png';
 
 interface Quote {
     text: string;
