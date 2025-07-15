@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
+import { EducatorRegistrationService } from "../../../../../../services/educator/educatorRegistrationService";
 
 
 interface UnregisterReasonModalProps {
@@ -58,22 +59,25 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
         return true;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
             setIsSubmitting(true);
-            // Simulate async operation
-            setTimeout(() => {
-                try {
+            try {
+                const response = await EducatorRegistrationService.unregisterEducator(reason.trim());
+                if (response.error === false || response.error === "false") {
+                    toast.success(response.message || "Unregistration request submitted successfully!");
                     onUnregister(reason.trim());
-                    toast.success("Unregistration request submitted successfully!");
                     setIsSubmitting(false);
                     handleClose();
-                } catch (error) {
-                    console.error(error);
-                    toast.error("Failed to submit unregistration request");
+                } else {
+                    toast.error(response.message || "Failed to submit unregistration request");
                     setIsSubmitting(false);
                 }
-            }, 1000); // Simulate delay
+            } catch (error) {
+                console.error(error);
+                toast.error("Failed to submit unregistration request");
+                setIsSubmitting(false);
+            }
         }
     };
 

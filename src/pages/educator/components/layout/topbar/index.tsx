@@ -98,6 +98,8 @@ const Topbar: React.FC = () => {
                     <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] sm:h-[60px] object-cover" />
                 </Link>
 
+               <input type="text" />
+
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center gap-8">
                     {EDUCATOR_NAV_ITEMS.map((item) =>

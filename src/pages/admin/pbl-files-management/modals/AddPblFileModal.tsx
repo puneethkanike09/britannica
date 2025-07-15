@@ -19,12 +19,14 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
         theme: "",
         type: "",
         file: null as File | null,
+        image: null as File | null,
     });
 
     const [errors, setErrors] = useState({
         name: "",
         description: "",
         file: "",
+        image: "",
         grade: "",
         theme: "",
         type: "",
@@ -142,6 +144,27 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
         setErrors((prev) => ({ ...prev, file: "" }));
     };
 
+    // Image uploader handlers
+    const handleImageChange = (file: File | null) => {
+        if (file && !file.type.startsWith("image/")) {
+            setErrors((prev) => ({ ...prev, image: "Only image files are allowed" }));
+            setFormData((prev) => ({ ...prev, image: null }));
+        } else {
+            setErrors((prev) => ({ ...prev, image: "" }));
+            setFormData((prev) => ({ ...prev, image: file }));
+        }
+    };
+
+    const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        handleImageChange(file);
+    };
+
+    const removeImage = () => {
+        setFormData((prev) => ({ ...prev, image: null }));
+        setErrors((prev) => ({ ...prev, image: "" }));
+    };
+
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -151,7 +174,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
     };
 
     const validateForm = () => {
-        const newErrors = { name: "", description: "", file: "", grade: "", theme: "", type: "" };
+        const newErrors = { name: "", description: "", file: "", image: "", grade: "", theme: "", type: "" };
         let isValid = true;
 
         if (!formData.name.trim()) {
@@ -169,6 +192,10 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
 
         if (!formData.file) {
             newErrors.file = "PDF file is required";
+            isValid = false;
+        }
+        if (!formData.image) {
+            newErrors.image = "Image file is required";
             isValid = false;
         }
 
@@ -202,6 +229,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                     user_access_type_id: formData.type,
                     title: formData.name.trim(),
                     desc: formData.description.trim(),
+                    image: formData.image!,
                 });
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || "File uploaded successfully");
@@ -407,6 +435,69 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                         </div>
                                     )}
                                     {errors.file && <p className="text-red text-sm mt-1">{errors.file}</p>}
+                                </div>
+                                {/* Image uploader */}
+                                <div className="mb-6">
+                                    <label className="block text-textColor text-base mb-3">
+                                        Upload Image<span className="text-red">*</span>
+                                    </label>
+                                    {!formData.image ? (
+                                        <div
+                                            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${errors.image
+                                                ? 'border-red bg-red/5'
+                                                : 'border-inputBorder bg-inputBg hover:border-primary/50'
+                                                } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            onClick={() => !isSubmitting && document.getElementById('image-input')?.click()}
+                                        >
+                                            <input
+                                                id="image-input"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageInput}
+                                                className="hidden"
+                                                disabled={isSubmitting}
+                                            />
+                                            <Upload className="mx-auto h-12 w-12 text-inputPlaceholder mb-4" />
+                                            <p className="text-textColor font-medium mb-2">
+                                                Click to upload image
+                                            </p>
+                                            <p className="text-inputPlaceholder text-sm">
+                                                Image files only (Max 5MB)
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="border border-inputBorder rounded-lg p-4 bg-inputBg">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="flex-shrink-0">
+                                                        {/* Image preview */}
+                                                        <img
+                                                            src={URL.createObjectURL(formData.image)}
+                                                            alt="Preview"
+                                                            className="h-12 w-12 object-cover rounded"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium text-textColor truncate">
+                                                            {formData.image.name}
+                                                        </p>
+                                                        <p className="text-sm text-inputPlaceholder">
+                                                            {formatFileSize(formData.image.size)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={removeImage}
+                                                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+                                                    disabled={isSubmitting}
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {errors.image && <p className="text-red text-sm mt-1">{errors.image}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

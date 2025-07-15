@@ -91,6 +91,7 @@ export class PblFileServices {
         user_access_type_id,
         title,
         desc,
+        image,
     }: {
         file: File;
         grade_id: string;
@@ -98,6 +99,7 @@ export class PblFileServices {
         user_access_type_id: string;
         title: string;
         desc: string;
+        image: File;
     }): Promise<any> {
         const formData = new FormData();
         formData.append('file', file);
@@ -106,11 +108,55 @@ export class PblFileServices {
         formData.append('access_type_id', user_access_type_id);
         formData.append('title', title);
         formData.append('desc', desc);
+        formData.append('image', image);
         return apiClient.postFormData('/file/upload', formData, true);
+    }
+
+    static async updatePblFile({
+        file_id,
+        file,
+        grade_id,
+        theme_id,
+        user_access_type_id,
+        title,
+        desc,
+        image,
+    }: {
+        file_id: string;
+        file: File | null;
+        grade_id: string;
+        theme_id: string;
+        user_access_type_id: string;
+        title: string;
+        desc: string;
+        image: File | null;
+    }): Promise<any> {
+        const formData = new FormData();
+        formData.append('id', file_id);
+        if (file) formData.append('file', file);
+        formData.append('grade_id', grade_id);
+        formData.append('theme_id', theme_id);
+        formData.append('access_type_id', user_access_type_id);
+        formData.append('title', title);
+        formData.append('desc', desc);
+        if (image) formData.append('image', image);
+        return apiClient.putFormData('/file/update', formData, true);
     }
 
     static async deletePblFile(pbl_id: string | number): Promise<any> {
         return apiClient.delete(`/file/${pbl_id}`);
     }
 
+    static async fetchPblFileById(pbl_id: string | number): Promise<any> {
+        try {
+            const response = await apiClient.get(`/file/view/${pbl_id}`);
+            return response;
+        } catch (error) {
+            console.error("Error fetching PBL file by ID:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unknown error",
+            };
+        }
+    }
 } 

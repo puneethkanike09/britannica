@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../../components/common/Loader';
-import { EducatorService } from '../../../services/admin/educatorService';
+// Removed: import { EducatorService } from '../../../services/admin/educatorService';
 import toast from 'react-hot-toast';
 import { DashboardService } from '../../../services/admin/dashboardService';
 
@@ -17,41 +17,25 @@ const AdminDashboard: React.FC = () => {
     const [downloadsCount, setDownloadsCount] = useState<number>(0);
 
     useEffect(() => {
-        const fetchEducatorCount = async () => {
-            try {
-                setIsLoading(true);
-                const response = await EducatorService.fetchTeachers({});
-                if (response.error === false || response.error === 'false') {
-                    setEducatorCount(response.totalElements || 0);
-                } else {
-                    setEducatorCount(0);
-                    toast.error(response.message ?? "Failed to load educator count");
-                }
-            } catch (error) {
-                console.error("Error fetching educator count:", error);
-                toast.error("Failed to load educator count");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchEducatorCount();
-    }, []);
-
-    useEffect(() => {
         const fetchDashboardCounts = async () => {
             try {
                 setIsLoading(true);
                 const response = await DashboardService.fetchDashboardCounts();
                 if (response.error === false || response.error === 'false') {
+                    setEducatorCount(response.totalEducator || 0);
                     setLoginsCount(response.totalLogins || 0);
                     setDownloadsCount(response.totalDownloads || 0);
                 } else {
+                    setEducatorCount(0);
                     setLoginsCount(0);
                     setDownloadsCount(0);
                     toast.error(response.message ?? "Failed to load dashboard counts");
                 }
             } catch (error) {
                 console.error("Error fetching dashboard counts:", error);
+                setEducatorCount(0);
+                setLoginsCount(0);
+                setDownloadsCount(0);
                 toast.error("Failed to load dashboard counts");
             } finally {
                 setIsLoading(false);

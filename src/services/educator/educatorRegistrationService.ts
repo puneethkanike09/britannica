@@ -35,16 +35,25 @@ export class EducatorRegistrationService {
             };
 
             const response = await apiClient.post("/auth/register", payload, false);
-            return {
-                error: response.error,
-                message: response.message,
-                token: response.token
-            };
+            return response
         } catch (error) {
             console.error("Error registering educator:", error);
             return {
                 error: true,
                 message: error instanceof Error ? error.message : "Registration failed",
+            };
+        }
+    }
+
+    static async unregisterEducator(reason: string): Promise<{ error: boolean | string; message?: string }> {
+        try {
+            const response = await apiClient.put("/teacher/delete", { reason }, true);
+            return response
+        } catch (error) {
+            console.error("Error unregistering educator:", error);
+            return {
+                error: true,
+                message: error instanceof Error ? error.message : "Unregistration failed",
             };
         }
     }

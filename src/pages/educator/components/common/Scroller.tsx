@@ -153,6 +153,15 @@ export default function Scroller() {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent): void => {
+            // Only handle shortcuts if user is NOT typing in an input or textarea
+            if (
+                e.target instanceof HTMLInputElement ||
+                e.target instanceof HTMLTextAreaElement ||
+                (e.target as HTMLElement)?.isContentEditable
+            ) {
+                return;
+            }
+
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 goToPrevious();

@@ -10,14 +10,15 @@ import { PblFile } from "../../../types/admin/pbl-files-management";
 import { PblFileServices } from "../../../services/admin/pblFileServices";
 import AddPblFileModal from "./modals/AddPblFileModal";
 import DeletePblFileModal from "./modals/DeletePblFileModal";
-// import EditPblFileModal from "./modals/EditPblFileModal";
+import ViewPblFileModal from "./modals/ViewPblFileModal";
+import EditPblFileModal from "./modals/EditPblFileModal";
 // import ViewPblFileModal from "./modals/ViewPblFileModal";
 
 
 const PblFileManagement: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModal, setShowAddModal] = useState(false);
-    // const [showEditModal, setShowEditModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     // const [showViewModal, setShowViewModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState<PblFile | null>(null);
@@ -28,6 +29,7 @@ const PblFileManagement: React.FC = () => {
     const [pageSize, setPageSize] = useState(5);
     const [searchText, setSearchText] = useState("");
     const [appliedSearchText, setAppliedSearchText] = useState("");
+    const [showViewModal, setShowViewModal] = useState(false);
 
     // Fetch PBL files on mount and when needed
     const fetchPblFiles = async (page = currentPage, size = pageSize, search = searchText) => {
@@ -72,10 +74,14 @@ const PblFileManagement: React.FC = () => {
     };
 
     const openAddPblFileModal = () => setShowAddModal(true);
-    // const openEditPblFileModal = (file: PblFile) => {
-    //     setSelectedFile(file);
-    //     setShowEditModal(true);
-    // };
+    const openEditPblFileModal = (file: PblFile) => {
+        setSelectedFile(file);
+        setShowEditModal(true);
+    };
+    const openViewPblFileModal = (file: PblFile) => {
+        setSelectedFile(file);
+        setShowViewModal(true);
+    };
     // const openViewPblFileModal = (file: PblFile) => {
     //     setSelectedFile(file);
     //     setShowViewModal(true);
@@ -86,14 +92,14 @@ const PblFileManagement: React.FC = () => {
     };
 
     const closeAddPblFileModal = () => setShowAddModal(false);
-    // const closeEditPblFileModal = () => {
-    //     setShowEditModal(false);
-    //     setSelectedFile(null);
-    // };
-    // const closeViewPblFileModal = () => {
-    //     setShowViewModal(false);
-    //     setSelectedFile(null);
-    // };
+    const closeEditPblFileModal = () => {
+        setShowEditModal(false);
+        setSelectedFile(null);
+    };
+    const closeViewPblFileModal = () => {
+        setShowViewModal(false);
+        setSelectedFile(null);
+    };
     const closeDeletePblFileModal = () => {
         setShowDeleteModal(false);
         setSelectedFile(null);
@@ -103,10 +109,10 @@ const PblFileManagement: React.FC = () => {
         fetchPblFiles();
         closeAddPblFileModal();
     };
-    // const handleFileUpdated = () => {
-    //     fetchPblFiles();
-    //     closeEditPblFileModal();
-    // };
+    const handleFileUpdated = () => {
+        fetchPblFiles();
+        closeEditPblFileModal();
+    };
     const handlePblFileDeleted = () => {
         fetchPblFiles();
         closeDeletePblFileModal();
@@ -233,7 +239,7 @@ const PblFileManagement: React.FC = () => {
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">
                                                 <button
-                                                    // onClick={() => openViewPblFileModal(file)}
+                                                    onClick={() => openViewPblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
@@ -241,7 +247,7 @@ const PblFileManagement: React.FC = () => {
                                                     <span className="hidden md:inline font-bold">View</span>
                                                 </button>
                                                 <button
-                                                    // onClick={() => openEditPblFileModal(file)}
+                                                    onClick={() => openEditPblFileModal(file)}
                                                     className="bg-primary cursor-pointer hover:bg-hover text-white px-3 py-2 rounded text-sm flex items-center gap-1 min-w-[80px] justify-center"
                                                     disabled={isLoading}
                                                 >
@@ -316,8 +322,13 @@ const PblFileManagement: React.FC = () => {
                     file: null
                 }} onDeleted={handlePblFileDeleted} />
             )}
-            {/* {showEditModal && selectedFile && <EditPblFileModal onClose={closeEditPblFileModal} file={selectedFile} onFileUpdated={handleFileUpdated} />}
-            {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />} */}
+            {showViewModal && selectedFile && (
+                <ViewPblFileModal onClose={closeViewPblFileModal} file={{ file_id: String(selectedFile.pbl_id) }} />
+            )}
+            {showEditModal && selectedFile && (
+                <EditPblFileModal onClose={closeEditPblFileModal} file={{ file_id: String(selectedFile.pbl_id) }} onFileUpdated={handleFileUpdated} />
+            )}
+            {/* {showViewModal && selectedFile && <ViewPblFileModal onClose={closeViewPblFileModal} file={selectedFile} />} */}
         </div>
     );
 };
