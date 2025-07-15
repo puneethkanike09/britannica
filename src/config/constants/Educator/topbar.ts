@@ -11,7 +11,7 @@ export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
         label: 'Resources',
         dropdown: [
             { label: "PBL Orientation Guide", to: "/pdfs/PBL Orientation Guide.pdf", isExternal: true },
-            { label: "Design Thinker’s Journal", to: "", isExternal: false }
+            { label: "Design Thinker’s Journal", to: "/pdfs/PBL Orientation Guide.pdf", isExternal: true }
         ]
     },
     {
