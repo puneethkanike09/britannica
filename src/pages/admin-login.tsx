@@ -238,7 +238,7 @@ const AdminLogin = () => {
                             </button>
                             {errors.password && (
                                 <p className="text-red text-sm mt-1">{errors.password}</p>
-                            )}  
+                            )}
                         </div>
 
                         {/* <div className="text-right mb-5">

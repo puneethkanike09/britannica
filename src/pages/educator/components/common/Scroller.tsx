@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo1.png';
+import LogoIcon from '../../../../assets/dashboard/Educator/home-page/logo.png';
 
 interface Quote {
     text: string;
@@ -160,8 +160,13 @@ export default function Scroller() {
                 e.preventDefault();
                 goToNext();
             } else if (e.key === ' ') {
-                e.preventDefault();
-                setIsAutoPlaying(prev => !prev);
+                // Only toggle autoplay if not focused on input/textarea/contenteditable
+                const target = e.target as HTMLElement;
+                const isInput = ['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable;
+                if (!isInput) {
+                    e.preventDefault();
+                    setIsAutoPlaying(prev => !prev);
+                }
             }
         };
 
@@ -192,7 +197,26 @@ export default function Scroller() {
                                         transition={{ duration: 0.5, ease: "easeInOut" }}
                                         className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light leading-relaxed tracking-wide text-textColor"
                                     >
-                                        <span>{quotes[currentIndex].text}</span>
+                                        <svg 
+                                            className="w-6 h-6 text-secondary opacity-80 inline-block align-top mr-2" 
+                                            fill="currentColor" 
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                                        </svg>
+                                        <span>
+                                            {quotes[currentIndex].text.split(' ').slice(0, -1).join(' ')}
+                                            <span className="whitespace-nowrap">
+                                                {' ' + quotes[currentIndex].text.split(' ').slice(-1)[0]}
+                                                <svg 
+                                                    className="w-6 h-6 text-secondary opacity-80 inline-block align-top ml-2 transform rotate-180" 
+                                                    fill="currentColor" 
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                                                </svg>
+                                            </span>
+                                        </span>
                                     </motion.blockquote>
                                 </AnimatePresence>
                                 <div className="flex items-center justify-between">
@@ -227,21 +251,21 @@ export default function Scroller() {
                                 className={`transition-all duration-300 ${
                                     index === currentIndex
                                         ? 'w-12 h-3 bg-secondary rounded-full'
-                                        : 'w-3 h-3 bg-white rounded-full cursor-pointer hover:bg-secondary '
+                                        : 'w-3 h-3 bg-fourth rounded-full cursor-pointer hover:bg-secondary '
                                 }`}
                                 aria-label={`Go to quote ${index + 1}`}
                             />
                         ))}
                         <button
                             onClick={goToPrevious}
-                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
+                            className="p-2 rounded-full cursor-pointer bg-fourth transition-colors duration-200"
                             aria-label="Previous quote"
                         >
                             <ChevronLeft className="w-6 h-6 text-textColor hover:text-primary" />
                         </button>
                         <button
                             onClick={goToNext}
-                            className="p-2 rounded-full cursor-pointer bg-white transition-colors duration-200"
+                            className="p-2 rounded-full cursor-pointer bg-fourth transition-colors duration-200"
                             aria-label="Next quote"
                         >
                             <ChevronRight className="w-6 h-6 text-textColor hover:text-primary" />

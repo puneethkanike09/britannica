@@ -179,7 +179,7 @@ const EducatorLogin = () => {
                         Welcome to
                     </h1>
                     <h2 className="text-textColor text-4xl font-bold mb-8 text-center sm:text-left">
-                        Britannica Build
+                       Britannica Build
                     </h2>
 
                     <form onSubmit={handleLogin}>

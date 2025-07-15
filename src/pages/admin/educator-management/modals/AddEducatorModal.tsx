@@ -69,8 +69,8 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
                 // Only allow letters, spaces, min 2, max 50
                 return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
             case 'loginId':
-                // Allow alphanumeric and email characters, min 3, max 50
-                return value.replace(/[^a-zA-Z0-9@._+-]/g, '').slice(0, 50);
+                // Do not restrict input for loginId (allow email special characters)
+                return value.slice(0, 30);
             case 'phone':
                 // Only allow digits and +, max 15
                 return value.replace(/[^0-9+]/g, '').slice(0, 15);
@@ -142,18 +142,13 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
             }
         }
 
-        // Login ID: must be either a valid email or 3-30 alphanumeric characters
+        // Login ID: min 3, max 30, alphanumeric or valid email
         if (!formData.loginId.trim()) {
             newErrors.loginId = 'Login ID is required';
             isValid = false;
-        } else {
-            const loginId = formData.loginId;
-            const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(loginId);
-            const isAlphanumeric = /^[a-zA-Z0-9]{3,30}$/.test(loginId);
-            if (!(isEmail || isAlphanumeric)) {
-                newErrors.loginId = 'Login ID must be a valid email or 3-30 alphanumeric characters';
-                isValid = false;
-            }
+        } else if (!(/^[a-zA-Z0-9]{3,30}$/.test(formData.loginId) || /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.loginId))) {
+            newErrors.loginId = 'Login ID must be 3-30 alphanumeric characters or a valid email address';
+            isValid = false;
         }
 
         if (formData.schoolId === undefined) {
@@ -334,7 +329,7 @@ export default function AddEducatorModal({ onClose, onEducatorAdded }: AddEducat
                                             name="loginId"
                                             value={formData.loginId}
                                             onChange={handleInputChange}
-                                            placeholder="Enter Login ID"
+                                            placeholder="Enter Login ID or Email"
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.loginId ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''}`}
                                             disabled={isSubmitting}
                                         />
