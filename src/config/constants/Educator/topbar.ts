@@ -6,12 +6,12 @@ export const EDUCATOR_NAV_ITEMS: EducatorNavItem[] = [
     // {
     //     label: 'About us',
     //     to: ''
-    // },D:\projects\britanica\public\pdfs\PBL Orientation Guide.pdf
+    // },D:\projects\britanica\public\pdfs\PBL Orientation Guide.
     {
         label: 'Resources',
         dropdown: [
             { label: "PBL Orientation Guide", to: "/pdfs/PBL Orientation Guide.pdf", isExternal: true },
-            { label: "Design Thinker’s Journal", to: "/pdfs/PBL Orientation Guide.pdf", isExternal: true }
+            { label: "Design Thinker’s Journal", to: "/pdfs/The Design Thinkers Journal.pdf", isExternal: true }
         ]
     },
     {
