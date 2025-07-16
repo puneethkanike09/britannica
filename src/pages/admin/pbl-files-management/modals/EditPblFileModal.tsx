@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { PblFileServices } from "../../../../services/admin/pblFileServices";
 import Select from "../components/common/Select";
-import Loader from "../../../../components/common/Loader";
+import { Download } from "lucide-react";
 
 interface EditPblFileModalProps {
     onClose: () => void;
@@ -45,25 +45,21 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
     const [gradeOptions, setGradeOptions] = useState<{ value: string; label: string }[]>([]);
     const [themeOptions, setThemeOptions] = useState<{ value: string; label: string }[]>([]);
     const [typeOptions, setTypeOptions] = useState<{ value: string; label: string }[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [prefilled, setPrefilled] = useState(false);
+    const [deleteImage, setDeleteImage] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+    // Add drag state for image
+    const [dragActiveImage, setDragActiveImage] = useState(false);
 
     // Fetch PBL file details
     useEffect(() => {
-        setLoading(true);
         PblFileServices.fetchPblFileById(file.file_id).then((res) => {
             if ((res.error === false || res.error === "false") && res.pbl_file) {
                 setPblFileDetails(res.pbl_file);
                 setFileUrl(res.pbl_file.file_url || null);
                 setImageUrl(res.pbl_file.image_url || null);
-            } else {
-                setError(res.message || 'Failed to load PBL file details');
             }
-            setLoading(false);
-        }).catch(() => {
-            setError('Failed to load PBL file details');
-            setLoading(false);
         });
     }, [file.file_id]);
 
@@ -108,6 +104,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
     const handleClose = useCallback(() => {
         if (isSubmitting) return;
         setIsVisible(false);
+        setDeleteImage(false); // Reset on close/cancel
     }, [isSubmitting]);
 
     const handleAnimationComplete = () => {
@@ -173,6 +170,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
         } else {
             setErrors((prev) => ({ ...prev, image: "" }));
             setFormData((prev) => ({ ...prev, image: file }));
+            setDeleteImage(false); // Reset deleteImage if a new image is uploaded
         }
     };
     const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,6 +180,27 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
     const removeImage = () => {
         setFormData((prev) => ({ ...prev, image: null }));
         setErrors((prev) => ({ ...prev, image: "" }));
+        setDeleteImage(true); // Mark image for deletion on save
+        setImageUrl(null); // Remove preview immediately
+    };
+
+    // Add drag handlers for image
+    const handleImageDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === "dragenter" || e.type === "dragover") {
+            setDragActiveImage(true);
+        } else if (e.type === "dragleave") {
+            setDragActiveImage(false);
+        }
+    };
+    const handleImageDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActiveImage(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleImageChange(e.dataTransfer.files[0]);
+        }
     };
 
     const formatFileSize = (bytes: number) => {
@@ -204,6 +223,19 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
         }
         if (formData.description.trim() && formData.description.length > 200) {
             newErrors.description = "Description must be 200 characters or less";
+            isValid = false;
+        }
+        // File validation (required)
+        if (!formData.file && !fileUrl) {
+            newErrors.file = "PDF file is required";
+            isValid = false;
+        } else if (formData.file && formData.file.type !== "application/pdf") {
+            newErrors.file = "Only PDF files are allowed";
+            isValid = false;
+        }
+        // Image validation (optional in edit)
+        if (formData.image && !formData.image.type.startsWith("image/")) {
+            newErrors.image = "Only image files are allowed";
             isValid = false;
         }
         if (!formData.grade) {
@@ -235,6 +267,17 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                     title: formData.name.trim(),
                     desc: formData.description.trim(),
                     image: formData.image,
+                    deleteImage, // Pass the flag
+                } as {
+                    file_id: string;
+                    file: File | null;
+                    grade_id: string;
+                    theme_id: string;
+                    user_access_type_id: string;
+                    title: string;
+                    desc: string;
+                    image: File | null;
+                    deleteImage?: boolean;
                 });
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || "File updated successfully");
@@ -332,6 +375,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                             isSubmitting={isSubmitting}
                                             isSubmittingDropdowns={isSubmittingDropdowns}
                                             onErrorClear={() => handleErrorClear('grade')}
+                                            disabled={true}
                                         />
                                     </div>
                                     <div className="mb-3 relative">
@@ -349,6 +393,7 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                             isSubmitting={isSubmitting}
                                             isSubmittingDropdowns={isSubmittingDropdowns}
                                             onErrorClear={() => handleErrorClear('theme')}
+                                            disabled={true}
                                         />
                                     </div>
                                     <div className="mb-3 relative">
@@ -366,88 +411,14 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                             isSubmitting={isSubmitting}
                                             isSubmittingDropdowns={isSubmittingDropdowns}
                                             onErrorClear={() => handleErrorClear('type')}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="mb-6">
                                     <label className="block text-textColor text-base mb-3">
-                                        Upload Image
-                                    </label>
-                                    {!formData.image && imageUrl ? (
-                                        <div className="border border-inputBorder rounded-lg p-4 bg-inputBg flex items-center gap-4">
-                                            <img src={imageUrl} alt="PBL File" className="h-12 w-12 object-cover rounded" />
-                                            <button
-                                                type="button"
-                                                onClick={() => setImageUrl(null)}
-                                                className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
-                                                disabled={isSubmitting}
-                                            >
-                                                <Trash2 className="h-5 w-5" />
-                                            </button>
-                                        </div>
-                                    ) : !formData.image ? (
-                                        <div
-                                            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${errors.image
-                                                ? 'border-red bg-red/5'
-                                                : 'border-inputBorder bg-inputBg hover:border-primary/50'
-                                                } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                            onClick={() => !isSubmitting && document.getElementById('image-input')?.click()}
-                                        >
-                                            <input
-                                                id="image-input"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageInput}
-                                                className="hidden"
-                                                disabled={isSubmitting}
-                                            />
-                                            <Upload className="mx-auto h-12 w-12 text-inputPlaceholder mb-4" />
-                                            <p className="text-textColor font-medium mb-2">
-                                                Click to upload image
-                                            </p>
-                                            <p className="text-inputPlaceholder text-sm">
-                                                Image files only (Max 5MB)
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div className="border border-inputBorder rounded-lg p-4 bg-inputBg">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center space-x-3">
-                                                    <div className="flex-shrink-0">
-                                                        {/* Image preview */}
-                                                        <img
-                                                            src={URL.createObjectURL(formData.image)}
-                                                            alt="Preview"
-                                                            className="h-12 w-12 object-cover rounded"
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-medium text-textColor truncate">
-                                                            {formData.image.name}
-                                                        </p>
-                                                        <p className="text-sm text-inputPlaceholder">
-                                                            {formatFileSize(formData.image.size)}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={removeImage}
-                                                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
-                                                    disabled={isSubmitting}
-                                                >
-                                                    <Trash2 className="h-5 w-5" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {errors.image && <p className="text-red text-sm mt-1">{errors.image}</p>}
-                                </div>
-
-                                <div className="mb-6">
-                                    <label className="block text-textColor text-base mb-3">
-                                        Upload PDF File
+                                        Upload PDF File<span className="text-red">*</span>
                                     </label>
                                     {!formData.file && fileUrl ? (
                                         <div className="border border-inputBorder rounded-lg p-4 bg-inputBg flex items-center gap-4">
@@ -521,6 +492,101 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                     {errors.file && <p className="text-red text-sm mt-1">{errors.file}</p>}
                                 </div>
 
+                                <div className="mb-6">
+                                    <label className="block text-textColor text-base mb-3">
+                                        Upload Image
+                                    </label>
+                                    {!formData.image && imageUrl ? (
+                                        <div className="border border-inputBorder rounded-lg p-4 bg-inputBg flex items-center gap-4">
+                                            <img
+                                                src={imageUrl}
+                                                alt="PBL File"
+                                                className="h-12 w-12 object-cover rounded cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedImageUrl(imageUrl);
+                                                    setShowImageModal(true);
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={removeImage}
+                                                className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+                                                disabled={isSubmitting}
+                                            >
+                                                <Trash2 className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    ) : !formData.image ? (
+                                        <div
+                                            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActiveImage
+                                                ? 'border-primary bg-primary/5'
+                                                : errors.image
+                                                    ? 'border-red bg-red/5'
+                                                    : 'border-inputBorder bg-inputBg hover:border-primary/50'
+                                                } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            onDragEnter={handleImageDrag}
+                                            onDragLeave={handleImageDrag}
+                                            onDragOver={handleImageDrag}
+                                            onDrop={handleImageDrop}
+                                            onClick={() => !isSubmitting && document.getElementById('image-input')?.click()}
+                                        >
+                                            <input
+                                                id="image-input"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageInput}
+                                                className="hidden"
+                                                disabled={isSubmitting}
+                                            />
+                                            <Upload className="mx-auto h-12 w-12 text-inputPlaceholder mb-4" />
+                                            <p className="text-textColor font-medium mb-2">
+                                                Click to upload image or drag and drop
+                                            </p>
+                                            <p className="text-inputPlaceholder text-sm">
+                                                Image files only (Max 5MB)
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="border border-inputBorder rounded-lg p-4 bg-inputBg">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="flex-shrink-0">
+                                                        {/* Image preview */}
+                                                        <img
+                                                            src={formData.image ? URL.createObjectURL(formData.image) : undefined}
+                                                            alt="Preview"
+                                                            className="h-12 w-12 object-cover rounded cursor-pointer"
+                                                            onClick={() => {
+                                                                if (formData.image) {   
+                                                                    setSelectedImageUrl(URL.createObjectURL(formData.image));
+                                                                    setShowImageModal(true);
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium text-textColor truncate">
+                                                            {formData.image.name}
+                                                        </p>
+                                                        <p className="text-sm text-inputPlaceholder">
+                                                            {formatFileSize(formData.image.size)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={removeImage}
+                                                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+                                                    disabled={isSubmitting}
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {errors.image && <p className="text-red text-sm mt-1">{errors.image}</p>}
+                                </div>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
@@ -567,6 +633,80 @@ export default function EditPblFileModal({ onClose, file, onFileUpdated }: EditP
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+            {showImageModal && selectedImageUrl && (
+                <motion.div
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-100 flex items-center justify-center px-4"
+                    onClick={() => setShowImageModal(false)}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                >
+                    <motion.div
+                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.95, opacity: 0 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Sticky Header with close and download icons */}
+                        <div className="bg-white px-8 py-6 flex justify-end items-center flex-shrink-0 gap-4">
+                            <button
+                                onClick={async () => {
+                                    if (!selectedImageUrl) return;
+                                    // If local file
+                                    if (formData.image && formData.image instanceof File && selectedImageUrl === URL.createObjectURL(formData.image)) {
+                                        const url = URL.createObjectURL(formData.image);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = formData.image.name || 'image.jpg';
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        a.remove();
+                                        URL.revokeObjectURL(url);
+                                    } else {
+                                        // If remote URL
+                                        try {
+                                            const response = await fetch(selectedImageUrl, { mode: 'cors' });
+                                            const blob = await response.blob();
+                                            const url = URL.createObjectURL(blob);
+                                            const a = document.createElement('a');
+                                            // Use the unique filename from the URL
+                                            const filename = selectedImageUrl.split('/').pop()?.split('?')[0] || 'image.jpg';
+                                            a.href = url;
+                                            a.download = filename;
+                                            document.body.appendChild(a);
+                                            a.click();
+                                            a.remove();
+                                            URL.revokeObjectURL(url);
+                                        } catch (err) {}
+                                    }
+                                }}
+                                className="text-textColor hover:text-hover cursor-pointer"
+                                aria-label="Download Image"
+                            >
+                                <Download className="h-7 w-7" />
+                            </button>
+                            <button
+                                aria-label="Close"
+                                onClick={() => setShowImageModal(false)}
+                                className="text-textColor hover:text-hover cursor-pointer"
+                            >
+                                <X className="h-7 w-7" />
+                            </button>
+                        </div>
+                        {/* Centered Image */}
+                        <div className="flex-1 flex items-center justify-center px-8 py-6">
+                            <img
+                                src={selectedImageUrl}
+                                alt="PBL File Large Preview"
+                                className="max-h-[70vh] w-auto object-contain rounded shadow-lg"
+                            />
                         </div>
                     </motion.div>
                 </motion.div>

@@ -121,6 +121,7 @@ export class PblFileServices {
         title,
         desc,
         image,
+        deleteImage = false,
     }: {
         file_id: string;
         file: File | null;
@@ -130,6 +131,7 @@ export class PblFileServices {
         title: string;
         desc: string;
         image: File | null;
+        deleteImage?: boolean;
     }): Promise<any> {
         const formData = new FormData();
         formData.append('id', file_id);
@@ -140,6 +142,7 @@ export class PblFileServices {
         formData.append('title', title);
         formData.append('desc', desc);
         if (image) formData.append('image', image);
+        if (deleteImage) formData.append('deleteImage', 'true');
         return apiClient.putFormData('/file/update', formData, true);
     }
 

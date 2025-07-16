@@ -28,6 +28,7 @@ export interface SelectProps {
     isSubmitting?: boolean;
     onErrorClear?: (field: string) => void;
     isSubmittingDropdowns?: boolean;
+    disabled?: boolean;
 }
 
 

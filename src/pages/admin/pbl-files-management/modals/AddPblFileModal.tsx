@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
 import { PblFileServices } from "../../../../services/admin/pblFileServices";
 import Select from "../components/common/Select";
+import { Download } from "lucide-react";
 
 interface AddPblFileModalProps {
     onClose: () => void;
@@ -40,6 +41,10 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
     const [gradeOptions, setGradeOptions] = useState<{ value: string; label: string }[]>([]);
     const [themeOptions, setThemeOptions] = useState<{ value: string; label: string }[]>([]);
     const [typeOptions, setTypeOptions] = useState<{ value: string; label: string }[]>([]);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+    // Add drag state for image
+    const [dragActiveImage, setDragActiveImage] = useState(false);
 
     useEffect(() => {
         setIsSubmittingDropdowns(true);
@@ -158,6 +163,25 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
     const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         handleImageChange(file);
+    };
+
+    // Drag-and-drop handlers for image upload
+    const handleImageDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === "dragenter" || e.type === "dragover") {
+            setDragActiveImage(true);
+        } else if (e.type === "dragleave") {
+            setDragActiveImage(false);
+        }
+    };
+    const handleImageDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActiveImage(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleImageChange(e.dataTransfer.files[0]);
+        }
     };
 
     const removeImage = () => {
@@ -443,10 +467,16 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                     </label>
                                     {!formData.image ? (
                                         <div
-                                            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${errors.image
-                                                ? 'border-red bg-red/5'
-                                                : 'border-inputBorder bg-inputBg hover:border-primary/50'
+                                            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActiveImage
+                                                ? 'border-primary bg-primary/5'
+                                                : errors.image
+                                                    ? 'border-red bg-red/5'
+                                                    : 'border-inputBorder bg-inputBg hover:border-primary/50'
                                                 } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            onDragEnter={handleImageDrag}
+                                            onDragLeave={handleImageDrag}
+                                            onDragOver={handleImageDrag}
+                                            onDrop={handleImageDrop}
                                             onClick={() => !isSubmitting && document.getElementById('image-input')?.click()}
                                         >
                                             <input
@@ -459,7 +489,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                             />
                                             <Upload className="mx-auto h-12 w-12 text-inputPlaceholder mb-4" />
                                             <p className="text-textColor font-medium mb-2">
-                                                Click to upload image
+                                                Click to upload image or drag and drop
                                             </p>
                                             <p className="text-inputPlaceholder text-sm">
                                                 Image files only (Max 5MB)
@@ -472,9 +502,15 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                                     <div className="flex-shrink-0">
                                                         {/* Image preview */}
                                                         <img
-                                                            src={URL.createObjectURL(formData.image)}
+                                                            src={formData.image ? URL.createObjectURL(formData.image) : undefined}
                                                             alt="Preview"
-                                                            className="h-12 w-12 object-cover rounded"
+                                                            className="h-12 w-12 object-cover rounded cursor-pointer"
+                                                           onClick={() => {
+                                                                if (formData.image) {
+                                                                    setSelectedImageUrl(URL.createObjectURL(formData.image));
+                                                                    setShowImageModal(true);
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -548,6 +584,65 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+            {showImageModal && selectedImageUrl && (
+                <motion.div
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-100 flex items-center justify-center px-4"
+                    onClick={() => setShowImageModal(false)}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                >
+                    <motion.div
+                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.95, opacity: 0 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Sticky Header with close and download icons */}
+                        <div className="bg-white px-8 py-6 flex justify-end items-center flex-shrink-0 gap-4">
+                            <button
+                                onClick={async () => {
+                                    if (!selectedImageUrl) return;
+                                    const imgFile = formData.image;
+                                    if (!(imgFile instanceof File)) return;
+                                    try {
+                                        const url = window.URL.createObjectURL(imgFile);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = imgFile.name || 'image.jpg';
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        a.remove();
+                                        window.URL.revokeObjectURL(url);
+                                    } catch (err) {}
+                                }}
+                                className="text-textColor hover:text-hover cursor-pointer"
+                                aria-label="Download Image"
+                            >
+                                <Download className="h-7 w-7" />
+                            </button>
+                            <button
+                                aria-label="Close"
+                                onClick={() => setShowImageModal(false)}
+                                className="text-textColor hover:text-hover cursor-pointer"
+                            >
+                                <X className="h-7 w-7" />
+                            </button>
+                        </div>
+                        {/* Centered Image */}
+                        <div className="flex-1 flex items-center justify-center px-8 py-6">
+                            <img
+                                src={selectedImageUrl}
+                                alt="PBL File Large Preview"
+                                className="max-h-[70vh] w-auto object-contain rounded shadow-lg"
+                            />
                         </div>
                     </motion.div>
                 </motion.div>

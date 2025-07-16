@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { backdropVariants, modalVariants } from "../../../../config/constants/Animations/modalAnimation";
@@ -64,6 +65,27 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
     }, []);
+
+    // Download image as blob
+    const handleDownloadImage = async () => {
+        if (!selectedImageUrl) return;
+        try {
+            const response = await fetch(selectedImageUrl, { mode: 'cors' });
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            // Try to get filename from URL, fallback to 'image.jpg'
+            const filename = selectedImageUrl.split('/').pop()?.split('?')[0] || 'image.jpg';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            // Optionally show a toast or error
+        }
+    };
 
     return (
         <>
@@ -174,25 +196,40 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                         transition={{ duration: 0.15, ease: "easeOut" }}
                     >
                         <motion.div
-                            className="bg-white rounded-lg p-4 max-w-2xl w-full flex flex-col items-center relative"
+                            className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             transition={{ duration: 0.15, ease: "easeOut" }}
                             onClick={e => e.stopPropagation()}
                         >
-                            <button
-                                aria-label="Close"
-                                onClick={() => setShowImageModal(false)}
-                                className="absolute top-2 right-2 text-textColor hover:text-hover cursor-pointer z-10"
-                            >
-                                <X className="h-7 w-7" />
-                            </button>
-                            <img
-                                src={selectedImageUrl}
-                                alt="PBL File Large Preview"
-                                className="max-h-[70vh] w-auto object-contain rounded shadow-lg"
-                            />
+                            {/* Sticky Header with only close icon */}
+                            <div className="bg-white px-8 py-6 flex justify-end items-center flex-shrink-0 gap-4">
+                                {selectedImageUrl && (
+                                    <button
+                                        onClick={handleDownloadImage}
+                                        className="text-textColor hover:text-hover cursor-pointer"
+                                        aria-label="Download Image"
+                                    >
+                                        <Download className="h-7 w-7" />
+                                    </button>
+                                )}
+                                <button
+                                    aria-label="Close"
+                                    onClick={() => setShowImageModal(false)}
+                                    className="text-textColor hover:text-hover cursor-pointer"
+                                >
+                                    <X className="h-7 w-7" />
+                                </button>
+                            </div>
+                            {/* Centered Image */}
+                            <div className="flex-1 flex items-center justify-center px-8 py-6">
+                                <img
+                                    src={selectedImageUrl}
+                                    alt="PBL File Large Preview"
+                                    className="max-h-[70vh] w-auto object-contain rounded shadow-lg"
+                                />
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}

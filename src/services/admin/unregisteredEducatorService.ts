@@ -91,7 +91,7 @@ export class UnregisteredEducatorService {
     }> {
         try {
             const response = await apiClient.get(
-                `/teacher/info/${user_id}`
+                `/teacher/${user_id}`
             );
             if (response.teacher) return response;
             if (response.educator) return { ...response, teacher: response.educator };

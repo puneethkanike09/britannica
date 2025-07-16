@@ -14,10 +14,12 @@ const Select: React.FC<SelectProps> = ({
     isSubmitting = false,
     onErrorClear,
     isSubmittingDropdowns = false,
+    disabled = false,
 }) => {
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const handleOptionSelect = (optionValue: string) => {
+        if (disabled) return;
         onValueChange(optionValue);
         if (onErrorClear) {
             onErrorClear(placeholder.toLowerCase());
@@ -36,13 +38,13 @@ const Select: React.FC<SelectProps> = ({
         <div className="relative w-full custom-select-dropdown">
             <button
                 ref={buttonRef}
-                onClick={onToggle}
-                className={`flex items-center justify-between px-4 py-3 text-left w-full bg-secondary hover:bg-secondary/80 text-white font-bold text-lg rounded-lg ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                onClick={disabled ? undefined : onToggle}
+                className={`flex items-center justify-between px-4 py-3 text-left w-full bg-secondary hover:bg-secondary/80 text-white font-bold text-lg rounded-lg ${isSubmitting || disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                     } ${error ? 'border border-red' : ''}`}
                 aria-label={`Select ${placeholder}`}
                 aria-expanded={isOpen}
                 role="combobox"
-                disabled={isSubmitting}
+                disabled={isSubmitting || disabled}
             >
                 <p className="break-words pr-2 flex-1 leading-tight">
                     {isSubmittingDropdowns ? (
@@ -56,7 +58,7 @@ const Select: React.FC<SelectProps> = ({
                     className={`h-3 w-3 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
-            {isOpen && (
+            {isOpen && !disabled && (
                 <div
                     className="absolute bg-white border border-white rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-lightGray scrollbar-track-lightGray w-full min-w-full"
                     style={{
@@ -76,6 +78,7 @@ const Select: React.FC<SelectProps> = ({
                                 role="option"
                                 aria-selected={value === option.value}
                                 title={option.label} // Show full text on hover
+                                disabled={disabled}
                             >
                                 {option.label}
                             </button>
