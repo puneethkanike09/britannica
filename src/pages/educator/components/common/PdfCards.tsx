@@ -59,12 +59,12 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps & { onViewCloudfront?:
                         style={{ backgroundColor: theme_color }}
                     />
                 )}
-                <div className="absolute top-0 right-4">
+                <div className="absolute top-0 right-4 z-30">
                     <p className="bg-red text-white text-xs font-bold px-4 py-1">
                         PDF
                     </p>
                 </div>
-                <h3 className="text-2xl font-black text-white leading-tight min-h-[6.5rem] flex items-center" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>
+                <h3 className="text-2xl font-black text-white leading-tight min-h-[6.5rem] flex items-center relative z-30" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>
                     {title}
                 </h3>
             </div>
