@@ -36,6 +36,8 @@ export interface DocumentCardProps {
     title: string;
     onView: () => void;
     onDownload: () => void;
+    image_url?: string;
+    theme_color?: string;
 }
 
 export interface DocumentCardWithLoadingProps extends DocumentCardProps {
@@ -48,6 +50,8 @@ export interface PdfProject {
     title: string;
     type: string;
     file: string;
+    image_url?: string;
+    theme_color?: string;
 }
 
 

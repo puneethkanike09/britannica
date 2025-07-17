@@ -218,10 +218,6 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
             newErrors.file = "PDF file is required";
             isValid = false;
         }
-        if (!formData.image) {
-            newErrors.image = "Image file is required";
-            isValid = false;
-        }
 
         if (!formData.grade) {
             newErrors.grade = "Grade is required";
@@ -463,7 +459,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                 {/* Image uploader */}
                                 <div className="mb-6">
                                     <label className="block text-textColor text-base mb-3">
-                                        Upload Image<span className="text-red">*</span>
+                                        Upload Image
                                     </label>
                                     {!formData.image ? (
                                         <div
@@ -576,7 +572,7 @@ export default function AddPblFileModal({ onClose, onFileAdded }: AddPblFileModa
                                     <button
                                         type="button"
                                         onClick={handleAddFile}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
                                             }`}
                                         disabled={isSubmitting}
                                     >

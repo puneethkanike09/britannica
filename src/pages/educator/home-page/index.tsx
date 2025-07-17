@@ -132,11 +132,15 @@ const EducatorDashboard = () => {
                         pbl_id: string | number;
                         pbl_file_path: string;
                         pbl_name: string;
+                        image_url?: string;
+                        theme_color?: string;
                     }) => ({
                         id: file.pbl_id,
                         title: file.pbl_name,
                         type: 'PDF',
-                        file: file.pbl_file_path
+                        file: file.pbl_file_path,
+                        image_url: file.image_url,
+                        theme_color: file.theme_color,
                     }));
                     setPdfProjects(files);
                     setShowResults(true);
@@ -161,8 +165,8 @@ const EducatorDashboard = () => {
         }
         setViewLoadingId(pblId);
         try {
-            // Fetch the PDF as a blob using GET
-            const blob = await apiClient.fetchPdfBlobGet('/file/view', { filePath: project.file });
+            // Fetch the PDF as a blob using GET /file/view?filePath=...
+            const blob = await EducatorDashboardService.fetchPdfFileView(project.file);
             const url = URL.createObjectURL(blob);
             setPdfUrl(url);
             setShowPdf(true);
@@ -327,6 +331,8 @@ const EducatorDashboard = () => {
                                             onDownload={() => handleDownload(project.id, project.title)}
                                             viewLoading={viewLoadingId === project.id}
                                             downloadLoading={downloadLoadingId === project.id}
+                                            image_url={project.image_url}
+                                            theme_color={project.theme_color}
                                         />
                                     ))}
                                 </div>

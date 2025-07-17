@@ -59,4 +59,8 @@ export class EducatorDashboardService {
             };
         }
     }
+
+    static async fetchPdfFileView(filePath: string): Promise<Blob> {
+        return await apiClient.fetchPdfBlobGet('/file/view', { filePath });
+    }
 } 
