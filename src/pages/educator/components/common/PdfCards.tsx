@@ -35,8 +35,30 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps & { onViewCloudfront?:
                 />
             )}
             <div
-                className="relative pb-4 px-6 pt-6 transition-colors duration-200 z-20"
+                className="relative pb-4 px-6 pt-6 transition-colors duration-200 z-20 h-40 overflow-hidden"
             >
+                {/* Background image only for this div */}
+                <div
+                    className="absolute inset-0 w-full h-full z-0"
+                    style={{
+                        backgroundImage: `url(${backgroundImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                    }}
+                />
+                {/* Light black overlay for background image, hidden when theme color overlay is active */}
+                <div
+                    className="absolute inset-0 transition-opacity duration-300 pointer-events-none z-10 group-hover:opacity-0"
+                    style={{ background: 'rgba(0,0,0,0.40)' }}
+                />
+                {/* Overlay for theme color on hover */}
+                {theme_color && (
+                    <div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"
+                        style={{ backgroundColor: theme_color }}
+                    />
+                )}
                 <div className="absolute top-0 right-4">
                     <p className="bg-red text-white text-xs font-bold px-4 py-1">
                         PDF
