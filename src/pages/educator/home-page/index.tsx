@@ -216,6 +216,27 @@ const EducatorDashboard = () => {
         }
     };
 
+    const handleViewCloudfront = async (pblId: string | number) => {
+        const project = pdfProjects.find((p) => p.id === pblId);
+        if (!project) {
+            toast.error('File not found');
+            return;
+        }
+        setViewLoadingId(pblId);
+        try {
+            const response = await apiClient.getFileViewUrl(project.file);
+            if (response.error === false || response.error === 'false') {
+                window.open(response.data, '_blank');
+            } else {
+                throw new Error(response.message || 'Failed to get file view URL');
+            }
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to open file');
+        } finally {
+            setViewLoadingId(null);
+        }
+    };
+
     const handleDropdownToggle = (dropdownId: string) => {
         if (isSubmitting) return;
         setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
@@ -333,6 +354,8 @@ const EducatorDashboard = () => {
                                             downloadLoading={downloadLoadingId === project.id}
                                             image_url={project.image_url}
                                             theme_color={project.theme_color}
+                                            file={project.file}
+                                            onViewCloudfront={() => handleViewCloudfront(project.id)}
                                         />
                                     ))}
                                 </div>

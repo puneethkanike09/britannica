@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { modalVariants } from '../../../../config/constants/Animations/modalAnimation';
 import defaultThemeImage from '../../../../assets/dashboard/Educator/home-page/defaultThemeImage.jpg';
 
-const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, onDownload, viewLoading, downloadLoading, image_url, theme_color }) => {
+const DocumentCard: React.FC<DocumentCardWithLoadingProps & { onViewCloudfront?: () => void }> = ({ title, onDownload, viewLoading, downloadLoading, image_url, theme_color, onViewCloudfront }) => {
     const backgroundImage = image_url || defaultThemeImage;
     return (
         <motion.div
@@ -49,7 +49,7 @@ const DocumentCard: React.FC<DocumentCardWithLoadingProps> = ({ title, onView, o
             <div className="py-4 px-6 bg-white z-20 relative">
                 <div className="flex gap-3">
                     <button
-                        onClick={onView}
+                        onClick={onViewCloudfront}
                         className={`flex-1 bg-primary hover:bg-hover text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer ${viewLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
                         disabled={viewLoading}
                         style={{ ...(theme_color ? { backgroundColor: theme_color, border: 'none' } : {}), textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}

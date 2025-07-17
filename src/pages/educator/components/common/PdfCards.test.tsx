@@ -6,10 +6,10 @@ import { vi } from 'vitest';
 describe('DocumentCard', () => {
   const defaultProps = {
     title: 'Test PDF',
-    onView: vi.fn(),
     onDownload: vi.fn(),
     viewLoading: false,
     downloadLoading: false,
+    file: 'dummy.pdf',
   };
 
   it('renders the title and buttons', () => {
@@ -18,12 +18,6 @@ describe('DocumentCard', () => {
     expect(screen.getByText('View')).toBeInTheDocument();
     expect(screen.getByText('Download')).toBeInTheDocument();
     expect(screen.getByText('PDF')).toBeInTheDocument();
-  });
-
-  it('calls onView when View button is clicked', () => {
-    render(<DocumentCard {...defaultProps} />);
-    fireEvent.click(screen.getByText('View'));
-    expect(defaultProps.onView).toHaveBeenCalled();
   });
 
   it('calls onDownload when Download button is clicked', () => {

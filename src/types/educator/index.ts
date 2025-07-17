@@ -34,10 +34,12 @@ export interface SelectProps {
 
 export interface DocumentCardProps {
     title: string;
-    onView: () => void;
+    onView?: () => void;
     onDownload: () => void;
     image_url?: string;
     theme_color?: string;
+    file: string;
+    onViewCloudfront?: () => void;
 }
 
 export interface DocumentCardWithLoadingProps extends DocumentCardProps {
