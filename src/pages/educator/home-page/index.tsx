@@ -283,7 +283,7 @@ const EducatorDashboard = () => {
                 }}
             >
                 <div className="relative flex flex-col items-center justify-start px-4 sm:px-6 max-w-[1500px] mx-auto">
-                    <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full max-w-7xl mb-8">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start justify-center w-full  mb-8">
                         <Select
                             value={selectedTheme}
                             onValueChange={setSelectedTheme}
