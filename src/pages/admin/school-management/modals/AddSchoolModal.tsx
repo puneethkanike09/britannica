@@ -89,8 +89,8 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
                 // Only allow letters, spaces, max 50
                 return value.replace(/[^a-zA-Z\s']/g, '').slice(0, 50);
             case 'school_email':
-                // Allow valid email characters, max 100
-                return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100);
+                // Allow valid email characters, max 100, and convert to lowercase
+                return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100).toLowerCase();
             case 'address_line1':
             case 'address_line2':
                 // Allow letters, numbers, spaces, comma, dot, hyphen, max 100
@@ -105,7 +105,11 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
+        let newValue = restrictInput(name, value);
+        // For school_email, always convert to lowercase
+        if (name === 'school_email') {
+            newValue = newValue.toLowerCase();
+        }
         setFormData(prev => ({ ...prev, [name]: newValue }));
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name]: '' }));

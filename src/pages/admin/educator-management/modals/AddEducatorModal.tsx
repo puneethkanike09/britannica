@@ -77,6 +77,9 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
             case 'lastName':
                 // Only allow letters, spaces, min 2, max 50
                 return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+            case 'email':
+                // Allow only valid email characters, max 100, and convert to lowercase
+                return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100).toLowerCase();
             case 'loginId':
                 // Allow any characters, max 100
                 return value.slice(0, 100);
@@ -90,7 +93,11 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
+        let newValue = restrictInput(name, value);
+        // For email, always convert to lowercase
+        if (name === 'email') {
+            newValue = newValue.toLowerCase();
+        }
         setFormData(prev => ({
             ...prev,
             [name]: name === 'schoolId' ? (value ? Number(value) : undefined) : newValue,

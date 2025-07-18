@@ -64,6 +64,10 @@ const EducatorLogin = () => {
         return isValid;
     };
 
+    // Helper for restricting email input
+    const restrictEmailInput = (value: string) => {
+        return value.replace(/[^a-zA-Z0-9._%+-@]/g, '').slice(0, 100).toLowerCase();
+    };
 
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -320,7 +324,8 @@ const EducatorLogin = () => {
                                             type="email"
                                             value={forgotPasswordEmail}
                                             onChange={(e) => {
-                                                setForgotPasswordEmail(e.target.value);
+                                                const newValue = restrictEmailInput(e.target.value);
+                                                setForgotPasswordEmail(newValue);
                                                 if (forgotPasswordErrors.email)
                                                     setForgotPasswordErrors((prev) => ({ ...prev, email: "" }));
                                             }}

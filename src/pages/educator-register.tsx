@@ -75,7 +75,7 @@ const EducatorRegistration = () => {
                 return value.replace(/[^a-zA-Z\s']/g, "").slice(0, 50);
             case "emailAddress":
             case "educatorEmail":
-                return value.replace(/[^a-zA-Z0-9._%+-@]/g, "").slice(0, 100);
+                return value.replace(/[^a-zA-Z0-9._%+-@]/g, "").slice(0, 100).toLowerCase();
             case "addressLine1":
             case "addressLine2":
                 return value.replace(/[^a-zA-Z0-9\s,.-]/g, "").slice(0, 100);
@@ -91,7 +91,10 @@ const EducatorRegistration = () => {
 
     const handleSchoolInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
+        let newValue = restrictInput(name, value);
+        if (name === "emailAddress") {
+            newValue = newValue.toLowerCase();
+        }
         setSchoolData((prev) => ({ ...prev, [name]: newValue }));
         if (errors[name as keyof SchoolFormData]) {
             setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -100,7 +103,10 @@ const EducatorRegistration = () => {
 
     const handleEducatorInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        const newValue = restrictInput(name, value);
+        let newValue = restrictInput(name, value);
+        if (name === "educatorEmail") {
+            newValue = newValue.toLowerCase();
+        }
         setEducatorData((prev) => ({ ...prev, [name]: newValue }));
         if (errors[name as keyof EducatorFormData]) {
             setErrors((prev) => ({ ...prev, [name]: "" }));
