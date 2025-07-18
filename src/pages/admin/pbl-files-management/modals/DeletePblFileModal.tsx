@@ -94,17 +94,17 @@ export default function DeletePblFileModal({ onClose, file, onDeleted }: DeleteP
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-primary/10 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isDeleting}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleDelete}
                                     className={`px-8 py-3 font-bold rounded-lg bg-red-600 text-white hover:bg-red-700 flex items-center justify-center gap-2 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isDeleting}
                                 >
-                                    {isDeleting ? <Loader2 className="animate-spin" /> : "Yes, Delete"}
+                                    {isDeleting ? <Loader2 className="animate-spin" /> : "Delete"}
                                 </button>
                             </div>
                         </div>

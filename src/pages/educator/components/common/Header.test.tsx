@@ -17,7 +17,7 @@ describe('Header (BritannicaHeroSection)', () => {
     expect(screen.getByText('Focus on 21st')).toBeInTheDocument();
     expect(screen.getByText('century skills')).toBeInTheDocument();
     expect(screen.getByText('Alignment with')).toBeInTheDocument();
-    expect(screen.getAllByText('SGDS').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('SDGs').length).toBeGreaterThan(0);
     expect(screen.getByText('Real-world')).toBeInTheDocument();
   });
 }); 

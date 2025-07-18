@@ -102,7 +102,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                                     className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoggingOut ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                     disabled={isLoggingOut}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleLogout}
@@ -112,7 +112,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
                                     {isLoggingOut ? (
                                         <Loader2 className="animate-spin" />
                                     ) : (
-                                        'Yes, Logout'
+                                        'Logout'
                                     )}
                                 </button>
                             </div>

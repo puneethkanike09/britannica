@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Menu, X, ChevronDown, ChevronUp } from 'luci
 
 // Import constants and components
 import { ADMIN_NAV_ITEMS } from '../../../../../config/constants/Admin/sidebar';
-import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.png';
+import LogoIcon from '../../../../../assets/dashboard/Admin/sidebar/logo.svg';
 import LogoutModal from '../topbar/modals/LogoutModal';
 import { NavItem, SidebarProps, SubMenuItem } from '../../../../../types/admin';
 
@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
                 {/* Header */}
                 <div className={`${isCollapsed && !isMobile ? 'px-4 justify-center' : 'pl-6 pr-5 justify-between'
-                    } py-10 shadow-xs h-[81px] flex items-center transition-all duration-300`}>
+                    } py-10 shadow-xs h-[81px] bg-white flex items-center transition-all duration-300`}>
 
                     {/* Logo */}
                     {(!isCollapsed || isMobile) && (
@@ -169,7 +169,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {/* Desktop Collapse Button */}
                     {!isMobile && (
                         <button
-                            className="text-white hover:text-textColor cursor-pointer"
+                            className="text-secondary hover:text-primary cursor-pointer"
                             onClick={onToggleCollapse}
                             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                         >

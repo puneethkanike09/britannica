@@ -76,14 +76,14 @@ export default function ApproveEducatorModal({ onClose, educator, onConfirm, isL
                                     className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isLoading}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={onConfirm}
                                     className={`px-8 py-3 font-bold rounded-lg bg-primary text-white hover:bg-hover flex items-center justify-center gap-2 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isLoading}
                                 >
-                                    {isLoading ? <Loader2 className="animate-spin" /> : "Yes, Approve"}
+                                    {isLoading ? <Loader2 className="animate-spin" /> : "Approve"}
                                 </button>
                             </div>
                         </div>

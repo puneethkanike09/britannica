@@ -3,7 +3,7 @@ import BackgroundImage from '../../../../assets/dashboard/Educator/home-page/kid
 import ResearchIcon from '../../../../assets/dashboard/Educator/header/1.png';
 import InterdisciplinaryIcon from '../../../../assets/dashboard/Educator/header/22.svg';
 import SkillsIcon from '../../../../assets/dashboard/Educator/header/33.svg';
-import SgdsIcon from '../../../../assets/dashboard/Educator/header/5.png';
+import SDGsIcon from '../../../../assets/dashboard/Educator/header/5.png';
 import RealWorldIcon from '../../../../assets/dashboard/Educator/header/5.svg';
 
 export default function BritannicaHeroSection() {
@@ -68,19 +68,19 @@ export default function BritannicaHeroSection() {
                     <div className="text-center group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
-                                src={SgdsIcon}
-                                alt="Alignment with SGDs"
+                                src={SDGsIcon}
+                                alt="Alignment with SDGs"
                                 className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>
                         <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">Alignment with</h3>
-                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">SGDs</h3>
+                        <h3 className="text-white font-bold sm:text-xl md:text-2xl mb-1 sm:mb-2 transition-all duration-300 group-hover:text-blue-300 group-hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-active:text-blue-300 group-active:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)] group-focus:text-blue-300 group-focus:drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]">SDGs</h3>
                     </div>
                     <div className="text-center col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 mx-auto group cursor-pointer touch-manipulation">
                         <div className="mb-3 sm:mb-4 flex justify-center">
                             <img
                                 src={RealWorldIcon}
-                                alt="Alignment with SGDS"
+                                alt="Alignment with SDGs"
                                 className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-hover:brightness-125 group-active:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-active:brightness-125 group-focus:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)] group-focus:brightness-125"
                             />
                         </div>

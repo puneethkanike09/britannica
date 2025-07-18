@@ -111,7 +111,15 @@ export default function RejectReasonModal({ onClose, educator, onConfirm, isLoad
                                     {error && <p className="text-red text-sm mt-1">{error}</p>}
                                 </div>
 
-                                <div className="mt-12">
+                                <div className="mt-12 flex gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={handleClose}
+                                        className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        disabled={isLoading}
+                                    >
+                                        Cancel
+                                    </button>
                                     <button
                                         type="button"
                                         onClick={handleSubmit}

@@ -136,7 +136,7 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                                             }`}
                                         disabled={isLoading}
                                     >
-                                        No, Cancel
+                                        Cancel
                                     </button>
                                     <button
                                         onClick={handleReject}
@@ -147,7 +147,7 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
                                         {isLoading ? (
                                             <Loader2 className="h-5 w-5 animate-spin" />
                                         ) : (
-                                            <span className="font-bold">Yes, Reject All</span>
+                                            <span className="font-bold">Reject All</span>
                                         )}
                                     </button>
                                 </div>

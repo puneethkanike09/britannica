@@ -96,10 +96,10 @@ export default function DeleteGradeModal({ onClose, grade, onDeleted }: GradeDel
                             <div className="flex justify-start gap-4">
                                 <button
                                     onClick={handleClose}
-                                    className={`px-8 py-3 font-bold rounded-lg border border-lightGray text-gray hover:bg-primary/10 ${isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isDeleting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isDeleting}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleDelete}
@@ -109,7 +109,7 @@ export default function DeleteGradeModal({ onClose, grade, onDeleted }: GradeDel
                                     {isDeleting ? (
                                         <Loader2 className="animate-spin" />
                                     ) : (
-                                        'Yes, Delete'
+                                        'Delete'
                                     )}
                                 </button>
                             </div>

@@ -172,10 +172,7 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                                     ) : '-'}
                                                 </div>
                                             </div>
-                                            <div className="p-6 border-b border-lightGray md:border-b-0">
-                                                <div className="text-textColor mb-2">ID</div>
-                                                <div className="text-primary font-medium break-all">{pblFileDetails.pbl_id || '-'}</div>
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 ) : null}

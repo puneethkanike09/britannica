@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LogOut, Menu, X, ChevronDown } from "lucide-react";
-import LogoIcon from "../../../../../assets/dashboard/Educator/home-page/logo2.png";
+import LogoIcon from "../../../../../assets/dashboard/Educator/home-page/logo.svg";
 import LogoutModal from "./modals/LogoutModal";
 import UnregisterReasonModal from "./modals/UnregisterReasonModal";
 import { EDUCATOR_NAV_ITEMS } from "../../../../../config/constants/Educator/topbar";
@@ -93,35 +93,39 @@ const Topbar: React.FC = () => {
             <header
                 className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}
             >
-                {/* Logo */}
-                <Link to="/educator-dashboard" className="flex items-center gap-3 cursor-pointer">
-                    <img src={LogoIcon} alt="Britannica Education Logo" className="h-[40px] sm:h-[60px] object-cover" />
+                {/* Logo - Fixed with better responsive sizing */}
+                <Link to="/educator-dashboard" className="flex items-center gap-3 cursor-pointer flex-shrink-0">
+                    <img 
+                        src={LogoIcon} 
+                        alt="Britannica Education Logo" 
+                        className="h-8 sm:h-10 lg:h-[45px] w-auto object-contain max-w-[120px] sm:max-w-[150px] lg:max-w-none" 
+                    />
                 </Link>
 
-               <input type="text" />
+
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center gap-8">
+                <nav className="hidden md:flex items-center gap-8 flex-shrink-0">
                     {EDUCATOR_NAV_ITEMS.map((item) =>
                         item.dropdown ? (
                             <div className="relative" ref={item.label === "Resources" ? resourcesDropdownRef : item.label === "Support" ? supportDropdownRef : settingsDropdownRef} key={item.label}>
                                 <button
                                     onClick={() => {
-if (item.label === "Resources") {
-    setIsResourcesDropdownOpen(!isResourcesDropdownOpen);
-    setIsSupportDropdownOpen(false);
-    setIsSettingsDropdownOpen(false);
-} else if (item.label === "Support") {
-    setIsSupportDropdownOpen(!isSupportDropdownOpen);
-    setIsResourcesDropdownOpen(false);
-    setIsSettingsDropdownOpen(false);
-} else {
-    setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
-    setIsResourcesDropdownOpen(false);
-    setIsSupportDropdownOpen(false);
-}
+                                        if (item.label === "Resources") {
+                                            setIsResourcesDropdownOpen(!isResourcesDropdownOpen);
+                                            setIsSupportDropdownOpen(false);
+                                            setIsSettingsDropdownOpen(false);
+                                        } else if (item.label === "Support") {
+                                            setIsSupportDropdownOpen(!isSupportDropdownOpen);
+                                            setIsResourcesDropdownOpen(false);
+                                            setIsSettingsDropdownOpen(false);
+                                        } else {
+                                            setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+                                            setIsResourcesDropdownOpen(false);
+                                            setIsSupportDropdownOpen(false);
+                                        }
                                     }}
-                                    className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300"
+                                    className="flex cursor-pointer items-center gap-1 text-textColor hover:text-primary font-medium transition-colors duration-300 whitespace-nowrap"
                                 >
                                     {item.label}
                                     <ChevronDown
@@ -196,29 +200,30 @@ if (item.label === "Resources") {
                             <Link
                                 to={item.to || ""}
                                 key={item.label}
-                                className="text-textColor hover:text-primary font-medium transition-colors duration-300"
+                                className="text-textColor hover:text-primary font-medium transition-colors duration-300 whitespace-nowrap"
                             >
                                 {item.label}
                             </Link>
                         )
                     )}
 
-                    {/* Logout Button */}
+                    {/* Logout Button - Responsive sizing */}
                     <button
                         onClick={openLogoutModal}
-                        className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer flex items-center gap-2"
+                        className="bg-primary hover:bg-hover text-white px-4 lg:px-8 py-2 lg:py-3 font-bold rounded-lg font-medium cursor-pointer flex items-center gap-2 whitespace-nowrap"
                     >
                         <LogOut className="font-black" size={18} />
-                        Log out
+                        <span className="hidden lg:inline">Log out</span>
+                        <span className="lg:hidden">Logout</span>
                     </button>
                 </nav>
 
-                {/* Mobile Right Section - Menu Button Only */}
-                <div className="md:hidden flex items-center">
+                {/* Mobile Right Section */}
+                <div className="md:hidden flex items-center gap-2 flex-shrink-0">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMobileMenu}
-                        className="text-textColor hover:text-primary transition-colors duration-300"
+                        className="text-textColor hover:text-primary transition-colors duration-300 p-1"
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -226,7 +231,7 @@ if (item.label === "Resources") {
 
                 {/* Mobile Navigation */}
                 <div
-                    className={`fixed top-16 sm:top-[70px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-70px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+                    className={`fixed top-16 sm:top-[81px] right-0 w-80 max-w-[90vw] h-[calc(100vh-4rem)] sm:h-[calc(100vh-81px)] bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                         }`}
                 >
                     <nav className="flex flex-col p-6 gap-2">
@@ -347,6 +352,7 @@ if (item.label === "Resources") {
                     </nav>
                 </div>
             </header>
+            
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
                 <div

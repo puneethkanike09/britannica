@@ -34,25 +34,25 @@ describe('LogoutModal', () => {
   it('renders and closes on cancel', async () => {
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('No, Cancel'));
+    fireEvent.click(screen.getByText('Cancel'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 
   it('calls logout and navigates on confirm', async () => {
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('Yes, Logout'));
+    fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
-    expect(screen.queryByText('Yes, Logout')).not.toBeInTheDocument();
+    expect(screen.queryByText('Logout')).not.toBeInTheDocument();
   });
 
   it('disables buttons while logging out', async () => {
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('Yes, Logout'));
-    expect(screen.getByText('No, Cancel').closest('button')).toBeDisabled();
+    fireEvent.click(screen.getByText('Logout'));
+    expect(screen.getByText('Cancel').closest('button')).toBeDisabled();
     const logoutButton = screen.getAllByRole('button').find(
-      btn => btn.textContent === 'Yes, Logout' || btn.querySelector('.animate-spin')
+      btn => btn.textContent === 'Logout' || btn.querySelector('.animate-spin')
     );
     expect(logoutButton).toBeDisabled();
     await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -77,7 +77,7 @@ describe('LogoutModal', () => {
   it('does not close if isLoggingOut is true', async () => {
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('Yes, Logout'));
+    fireEvent.click(screen.getByText('Logout'));
     // Try to close while logging out
     const closeButton = screen.getByLabelText('close');
     fireEvent.click(closeButton);
@@ -90,7 +90,7 @@ describe('LogoutModal', () => {
     mockLogout.mockResolvedValueOnce({});
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('Yes, Logout'));
+    fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(toast.success).toHaveBeenCalledWith('Logged out successfully!');
   });
@@ -99,7 +99,7 @@ describe('LogoutModal', () => {
     mockLogout.mockRejectedValueOnce({ message: 'Custom error' });
     const onClose = vi.fn();
     render(<LogoutModal onClose={onClose} />);
-    fireEvent.click(screen.getByText('Yes, Logout'));
+    fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Custom error'));
   });
 }); 

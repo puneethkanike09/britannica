@@ -86,7 +86,7 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
                                     className={`px-8 py-3 font-bold rounded-lg border border-primary text-textColor hover:bg-primary/10 ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                     disabled={isLoading}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={handleUnregister}
@@ -96,7 +96,7 @@ const UnregisterEducatorModal: React.FC<UnregisterEducatorModalProps> = ({
                                     {isLoading ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
-                                        <span className="font-bold">Yes, Unregister</span>
+                                        <span className="font-bold">Unregister</span>
                                     )}
                                 </button>
                             </div>

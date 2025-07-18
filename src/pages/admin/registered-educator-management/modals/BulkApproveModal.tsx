@@ -96,7 +96,7 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                                         }`}
                                     disabled={isLoading}
                                 >
-                                    No, Cancel
+                                    Cancel
                                 </button>
                                 <button
                                     onClick={onConfirm}
@@ -107,7 +107,7 @@ const BulkApproveModal: React.FC<BulkApproveModalProps> = ({
                                     {isLoading ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
-                                        <span className="font-bold">Yes, Approve All</span>
+                                        <span className="font-bold">Approve All</span>
                                     )}
                                 </button>
                             </div>

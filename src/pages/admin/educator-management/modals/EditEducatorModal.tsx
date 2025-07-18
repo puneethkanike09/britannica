@@ -420,7 +420,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                             {isSubmitting ? (
                                                 <Loader2 className="animate-spin" />
                                             ) : (
-                                                'Edit Educator'
+                                                'Save'
                                             )}
                                         </button>
                                     </div>
