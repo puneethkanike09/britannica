@@ -27,7 +27,7 @@ export interface SidebarProps {
     onToggleCollapse: () => void;
 }
 
-//home page
+// home page (educators, logins, downloads, schools, etc)
 export interface DashboardCard {
     id: string;
     title: string;

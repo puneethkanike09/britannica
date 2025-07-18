@@ -78,8 +78,8 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
                 // Only allow letters, spaces, min 2, max 50
                 return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
             case 'loginId':
-                // Allow alphanumeric, min 3, max 30
-                return value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 30);
+                // Allow any characters, max 100
+                return value.slice(0, 100);
             case 'phone':
                 // Only allow digits and +, max 15
                 return value.replace(/[^0-9+]/g, '').slice(0, 15);
@@ -152,12 +152,12 @@ export default function AddEducatorModal({ onClose, onTeacherAdded }: AddTeacher
             }
         }
 
-        // Login ID: min 3, max 30, alphanumeric
+        // Login ID: required, min 3, max 100 characters
         if (!formData.loginId.trim()) {
             newErrors.loginId = 'Login ID is required';
             isValid = false;
-        } else if (!/^[a-zA-Z0-9]{3,30}$/.test(formData.loginId)) {
-            newErrors.loginId = 'Login ID must be 3-30 alphanumeric characters';
+        } else if (formData.loginId.length < 3 || formData.loginId.length > 100) {
+            newErrors.loginId = 'Login ID must be 3-100 characters';
             isValid = false;
         }
 

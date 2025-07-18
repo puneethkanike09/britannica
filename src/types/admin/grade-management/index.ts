@@ -1,8 +1,8 @@
 // Grade management types
 export interface Grade {
-    grade_id: string | number;
+    grade_id: number;
     grade_name: string;
-    description: string;
+    grade_desc: string;
     status?: string;
     created_user?: string | number;
     created_ts?: string;

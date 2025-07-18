@@ -39,9 +39,15 @@ const ThemeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setThemes([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? 'Failed to fetch themes');
             }
         } catch (error) {
+            setThemes([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
             toast.error('Failed to fetch themes');
             console.error('Fetch themes error:', error);
         } finally {
@@ -123,15 +129,24 @@ const ThemeManagement: React.FC = () => {
     };
 
     const handleThemeAdded = () => {
-        fetchThemes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchThemes(1, pageSize, ""); // Always reload with empty search
         closeAddThemeModal();
     };
     const handleThemeUpdated = () => {
-        fetchThemes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchThemes(1, pageSize, ""); // Always reload with empty search
         closeEditThemeModal();
     };
     const handleThemeDeleted = () => {
-        fetchThemes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchThemes(1, pageSize, ""); // Always reload with empty search
         closeDeleteThemeModal();
     };
 
@@ -221,7 +236,7 @@ const ThemeManagement: React.FC = () => {
                                             <div className="text-textColor">{theme.theme_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{theme.description}</div>
+                                            <div className="text-textColor">{theme.theme_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

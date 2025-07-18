@@ -140,8 +140,8 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                 // Only allow letters, spaces, min 2, max 50
                 return value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
             case 'loginId':
-                // Allow alphanumeric, min 3, max 30
-                return value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 30);
+                // Allow any characters, max 100
+                return value.slice(0, 100);
             case 'phone':
                 // Only allow digits and +, max 15
                 return value.replace(/[^0-9+]/g, '').slice(0, 15);
@@ -213,12 +213,12 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
             }
         }
 
-        // Login ID: min 3, max 30, alphanumeric
+        // Login ID: required, min 3, max 100 characters
         if (!formData.loginId.trim()) {
             newErrors.loginId = 'Login ID is required';
             isValid = false;
-        } else if (!/^[a-zA-Z0-9]{3,30}$/.test(formData.loginId)) {
-            newErrors.loginId = 'Login ID must be 3-30 alphanumeric characters';
+        } else if (formData.loginId.length < 3 || formData.loginId.length > 100) {
+            newErrors.loginId = 'Login ID must be 3-100 characters';
             isValid = false;
         }
 
@@ -236,6 +236,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
             setIsSubmitting(true);
             try {
                 const response = await EducatorService.updateTeacher({
+                    school: { school_id: formData.schoolId! },
                     teacher_id: formData.teacher_id,
                     login_id: formData.loginId,
                     email_id: formData.email,
@@ -413,7 +414,7 @@ export default function EditEducatorModal({ onClose, teacher, onTeacherUpdated }
                                         <button
                                             onClick={handleSubmit}
                                             type="button"
-                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                                             disabled={isSubmitting}
                                         >
                                             {isSubmitting ? (

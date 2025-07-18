@@ -38,6 +38,7 @@ const EducatorRegistration = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isSuccessVisible, setIsSuccessVisible] = useState(false);
+    const [isExistingSchoolSuccess, setIsExistingSchoolSuccess] = useState(false);
 
     const [schoolData, setSchoolData] = useState<SchoolFormData>({
         schoolName: "",
@@ -82,7 +83,7 @@ const EducatorRegistration = () => {
                 return value.replace(/[^0-9]/g, "").slice(0, 10);
             case "schoolCode":
             case "loginId":
-                return value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
+                return value.slice(0, 100);
             default:
                 return value;
         }
@@ -237,8 +238,8 @@ const EducatorRegistration = () => {
         if (!educatorData.loginId.trim()) {
             newErrors.loginId = "Login ID is required";
             isValid = false;
-        } else if (!/^[a-zA-Z0-9]{3,30}$/.test(educatorData.loginId)) {
-            newErrors.loginId = "Login ID must be 3-30 alphanumeric characters";
+        } else if (educatorData.loginId.length < 3 || educatorData.loginId.length > 100) {
+            newErrors.loginId = "Login ID must be 3-100 characters";
             isValid = false;
         }
 
@@ -289,6 +290,11 @@ const EducatorRegistration = () => {
             
             if (response.error === false || response.error === "false") {
                 toast.success(response.message || "Registration successful!");
+                if (response.school === false) {
+                    setIsExistingSchoolSuccess(true);
+                } else {
+                    setIsExistingSchoolSuccess(false);
+                }
                 setShowSuccessModal(true);
                 setIsSuccessVisible(true);
             } else {
@@ -556,7 +562,7 @@ const EducatorRegistration = () => {
                                     <div className="flex justify-start mt-12">
                                         <button
                                             onClick={handleNext}
-                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             Next
@@ -650,7 +656,7 @@ const EducatorRegistration = () => {
                                                 value={educatorData.loginId}
                                                 onChange={handleEducatorInputChange}
                                                 placeholder="Enter Login ID"
-                                                maxLength={30}
+                                                maxLength={100}
                                                 className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.loginId ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
@@ -663,7 +669,7 @@ const EducatorRegistration = () => {
                                     <div className="flex gap-6 mt-12">
                                         <button
                                             onClick={handlePrevious}
-                                            className={`border border-primary hover:bg-primary/10 text-textColor px-8 py-3 font-bold rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`border border-primary hover:bg-primary/10 text-textColor px-8 py-3  rounded-lg font-medium flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             <ChevronLeft className="w-4 h-4" />
@@ -671,7 +677,7 @@ const EducatorRegistration = () => {
                                         </button>
                                         <button
                                             onClick={handleRegister}
-                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                            className={`bg-primary text-white px-8 py-3 font-bold rounded-lg  hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                             disabled={isSubmitting}
                                         >
                                             {isSubmitting ? (
@@ -719,12 +725,14 @@ const EducatorRegistration = () => {
                         >
                             <div className="flex-1 px-8 py-6 text-center">
                                 <p className="text-textColor text-lg mb-8">
-                                    Registration successful! Your account has been created and is pending admin approval. You will receive a notification once it is approved.
+                                    {isExistingSchoolSuccess
+                                        ? "Registration successful with the existing school! Your account has been created and is pending admin approval. You will receive a notification once it is approved."
+                                        : "Registration successful! Your account has been created and is pending admin approval. You will receive a notification once it is approved."}
                                 </p>
                                 <button
                                     type="button"
                                     onClick={handleCloseSuccess}
-                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg font-medium cursor-pointer"
+                                    className="bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg  cursor-pointer"
                                 >
                                     Ok
                                 </button>

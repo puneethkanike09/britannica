@@ -40,9 +40,15 @@ const UserAccessTypeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setUserAccessTypes([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? 'Failed to fetch user access types');
             }
         } catch (error) {
+            setUserAccessTypes([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
             toast.error('Failed to fetch user access types');
             console.error('Fetch user access types error:', error);
         } finally {
@@ -124,15 +130,24 @@ const UserAccessTypeManagement: React.FC = () => {
     };
 
     const handleUserAccessTypeAdded = () => {
-        fetchUserAccessTypes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchUserAccessTypes(1, pageSize, ""); // Always reload with empty search
         closeAddUserAccessTypeModal();
     };
     const handleUserAccessTypeUpdated = () => {
-        fetchUserAccessTypes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchUserAccessTypes(1, pageSize, ""); // Always reload with empty search
         closeEditUserAccessTypeModal();
     };
     const handleUserAccessTypeDeleted = () => {
-        fetchUserAccessTypes();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchUserAccessTypes(1, pageSize, ""); // Always reload with empty search
         closeDeleteUserAccessTypeModal();
     };
 
@@ -222,7 +237,7 @@ const UserAccessTypeManagement: React.FC = () => {
                                             <div className="text-textColor">{userAccessType.user_access_type_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{userAccessType.description}</div>
+                                            <div className="text-textColor">{userAccessType.user_access_type_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

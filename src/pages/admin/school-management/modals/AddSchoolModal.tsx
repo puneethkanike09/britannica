@@ -44,6 +44,7 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
         school_email: '',
         school_mobile_no: '',
         address_line1: '',
+        address_line2: '',
         city: '',
         state: '',
         country: '',
@@ -127,6 +128,7 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
             school_email: '',
             school_mobile_no: '',
             address_line1: '',
+            address_line2: '',
             city: '',
             state: '',
             country: '',
@@ -178,6 +180,12 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
             isValid = false;
         } else if (formData.address_line1.length < 5 || formData.address_line1.length > 100) {
             newErrors.address_line1 = 'Address must be 5-100 characters';
+            isValid = false;
+        }
+
+        // Address line 2: optional, max 100
+        if (formData.address_line2.trim() && formData.address_line2.length > 100) {
+            newErrors.address_line2 = 'Address must be up to 100 characters';
             isValid = false;
         }
 
@@ -253,7 +261,7 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
                     transition={{ duration: 0.1, ease: "easeOut" }}
                 >
                     <motion.div
-                        className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
+                        className="bg-white rounded-lg w-full max-w-[835px] max-h-[90vh] overflow-hidden flex flex-col sm:px-10 py-4"
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
@@ -378,6 +386,7 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'border-inputPlaceholder'} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />
+                                        {errors.address_line2 && <p className="text-red text-sm mt-1">{errors.address_line2}</p>}
                                     </div>
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">

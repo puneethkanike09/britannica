@@ -39,9 +39,15 @@ const GradeManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setGrades([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? 'Failed to fetch grades');
             }
         } catch (error) {
+            setGrades([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
             toast.error('Failed to fetch grades');
             console.error('Fetch grades error:', error);
         } finally {
@@ -123,15 +129,24 @@ const GradeManagement: React.FC = () => {
     };
 
     const handleGradeAdded = () => {
-        fetchGrades();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchGrades(1, pageSize, ""); // Always reload with empty search
         closeAddGradeModal();
     };
     const handleGradeUpdated = () => {
-        fetchGrades();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchGrades(1, pageSize, ""); // Always reload with empty search
         closeEditGradeModal();
     };
     const handleGradeDeleted = () => {
-        fetchGrades();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchGrades(1, pageSize, ""); // Always reload with empty search
         closeDeleteGradeModal();
     };
 
@@ -221,7 +236,7 @@ const GradeManagement: React.FC = () => {
                                             <div className="text-textColor">{grade.grade_name}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{grade.description}</div>
+                                            <div className="text-textColor">{grade.grade_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

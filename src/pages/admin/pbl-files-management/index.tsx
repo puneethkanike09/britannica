@@ -42,9 +42,15 @@ const PblFileManagement: React.FC = () => {
                 setTotalElements(response.totalItems || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setFiles([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message || 'Failed to fetch PBL files');
             }
         } catch (error) {
+            setFiles([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
             toast.error('Failed to fetch PBL files');
             console.error('Fetch PBL files error:', error);
         } finally {
@@ -106,15 +112,24 @@ const PblFileManagement: React.FC = () => {
     };
 
     const handleFileAdded = () => {
-        fetchPblFiles();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchPblFiles(1, pageSize, ""); // Always reload with empty search
         closeAddPblFileModal();
     };
     const handleFileUpdated = () => {
-        fetchPblFiles();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchPblFiles(1, pageSize, ""); // Always reload with empty search
         closeEditPblFileModal();
     };
     const handlePblFileDeleted = () => {
-        fetchPblFiles();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchPblFiles(1, pageSize, ""); // Always reload with empty search
         closeDeletePblFileModal();
     };
 

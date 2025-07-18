@@ -1,7 +1,7 @@
 export interface Theme {
-    theme_id: string;
+    theme_id: number;
     theme_name: string;
-    description: string;
+    theme_desc: string;
     theme_color: string;
     status?: string;
     created_user?: string | number;

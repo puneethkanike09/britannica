@@ -8,6 +8,7 @@ import { DashboardService } from '../../../services/admin/dashboardService';
 import EducatorsIcon from '../../../assets/dashboard/Admin/home-page/educators.svg';
 import LoginsIcon from '../../../assets/dashboard/Admin/home-page/logins.svg';
 import DownloadsIcon from '../../../assets/dashboard/Admin/home-page/downloads.svg';
+import SchoolsIcon from '../../../assets/dashboard/Admin/home-page/schools.svg';
 import { DashboardCard } from '../../../types/admin';
 
 const AdminDashboard: React.FC = () => {
@@ -15,6 +16,7 @@ const AdminDashboard: React.FC = () => {
     const [educatorCount, setEducatorCount] = useState<number>(0);
     const [loginsCount, setLoginsCount] = useState<number>(0);
     const [downloadsCount, setDownloadsCount] = useState<number>(0);
+    const [schoolsCount, setSchoolsCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchDashboardCounts = async () => {
@@ -25,10 +27,12 @@ const AdminDashboard: React.FC = () => {
                     setEducatorCount(response.totalEducator || 0);
                     setLoginsCount(response.totalLogins || 0);
                     setDownloadsCount(response.totalDownloads || 0);
+                    setSchoolsCount(response.totalSchool || 0);
                 } else {
                     setEducatorCount(0);
                     setLoginsCount(0);
                     setDownloadsCount(0);
+                    setSchoolsCount(0);
                     toast.error(response.message ?? "Failed to load dashboard counts");
                 }
             } catch (error) {
@@ -36,6 +40,7 @@ const AdminDashboard: React.FC = () => {
                 setEducatorCount(0);
                 setLoginsCount(0);
                 setDownloadsCount(0);
+                setSchoolsCount(0);
                 toast.error("Failed to load dashboard counts");
             } finally {
                 setIsLoading(false);
@@ -71,6 +76,15 @@ const AdminDashboard: React.FC = () => {
             alt: 'Downloads',
             colorClass: 'text-orange',
             iconSize: 'md'
+        },
+        {
+            id: 'schools',
+            title: 'Total Schools',
+            value: schoolsCount,
+            icon: SchoolsIcon,
+            alt: 'Schools',
+            colorClass: 'text-red',
+            iconSize: 'md'
         }
     ];
 
@@ -96,7 +110,7 @@ const AdminDashboard: React.FC = () => {
             </header>
 
             {/* Cards Grid */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
+            <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
                 {dashboardCards.map((card) => (
                     <div
                         key={card.id}

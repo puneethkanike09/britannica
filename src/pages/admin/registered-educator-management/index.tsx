@@ -46,11 +46,17 @@ const RegisteredEducatorList: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setEducators([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? "Failed to load registered educators");
             }
         } catch (error) {
             console.error("Error fetching registered educators:", error);
             toast.error("Failed to load registered educators");
+            setEducators([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
         } finally {
             setIsLoading(false);
         }
@@ -141,11 +147,13 @@ const RegisteredEducatorList: React.FC = () => {
         try {
             const response = await RegisteredEducatorService.approveEducator(selectedEducator.user_id);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter((edu) => edu.user_id !== selectedEducator.user_id));
                 toast.success(response.message ?? "Educator approved successfully!");
                 setShowApproveModal(false);
                 setSelectedEducator(null);
-                loadRegisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                loadRegisteredEducators(1, pageSize, ""); // Always reload with empty search
             } else {
                 toast.error(response.message ?? "Failed to approve educator");
             }
@@ -164,11 +172,13 @@ const RegisteredEducatorList: React.FC = () => {
         try {
             const response = await RegisteredEducatorService.rejectEducator(selectedEducator.user_id, remarks);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter((edu) => edu.user_id !== selectedEducator.user_id));
                 toast.success(response.message ?? "Educator rejected successfully!");
                 setShowRejectModal(false);
                 setSelectedEducator(null);
-                loadRegisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                loadRegisteredEducators(1, pageSize, ""); // Always reload with empty search
             } else {
                 toast.error(response.message ?? "Failed to reject educator");
             }
@@ -187,11 +197,13 @@ const RegisteredEducatorList: React.FC = () => {
             const approvedIds = selectedEducatorsList.map(edu => edu.user_id);
             const response = await RegisteredEducatorService.bulkApproveEducators(approvedIds);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter(edu => !approvedIds.includes(edu.user_id)));
                 setSelectedEducators(new Set());
                 toast.success(response.message ?? "Selected educators approved successfully!");
                 setShowBulkApproveModal(false);
-                loadRegisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                loadRegisteredEducators(1, pageSize, ""); // Always reload with empty search
             } else {
                 toast.error(response.message ?? "Failed to approve educators");
             }
@@ -210,11 +222,13 @@ const RegisteredEducatorList: React.FC = () => {
             const rejectedIds = selectedEducatorsList.map(edu => edu.user_id);
             const response = await RegisteredEducatorService.bulkRejectEducators(rejectedIds, remarks);
             if (response.error === false || response.error === "false") {
-                setEducators(educators.filter(edu => !rejectedIds.includes(edu.user_id)));
                 setSelectedEducators(new Set());
                 toast.success(response.message ?? "Selected educators rejected successfully!");
                 setShowBulkRejectModal(false);
-                loadRegisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                loadRegisteredEducators(1, pageSize, ""); // Always reload with empty search
             } else {
                 toast.error(response.message ?? "Failed to reject educators");
             }

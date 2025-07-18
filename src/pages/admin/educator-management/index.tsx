@@ -41,10 +41,16 @@ const EducatorManagement: React.FC = () => {
                 setPageSize(response.pageSize || size);
             } else {
                 toast.error(response.message ?? "Failed to load educators");
+                setTeachers([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
             }
         } catch (error) {
             console.error("Error fetching educators:", error);
             toast.error("Failed to load educators");
+            setTeachers([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
         } finally {
             setIsLoading(false);
         }
@@ -90,17 +96,17 @@ const EducatorManagement: React.FC = () => {
 
     // Callbacks for after educator is added/updated
     const handleEducatorAdded = () => {
-        loadTeachers();
+        loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeAddEducatorModal();
     };
 
     const handleEducatorUpdated = () => {
-        loadTeachers();
+        loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeEditEducatorModal();
     };
 
     const handleTeacherDeleted = () => {
-        loadTeachers();
+        loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeDeleteEducatorModal();
     };
 

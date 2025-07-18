@@ -40,11 +40,17 @@ const UnregisteredEducatorList: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setEducators([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? "Failed to load unregistered educators");
             }
         } catch (error) {
             console.error("Error fetching unregistered educators:", error);
             toast.error("Failed to load unregistered educators");
+            setEducators([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
         } finally {
             setIsLoading(false);
         }
@@ -128,7 +134,10 @@ const UnregisteredEducatorList: React.FC = () => {
                 toast.success(response.message ?? "Educator unregistered successfully!");
                 setShowUnregisterModal(false);
                 setSelectedEducator(null);
-                await loadUnregisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                await loadUnregisteredEducators(1, pageSize, ""); // Always reload with empty search
                 setSelectedEducators(new Set());
             } else {
                 toast.error(response.message ?? "Failed to unregister educator");
@@ -149,7 +158,10 @@ const UnregisteredEducatorList: React.FC = () => {
             if (response.error === false || response.error === "false") {
                 toast.success(response.message ?? "Selected educators unregistered successfully!");
                 setShowBulkUnregisterModal(false);
-                await loadUnregisteredEducators();
+                setSearchText("");
+                setAppliedSearchText("");
+                setCurrentPage(1);
+                await loadUnregisteredEducators(1, pageSize, ""); // Always reload with empty search
                 setSelectedEducators(new Set());
             } else {
                 toast.error(response.message ?? "Failed to unregister educators");

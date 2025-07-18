@@ -1,7 +1,7 @@
 export interface UserAccessType {
-    user_access_type_id: string | number;
+    user_access_type_id: number;
     user_access_type_name: string;
-    description: string;
+    user_access_type_desc: string;
     status?: string;
     created_user?: string | number;
     created_ts?: string;

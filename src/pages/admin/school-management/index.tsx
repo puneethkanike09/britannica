@@ -40,9 +40,15 @@ const SchoolManagement: React.FC = () => {
                 setTotalElements(response.totalElements || 0);
                 setPageSize(response.pageSize || size);
             } else {
+                setSchools([]); // Clear previous results
+                setTotalPages(1);
+                setTotalElements(0);
                 toast.error(response.message ?? 'Failed to fetch schools');
             }
         } catch (error) {
+            setSchools([]); // Clear previous results
+            setTotalPages(1);
+            setTotalElements(0);
             toast.error('Failed to fetch schools');
             console.error('Fetch schools error:', error);
         } finally {
@@ -118,17 +124,26 @@ const SchoolManagement: React.FC = () => {
     };
 
     const handleSchoolAdded = () => {
-        fetchSchools();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchSchools(1, pageSize, ""); // Always reload with empty search
         closeAddSchoolModal();
     };
 
     const handleSchoolUpdated = () => {
-        fetchSchools();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchSchools(1, pageSize, ""); // Always reload with empty search
         closeEditSchoolModal();
     };
 
     const handleSchoolDeleted = () => {
-        fetchSchools();
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
+        fetchSchools(1, pageSize, ""); // Always reload with empty search
         closeDeleteSchoolModal();
     };
 

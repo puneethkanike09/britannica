@@ -74,6 +74,7 @@ export class EducatorService {
     }
 
     static async updateTeacher(teacherData: {
+        school: { school_id: number };
         teacher_id: string | number;
         login_id: string;
         email_id: string;

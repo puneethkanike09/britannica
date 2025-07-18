@@ -143,6 +143,7 @@ export interface EducatorRegistrationResponse {
     error: boolean | string;
     message?: string;
     token?: string;
+    school?: boolean;
 }
 
 export interface EducatorRegistrationFormData {
