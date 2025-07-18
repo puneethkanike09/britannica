@@ -96,16 +96,25 @@ const EducatorManagement: React.FC = () => {
 
     // Callbacks for after educator is added/updated
     const handleEducatorAdded = () => {
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
         loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeAddEducatorModal();
     };
 
     const handleEducatorUpdated = () => {
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
         loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeEditEducatorModal();
     };
 
     const handleTeacherDeleted = () => {
+        setSearchText("");
+        setAppliedSearchText("");
+        setCurrentPage(1);
         loadTeachers(1, pageSize, ""); // Always reload with empty search
         closeDeleteEducatorModal();
     };
