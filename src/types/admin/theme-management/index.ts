@@ -8,6 +8,7 @@ export interface Theme {
     created_ts?: string;
     last_updated_user?: string | number;
     last_updated_ts?: string;
+    description?: string;
 }
 
 export interface FetchThemesResponse {

@@ -3,6 +3,7 @@ export interface UserAccessType {
     user_access_type_name: string;
     user_access_type_desc: string;
     status?: string;
+    description?: string;
     created_user?: string | number;
     created_ts?: string;
     last_updated_user?: string | number;
