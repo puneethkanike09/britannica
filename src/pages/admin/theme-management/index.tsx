@@ -232,10 +232,10 @@ const ThemeManagement: React.FC = () => {
                             ) : (
                                 currentItems.map((theme, index) => (
                                     <tr key={theme.theme_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{theme.theme_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{theme.theme_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">

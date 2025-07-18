@@ -405,10 +405,10 @@ const RegisteredEducatorList: React.FC = () => {
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-4 break-all">
+                                            <td className="px-8 py-4 break-words">
                                                 <div className="text-textColor">{educator.user_name}</div>
                                             </td>
-                                            <td className="px-8 py-4 break-all">
+                                            <td className="px-8 py-4 break-words">
                                                 <div className="text-textColor">{educator.school_name}</div>
                                             </td>
                                             <td className="px-8 py-4 break-all">

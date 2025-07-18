@@ -208,10 +208,10 @@ const PblFileManagement: React.FC = () => {
                 <div className="overflow-x-auto w-full rounded-lg">
                     <table className="w-full min-w-[800px]">
                         <colgroup>
-                            <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[15%] min-w-[120px]" />
-                            <col className="w-[20%] min-w-[160px]" />
-                            <col className="w-[25%] min-w-[200px]" />
+                            <col className="w-[35] min-w-[160px]" />
+                            <col className="w-[16%] min-w-[140px]" />
+                            <col className="w-[16%] min-w-[140px]" />
+                            <col className="w-[14%] min-w-[140px]" />
                             <col className="w-[20%] min-w-[160px]" />
                         </colgroup>
                         <thead>
@@ -239,16 +239,16 @@ const PblFileManagement: React.FC = () => {
                             ) : (
                                 currentItems.map((file, index) => (
                                     <tr key={file.pbl_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{file.pbl_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{file.grade_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{file.theme_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{file.user_access_type_name}</div>
                                         </td>
                                         <td className="px-8 py-4">

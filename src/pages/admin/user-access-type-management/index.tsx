@@ -233,10 +233,10 @@ const UserAccessTypeManagement: React.FC = () => {
                             ) : (
                                 currentItems.map((userAccessType, index) => (
                                     <tr key={userAccessType.user_access_type_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{userAccessType.user_access_type_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{userAccessType.user_access_type_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">

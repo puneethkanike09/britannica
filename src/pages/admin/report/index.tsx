@@ -327,13 +327,13 @@ const ReportManagement: React.FC = () => {
                                         key={log.userId + log.activityTs}
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{log.firstName} {log.lastName}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{log.schoolName}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{log.description}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">

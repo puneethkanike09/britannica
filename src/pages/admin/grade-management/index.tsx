@@ -232,10 +232,10 @@ const GradeManagement: React.FC = () => {
                             ) : (
                                 currentItems.map((grade, index) => (
                                     <tr key={grade.grade_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{grade.grade_name}</div>
                                         </td>
-                                        <td className="px-8 py-4 break-all">
+                                        <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{grade.grade_desc}</div>
                                         </td>
                                         <td className="px-8 py-4">
