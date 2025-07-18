@@ -732,7 +732,7 @@ const EducatorRegistration = () => {
                             <div className="flex-1 px-8 py-6 text-center">
                                 <p className="text-textColor text-lg mb-8">
                                     {isExistingSchoolSuccess
-                                        ? "Registration successful with the existing school! Your account has been created and is pending admin approval. You will receive a notification once it is approved."
+                                        ? "Registration successful under the existing school! Your account has been created and is pending admin approval. You will receive a notification once it is approved."
                                         : "Registration successful! Your account has been created and is pending admin approval. You will receive a notification once it is approved."}
                                 </p>
                                 <button
