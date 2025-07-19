@@ -75,16 +75,16 @@ function App() {
               </AdminProtectedRoute>
             }
           >
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/school-management" element={<SchoolManagement />} />
-            <Route path="/educator-management" element={<EducatorManagement />} />
-            <Route path="/registered-educator-management" element={<RegisteredEducatorManagement />} />
-            <Route path="/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
-            <Route path="/master-data/grade" element={<GradeManagement />} />
-            <Route path="/master-data/theme" element={<ThemeManagement />} />
-            <Route path="/master-data/type" element={<UserAccessTypeManagement />} />
-            <Route path="/pbl-files" element={<PblFileManagement />} />
-            <Route path="/report" element={<Report />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/school-management" element={<SchoolManagement />} />
+            <Route path="/admin/educator-management" element={<EducatorManagement />} />
+            <Route path="/admin/registered-educator-management" element={<RegisteredEducatorManagement />} />
+            <Route path="/admin/unregistered-educator-management" element={<UnregisteredEducatorManagement />} />
+            <Route path="/admin/master-data/grade" element={<GradeManagement />} />
+            <Route path="/admin/master-data/theme" element={<ThemeManagement />} />
+            <Route path="/admin/master-data/type" element={<UserAccessTypeManagement />} />
+            <Route path="/admin/pbl-files" element={<PblFileManagement />} />
+            <Route path="/admin/report" element={<Report />} />
           </Route>
 
           {/* Educator routes */}
@@ -95,7 +95,7 @@ function App() {
               </EducatorProtectedRoute>
             }
           >
-            <Route path="/educator-dashboard" element={<EducatorDashboard />} />
+            <Route path="/educator/dashboard" element={<EducatorDashboard />} />
           </Route>
 
           {/* Catch-all route for 404 - Page Not Found */}

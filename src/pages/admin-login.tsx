@@ -30,7 +30,7 @@ const AdminLogin = () => {
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/admin-dashboard");
+            navigate("/admin/dashboard");
         }
     }, [isAuthenticated, navigate]);
 
@@ -70,7 +70,7 @@ const AdminLogin = () => {
         try {
             await login(loginId, password, "/auth/admin-login");
             toast.success("Login successful!");
-            navigate("/admin-dashboard");
+            navigate("/admin/dashboard");
         } catch (error) {
             const errMsg = (error as { message?: string })?.message || "Login failed";
             toast.error(errMsg);

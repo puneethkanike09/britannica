@@ -10,65 +10,65 @@ import { NavItem } from '../../../types/admin';
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
     {
-        to: "/admin-dashboard",
+        to: "/admin/dashboard",
         icon: HomeIcon,
         alt: "Home",
         label: "Home",
         end: true
     },
     {
-        to: "/school-management",
+        to: "/admin/school-management",
         icon: SchoolIcon,
         alt: "School Management",
         label: "School Management"
     },
     {
-        to: "/educator-management",
+        to: "/admin/educator-management",
         icon: EducatorIcon,
         alt: "Educator Management",
         label: "Educator Management"
     },
     {
-        to: "/registered-educator-management",
+        to: "/admin/registered-educator-management",
         icon: RegisteredEducator,
         alt: "Registered Educator",
         label: "Registered Educator"
     },
     {
-        to: "/unregistered-educator-management",
+        to: "/admin/unregistered-educator-management",
         icon: UnRegisteredEducator,
         alt: "Unregistered Educator",
         label: "Unregistered Educator"
     },
     {
-        to: "/master-data",
+        to: "/admin/master-data",
         icon: MasterDataIcon,
         alt: "Master Data Management",
         label: "Master Data Management",
         hasSubmenu: true,
         submenu: [
             {
-                to: "/master-data/grade",
+                to: "/admin/master-data/grade",
                 label: "Grade"
             },
             {
-                to: "/master-data/theme",
+                to: "/admin/master-data/theme",
                 label: "Theme"
             },
             {
-                to: "/master-data/type",
+                to: "/admin/master-data/type",
                 label: "Types"
             }
         ]
     },
     {
-        to: "/pbl-files",
+        to: "/admin/pbl-files",
         icon: PblFilesIcon,
         alt: "PBL Files",
         label: "PBL File Management"
     },
     {
-        to: "/report",
+        to: "/admin/report",
         icon: ReportIcon,
         alt: "Report",
         label: "Report"
