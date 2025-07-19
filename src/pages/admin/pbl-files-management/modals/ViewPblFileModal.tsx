@@ -129,11 +129,11 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                     <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
                                         {/* First Row */}
                                         <div className="grid grid-cols-1 md:grid-cols-3">
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
                                                 <div className="text-textColor mb-2">Grade</div>
                                                 <div className="text-primary font-medium break-all">{pblFileDetails.grade_name || '-'}</div>
                                             </div>
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
                                                 <div className="text-textColor mb-2">Theme</div>
                                                 <div className="text-primary font-medium break-all">{pblFileDetails.theme_name || '-'}</div>
                                             </div>
@@ -143,14 +143,14 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                             </div>
                                         </div>
                                         {/* Second Row */}
-                                        <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md border-lightGray">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 md:border-t border-lightGray">
                                             {/* PBL File Name Column */}
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
                                                 <div className="text-textColor mb-2">PBL File Name</div>
                                                 <div className="text-primary font-medium break-all">{pblFileDetails.pbl_name || '-'}</div>
                                             </div>
                                             {/* PDF File Column */}
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
                                                 <div className="text-textColor mb-2">PDF File</div>
                                                 <div className="text-primary font-medium break-all">
                                                     {pblFileDetails.file_url ? (
@@ -178,8 +178,8 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                                 </div>
                                             </div>
                                             {/* Image Column */}
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
-                                                <div className="flex items-center gap-2 mb-3">
+                                            <div className="p-6 md:border-b-0">
+                                                <div className="flex items-center gap-2 mb-2">
                                                     <span className="text-textColor">Image</span>
                                                 </div>
                                                 {pblFileDetails.image_url ? (
@@ -188,7 +188,7 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                                             setSelectedImageUrl(pblFileDetails.image_url);
                                                             setShowImageModal(true);
                                                         }}
-                                                        className="relative group cursor-pointer bg-gray-50 border-2 border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-all duration-200"
+                                                        className="relative group cursor-pointer bg-gray-50 border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-all duration-200"
                                                     >
                                                         <img
                                                             src={pblFileDetails.image_url}
