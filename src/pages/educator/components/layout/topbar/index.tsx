@@ -94,7 +94,7 @@ const Topbar: React.FC = () => {
                 className={`fixed top-0 right-0 left-0 flex justify-between items-center px-4 sm:px-6 lg:px-6 h-16 sm:h-[81px] bg-white z-20 shadow-sm`}
             >
                 {/* Logo - Fixed with better responsive sizing */}
-                <Link to="/educator-dashboard" className="flex items-center gap-3 cursor-pointer flex-shrink-0">
+                <Link to="/educator/dashboard" className="flex items-center gap-3 cursor-pointer flex-shrink-0">
                     <img 
                         src={LogoIcon} 
                         alt="Britannica Education Logo" 

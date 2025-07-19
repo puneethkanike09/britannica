@@ -31,7 +31,7 @@ const EducatorLogin = () => {
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/educator-dashboard");
+            navigate("/educator/dashboard");
         }
     }, [isAuthenticated, navigate]);
 
@@ -77,7 +77,7 @@ const EducatorLogin = () => {
         try {
             await login(loginId, password, "/auth/teacher-login");
             toast.success("Login successful!");
-            navigate("/educator-dashboard");
+            navigate("/educator/dashboard");
         } catch (error) {
             const errMsg = (error as { message?: string })?.message || "Login failed";
             toast.error(errMsg);
