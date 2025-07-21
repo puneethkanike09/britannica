@@ -40,10 +40,10 @@ const BulkRejectModal: React.FC<BulkRejectModalProps> = ({
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const value = e.target.value.replace(/[^a-zA-Z0-9\s,.-]/g, '').slice(0, 200);
+        const value = e.target.value.slice(0, 200); // Only limit length, no character filtering
         setReason(value);
         if (error) {
-            setError('');
+            setError("");
         }
     };
 

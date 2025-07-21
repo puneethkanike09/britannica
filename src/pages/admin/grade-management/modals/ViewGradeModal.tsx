@@ -102,14 +102,14 @@ export default function ViewGradeModal({ onClose, grade }: GradeActionModalProps
                                     <div className="grid grid-cols-1">
                                         <div className="p-6 border-b border-lightGray">
                                             <div className="text-textColor mb-2">Grade Name</div>
-                                            <div className="text-primary font-medium break-all">{gradeDetails.grade_name || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{gradeDetails.grade_name || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Second Row */}
                                     <div className="grid grid-cols-1">
                                         <div className="p-6">
                                             <div className="text-textColor mb-2">Description</div>
-                                            <div className="text-primary font-medium break-all">{gradeDetails.description || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{gradeDetails.description || '-'}</div>
                                         </div>
                                     </div>
                                 </div>

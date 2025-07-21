@@ -183,7 +183,7 @@ const SchoolManagement: React.FC = () => {
             </div>
 
             {/* Search Box UI */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -253,13 +253,13 @@ const SchoolManagement: React.FC = () => {
                                 currentItems.map((school, index) => (
                                     <tr key={school.school_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{school.school_name}</div>
+                                            <div className="text-textColor">{school.school_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{school.school_email}</div>
+                                            <div className="text-textColor">{school.school_email || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
-                                            <div className="text-textColor">{school.school_mobile_no}</div>
+                                            <div className="text-textColor">{school.school_mobile_no || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

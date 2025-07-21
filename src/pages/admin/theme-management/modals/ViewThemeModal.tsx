@@ -102,14 +102,14 @@ export default function ViewThemeModal({ onClose, theme }: ThemeActionModalProps
                                     <div className="grid grid-cols-1">
                                         <div className="p-6 border-b border-lightGray">
                                             <div className="text-textColor mb-2">Theme Name</div>
-                                            <div className="text-primary font-medium break-all">{themeDetails.theme_name || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{themeDetails.theme_name || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Second Row */}
                                     <div className="grid grid-cols-1">
                                         <div className="p-6 border-b border-lightGray">
                                             <div className="text-textColor mb-2">Description</div>
-                                            <div className="text-primary font-medium break-all">{themeDetails.description || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{themeDetails.description || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Third Row: Theme Color */}

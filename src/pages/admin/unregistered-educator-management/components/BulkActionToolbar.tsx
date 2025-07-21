@@ -12,7 +12,7 @@ const BulkActionToolbar: React.FC<BulkActionToolbarProps> = ({
     onClearSelection
 }) => {
     return (
-        <div className="mb-6 p-4  rounded-lg">
+        <div className="mb-6 rounded-lg">
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
                     <span className="text-textColor font-bold">

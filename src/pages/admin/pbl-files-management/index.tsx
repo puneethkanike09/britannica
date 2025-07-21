@@ -168,7 +168,7 @@ const PblFileManagement: React.FC = () => {
             </div>
 
             {/* Search Box UI */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 ">
                 <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -240,16 +240,16 @@ const PblFileManagement: React.FC = () => {
                                 currentItems.map((file, index) => (
                                     <tr key={file.pbl_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{file.pbl_name}</div>
+                                            <div className="text-textColor">{file.pbl_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{file.grade_name}</div>
+                                            <div className="text-textColor">{file.grade_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{file.theme_name}</div>
+                                            <div className="text-textColor">{file.theme_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{file.user_access_type_name}</div>
+                                            <div className="text-textColor">{file.user_access_type_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

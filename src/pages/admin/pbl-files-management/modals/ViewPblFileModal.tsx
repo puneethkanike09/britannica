@@ -129,51 +129,51 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                     <div className="border border-lightGray rounded-lg overflow-hidden mb-6">
                                         {/* First Row */}
                                         <div className="grid grid-cols-1 md:grid-cols-3">
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r ">
                                                 <div className="text-textColor mb-2">Grade</div>
-                                                <div className="text-primary font-medium break-all">{pblFileDetails.grade_name || '-'}</div>
+                                                <div className="text-primary font-medium break-words">{pblFileDetails.grade_name || '-'}</div>
                                             </div>
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r ">
                                                 <div className="text-textColor mb-2">Theme</div>
-                                                <div className="text-primary font-medium break-all">{pblFileDetails.theme_name || '-'}</div>
+                                                <div className="text-primary font-medium break-words">{pblFileDetails.theme_name || '-'}</div>
                                             </div>
                                             <div className="p-6 border-b border-lightGray md:border-b-0">
                                                 <div className="text-textColor mb-2">Type</div>
-                                                <div className="text-primary font-medium break-all">{pblFileDetails.user_access_type_name || '-'}</div>
+                                                <div className="text-primary font-medium break-words">{pblFileDetails.user_access_type_name || '-'}</div>
                                             </div>
                                         </div>
                                         {/* Second Row */}
                                         <div className="grid grid-cols-1 md:grid-cols-3 md:border-t border-lightGray">
                                             {/* PBL File Name Column */}
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r ">
                                                 <div className="text-textColor mb-2">PBL File Name</div>
-                                                <div className="text-primary font-medium break-all">{pblFileDetails.pbl_name || '-'}</div>
+                                                <div className="text-primary font-medium break-words">{pblFileDetails.pbl_name || '-'}</div>
                                             </div>
                                             {/* PDF File Column */}
-                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r border-lightGray">
+                                            <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r ">
                                                 <div className="text-textColor mb-2">PDF File</div>
-                                                <div className="text-primary font-medium break-all">
+                                                <div className="text-primary font-medium break-words">
                                                     {pblFileDetails.file_url ? (
                                                         <div 
-                                                            className="relative group cursor-pointer bg-gray-50 border-2 border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-all duration-200"
+                                                            className="relative group cursor-pointer bg-lightGray/10 border-1 border-lightGray rounded-lg p-4 hover:border-primary transition-all duration-200"
                                                             onClick={() => window.open(pblFileDetails.file_url, '_blank')}
                                                         >
                                                             <div className="flex flex-col items-center">
                                                                 <svg className="w-12 h-12 text-red-500 mb-2" fill="currentColor" viewBox="0 0 20 20">
                                                                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                                                                 </svg>
-                                                                <span className="text-sm font-medium text-gray-700">PDF Document</span>
+                                                                <span className="text-sm font-medium text-textColor">PDF Document</span>
                                                             </div>
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 rounded-lg transition-all duration-200 flex items-center justify-center">
                                                                 <div className="opacity-0 group-hover:opacity-100 bg-white shadow-lg rounded-full p-2 transition-opacity duration-200">
-                                                                    <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <svg className="w-4 h-4 text-textColor" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                                     </svg>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-gray-500">No file available</span>
+                                                        <span className="text-lightGray">No file available</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -188,7 +188,7 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                                             setSelectedImageUrl(pblFileDetails.image_url);
                                                             setShowImageModal(true);
                                                         }}
-                                                        className="relative group cursor-pointer bg-gray-50 border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-all duration-200"
+                                                        className="relative group cursor-pointer bg-lightGray/10 border-1 border-lightGray rounded-lg hover:border-primary transition-all duration-200"
                                                     >
                                                         <img
                                                             src={pblFileDetails.image_url}
@@ -197,15 +197,15 @@ export default function ViewPblFileModal({ onClose, file }: ViewPblFileModalProp
                                                         />
                                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-all duration-200 flex items-center justify-center">
                                                             <div className="opacity-0 group-hover:opacity-100 bg-white shadow-lg rounded-full p-2 transition-opacity duration-200">
-                                                                <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <svg className="w-5 h-5 text-textColor" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                                                                 </svg>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="h-28 w-full border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center bg-gray-50">
-                                                        <span className="text-gray-400 text-sm">No image attached</span>
+                                                    <div className="h-28 w-full border-1 border-dashed border-lightGray rounded-lg flex items-center justify-center bg-lightGray/10">
+                                                        <span className="text-lightGray text-sm break-words">No tumbnail attached</span>
                                                     </div>
                                                 )}
                                             </div>

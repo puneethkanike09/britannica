@@ -186,7 +186,7 @@ export default function ViewEducatorModal({ onClose, educator }: RegisteredEduca
                                     <div className="grid grid-cols-1 md:grid-cols-3 md:border-t md:border-lightGray">
                                         <div className="p-6 border-b border-lightGray md:border-b-0 md:border-r md:border-lightGray">
                                             <div className="text-textColor mb-2">School</div>
-                                            <div className="text-primary font-medium break-all">{formData.schoolName || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{formData.schoolName || '-'}</div>
                                         </div>
                                     </div>
                                 </div>

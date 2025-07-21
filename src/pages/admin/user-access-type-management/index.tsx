@@ -166,7 +166,7 @@ const UserAccessTypeManagement: React.FC = () => {
             </div>
 
             {/* Search Box UI */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 ">
                 <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -234,10 +234,10 @@ const UserAccessTypeManagement: React.FC = () => {
                                 currentItems.map((userAccessType, index) => (
                                     <tr key={userAccessType.user_access_type_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{userAccessType.user_access_type_name}</div>
+                                            <div className="text-textColor">{userAccessType.user_access_type_name || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{userAccessType.user_access_type_desc}</div>
+                                            <div className="text-textColor">{userAccessType.user_access_type_desc || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-nowrap gap-2">

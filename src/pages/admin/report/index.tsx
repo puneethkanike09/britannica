@@ -220,7 +220,7 @@ const ReportManagement: React.FC = () => {
             </div>
 
             {/* Date Range Selectors and Generate Button */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 ">
                 <div className="flex flex-col lg:flex-row gap-4 items-start">
                     <div className="relative w-full sm:w-auto flex flex-col gap-1">
                         <div className="relative">
@@ -328,13 +328,13 @@ const ReportManagement: React.FC = () => {
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{log.firstName} {log.lastName}</div>
+                                            <div className="text-textColor">{(log.firstName || log.lastName) ? `${log.firstName || ''} ${log.lastName || ''}`.trim() : '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{log.schoolName}</div>
+                                            <div className="text-textColor">{log.schoolName || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{log.description}</div>
+                                            <div className="text-textColor">{log.description || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-all">
                                             <div className="text-textColor">{formatActivityTimestamp(log.activityTs)}</div>

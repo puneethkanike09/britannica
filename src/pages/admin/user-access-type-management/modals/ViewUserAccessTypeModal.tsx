@@ -102,14 +102,14 @@ export default function ViewUserAccessTypeModal({ onClose, userAccessType }: Use
                                     <div className="grid grid-cols-1">
                                         <div className="p-6 border-b border-lightGray">
                                             <div className="text-textColor mb-2">User Access Type Name</div>
-                                            <div className="text-primary font-medium break-all">{userAccessTypeDetails.user_access_type_name || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{userAccessTypeDetails.user_access_type_name || '-'}</div>
                                         </div>
                                     </div>
                                     {/* Second Row */}
                                     <div className="grid grid-cols-1">
                                         <div className="p-6">
                                             <div className="text-textColor mb-2">Description</div>
-                                            <div className="text-primary font-medium break-all">{userAccessTypeDetails.description || '-'}</div>
+                                            <div className="text-primary font-medium break-words">{userAccessTypeDetails.description || '-'}</div>
                                         </div>
                                     </div>
                                 </div>

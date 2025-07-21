@@ -286,7 +286,7 @@ const RegisteredEducatorList: React.FC = () => {
             </div>
 
             {/* Search Box UI */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 ">
                 <form className="flex w-full md:max-w-md gap-2" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -406,13 +406,13 @@ const RegisteredEducatorList: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-4 break-words">
-                                                <div className="text-textColor">{educator.user_name}</div>
+                                                <div className="text-textColor">{educator.user_name || '-'}</div>
                                             </td>
                                             <td className="px-8 py-4 break-words">
-                                                <div className="text-textColor">{educator.school_name}</div>
+                                                <div className="text-textColor">{educator.school_name || '-'}</div>
                                             </td>
                                             <td className="px-8 py-4 break-all">
-                                                <div className="text-textColor">{educator.login_id}</div>
+                                                <div className="text-textColor">{educator.login_id || '-'}</div>
                                             </td>
                                             <td className="px-8 py-4">
                                                 <div className="flex flex-nowrap gap-2">
