@@ -1,7 +1,7 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Loader2 } from 'lucide-react';
 import DownloadIcon from '../../../assets/dashboard/Admin/report/download.svg';
 import GenerateIcon from '../../../assets/dashboard/Admin/report/generate.svg';
 import toast from 'react-hot-toast';
@@ -214,7 +214,11 @@ const ReportManagement: React.FC = () => {
                     disabled={isDownloading || isLoading || !hasGenerated}
                     className={`bg-primary hover:bg-hover text-white px-8 py-3 font-bold rounded-lg flex items-center gap-2 ${isDownloading || isLoading || !hasGenerated ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                    <img src={DownloadIcon} alt="Download" className="h-6 w-6" />
+                    {isDownloading ? (
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                    ) : (
+                        <img src={DownloadIcon} alt="Download" className="h-6 w-6" />
+                    )}
                     <span className="hidden md:inline font-bold">Download</span>
                 </button>
             </div>
@@ -328,7 +332,7 @@ const ReportManagement: React.FC = () => {
                                         className={index % 2 === 1 ? 'bg-third' : 'bg-white'}
                                     >
                                         <td className="px-8 py-4 break-words">
-                                            <div className="text-textColor">{(log.firstName || log.lastName) ? `${log.firstName || ''} ${log.lastName || ''}`.trim() : '-'}</div>
+                                            <div className="text-textColor">{log.firstName || '-'}</div>
                                         </td>
                                         <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{log.schoolName || '-'}</div>
