@@ -230,6 +230,7 @@ const SchoolManagement: React.FC = () => {
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Code</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Email Address</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Phone Number</th>
@@ -239,19 +240,22 @@ const SchoolManagement: React.FC = () => {
                         <tbody>
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-16">
+                                    <td colSpan={5} className="px-8 py-16">
                                         <Loader message="Loading school data..." />
                                     </td>
                                 </tr>
                             ) : schools.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-16 text-center text-textColor">
+                                    <td colSpan={5} className="px-8 py-16 text-center text-textColor">
                                         No schools found.
                                     </td>
                                 </tr>
                             ) : (
                                 currentItems.map((school, index) => (
                                     <tr key={school.school_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
+                                        <td className="px-8 py-4 break-all">
+                                            <div className="text-textColor">{school.school_code || '-'}</div>
+                                        </td>
                                         <td className="px-8 py-4 break-words">
                                             <div className="text-textColor">{school.school_name || '-'}</div>
                                         </td>

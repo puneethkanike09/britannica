@@ -50,7 +50,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
         }
         if (reason.length < 10) {
             setError("Reason must be at least 10 characters long");
-            return false;
+            return false;   
         }
         if (reason.length > 200) {
             setError("Reason must be 200 characters or less");
