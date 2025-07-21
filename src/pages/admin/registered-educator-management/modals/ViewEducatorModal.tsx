@@ -93,7 +93,6 @@ export default function ViewEducatorModal({ onClose, educator }: RegisteredEduca
         setEducatorError(null);
         RegisteredEducatorService.fetchRegisteredEducatorCompleteDetails(educator.user_id).then((res) => {
             if (!mounted) return;
-            console.log('API response for educator details:', res);
             if (res.error === false || res.error === "false") {
                 setFormData(prev => {
                     let matchedSchoolId = prev.schoolId;

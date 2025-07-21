@@ -83,8 +83,7 @@ const Topbar: React.FC = () => {
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-    const handleUnregisterAccount = (reason: string) => {
-        console.log("Unregister account with reason:", reason);
+    const handleUnregisterAccount = () => {
         setIsSettingsDropdownOpen(false);
     };
 
@@ -210,7 +209,7 @@ const Topbar: React.FC = () => {
                     {/* Logout Button - Responsive sizing */}
                     <button
                         onClick={openLogoutModal}
-                        className="bg-primary hover:bg-hover text-white px-4 lg:px-8 py-2 lg:py-3 font-bold rounded-lg font-medium cursor-pointer flex items-center gap-2 whitespace-nowrap"
+                        className="bg-primary hover:bg-hover text-white px-4 lg:px-8 py-2 lg:py-3 font-bold rounded-lg  cursor-pointer flex items-center gap-2 whitespace-nowrap"
                     >
                         <LogOut className="font-black" size={18} />
                         <span className="hidden lg:inline">Log out</span>

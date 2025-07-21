@@ -145,7 +145,7 @@ export class EducatorService {
 
     static async deleteTeacher(teacher_id: string | number): Promise<{ error: boolean | string; token?: string; message?: string }> {
         try {
-            return await apiClient.put(
+            return await apiClient.delete(
                 `/teacher/delete/${teacher_id}`,
                 {}
             );

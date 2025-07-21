@@ -392,7 +392,7 @@ const EducatorRegistration = () => {
                                                 name="schoolCode"
                                                 value={schoolData.schoolCode}
                                                 onChange={handleSchoolInputChange}
-                                                placeholder="Enter School Code"
+                                                placeholder="Enter School UDISE Code"
                                                 maxLength={30}
                                                 className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}

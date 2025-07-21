@@ -290,14 +290,14 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="mb-3 relative">
                                         <label className="block text-textColor text-base mb-2">
-                                            School Code<span className="text-red">*</span>
+                                            School UDISE Code<span className="text-red">*</span>
                                         </label>
                                         <input
                                             type="text"
                                             name="school_code"
                                             value={formData.school_code}
                                             onChange={handleInputChange}
-                                            placeholder="Enter School Code"
+                                            placeholder="Enter School UDISE Code"
                                             maxLength={20}
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_code ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}

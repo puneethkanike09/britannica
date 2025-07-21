@@ -105,7 +105,7 @@ export class RegisteredEducatorService {
 
     static async rejectEducator(user_id: string | number, remarks: string): Promise<ActionResponse> {
         try {
-            return await apiClient.put("/teacher/reject", {
+            return await apiClient.delete("/teacher/reject", {
                 user_id: user_id,
                 remarks: remarks
             });
@@ -120,7 +120,7 @@ export class RegisteredEducatorService {
 
     static async bulkRejectEducators(user_ids: (string | number)[], remarks: string): Promise<ActionResponse> {
         try {
-            return await apiClient.put("/teacher/reject-all", {
+            return await apiClient.delete("/teacher/reject-all", {
                 ids: user_ids,
                 remarks: remarks
             });
