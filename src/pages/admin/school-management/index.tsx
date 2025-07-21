@@ -230,7 +230,7 @@ const SchoolManagement: React.FC = () => {
                         </colgroup>
                         <thead>
                             <tr className="bg-secondary text-white">
-                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Code</th>
+                                <th className="px-8 py-4 text-left border-r-1 border-white font-black">School UDISE Code</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">School Name</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Email Address</th>
                                 <th className="px-8 py-4 text-left border-r-1 border-white font-black">Phone Number</th>
