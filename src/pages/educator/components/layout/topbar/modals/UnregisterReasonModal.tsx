@@ -1,9 +1,11 @@
 import { X, Loader2 } from "lucide-react";
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { backdropVariants, modalVariants } from "../../../../../../config/constants/Animations/modalAnimation";
 import { EducatorRegistrationService } from "../../../../../../services/educator/educatorRegistrationService";
+import { EducatorAuthService } from "../../../../../../services/educator/educatorAuthService";
 
 
 interface UnregisterReasonModalProps {
@@ -12,6 +14,7 @@ interface UnregisterReasonModalProps {
 }
 
 export default function UnregisterReasonModal({ onClose, onUnregister }: UnregisterReasonModalProps) {
+    const navigate = useNavigate();
     const [reason, setReason] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +53,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
         }
         if (reason.length < 10) {
             setError("Reason must be at least 10 characters long");
-            return false;   
+            return false;
         }
         if (reason.length > 200) {
             setError("Reason must be 200 characters or less");
@@ -66,16 +69,23 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
                 const response = await EducatorRegistrationService.unregisterEducator(reason.trim());
                 if (response.error === false || response.error === "false") {
                     toast.success(response.message || "Unregistration request submitted successfully!");
-                    onUnregister(reason.trim());
-                    setIsSubmitting(false);
-                    handleClose();
+                    // Call logout after successful unregistration
+                    const logoutResponse = await EducatorAuthService.logout();
+                    if (logoutResponse.error === false || logoutResponse.error === "false") {
+                        toast.success(logoutResponse.message || "Logout successful");
+                        onUnregister(reason.trim());
+                        // Redirect to educator login page using React Router
+                        navigate('/educator-login');
+                    } else {
+                        toast.error(logoutResponse.message || "Logout failed");
+                    }
                 } else {
                     toast.error(response.message || "Failed to submit unregistration request");
-                    setIsSubmitting(false);
                 }
             } catch (error) {
                 console.error(error);
                 toast.error("Failed to submit unregistration request");
+            } finally {
                 setIsSubmitting(false);
             }
         }
@@ -138,7 +148,7 @@ export default function UnregisterReasonModal({ onClose, onUnregister }: Unregis
                                     <button
                                         type="button"
                                         onClick={handleSubmit}
-                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg font-medium hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                        className={`bg-primary text-white px-8 py-3 font-bold rounded-lg hover:bg-hover flex items-center gap-2 ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? (

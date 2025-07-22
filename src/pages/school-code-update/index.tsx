@@ -126,7 +126,7 @@ const SchoolCodeUpdate: React.FC = () => {
     const completedCount = schools.filter(school => school.tempSchoolCode.trim()).length;
 
     return (
-        <div className="max-w-full mx-auto rounded-lg sm:p-7 bg-white">
+        <div className="max-w-full mx-auto rounded-lg p-7 bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-secondary">School Code Update ( {schools.length} )</h1>
                 <div className="flex items-center gap-4">
@@ -172,7 +172,6 @@ const SchoolCodeUpdate: React.FC = () => {
                                         <tr key={school.school_id} className={index % 2 === 1 ? "bg-third" : "bg-white"}>
                                             <td className="px-8 py-4 break-words">
                                                 <div className="text-textColor font-medium">{school.school_name || '-'}</div>
-                                                <div className="text-sm text-gray-500 mt-1">ID: {school.school_id}</div>
                                             </td>
                                             <td className="px-8 py-4 break-all">
                                                 <div className="text-textColor">{school.school_email || '-'}</div>
