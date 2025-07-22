@@ -102,7 +102,7 @@ const AdminDashboard: React.FC = () => {
             {/* Header Section */}
             <header className="mb-6 sm:mb-8">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-secondary mb-2">
-                    Welcome to the Britannica Education
+                    Welcome to the Britannica Build
                 </h1>
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-secondary">
                     Admin Dashboard
