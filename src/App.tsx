@@ -23,6 +23,7 @@ import RegisteredEducatorManagement from "./pages/admin/registered-educator-mana
 import UnregisteredEducatorManagement from "./pages/admin/unregistered-educator-management";
 import EducatorRegistration from "./pages/educator-register";
 import UserAccessTypeManagement from "./pages/admin/user-access-type-management";
+import SchoolCodeUpdate from "./pages/school-code-update";
 
 function App() {
   useEffect(() => {
@@ -66,6 +67,7 @@ function App() {
           <Route path="/educator-login" element={<EducatorLogin />} />
           <Route path="/educator-register" element={<EducatorRegistration />} />
           <Route path="/create-password" element={<CreatePassword />} />
+          <Route path="/school-code-update-temp-page-just-making-the-url-hard-to-identify-the-route" element={<SchoolCodeUpdate />} />
 
           {/* Admin routes */}
           <Route

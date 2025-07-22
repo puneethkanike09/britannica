@@ -80,7 +80,7 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
     const restrictInput = (name: string, value: string) => {
         switch (name) {
             case 'school_code':
-                // Allow alphanumeric characters, max 20
+                // Allow alphanumeric characters, 11-20
                 return value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
             case 'school_name':
             case 'city':
@@ -140,12 +140,12 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
         };
         let isValid = true;
 
-        // School code: mandatory, min 2, max 20, alphanumeric
+        // School code: mandatory, min 11, max 20, alphanumeric
         if (!formData.school_code.trim()) {
             newErrors.school_code = 'School code is required';
             isValid = false;
-        } else if (!/^[a-zA-Z0-9]{2,20}$/.test(formData.school_code.trim())) {
-            newErrors.school_code = 'School code must be 2-20 alphanumeric characters';
+        } else if (!/^[a-zA-Z0-9]{11,20}$/.test(formData.school_code.trim())) {
+            newErrors.school_code = 'School code must be 11-20 alphanumeric characters';
             isValid = false;
         }
 
@@ -297,8 +297,11 @@ export default function AddSchoolModal({ onClose, onAdded }: AddSchoolModalProps
                                             name="school_code"
                                             value={formData.school_code}
                                             onChange={handleInputChange}
-                                            placeholder="Enter School UDISE Code"
+                                            placeholder="Enter School UDISE Code (11-20 alphanumeric characters)"
                                             maxLength={20}
+                                            minLength={11}
+                                            pattern="^[a-zA-Z0-9]{11,20}$"
+                                            title="School code must be 11-20 alphanumeric characters"
                                             className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder ${errors.school_code ? 'border-red' : 'border-inputPlaceholder'} ${isSubmitting ? 'cursor-not-allowed opacity-50' : ''} focus:outline-none focus:border-primary`}
                                             disabled={isSubmitting}
                                         />

@@ -162,8 +162,8 @@ const EducatorRegistration = () => {
         if (!schoolData.schoolCode.trim()) {
             newErrors.schoolCode = "School code is required";
             isValid = false;
-        } else if (!/^[a-zA-Z0-9\s]{3,30}$/.test(schoolData.schoolCode)) {
-            newErrors.schoolCode = "School code must be 3-30 alphanumeric characters";
+        } else if (!/^[a-zA-Z0-9]{11,20}$/.test(schoolData.schoolCode)) {
+            newErrors.schoolCode = "School code must be 11-20 alphanumeric characters";
             isValid = false;
         }
 
@@ -293,7 +293,7 @@ const EducatorRegistration = () => {
             };
 
             const response = await EducatorRegistrationService.registerEducator(formData);
-            
+
             if (response.error === false || response.error === "false") {
                 toast.success(response.message || "Registration successful!");
                 if (response.school === false) {
@@ -392,8 +392,11 @@ const EducatorRegistration = () => {
                                                 name="schoolCode"
                                                 value={schoolData.schoolCode}
                                                 onChange={handleSchoolInputChange}
-                                                placeholder="Enter School UDISE Code"
-                                                maxLength={30}
+                                                placeholder="Enter School UDISE Code (11-20 alphanumeric characters)"
+                                                maxLength={20}
+                                                minLength={11}
+                                                pattern="^[a-zA-Z0-9]{11,20}$"
+                                                title="School code must be 11-20 alphanumeric characters"
                                                 className={`p-4 py-3 text-textColor w-full border rounded-lg text-base bg-inputBg border-inputBorder placeholder:text-inputPlaceholder focus:outline-none focus:border-primary ${errors.schoolCode ? "border-red" : "border-inputPlaceholder"} ${isSubmitting ? "cursor-not-allowed opacity-50" : ""}`}
                                                 disabled={isSubmitting}
                                             />
